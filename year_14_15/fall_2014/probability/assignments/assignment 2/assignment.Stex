@@ -1,0 +1,165 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{fullpage}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+\newcommand{\obj}[1]{\left\{ #1 \right \}}
+\newcommand{\clo}[1]{\left [ #1 \right ]}
+\newcommand{\clop}[1]{\left [ #1 \right )}
+\newcommand{\ploc}[1]{\left ( #1 \right ]}
+
+\newcommand{\brac}[1]{\left ( #1 \right )}
+\newcommand{\crab}[1]{\left ] #1 \right [}
+\newcommand{\induc}[1]{\left . #1 \right \vert}
+\newcommand{\abs}[1]{\left | #1 \right |}
+\newcommand{\nrm}[1]{\left\| #1 \right \|}
+\newcommand{\brkt}[1]{\left\langle #1 \right\rangle}
+
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+
+\newcommand{\Rbar}{{\bar{\mathbb{R}}}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Zinf}{\clo{ 0, +\infty }}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Tcal}{\mathcal{T}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\Scal}{\mathcal{S}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Ecal}{\mathcal{E}}
+\newcommand{\Fcal}{\mathcal{F}}
+\newcommand{\borel}[1]{\mathcal{B}\brac{#1}}
+\newcommand{\pwr}[1]{\mathcal{P}\brac{#1}}
+\newcommand{\Dyns}[1]{\mathfrak{D}\brac{#1}}
+\newcommand{\Ring}[1]{\mathcal{R}\brac{#1}}
+\newcommand{\Supp}[1]{\operatorname{supp}\nolimits\brac{#1}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+\newcommand{\lpto}{\mathop{\overset{L^p}{\to}}\nolimits}
+
+\newcommand{\re}{\operatorname{Re}\nolimits}
+\newcommand{\im}{\operatorname{Im}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Assignment \#02}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}}
+
+\begin{document}
+\selectlanguage{english}
+\maketitle
+\noindent Assigmnent \#2 for the course ``Probability Theory and Mathematical Statistics'' led by Geoffrey G. Decrouez, 2014.
+
+\section{Problem 1} % (fold)
+\label{sec:problem_1}
+
+Let $T$ be and exponentially distributed random variable with parameter $\lambda > 0$. Then for any $t \in \Real^+$ its distribution function is defined as \begin{align*}
+F_T\brac{t} &\defn \int \lambda e^{-\lambda s} 1_{\clo{0,t}}\brac{s} ds \\&= \induc{-e^{-\lambda s}}_0^t
+\end{align*} Hence ``survival'' probability $\Pr\brac{T>t} = e^{-\lambda t}$ for all $t\in \Real^+$.
+
+The value $h\in \Real^+$ such that $\Pr\brac{T>h} = \frac{1}{2}$ is determined by the equation $-\lambda h = -\ln 2$, solution of which is $h = \frac{\ln 2}{\lambda}$.
+
+The probability that approximately half of the atoms in some radioactive material has decayed is given by it half-life. In the case of Strontium 90 it is approximately 28 years. Assuming the exponential distribution of the decay time $T$, this gives us the rate $\lambda=\frac{\ln 2}{28\,\text{yrs.}} = 0.024755\,\text{yrs.}^{-1}$. Hence the probability that a given Strontium 90 atom has not decayed after 50 years is given by \[\Pr\brac{T>50} = e^{-\lambda 50\,\text{yrs.}} = e^{-\frac{\ln 2}{28}\,\text{yrs.}^{-1} \cdot50\,\text{yrs.}} = e^{-\frac{50 \ln 2}{28}} = 0.29003\] Finally, the value $s\in \Real^+$, such that $\Pr\brac{T>s} = 0.01$, gives the age after which only 1\% of the atoms has not decayed. The formula for the probability of ``survival'' yields the following equation for $s$: \[ e^{-\lambda s} = 10^{-2} \Leftrightarrow s = \frac{2\ln10}{\lambda}\] whence $s = \frac{2\ln 10}{\sfrac{\ln 2}{28}\,\text{yrs.}^{-1}} = 56 \cdot \log_2 10 = 186.028\,\text{yrs.}$.
+
+% section problem_1 (end)
+
+\section{Problem 2} % (fold)
+\label{sec:problem_2}
+
+Let $X$ be a random variable with density $f_X\brac{x}\defn \frac{c}{x \brac{\ln x}^2} 1_{\clop{2,+\infty}}$ for some constant $c\in \Real^+$. The map $1_A:\Real\to\obj{0,1}$ is the indicator function of the set $A$: $1_A\brac{x} = 1$ if $x\in A$ and $1_A\brac{x}=0$ if $x\notin A$.
+
+The normalising constant $c$ is given by the equation $\int_\Real f_X\brac{x} dx = 1$. Integrating $f_X$ gives \begin{align*}
+\int_\Real f_X\brac{x} dx &= \int \frac{c}{x \brac{\ln x}^2} 1_{\clop{2,+\infty}} dx\\&= c \int_2^\infty \brac{\ln x}^2 \frac{1}{x} dx\\&= c \int_{\ln 2}^\infty t^{-2} dt\\&= c \induc{\brac{-\frac{1}{t}}}_{\ln 2}^\infty\\&= c \frac{1}{\ln 2}\\\end{align*} where the substitution $t\defn \ln x$ was employed. Hence $c = \ln2$.
+
+If the variable $Y$ is defined as $Y\defn g\brac{X}$, where $g$ is a strictly monotonous differentiable map, then its density is given by \[f_Y\brac{y} = f_X\brac{g^{-1}\brac{y}}\abs{\frac{1}{g'\brac{g^{-1}\brac{y}}}}\] for all $y$ in the range of $g\brac{X}$. Since $g'\brac{x} = \frac{-1}{x^2}$ and $g^{-1}\brac{y} = \frac{1}{y}$, it is true that on $y\in \ploc{0,\frac{1}{2}}$ \[f_Y\brac{y} = \frac{c}{\frac{1}{y} \brac{-\ln y}^2} \abs{\frac{1}{\frac{-1}{\brac{\frac{1}{y}}^2}}} = \frac{c\cdot y}{\brac{\ln y}^2} \brac{\frac{1}{y}}^2 = \frac{c}{y \brac{\ln y}^2}\] and $f_Y\brac{y}=0$ otherwise. Hence the density of $Y=\frac{1}{X}$ is given by $f_Y\brac{y} = \frac{c}{y \brac{\ln y}^2} 1_{\ploc{0,\frac{1}{2}}}$.
+
+For $y\in\ploc{0,\frac{1}{2}}$ its distribution function is given by \begin{align*}F_Y\brac{y} &= \int_0^y \frac{c}{t \brac{\ln t}^2} dt\\&= \int_{-\infty}^{\ln y} s^{-2} ds\\&= c \induc{\brac{-\frac{1}{s}}}_{-\infty}^{\ln y}\\&= c \frac{1}{\ln \frac{1}{y}}\\\end{align*} where the substitution $s\defn \ln t$ was used. For $y\geq \frac{1}{2}$, $F_Y\brac{y} = 1$ because the range of possible values of $Y$ are within $\ploc{0,\frac{1}{2}}$. Finally for $y<0$ the probability $\Pr\brac{Y\leq y} = 0$ due to the same reason.
+
+Therefore $F_Y\brac{y} = \frac{\ln 2}{\ln \frac{1}{y}} 1_{\ploc{0,\frac{1}{2}}}$ for $y\leq \frac{1}{2}$ and $F_Y\brac{y} = 1$ otherwise.
+
+% section problem_2 (end)
+
+\section{Problem 3} % (fold)
+\label{sec:problem_3}
+
+Suppose $X$ is the length of a pole with $E\brac{X} = \mu$ and probability density $f_X\brac{x}$. Let $Y$ be a random variable representing the length of the pole lost due to triiming and be defined by $Y\defn g\brac{X}$ where the \[g\brac{x}\defn \brac{x - L} 1_{\clop{L,+\infty}}\brac{x} + x 1_{\clop{0,L}}\brac{x}\] Note that $g$ can be equivalently expressed as \[g\brac{x} = x - L 1_{\clop{L,+\infty}}\brac{x}\] since $1_{\Real^+} = 1_{\clop{L,+\infty}}\brac{x} + 1_{\brac{-\infty,L}}\brac{x}$ and by the nature of the modelled phenomenon $X\geq 0$. Below is a sketch of the map $g:\Real^+\to\Real^+$:
+
+\begin{figure}[htb]\begin{center}
+	% \includegraphics[height=.5\textwidth,angle=00]{lJTSDTlzxto.jpg}
+	\begin{Scode}{fig=TRUE,echo=FALSE}
+	# % setwd("~/Desktop/studies 2014-2015/probability/assig02/")
+	# % Sweave(file = "assign02.Stex")
+		library( ggplot2 )
+		g <- function( x, l ) ifelse( x < l, x, x - l )
+		print(
+			qplot( c( 0, 6 ), geom = "path", stat = "function",
+			fun = g, n = 2000, args=list(l = 2 ), asp = 3/4, xlab = "x " ) )
+	\end{Scode}
+	\caption{A sketch of the profile of the amount of discarded material}
+	\label{fig:fig01}
+\end{center}\end{figure}
+
+Now the mean waste length, $\mu_Y \defn E\brac{g\brac{X}}$, is given by \begin{align*} E\brac{g\brac{X}} &= E\brac{X - L \cdot 1_{\clop{L,+\infty}}\brac{X} }\\&= \mu - L \cdot E\brac{1_{\clop{L,+\infty}}\brac{X}}\\&= \mu - L \cdot \Pr\brac{X\geq L}\\&= \mu - L \cdot \brac{1-\Pr\brac{X<L}}\\&= (\mu - L) + L \Pr\brac{X < L}\\&= (\mu - L) + L \int_{-\infty}^L f_X\brac{x}dx\\
+\end{align*}
+
+If $Z\sim \mathcal{N}\brac{0,1}$, then $f_Z\brac{z} = \frac{1}{\sqrt{2\pi}} e^{-\frac{z^2}{2}}$ and $\Phi\brac{z} = \int_{-\infty}^z f_Z\brac{s} ds$ -- is the distribution function of the standard normal random variable. Since $f_Z$ is continuous on $\Real$, it must be true that $\frac{d}{dz}\Phi\brac{z} = f_Z\brac{z}$. Furthermore $\frac{d^2}{dz^2} \Phi\brac{z} = \frac{-z}{\sqrt{2\pi}} e^{-\frac{z^2}{2}} = \brac{-z} f_Z\brac{z}$.
+
+Now, if $X\sim \mathcal{N}\brac{\mu, \sigma^2}$, then for any $x\in \Real$ it is true that \[\Pr\brac{X\geq x} = \Pr\brac{Z\geq \frac{x-\mu}{\sigma}} = 1 - \Phi\brac{\frac{x-\mu}{\sigma}}\] Hence the average wasted material is given by $\mu_Y = \brac{\mu - L} + L \cdot \Phi\brac{\frac{L-\mu}{\sigma}}$. 
+
+The first derivative of $\mu_Y$ with respect to $\mu$ is given by\begin{align*}
+\brac{\mu_Y}' &= 1 - \frac{L}{\sigma} f_Z\brac{\frac{L-\mu}{\sigma}}\end{align*}  and $\frac{d^2}{d\mu^2} \mu_Y$ by \begin{align*}
+\brac{\mu_Y}'' &= - \frac{L}{\sigma} f_Z'\brac{\frac{L-\mu}{\sigma}}\frac{-1}{\sigma}\\ &= \frac{L}{\sigma} f_Z'\brac{\frac{L-\mu}{\sigma}} \frac{1}{\sigma}\\&= \frac{L}{\sigma} f_Z\brac{\frac{L-\mu}{\sigma}} \brac{-\frac{L-\mu}{\sigma}} \frac{1}{\sigma} \end{align*}
+
+The value of $\mu$ that minimizes the mean amount of lost material $\mu_Y$ is given by the following set of equations: $\frac{d}{d\mu} \mu_Y = 0$ and $\frac{d^2}{d\mu^2} \mu_Y \geq 0$. Therefore \begin{align*}
+\frac{L}{\sigma} f_Z\brac{\frac{L-\mu}{\sigma}} &= 1\\
+\frac{L}{\sigma} f_Z\brac{\frac{L-\mu}{\sigma}} \brac{-\frac{L-\mu}{\sigma}} \frac{1}{\sigma} &\geq 0\end{align*} which becomes \[-\frac{1}{2}\brac{\frac{L-\mu}{\sigma}}^2 = \ln\brac{\frac{\sqrt{2\pi} \sigma}{L}}\,\text{and}\,\brac{-\frac{L-\mu}{\sigma}} \frac{1}{\sigma} \geq 0\] after substituting the first equation into the second one and expanding the definition of $f_Z\brac{z}$ given above.
+
+After some minor rearrangement of the first order condition for optimality, the candidates for $\mu$ are given by $\brac{\frac{L-\mu}{\sigma}}^2 = 2 \ln\brac{\frac{L}{\sqrt{2\pi}\sigma}}$, which is equivalent to \[\mu = L \pm \sigma \sqrt{2\ln{\frac{L}{\sigma}} - \ln{2\pi}}\] with the second order condition given by $\mu\geq L$. Therefore the waste-minimizing value of $\mu$ is given by \[\mu = L + \sqrt{\sigma^2 \ln{\frac{L^2}{2\pi \sigma^2}}}\] whereas the average amount of wasted material is equal to \[\mu_Y = \sqrt{\sigma^2 \ln{\frac{L^2}{2\pi \sigma^2}}} + L \cdot \Phi\brac{-\sqrt{\ln{\frac{L^2}{2\pi \sigma^2}}}}\]
+
+If $L = 2\,\text{m.}$ and $\sigma = 0.02\,\text{m.}$, then \[\mu = 2 + 0.02 \cdot\sqrt{\ln\brac{\frac{2^2}{{0.02}^2 \cdot 2\pi}}}\,\text{m}= 2 + 0.02\cdot\sqrt{\ln\brac{\frac{5000}{\pi}}}\,\text{m.}\] whence $\mu = 2.054305\,\text{m}$. The amount of material wasted on average is \[\mu_Y = 0.02\sqrt{\ln\brac{\frac{5000}{\pi}}} + 2 \cdot \Phi\brac{-\sqrt{\ln\brac{\frac{5000}{\pi}}}} = 0.06092758\,\text{m.}\]
+
+% Below is a brief script in \textbf{R} to calculate the mean and expected waste and to carry out a computational experiment\begin{Scode}{echo=FALSE}
+% L <- 2
+% sd_x <- 0.02
+% m <- sqrt( log( (L^2) /(sd_x^2 * (2*pi)) ) )
+% mu_x <- m * sd_x + L
+
+% e <- rnorm( 100000, mu_x, sd_x )
+
+% m * sd_x + L * pnorm( - m )
+% mean( g( e, L ) )
+% \end{Scode}
+% section problem_3 (end)
+
+\section{Problem 4} % (fold)
+\label{sec:problem_4}
+
+Denote by $X$ and $Y$ the arrival times of the first and the second person respectively, and suppose the the join probability density is given by \[f_{X,Y}\brac{x,y}\defn 2\cdot1_{\obj{0\leq x\leq y\leq 1}}\]
+
+The probability that the person, $X$, who arrived earlier, has to wait for at least ten minutes until the arrival of the second person, $Y$, is given by $\Pr\brac{ X +\frac{1}{6}\leq Y}$, where $\frac{1}{6}$ represents ten minutes, when rescaled to the joint range of both random variables. This probability is equal to \begin{align*}
+\Pr\brac{X+\frac{1}{6}\leq Y} &= \int_{\clo{0,1}} \int_{\clo{0,1}} 1_{\obj{ x+\frac{1}{6}\leq y}} f_{X,Y}\brac{x,y} dydx \\ &= \int_{\clo{0,\frac{5}{6}}} \int_{\clo{x+\frac{1}{6},1}} 2 dydx \\ &= \int_{\clo{0,\frac{5}{6}}} \brac{\frac{5}{3} - 2x} dx \\ &= \induc{\frac{5}{3}x - x^2}_0^{\frac{5}{6}} \\ &= \frac{10}{6}\frac{5}{6} - \frac{25}{36}\\ &= \frac{25}{36}\end{align*} So $\Pr\brac{ X +\frac{1}{6}\leq Y} = 0.69444$.
+
+The marginal probability density of $X$ for $x\in \clo{0,1}$ is given by \[f_X\brac{x} = \int_0^1 f_{X,Y}\brac{x,y} dy = \int_x^1 2 dy = 2 \brac{1 - x}\] and for $x\notin \clo{0,1}$ by $f_X\brac{x} = 0$. Thus $f_X\brac{x} = 2\brac{1 - x} 1_{\clo{0,1}}$. The function $f_X$ is indeed a probability density, because it is non-negative and $\int f_X\brac{x} dx = \induc{2x - x^2}_0^1 = 1$
+
+The marginal probability density of $Y$ for $y\notin \clo{0,1}$ is given by $f_X\brac{x} = 0$ and for $y\in \clo{0,1}$ by \[f_Y\brac{y} = \int_0^1 f_{X,Y}\brac{x,y} dx = \int_0^y 2 dx = 2 y\] Hence $f_Y\brac{y} = 2 y \cdot 1_{\clo{0,1}}$. Integrating over $\Real$ yields $\int f_Y\brac{y}dy = \induc{y^2}_0^1 = 1$, which means that $f_Y$ is indeed a probability density function since it is obvious that it is non-negative.
+
+Having obtained the marginal densities of $X$ and $Y$ it is straightforward to compute their expectations and variances. Indeed the general $k^{\text{th}}$ moment of $X$ for $k\geq 0 $ is given by \begin{align*}
+E\brac{X^k} &= \int_0^1 x^k 2 (1-x) dx \\ &= 2 \induc{ \brac{ \frac{x^{k+1}}{k+1} - \frac{x^{k+2}}{k+2}}}_0^1 \\&= \frac{2}{k+1} - \frac{2}{k+2}\\\end{align*} and the $k^{\text{th}}$ moment of $Y$ is computed as \begin{align*}
+E\brac{Y^k} &= \int_0^1 y^k 2 y dy \\ &= 2 \induc{\frac{y^{k+2}}{k+2}}_0^1 \\&= \frac{2}{k+2}\end{align*} Therefore $E\brac{X} = \frac{2}{2} - \frac{2}{3} = \frac{1}{3}$ and $E\brac{Y} = \frac{2}{3}$. Since the general formula for the variance expressed through moments is $Var\brac{X} = E\brac{X^2} - \brac{E(X)}^2$, prior calculations enable us to get \begin{align*}Var\brac{X} &= \frac{2}{3} - \frac{2}{4} - \frac{1}{3}\frac{1}{3} = \frac{6-1}{9} - \frac{1}{2} = \frac{1}{18}\\
+Var\brac{Y} &= \frac{2}{4} - \frac{2}{3}\frac{2}{3} = \frac{9}{18} - \frac{4}{9} = \frac{1}{18}\end{align*}
+
+The conditional probability density of $X$ given $Y=y$ is defined for $y\in \ploc{0,1}$ by the following \[f_{\induc{X}Y}\brac{\induc{x}y} = \frac{f_{X,Y}\brac{x,y}}{f_Y\brac{y}} = \frac{2 \cdot 1_{\obj{0\leq x\leq y\leq 1}}}{ 2 y 1_{\obj{0 < y \leq 1}} } = \frac{1}{y} 1_{\obj{0\leq x \leq y,\,0<y}}\] Taking its integral over its domain yields \[\int_0^1 f_{\induc{X}Y}\brac{\induc{x}y} dx = \int_0^y \frac{1}{y} dy = \frac{y-0}{y} = 1\]
+
+Similarly the conditional probability density of $Y$ given $X=x$, with $x\in \clop{0,1}$, is defined as \[f_{\induc{Y}X}\brac{\induc{y}x} = \frac{2\cdot 1_{\obj{ 0\leq x\leq y\leq 1 }}}{2\brac{1-x} 1_{\obj{0\leq x<1}}} = \frac{1}{1-x} 1_{\obj{x\leq y\leq 1,\,x<1}}\] Its integral over $\clo{0,1}$ is given by \[\int_0^1 f_{\induc{Y}X}\brac{\induc{y}x} dy = \int_x^1 \frac{1}{1-x} dx = \frac{1-x}{1-x} = 1\]
+
+% section problem_4 (end)
+
+\end{document}
+

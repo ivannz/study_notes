@@ -1,0 +1,50 @@
+2014-12-16
+Attacker model
+	-- read, remember, alter
+	-- cannot learn the secret message, or cause protocol malfucntion
+
+Needham-Schroeder Key Exchange
+1 a->b: {A, nonce_a}_{Kb}			-- 
+2 b->a: {nonce_a, nonce_b}_{Ka}  	-- response verification (checks the message, sees A)
+3 a->b: {nonce_b}_{Kb} 			-- response verification
+Ka - public encription key of "a";
+Ka^{-1} -- private encription key "a";
+
+Man-in-the-Middle
+1 e intercepts and passes to b
+2 b sends back to e
+3 e passes the message to A
+4 a responds to e by {nonce_b}_{Ke}
+
+Solution:
+	-- indclude identification information in both responses
+
+
+
+Asokan-Shoup-Waidner protocol
+http://www.internetsociety.org/sites/default/files/schmat.pdf
+Agree:
+1 b->c: m1 = sign( B, ( c, H( r_B ) ) )
+1 c->B: sign( C, ( m1, H( r_C ) ) )
+1 b->c: r_B
+1 c->b: r_C
+Resolve/Abort
+
+Adversarial model:
+	-- Simple replay, block messages, statistical analysis
+	-- Timing attacks (side channel attacks)
+
+Detail:
+	-- Plaintext, ciphertext, keys
+	-- Encryption schemes, hashes:
+		-- "perfect" cryptography
+		-- Algebraic properties (RSA: Enc(m_1) * Enc(m_2) = Enc(m_1 * m_2); Enc(m, k) = m^k (mod N) )
+
+Dolev-Yao [1983] idelaization for protocol analysis
+	-- adversary is a non-deterministic process
+	-- capabilities: Block, Read, Decrypt if a key is known, Send messages
+	-- limitations: cannot gain partial knowledge, infer a part of the key, perform statistical test (!!)
+
+
+2014-12-18
+

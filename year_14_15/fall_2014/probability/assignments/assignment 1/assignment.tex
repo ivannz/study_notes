@@ -1,0 +1,174 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{fullpage}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+\newcommand{\obj}[1]{\left\{ #1 \right \}}
+\newcommand{\clo}[1]{\left [ #1 \right ]}
+\newcommand{\clop}[1]{\left [ #1 \right )}
+\newcommand{\ploc}[1]{\left ( #1 \right ]}
+
+\newcommand{\brac}[1]{\left ( #1 \right )}
+\newcommand{\crab}[1]{\left ] #1 \right [}
+\newcommand{\induc}[1]{\left . #1 \right \vert}
+\newcommand{\abs}[1]{\left | #1 \right |}
+\newcommand{\nrm}[1]{\left\| #1 \right \|}
+\newcommand{\brkt}[1]{\left\langle #1 \right\rangle}
+
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+
+\newcommand{\Rbar}{{\bar{\mathbb{R}}}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Zinf}{\clo{ 0, +\infty }}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Tcal}{\mathcal{T}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\Scal}{\mathcal{S}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Ecal}{\mathcal{E}}
+\newcommand{\Fcal}{\mathcal{F}}
+\newcommand{\borel}[1]{\mathcal{B}\brac{#1}}
+\newcommand{\pwr}[1]{\mathcal{P}\brac{#1}}
+\newcommand{\Dyns}[1]{\mathfrak{D}\brac{#1}}
+\newcommand{\Ring}[1]{\mathcal{R}\brac{#1}}
+\newcommand{\Supp}[1]{\operatorname{supp}\nolimits\brac{#1}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+\newcommand{\lpto}{\mathop{\overset{L^p}{\to}}\nolimits}
+
+\newcommand{\re}{\operatorname{Re}\nolimits}
+\newcommand{\im}{\operatorname{Im}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Assignment \#01}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}}
+
+\begin{document}
+\selectlanguage{english}
+\maketitle
+\noindent Assigmnent \#1 for the course ``Probability Theory and Mathematical Statistics'' led by Geoffrey G. Decrouez, 2014.
+
+\section{Problem 01} % (fold)
+\label{sec:problem_01}
+
+From hte statement of the problem it is clear that the sample space of this experiment is \[\Omega \defn \Ncal_6\times \Ncal_6\] where $\Ncal_6$ is the set $\obj{1,2,\ldots, 6}$. In each pair $\brac{a,b}\in \Omega$ the first element, $a$, of the tuple represents tha outcome of the first roll of the die, while the second, $b$, is the result of the second throw.
+
+The events $A$, $B$ and $C$ mentioned in the task in terms of the proposed sample space are described as follows \begin{align*}
+A&\defn \obj{\induc{\brac{i,j}\in\Omega}\,i\leq 4}\\
+B&\defn \obj{\induc{\brac{i,j}\in\Omega}\,i = j}\\
+C&\defn \obj{\induc{\brac{i,j}\in\Omega}\,\exists k\in \mathbb{Z},\, i = 2k}\end{align*}
+
+The pairwise intersections of the above sets are presented below:\begin{align*}
+	A\cap B & = \obj{\induc{\brac{i,j}\in\Omega}\,i\leq 4\,\text{and}\,i=j}\\
+	A\cap C & = \obj{\induc{\brac{i,j}\in\Omega}\,i = 2, 4}\\
+	B\cap C & = \obj{\induc{\brac{i,j}\in\Omega}\,i = 2,4,6\,\text{and}\,i=j}\\
+\end{align*}
+
+Since it is stated that the die is fair, it is reasonable to assume that all elementary outcomes in $\Omega$ are equiprobable. Therefore, for any event $A\subseteq \Omega$ the probability $\Pr\brac{A}\defn \sfrac{\#A}{\#\Omega}$. Hence\begin{align*}
+\Pr\brac{A} &= \frac{4\cdot 6}{6\cdot 6} = \frac{2}{3}\\
+\Pr\brac{B} &= \frac{6\cdot 1}{36} = \frac{1}{6}\\
+\Pr\brac{C} &= \frac{3\cdot 6}{36} = \frac{1}{2}\\
+\Pr\brac{A\cap B} &= \frac{4\cdot 1}{36} = \frac{1}{9}\\
+\Pr\brac{A\cap C} &= \frac{2\cdot 6}{36} = \frac{1}{3}\\
+\Pr\brac{B\cap C} &= \frac{3\cdot 1}{36} = \frac{1}{12}\\
+\end{align*} Events $X,Y\subseteq \Omega$ are independent with respect to $\Pr$ if and only if $\Pr\brac{A\cap B} = \Pr\brac{A}\cdot \Pr\brac{B}$. Simple arithmetic shows that $\Pr\brac{A\cap B} = \Pr\brac{A}\Pr\brac{B}$, $\Pr\brac{A\cap C} = \Pr\brac{A}\Pr\brac{C}$ and $\Pr\brac{B\cap C} = \Pr\brac{B}\Pr\brac{C}$ in this case.
+
+In the case of a loaded die, $A\cap C$ are not independent. Indeed \begin{align*}
+\Pr\brac{A} &= 4\cdot \frac{1}{7}\\
+\Pr\brac{C} &= 2\cdot \frac{1}{7} + \frac{2}{7}\\
+\Pr\brac{A\cap C} &= 2\cdot \frac{1}{7}\neq \frac{4}{7}\frac{4}{7} =  \Pr\brac{A}\Pr\brac{C}\\ \end{align*} 
+
+% section problem_01 (end)
+
+\section{Problem 02} % (fold)
+\label{sec:problem_02}
+
+Let's define the following events \begin{align*}
+\text{perp}&\defn \obj{\text{the suspect is the criminal}}\\
+\text{match}&\defn \obj{\text{there is DNA match with the suspect}}\\
+\end{align*}
+
+The statement of the task says, that $\Pr\brac{\text{perp}}=\frac{1}{30000}$ since there are 30000 possible perpetrators and the crime was committed by one person. Further the conditional probability of getting a DNA match with the suspect by accident (false positive rate) is
+$\Pr\brac{ \induc{ \text{match} }\,\overline{ \text{ perp } } } = 10^{-6}$. Finally, it can be assumed that the false negative rate is 0, as there was only one criminal, who left his blood spot. Thus $\Pr\brac{\induc{\text{match}}\,\text{\text{perp}}} = 1$.
+
+Using Bayes's rule \begin{align*}
+\Pr\brac{\induc{\text{perp}}\,\text{match}} &= \frac{\Pr\brac{\induc{\text{match}}\,\text{\text{perp}}}\cdot\Pr\brac{\text{perp}}}{\Pr\brac{\text{match}}}\\&=\frac{1\cdot\frac{1}{30000}}{1\cdot\frac{1}{30000} + 10^{-6}\cdot \brac{1-\frac{1}{30000}}}\\&= \frac{1000000}{1000000+29999}\\&=97.087\%
+\end{align*}
+
+Our test setup is as follows: the null hypothesis is that the suspect is innocent, so $H_0\defn \overline{\text{perp}}$, and the significance level of rejecting the null is set to 0.01\%. 
+
+Though the probability of a positive test purely by accident, given the DNA match, is $\Pr\brac{\induc{\text{perp}}\,\text{match}}=97.1\%$, the significance threshold is too high for our test to confidently reject the null hypothesis. Therefore we are not 99.9\% convinced that the real criminal would be sent to jail.
+
+% section problem_02 (end)
+
+\section{Problem 03} % (fold)
+\label{sec:problem_03}
+
+Suppose $X\sim \text{Bi}\brac{n, p}$. Then \begin{align*}
+\mathbb{E}\brac{\frac{1}{1+X}}&=\sum_{k=0}^n \frac{1}{k+1} C^k_n p^k\brac{1-p}^{n-k}\\&=\sum_{k=0}^n \frac{1}{k+1} C^k_n p^k\brac{1-p}^{n-k}\\&=\sum_{k=0}^n \frac{1}{k+1} \frac{n!}{k!\brac{n-k}!} p^k\brac{1-p}^{n-k}\\&=\sum_{k=0}^n \frac{1}{n+1} \frac{\brac{n+1}!}{\brac{k+1}!\brac{n+1-(k+1)}!} p^k\brac{1-p}^{n-k}\\&=\frac{1}{n+1}\sum_{k=0}^n C^{k+1}_{n+1} p^{(k+1)-1}\brac{1-p}^{n+1-(k+1)}\\&=\frac{1}{p\brac{n+1}}\sum_{k=1}^{n+1} C^k_{n+1} p^k\brac{1-p}^{n+1-k}\\&=\frac{1}{p\brac{n+1}}\brac{1 - \brac{1-p}^{n+1}}\\
+\end{align*}
+
+% section problem_03 (end)
+
+\section{Problem 04} % (fold)
+\label{sec:problem_04}
+
+Let $p\defn \Pr\brac{\obj{\text{the shot misses the target}}}$ and each shot be independent and identically distributed. Define $S$ as the number of shots at the target before the first miss (including the miss), - the first ``missing'' time. Then for any $n\geq1$ \begin{align*}
+\Pr\brac{S=n} &= \brac{1-p}^{n-1} p\\
+\Pr\brac{S > n} &= 1-\sum_{k=1}^n \Pr\brac{S=k}\\ &= 1-p \sum_{k=0}^{n-1} \brac{1-p}^k\\ &= 1 - p\frac{1-\brac{1-p}^n}{1-\brac{1-p}}\\&=\brac{1-p}^n
+\end{align*} In contrast the number of missed shots $M_n$ within the given series of $n$ shots is modelled by the Binomial distribution $\text{Bi}\brac{p,n}$ and for any $k=0,\ldots n$ \[\Pr\brac{M_n=k} = C^k_n \cdot p^k \brac{1-p}^{n-k}\]
+
+Therefore for $p=0.05$
+\begin{enumerate}
+\item $\Pr\brac{S=3} = \brac{1-p}^2 p = {0.95}^2 \cdot .05 = .045125$
+\item $\Pr\brac{S=n} = \brac{1-p}^{n-1} p = {0.95}^{n-1}  \cdot .05$
+\item $\Pr\brac{S>4} = \brac{1-p}^4 = {0.95}^4 = .8145062$
+\item $\Pr\brac{M_{12}=3} = C^3_{12} \brac{1-p}^9 p^3 = \frac{12\cdot11\cdot 10}{3\cdot2} \cdot {0.95}^9\cdot{0.05}^3 = 220 \cdot \frac{{19}^9}{{20}^{12}}=0.01733186$
+\item $\Pr\brac{M_{12}\geq1} = 1 - \Pr\brac{M_{12} = 0} = 1-{0.95}^{12} = 0.4596399$
+\item The probability that the third miss occurs no later than the twelfth shot nothing but the probability that there are no less that 3 misses during the twelve shot series. Therefore \begin{align*}\Pr\brac{M_{12}\leq3} &= 1 - \sum_{k=0}^2 C^k_{12} \brac{1-p}^{12-k} p^k \\&= 1 - {0.95}^{12} - 12 \cdot {0.95}^{11} \cdot {0.05} - 66 \cdot {0.95}^{10}\cdot{0.05}^2 \\&= 0.01956826\end{align*}
+\end{enumerate}
+
+% section problem_04 (end)
+
+\section{Problem 05} % (fold)
+\label{sec:problem_05}
+
+The probability that a computer requires an uplink at a given moment in time is $p\defn \frac{12}{60}$. Since each computer on the network initiates a request independently from others, the number of simultaneous connection requests from all ten machines at any moment can be modelled by a binomially distributed random variable with probability of ``success'' given by $p$.
+
+Let $R_n\sim \text{Bi}\brac{p, n}$ and consider the case of $n=10$.
+\begin{center}\begin{tabular}{ c | r || c | r }
+$k$ & $\Pr\brac{R_{10}=k}$ (\%) & $k$ & $\Pr\brac{R_{10}=k}$ (\%) \\ \hline\hline
+ 0 & 10.73741824 	&  6 & 00.55050240 \\ \hline
+ 1 & 26.84354560 	&  7 & 00.07864320 \\ \hline
+ 2 & 30.19898880 	&  8 & 00.00737280 \\ \hline
+ 3 & 20.13265920 	&  9 & 00.00040960 \\ \hline
+ 4 & 08.80803840 	& 10 & 00.00001024 \\ \hline
+ 5 & 02.64241152 	& -- & -- \\ \hline
+\end{tabular}\end{center}
+This table of probabilities clearly shows that the most likely number of simultaneous requests is \emph{two}.
+
+At any moment the event of overload is understood as the situation when the there are more session requests than there are lines available, because network line sharing is prohibited. Assuming that each computer has physical access to every network line, we are looking for $L\geq 1$ such that $\Pr\brac{R_n>L}\leq 0.01$, i.e. the probability of the number of simultaneous requests exceeding the number of lines available is not greater than 1\%. The cumulative probabilities are show in the next table.
+\begin{center}\begin{tabular}{ c | r || c | r }
+$k$ & $\Pr\brac{R_{10}\geq k}$ (\%) & $k$ & $\Pr\brac{R_{10}\geq k}$ (\%) \\ \hline\hline
+ 0 & 100. 			&  6 &  00.63693824 \\ \hline
+ 1 &  89.26258176 	&  7 &  00.08643584 \\ \hline
+ 2 &  62.41903616 	&  8 &  00.00779264 \\ \hline
+ 3 &  32.22004736 	&  9 &  00.00041984 \\ \hline
+ 4 &  12.08738816 	& 10 &  00.00001024 \\ \hline
+ 5 &  03.27934976 	& -- & -- \\ \hline
+\end{tabular}\end{center}
+Note that $\Pr\brac{R_n\geq k} = 1 - \sum_{m=0}^{k-1} \Pr\brac{R_n = m}$. Therefore the lest number of network lines, which brings the probability of an overload below the 1\% threshold is 5, since $\Pr\brac{R_{10}>5} = \Pr\brac{R_{10}\geq 6} = 0.637\% < 1\%$.
+
+% section problem_05 (end)
+
+\end{document}
+

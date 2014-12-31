@@ -1,0 +1,17 @@
+When a task has been completed, write a date of completion and change the minus to a plus. Report to Geoffrey when completed.
+
+ToDo (2014-12-01) :
+-	1. Read and summarize the following papers :
+-		• A non-parametric test for self-similarity and stationarity in network traffic, 2005 [Jones, Shen]
+-		• Estimating the Hurst index of a self-similar process via the crossing tree, 2004 [Jones, Shen]
+-		• Estimation of the multifractal spectrum using the crossing tree, 2013 [Decrouez, Amblard, Jones]
+
+ToDo (2014-12-20) :
+-	1. Study the matlab code provided by Geoffrey
+-	2. Enhance knowledge in SSSI processes
+-	3. Study thorem 1 in Jones, Rolls (2011)
+-	4. Papers to read and summarize :
+-		• A characterization of, and hypothesis test for, continuous local martingales, 2011 [Jones, Rolls]
+-		• Introduction to Multifractals, 1999 [Reidi]
+-		• MSU 2014 -- On the uses of the crossing tree for the construction and analysis of multifracta processes, 2014 [DeCrouez et al.]
+

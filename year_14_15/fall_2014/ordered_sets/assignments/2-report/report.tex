@@ -1,0 +1,231 @@
+\documentclass{beamer}
+\usepackage[utf8x]{inputenc}
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+\selectlanguage{russian}
+\mode<presentation>
+{
+  \usetheme{default}      % or try Darmstadt, Madrid, Warsaw, ...
+  \usecolortheme{default} % or try albatross, beaver, crane, ...
+  \usefonttheme{default}  % or try serif, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+} 
+
+%\usepackage{fullpage}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+\usepackage{lipsum}
+
+\newcommand{\obj}[1]{\left\{ #1 \right \}}
+\newcommand{\clo}[1]{\left [ #1 \right ]}
+\newcommand{\clop}[1]{\left [ #1 \right )}
+\newcommand{\ploc}[1]{\left ( #1 \right ]}
+
+\newcommand{\brac}[1]{\left ( #1 \right )}
+\newcommand{\crab}[1]{\left ] #1 \right [}
+\newcommand{\induc}[1]{\left . #1 \right \vert}
+\newcommand{\abs}[1]{\left | #1 \right |}
+\newcommand{\nrm}[1]{\left\| #1 \right \|}
+\newcommand{\brkt}[1]{\left\langle #1 \right\rangle}
+
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+\begin{document}
+\selectlanguage{russian}
+\title[Предпочтение при прочих равных в АФП]{Моделирование отношения предпочтения при прочих равных в Анализе Формальных Понятий\\[0.5cm] Modeling Ceteris Paribus Preferences in Formal Concept Analysis}
+\author{\eng{Sergei Obiedkov}}
+\institute{\eng{National Research University Higher School of Economics, Moscow, Russia}}
+\date{\eng{11th International Conference, ICFCA 2013, May 2013}}
+
+%% Title slide
+\frame{\titlepage}
+
+%% Table of Contents
+\begin{frame}
+  \frametitle{\rus{Содержание}}
+  \tableofcontents
+\end{frame}
+
+\selectlanguage{russian}
+\section{Введение} % (fold)
+\label{sec:introduction}
+
+\begin{frame}\selectlanguage{russian}\frametitle{Определения}
+  %% Описание основного оъекта исследования в статье
+  %%%% Формальный контекст
+  \begin{block}{Формальный контекст}
+    $\mathbb{K} \defn \brac{G, M, I}$, где $G$ -- объекты (сущности), $M$ -- атрибуты (свойства), $I \subseteq G\times M$ -- бинарное отношение принадлежности свойства сущности.
+  \end{block}
+  %%%% Операторы вывода
+  \begin{block}{Операторы вывода в $\mathbb{K}$}
+  $A\subseteq G$, $B\subseteq M$
+    \begin{align*}
+      A^\uparrow &\defn \obj{\induc{m\in M}\,\forall a\; a\in A \rightarrow (a,m)\in I }\\
+      B^\downarrow &\defn \obj{\induc{g\in G}\,\forall b\; b\in B \rightarrow (g,b)\in I }
+    \end{align*}
+  \end{block}
+\end{frame}
+
+\begin{frame}\selectlanguage{russian}\frametitle{Определения}
+  %%%% Контекст предпочтений
+  \begin{block}{Контекст предпочтений}
+    $\mathbb{P}\defn \brac{G, M, I, \leq}$, где $\brac{G, M, I}$ -- формальный контекст, $\leq$ -- отношение предпочтения на множестве объектов $G$
+  \end{block}
+  %%%% Отношение предпочтения на G
+  \begin{block}{Отношение предпочтения}
+    $\brac{G, \leq}$ -- предпорядок на множестве объектов, $\leq$ -- рефлексивно и транзитивное отношение.
+  \end{block}
+  %%%% Обычно предпочтения это линейный предпорядок
+\end{frame}
+
+\begin{frame}\selectlanguage{russian}\frametitle{Предпочтения наборов объектов}
+  %%%% Достаточно предпорядка $\brac{G, \leq}$
+  \begin{block}{Универсальное предпочтение}
+    Объекты $B\subseteq G$ универсально предпочитаются объектам $A\subseteq G$, $A\trianglelefteq_\forall B$, если\[ \forall a\in A\, \forall b\in B\, a\leq b\]
+  \end{block}
+  \begin{block}{Экзистенциальное предпочтение}
+    Объекты $B\subseteq G$ экзистенциально предпочитаются объектам $A\subseteq G$, $A\trianglelefteq_\exists B$, если\[ \forall a\in A\, \exists b\in B\, a\leq b\]
+  \end{block}
+%  \begin{block}
+%    может не быть рефлексивности: $A \not\trianglelefteq_\forall A$, если $A = \obj{x,y}$ и $x\not \leq y$
+%    для любого $A,B\subseteq M$ выполнено $A\trianglelefteq_\forall \emptyset$ и $\emptyset\trianglelefteq_\forall B$
+%    не антирефлексивно: $\obj{x} \trianglelefteq_\forall \obj{x}$
+%  \end{block}
+\end{frame}
+
+\begin{frame}\selectlanguage{russian}\frametitle{Предпочтения наборов свойств}
+  %%%% К предпорядку $\brac{G, \leq}$ необходим контекст \brac{G, M, I}
+  \begin{block}{Определение}
+
+    Свойства $B\subseteq M$ универсально предпочитаются набору $A\subseteq M$, $A\preceq_\forall B$, если $A^\downarrow \trianglelefteq_\forall B^\downarrow$.
+
+    Экзистенциальное предпочтение на наборах свойств определяются схожим образом: $A\preceq_\exists B$ $\Leftrightarrow$ $A^\downarrow \trianglelefteq_\exists B^\downarrow$
+  \end{block}
+
+  \begin{itemize}
+    \item Наборы атрибутов сравниваются по \emph{всем} объекты, которые ими обладают
+  \end{itemize}
+
+  \eng{Obiedkov S., (2012): Modeling Preferences over Attribute Sets in Formal Concept Analysis, ICFCA 2012, LNAI 7278, pp. 227-243, 2012}
+\end{frame}
+
+% section introduction (end)
+
+\section{Предпочтение при прочих равных} % (fold)
+\label{sec:ceteris_paribus}
+
+\begin{frame}\selectlanguage{russian}\frametitle{Предпочтение при некоторых прочих равных}
+%%%% Параметризованное предпочтение
+  Пусть $\mathbb{P}\defn \brac{G, M, I, \leq}$ -- контекст предпочтений,  $A,B,C\subseteq M$.
+  \begin{block}{Определение (2, стр. 190)}
+    Набор свойств $B$ предпочитается набору $A$ относительно атрибутов $C$ в контексте $\mathbb{P}$, $\mathbb{P} \models A\preceq_C B$, если для любых $a\in A^\downarrow$ и $b\in B^\downarrow$ выполнена импликация \[ a^\uparrow \cap C = b^\uparrow \cap C \rightarrow a \leq b\]
+  \end{block}
+  \begin{itemize}
+    \item Сравнение объектов, обладающих всеми свойствами, но имеющих ``схожие'' атрибуты
+    \item $A\preceq_\forall B$ эквивалентно $A\preceq_\emptyset B$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}\selectlanguage{russian}\frametitle{Предпочтение \eng{Ceteris Paribus}}
+  \begin{block}{Определение (7, стр. 196)}
+    Набор атрибутов $B$ предпочитается набору $A$ при прочих равных в контексте $\mathbb{P}$, $A\preceq B$, если $B$ предпочитается $A$ относительно атрибутов $M\setminus (A\cup B)$.
+  \end{block}
+  \begin{block}{Теорема 2 (стр. 197)}
+    В контексте $\mathbb{P}$ выполнено $A\preceq_C B$ тогда и только тогда, когда $\mathbb{P}\models A\cup D\preceq B\cup E$ для любых $D, E\subseteq M$ таких, что $D\cup C = B\cup C$ и $E\cup C = A\cup C$.
+  \end{block}
+%%%% Смысл этих вот объединений
+  \begin{itemize}
+    \item Достаточно рассматривать $D,E\subseteq M$ такие что $D\cup E\subseteq C$ (Следствие 1 (стр. 198))
+  \end{itemize}
+\end{frame}
+
+% section ceteris_paribus (end)
+
+\section{Выявление предпочтений} % (fold)
+\label{sec:preference_mining}
+
+\begin{frame}\selectlanguage{russian}\frametitle{Связь предпочтений при прочих равных и импликаций}
+  \begin{itemize}
+    \item Выявление таких предпочтений сводится к задаче поиска импликаций
+  \end{itemize}
+  \begin{block}{Определение (3, стр. 191)}
+    Преобразованием $\mathbb{P}$ называется контекст $\mathbb{K}^\mathbb{P}_\sim = \brac{ G\times G, M\times\obj{1,2,3}\cup \obj{\leq}, I_\sim}$ такой, что \begin{align*}
+      (g_1, g_2) I_\sim (m, 1) &\Leftrightarrow m\in g_1^\uparrow\\
+      (g_1, g_2) I_\sim (m, 2) &\Leftrightarrow m\in g_2^\uparrow\\
+      (g_1, g_2) I_\sim (m, 3) &\Leftrightarrow g_1^\uparrow \cap \obj{m} = g_2^\uparrow \cap \obj{m}\\
+      (g_1, g_2) I_\sim \leq &\Leftrightarrow g_1 \leq g_2
+    \end{align*}
+  \end{block}
+  %%%% Рассказать немного о смысле происходящего
+  %%%% связь с моделированием функциональных связей
+\end{frame}
+
+\begin{frame}\selectlanguage{russian}
+  %%%% Оговорить slight abuse of notation
+  \begin{block}{Определение (4, стр. 193)}
+    Переводом отношения предпочтения $A\preceq_C B$ из контекста $\mathbb{P}$ в контекст $\mathbb{K}^\mathbb{P}_\sim$, $T_\sim\brac{A\preceq_C B}$, называется импликация \[A\times \obj{1} \cup B\times \obj{2} \cup C\times \obj{3} \rightarrow \obj{\leq}\] в контексте $\mathbb{K}^\mathbb{P}_\sim$
+  \end{block}
+  %%%% Доказательство
+  \begin{block}{Утверждение (1, стр. 193)}
+    В контексте $\mathbb{P}$ справедливо предпочтение $A\preceq_C B$ тогда и только тогда, когда в контексте $\mathbb{K}^\mathbb{P}_\sim$ выполнена импликация $T_\sim\brac{A\preceq_C B}$.
+  \end{block}
+\end{frame}
+
+% section preference_mining (end)
+
+\section{Сложность выводимости предочтений } % (fold)
+\label{sec:complexity_issues}
+
+\begin{frame}\selectlanguage{russian}\frametitle{Выводимость предпочтений при прочих равных}
+  \begin{block}{Определение (5, стр. 193)}
+    Предпочтение $A\preceq_C B$ есть следствие набора предпочтений $\Pi$ если для любого контекста $\mathbb{P}$, для которого выполнено $\mathbb{P}\models \Pi$, справедливо $\mathbb{P}\models A\preceq_C B$.
+  \end{block}
+  \begin{block}{Задача 1 (стр. 194)}
+    Для заданного набора $\Pi$ предпочтений при прочих равных и предпочтения $A\preceq_C B$ над $M$, определить верно ли $\Pi \models A\preceq_C B$
+  \end{block}
+  \begin{block}{Утверждение 2 (стр. 194)}
+    Задача определения $\Pi \models \emptyset\preceq_\emptyset \emptyset$ принадлежит классу coNP сложных задач
+  \end{block}
+%% не может быть решён за полиномиальное время если P\neq NP
+\end{frame}
+
+
+\begin{frame}\selectlanguage{russian}
+  Утверждение 2 доказывается редукцией задачи к следующей coNP-полной проблеме
+  \begin{block}{Задача 3 (стр. 195)}
+    Для некоторой пропозиционной формулы $\phi$ в конъюнктивной нормальной форме решить, является ли он невыполнимой при любом значении входных переменных.
+  \end{block}
+  \begin{block}{Редкуция}
+    Пусть $M$ -- множество всех переменных $\phi$. В множество $\Pi_\emptyset$ входят следующие предпочтения:
+    \begin{itemize}
+      \item $\emptyset \preceq_{\obj{m}} \emptyset$ для каждого $m\in M$
+      \item $P \preceq_\emptyset N$ для каждого дизъюнкта в $\phi$, где $P$ -- переменные входящие в дизъюнкт без отрицания, $N$ -- с отрицанием.
+    \end{itemize}
+    Формула $\phi$ невыполнима тогда и только тогда, когда $\Pi_\emptyset\models \emptyset \preceq_\emptyset \emptyset$.
+  \end{block}
+\end{frame}
+
+\begin{frame}\selectlanguage{russian}
+  \begin{block}{Теорема 2 (стр. 196)}
+    Задача 1 является coNP-полной задачей 
+  \end{block}
+  Действительно
+  \begin{itemize}
+    \item задача 2 есть частный случай задачи 1
+    \item утверждение 2 устанавливает что задача 2 coNP сложная
+    \item для доказательства того, что $\Pi\not\models A\preceq_C B$, достаточно предъявить контекст $\mathbb{P}$, такой что $\mathbb{P}\models \Pi$, но $\mathbb{P}\not\models A\preceq_C B$. Проверка этих условий выполняется за полиномиальное время. При этом вполне достаточно предъявления подконтекста контекста $\mathbb{P}$ всего с двумя объектами, из-за которых не выполняется предпочтение.
+  \end{itemize}
+\end{frame}
+
+% section complexity_issues (end)
+
+\end{document}
+

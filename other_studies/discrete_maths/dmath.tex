@@ -1,0 +1,673 @@
+\documentclass[a4paper]{article}
+\usepackage{fullpage}
+%% Last edit date : 20140407
+\usepackage{graphicx, url}
+
+\title{Discrete Mathematics}
+\author{Nazarov Ivan}
+
+\usepackage{amsmath, amsfonts, xfrac}
+
+
+%% regex: \\left\s*\\\{\s*([^\{\}]*?)\s*\\right\s*\\\}
+%% furhter regex: \\left\s*\\\{\s*(.*?)\s*\\right\s*\\\}
+\newcommand{\obj}[1]{\left\{{#1}\right\}}
+\newcommand{\clo}[1]{\left [{#1}\right]}
+
+%% regex: \\left\s*\(\s*([^\(\)]*?)\s*\\right\s*\)
+\newcommand{\brac}[1]{{\left({#1}\right)}}
+
+% \newcommand{\abs}[1]{\lvert{#1}\rvert}
+\newcommand{\abs}[1]{\left | {#1}\right |}
+\newcommand{\nrm}[1]{\left\| #1 \right \|}
+
+\newcommand{\im}[1]{\ensuremath{\text{Im}\brac{ #1 }}}
+
+\begin{document}
+\maketitle
+\section{Some preliminary set theory} % (fold)
+\label{sec:some_preliminary_set_theory}
+Blah!
+
+\subsection{the set of all finite collections of natural numbers} % (fold)
+\label{sub:the_set_of_all_finite_collections_of_natural_numbers}
+Show that the set of all finite collections of natural numbers is at most countable.
+
+Let's show that the set $\mathbb{N}^2$ is countable, where $\mathbb{N}$ is the set of all natural numbers including the zero. Before proceeding to a definition of a map between $\mathbb{N}^2$ and $\mathbb{N}$, define the $k^\text{th}$ diagonal of $\mathbb{N}^2$ as the set $\mathfrak{D}_k = \obj{(n;m) \in \mathbb{N}\times\mathbb{N} \vert n+m=k}$, where $k\geq 0$. Now let $h(k)$ be the number of element of all diagonals \emph{before, but not including} the $k^\text{th}$:\[h(k) = \sum_{j=0}^{k-1} \abs{\mathfrak{D}_j} = \sum_{j=0}^{k-1} \brac{j+1} = \sum_{j=1}^k j\] where summation over an empty set is always yields zero.
+Firstly, note that for any $k\geq 0$ the following chain of inequalities holds \[h(k+1) = h(k)+\brac{k+1} > h(k)+k \geq h(k)\]
+Secondly, $h(0)\leq N\leq h(N)$ for every $N\geq 0$ and so the set of all $k\geq 0$ such that $h(k)\leq N$ is bounded from above by $N$ and therefore finite and non-empty. Thus there must be the maximal $k\geq 0$ such that $h(k)\leq N < h(k+1)$.
+
+Now define $\phi_2:\mathbb{N}^2\to \mathbb{N}$ as $\phi_2\brac{(n;m)} = h(m+n)+m$. Let's show that this map is injective. Let $\omega_1, \omega_2\in\mathbb{N}^2$ be such that $\phi_2(\omega_1) = \phi_2(\omega_2)$, where $\omega = (n;m)$. Suppose $k_1 = n_1+m_1 < n_2+m_2 = k_2$, which implies that $h(k_1)+k_1<h(k_2)$. Since $\phi_2(\omega_2) - \phi_2(\omega_1) = 0$, it therefore must be that $m_1 = h(k_2)-h(k_1)+m_2 > k_1+m_2 \geq k_1$, because $m_2\geq 0$. However, by definition $k_1\geq m_1$, and therefore the initial assumption implies that $k_1\geq m_1 > k_1$, which is a contradiction. Since an identical argument demonstrates that $k_2 < k_1$ is impossible either, both $k_1$ and $k_2$ must be equal, which subsequently implies that $h(k_1) = h(k_2)$. Consequently, $m_1 = m_2$ and therefore $n_1 = k_1-m_1 = k_2-m_2 = n_2$.Therefore $\phi_2(\omega_1) = \phi_2(\omega_2)$ implies $\omega_1 = \omega_2$, and $\phi_2$ is an injective map.
+
+The surjectivity of $\phi_2$ can be demonstrated by the following argument. For any $N\geq 0$ there is such $K\geq 0$, that $h(K)\leq N < h(K+1)$ and, consequently, $0\leq N-h(K)<h(K+1)-h(K)$. In addition, $h(K+1)-h(K) = K+1$, and so $0\leq N-h(K)\leq K$. This allows one to define a legitimate element of $\mathbb{N}^2$, a pair $(K-M;M)$ with $M = N - h(K)$, which is mapped by $\phi_2$ to $N$. Indeed \[\phi_2\brac{(K-M;M)} = h(K - M + M) + M = h(K) + N - h(K) = N\] whence follows the surjectivity of $\phi_2$.
+
+The prior argumentation clearly demonstrates that there is a one-to-one map between $\mathbb{N}\times \mathbb{N}$ and $\mathbb{N}$, and as a consequence that $\mathbb{N}^2$ is countable.
+
+Now suppose that for some $k\geq 1$ there is a bijective map $\phi_k:\mathbb{N}^k\to\mathbb{N}$. Consider the set $\mathbb{N}^{k+1}$ and a map $\phi_{k+1}$ on it, projecting into $\mathbb{N}$, defined as \[\phi_{k+1}(\brac{n_j}_{j=1}^{k+1}) = \phi_2(\phi_k(\brac{n_j}_{j=1}^k);n_{k+1})\] Let $\brac{n_j}_{j=1}^{k+1}$ and $\brac{m_j}_{j=1}^{k+1}$ be some elements of $\mathbb{N}^{k+1}$ such that $\phi_{k+1}(\brac{n_j}_{j=1}^{k+1}) = \phi_{k+1}(\brac{m_j}_{j=1}^{k+1})$. Then the fact that $\phi_2$ is injective implies that $n_{k+1} = m_{k+1}$ and $\phi_k(\brac{n_j}_{j=1}^k)=\phi_k(\brac{m_j}_{j=1}^k)$, which subsequently leads to $\brac{n_j}_{j=1}^k=\brac{m_j}_{j=1}^k$ as $\phi_k$ is injective as well. Therefore the newly defined map is injective. Now pick any $N\in \mathbb{N}$. Since $\phi_2$ is surjective there is a pair $(K-N_{k+1};N_{k+1})$ that is mapped by this map back to $N$. However, by assumption the map $\phi_k$ is surjective as well, whence there exists $\brac{N_j}_{j=1}^k\in \mathbb{N}^k$, such that $\phi_k(\brac{n_j}_{j=1}^k) = K-N_{k+1}$. Collecting these observation yields existence of $\brac{N_j}_{j=1}^{k+1}$ that $\phi_{k+1}$ maps back to $N$. Consequently, thus defined $\phi_{k+1}$ is surjective, and therefore $\phi_{k+1}$ is a bijection between $\mathbb{N}^{k+1}$ and $\mathbb{N}$, thereby proving the inductive step.
+Consequently, for any $k\geq 1$ the set $\mathbb{N}^k$ can be identified with the set of natural numbers, and thus is countable.
+
+There is a way to show this without the inductive construction. One should employ the Cantor-Bernstein theorem, which states that whenever there are an injective maps $A\to B$ and $B\to A$, then there is a bijective map between these sets.\footnote{Though this theorem is very interesting and its proof is quite ``simple'' it will be proven later in the document.}
+As for the first map, note that there is a trivial injection from $\mathbb{N}$ into $\mathbb{N}^k$: the map $g$ defined as $g(n)=\omega$, where $\omega_m = 0$ for $m<k$ and $\omega_k = n$ and $\omega\in\mathbb{N}^k$.
+Second is the map $f:\mathbb{N}^2\to \mathbb{N}$ simply defined as $f(\omega) = \prod_{i=1}^k p_i^{\omega_i}$, where $\brac{p_i}_{i=1}^k$ is a finite collection of distinct primes. This map is injective due to the clever observation, that whenever $f(\theta) = f(\omega)$, \emph{the uniqueness of prime factorization} implies that $\theta_i=\omega_i$ for all $0 \leq i \leq k$.
+Consequently, by the Cantor-Bernstein theorem, the existence of ``backward'' and ``forward'' injective maps implies that there is a one-to-one map identifying $\mathbb{N}$ with $\mathbb{N}^k$ for any $k\geq 1$.
+
+Now consider the set $\mathbb{N}^* = \bigcup_{k=1}^\infty \mathbb{N}^k$ -- the set of all finite-length collections (sequences) of natural numbers. For any $\omega \in\mathbb{N}^*$ there is only one $k_\omega \geq 1$ such that $\omega \in \mathbb{N}^{k_\omega}$, which is subsequently mapped to $\mathbb{N}$ by the map $\phi_{k_\omega}$. Thus defined $k_\omega$ is unique, since $\mathbb{N}^k$ are pairwise disjoint. Let's define a map $\psi:\mathbb{N}^*\to \mathbb{N}$ as follows: \[\psi(\omega) = \phi_2(k_\omega;\phi_{k_\omega}(\omega))\] Since $k_\omega$ is unique, this map is well-defined. Suppose there are $\omega_1$ and $\omega_2$ such that $\psi(\omega_1)=\psi(\omega_2)$. By the injectivity of $\phi_2$ it must be that $k_{\omega_1}=k_{\omega_2}$ and $\phi_{k_{\omega_1}}(\omega_1)=\phi_{k_{\omega_2}}(\omega_2)$. Furthermore, since $\phi_{k_{\omega_1}}=\phi_{k_{\omega_2}}$ and $\phi_k$ is injective, it must be true that $\omega_1 = \omega_2$, ultimately implying that $\psi$ is an injective map. Now for any $N\in \mathbb{N}$ the surjectivity of $\phi_k$ for all $k\geq 1$ implies that there is $(K;M)$ and $\omega$ such that $N=\phi_2(K;M)$ and $M=\phi_K(\omega)$. Hence the map $\psi$ is surjective, which subsequently allows one to conclude, that $\psi$ is one-to-one and that $\mathbb{N}^*$ is countable.
+
+However the set $\mathbb{N}^\mathbb{N}$ -- the set of all infinite sequences of natural numbers $\obj{\omega:\mathbb{N}\to\mathbb{N}}$ is not countable.\footnote{A sequence can be regarded as a map from the set of its indices to the set of its values.} Suppose to the contrary, that there is a bijective map $\phi:\mathbb{N}\to \mathbb{N}^\mathbb{N}$. Consider a sequence constructed in the following manner: let $\omega_m = 0$ if $\phi(m)_m>0$ and $\omega_m = 1$ if $\phi(m)_m=0$, where $\phi(m)_m = \phi(m)(m)$ the $m^\text{th}$ value of the $m^\text{th}$ infinite sequence as enumerated by $\phi$. Now $\omega\in \mathbb{N}^\mathbb{N}$ but is such, that $\omega\neq \phi(m)$ for any $m\in \mathbb{N}$ (it differs in at least one value: $\omega_m\neq \phi(m)_m$). Therefore $\phi$ cannot be surjective, as an element $\omega$ has been presented, which has no pre-image by this map. Consequently, $\mathbb{N}^\mathbb{N}$ cannot be countable.
+
+% subsection the_set_of_all_finite_collections_of_natural_numbers (end)
+
+
+\subsection{the set of all finite order polynomials} % (fold)
+\label{sub:the_set_of_all_finite_order_polynomials}
+Show that the set of all finite order polynomials with rational coefficients is at most countable.
+
+Let $Q_n$ be the set of all polynomials of order $n$ with rational coefficients \[\obj{ \sum_{k=0}^n q_k x^k \vert q_k \in \mathbb{Q},\;q_n \neq 0 }\]. The task is to show that the set $\bigcup_{n=0}^\infty Q_n$ is countable. To do this one has to show that the set $\mathbb{Q}^n$ is countable for all $n\geq 1$.
+
+Let's start from afar. The set of integers $\mathbb{Z}$ is countable and there are at least two different ways of showing this. The first way is direct. Let $f:\mathbb{N}\to \mathbb{Z}$ be defined as $f(n) = (-1)^n \lfloor \frac{n+1}{2}\rfloor$ for $n\geq 1$ and $f(n) = 0$ for $n=0$.
+Firstly, this map is surjective, because for any $N\in\mathbb{N}$, setting $n=0$ if $N=0$, $n=2N$ if $N>0$ or $n=2|N|-1$ otherwise, makes such $n$ be mapped by $f$ back to $N$. Indeed, $f(2N) = (-1)^{2N} \lfloor N+\frac{1}{2}\rfloor = N$, $f(2|N|-1) = (-1)^{2|N|-1} \lfloor \frac{|N|-1+1}{2}\rfloor = -|N|$ and $f(0) = 0 = N$.
+Secondly, $f$ is injective. Pick any $n_1, n_2\in \mathbb{N}$ with $f(n_1)=f(n_2)$. It is impossible for one to be even, and the other to be odd, since $\lfloor \frac{n_1+1}{2}\rfloor, \lfloor \frac{n_2+1}{2}\rfloor \geq 0$ and $(-1)^{n_1} \neq (-1)^{n_2}$. Hence either both are even, or both are odd, implying that $f(n_1)$ and $f(n_2)$ are of the same sign. Suppose $n_1 = 2k_1$ and $n_2 = 2k_2$, then $\lfloor \frac{n_i+1}{2}\rfloor = \lfloor k_i+\frac{1}{2}\rfloor = k_i$, which together with $f(n_1)=f(n_2)$ implies that $k_1=k_2$, whence $n_1=n_2$. Similarly, if $n_1 = 2k_1+1$ and $n_2 = 2k_2+1$, then $\lfloor \frac{n_i+1}{2}\rfloor = \lfloor k_i+1\rfloor = k_i+1$. Consequently $f(n_1)=f(n_2)$ again implies that $k_1=k_2$ and therefore $n_1 = n_2$ whenever $f(n_1)=f(n_2)$. Thus, since a bijection between $\mathbb{N}$ and $\mathbb{Z}$ has been presented, these sets must be of equal size.
+
+Another way is to show this is to note that there is a trivial injective map from $\mathbb{N}$ into $\mathbb{Z}$, namely the identity map $id(n)=n$, and an injective map $f:\mathbb{Z}\to \mathbb{N}^2$ simply defined as $f(n) = (sgn(n);|n|)$, where $sgn(n)$ is the sign of the integer $n$. Indeed, the latter map is injective, because $(sgn(n);|n|) = (sgn(m);|m|)$ implies that $n$ and $m$ are of the same sign and are equal in their unsigned values, which is collectively equivalent to $n=m$. Furthermore, since there is an injective map $\phi_2$ from $\mathbb{N}^2$ into $\mathbb{N}$ and the composition of injective maps is itself injective, the map $\phi_2\circ f$ is an injective map from $\mathbb{Z}$ into $\mathbb{N}$. Therefore by the Cantor-Bernstein theorem there exists a bijective map $\zeta:\mathbb{Z}\to \mathbb{N}$, whence $\mathbb{Z}$ is countable.
+
+% subsection the_set_of_all_finite_order_polynomials (end)
+
+
+\subsection{Maps} % (fold)
+\label{sub:maps}
+In the beginning, let's recall what kind of an object a map is. A map $f:A\to B$ is defined as a set of ordered pairs such that the following conditions are satisfied:
+\begin{enumerate}
+	\item If $\brac{a, b}\in f$, then $a\in A$ and $b\in B$.
+	\item For any $a\in A$ there is such $b\in B$, that $\brac{a, b}\in f$.
+	\item Whenever $\brac{a, b_1}$ and $\brac{a, b_2}$ are in $f$, then $b_1=b_2$.
+\end{enumerate}
+The notion of vacuous truth is that the statement $\forall{x\in \emptyset},P(x)$ is always true. Indeed for it to be false, there must be an $\omega\in \emptyset$ such that $P(\omega)$ is false. Recall that no element in the universe is a member of the empty set, which by definition has no elements. Thus since there is no $x\in \emptyset$ in the universe, no $x$ can violate the statement, and hence the original statement is true. Therefore its negation, $\exists{x\in \emptyset},\not{P(x)}$, is false. Furthermore this statement holds for any $P(x)$, even for the identically false contradictions.
+
+Now the statement $P(x)$ implies $Q(x)$ is just a shorter way of stating $\neg\brac{P(x) \land \neg Q(x)}$, i.e. that there are no $x$ with $P(x)$ and $\neg Q(x)$ both true. If $P(x)$ is trivially false, then $\forall{x},\neg P(x)$ and consequently $\forall{x},\neg \brac{P(x) \land \neg Q(x)}$.
+
+Now suppose $A=\emptyset$, $B$ is some set, possibly empty, and there is a map $f:A\to B$. Then to be non-contradictory, $f$ must be an \emph{empty map} because there can be no pair $\brac{a, \cdot}$ with $a\in A$ when $A=\emptyset$. This implies that the first condition for an empty map $f$ should be satisfied vacuously, as there is no pair to disprove it. The same holds for the second condition, since there can be no element $a\in \emptyset$ to violate it. The third property also holds by vacuity, simply because there is nothing in $f$. Therefore for any set $B$, there is a map $\phi:\emptyset\to B$ defined as $\phi=\emptyset$. Such map is called \emph{the empty map}, since it is unique and the only possible map under the circumstances. On the other hand if $B$ is empty, while $A\neq \emptyset$, then no map, even the empty one, can satisfy the second requirement, since there are simply no elements to map to.
+
+%% Provide the following definitions
+%injective maps: into
+%surjective maps: onto
+%bijections
+%the inverse
+
+
+\subsubsection{Properties of maps} % (fold)
+\label{ssub:properties_of_maps}
+At this point, it is reasonable to divert briefly form the main narrative to review the basic properties of maps with respect to set operations.
+
+Let $f:\Omega\to \Sigma$ be a map.
+For any $W\subseteq \Omega$ define the (direct) image of $W$ by $f$ as \[f(W)= \obj{f(\omega)\vert\, \omega\in W}\]
+Let the inverse image, or the pre-image, of $S\subseteq \Sigma$ by $f$ be defined as \[f^{-1}=\obj{\omega\in \Omega,\,\text{s.t}\,f(\omega)\in S}\]
+In the following $f:\Omega\to\Sigma$ is an arbitrary map, $A,B$ are subsets of $\Omega$ and $F, H$ are subsets of $\Sigma$.
+
+Direct image preserves arbitrary unions. To sees this, note that on the one hand, for any $y\in f(A\cup B)$ by the definition of the direct-image there necessarily is $\omega\in A\cup B$, such that $y=f(\omega)$. Therefore either $\omega\in A$ or $\omega\in B$, whence $y=f(\omega)\in f(A)\cup f(B)$. On the other hand, if $y\in f(A)\cup f(B)$ then there must be at least one element $\omega$ either in $A$ or $B$, such that $y=f(\omega)$, and consequently $y\in f(A\cup B)$. So in such setting it is always true, that \[f(A\cup B) = f(A)\cup f(B)\]
+
+However direct images of arbitrary maps do not preserve other basic set operations. The definition implies, that for any $y\in f(A\cap B)$ there exists such $\omega\in A\cap B$ that $y=f(\omega)$, from where it follows that $y\in f(A)$ and simultaneously $y\in f(B)$.
+However, the reverse inclusion is not true in general. For some $f$ and some particular $y\in f(A)\cap f(B)$ it is possible that there is $\omega_1\in A$ and $\omega_2\in B$ with $\omega_1\neq\omega_2$, such that $y=f(\omega_1)=f(\omega_2)$, although $y=f(\omega')$ for no $\omega'\in A\cap B$. For example, the map $f=x^2:\mathbb{R}\to\mathbb{R}$ is such that $f((-\infty;0))\cap f((0;+\infty))\neq \emptyset$ yet $f((-\infty;0)\cap (0;+\infty))$ is empty. Consequently, for an arbitrary map \[f(A\cap B) \subseteq f(A)\cap f(B)\]
+
+As for the set difference for any $y\in f(B)\setminus f(A)$, there is $\omega \in B$ with $y=f(\omega)$, yet $y=f(\omega')$ for no $\omega'\in A$, since otherwise such $y$ would not have existed in the first place. In particular $\omega\notin A$ and therefore $\omega\in B\setminus A$. Consequently $y=f(\omega)\in f(B\setminus A)$ and \[f(B)\setminus f(A) \subseteq f(B\setminus A)\]
+However it is not true in general that $f(B\setminus A)\subseteq f(B)\setminus f(A)$. Indeed for some $f$ and some $y\in f(B\setminus A)$ it is conceivable that there might exist $\omega_1\in B$, $\omega_1\notin A$ and $\omega_2\in A$ such that $y=f(\omega_1)=f(\omega_2)$. Thus $y\in f(B)$ and $y\in f(A)$, implying that $y\notin f(B)\setminus f(A)$.
+
+If $f$ is assumed to be injective, then $y\in f(A)\cap f(B)$ implies that there are $\omega_1\in A$ and $\omega_2\in B$ with $f(\omega_1)=f(\omega_2)$. However, the injectivity implies that $\omega_1=\omega_2=\omega$, whence $\omega\in A\cap B$ and $y=f(\omega)\in f(A\cap B)$. Consequently $f(A\cap B) = f(A)\cap f(B)$.
+Furthermore for $y\in f(B\setminus A)$ there exists $\omega\in B$, $\omega\notin A$ such that $y=f(\omega)$. Suppose to the contrary, that there is another $\omega'\in A$ with $y=f(\omega')$. Then injectivity of $f$ implies that $\omega=\omega'$, whence $\omega\notin A$ and $\omega\in A$, which is a contradiction. Therefore $y=f(\omega')$ for no $\omega'\in A$, and so $y\notin f(A)$ while $y\in f(B)$. Consequently $f(B\setminus A)\subseteq f(B)\setminus f(A)$.
+
+Now consider the inverse image by $f$, which, in contrast to the direct image, preserves the set operations regardless of the map.
+
+If $\omega\in f^{-1}(F\cap H)$, then $f(\omega)\in F\cap H$. Thus for such $\omega$ it is true that $f(\omega)\in F$ and $f(\omega)\in H$, and consequently $\omega\in f^{-1}(F)\cap f^{-1}(H)$. Conversely, for $\omega\in f^{-1}(F)\cap f^{-1}(H)$ it is true that $f(\omega)$ is in both $F$ and $H$, and hence $\omega\in f^{-1}(F\cap H)$. Therefore \[f^{-1}(F\cap H) = f^{-1}(F)\cap f^{-1}(H)\]
+
+If $\omega\in f^{-1}(F)\cup f^{-1}(H)$, then either $f(\omega)\in F$ or $f(\omega)\in H$, but nevertheless $\omega\in f^{-1}(F\cup H)$. Conversely, from $\omega\in f^{-1}(F\cup H)$ it follows that $f(\omega)\in F$ or $f(\omega)\in H$ and subsequently $\omega\in f^{-1}(F)\cup f^{-1}(H)$:\[f^{-1}(F\cup H) = f^{-1}(F)\cup f^{-1}(H)\]
+
+Finally, if $\omega\in f^{-1}(H\setminus F)$ then $f(\omega)\in H$ and $f(\omega)\notin F$. Thus $\omega\in f^{-1}(H)$, and $\omega$ cannot be in $f^{-1}(F)$, and consequently $\omega\in f^{-1}(H)\setminus f^{-1}(F)$. Conversely, consider $\omega\in f^{-1}(H)\setminus f^{-1}(F)$, from where it follows that $\omega\in f^{-1}(H)$, but $\omega\notin f^{-1}(F)$. Therefore $f(\omega)\in H$ and $f(\omega)\notin F$, for otherwise $\omega$ would have been in the set $f^{-1}(H)$, implying that $f(\omega)\in H\setminus F$, and that $\omega\in f^{-1}(H\setminus F)$. Consequently \[f^{-1}(H\setminus F) = f^{-1}(H)\setminus f^{-1}(F)\]
+
+Let's consider the composition of the direct and inverse images by $f$. Let $A\subseteq \Omega$. If $\omega f^{-1}(f(A))$ then it is such that $f(\omega)\in f(A)$ whence there exists $\omega'\in A$, such that $f(\omega)=f(\omega')$. For an injective map $f$ this would imply that $\omega'=\omega$ and $\omega\in A$, however in general it is not the case. On the other hand, if $\omega\in A$, then $f(\omega)\in f(A)$ and by definition of the inverse image $\omega\in f^{-1}(f(A))$. Therefore for an arbitrary map \[A\subseteq f^{-1}(f(A))\] while for an injective map the left-hand and the right-hand sets are equal.
+
+If $y\in f(f^{-1}(H))$ for some $H\subseteq \Sigma$, then there must be $\omega\in f^{-1}(H)$ such that $y=f(\omega)$. However $\omega\in f^{-1}(H)$ implies that $f(\omega)\in H$ and so $y\in H$. On the other hand if $y\in H$, then in general there is no guarantee that there is $\omega\in f^{-1}(H)$ with $y=f(\omega)$, unless $f$ is surjective or $H\subseteq f(\Omega)$. Hence for an arbitrary map \[f(f^{-1}(H))\subseteq H\] and for a surjective map the sets are equal.
+
+% subsubsection properties_of_maps (end)
+
+% subsection maps (end)
+
+
+\subsection{Cardinality arithmetic} % (fold)
+\label{sub:cardinality_arithmetic}
+
+Define what $|A|$ is and what is meant by $|A|\leq |B|$.
+
+%% Prove that $|A|<|\mathcal{P}\brac{A}|$
+Let $A$ be some arbitrary set finite or infinite. First, consider the degenerate case of $A=\emptyset$. In this case, the only subset it has is the empty set itself, since every set, by vacuity, contains the empty set: $\mathcal{P}\brac{A}=\obj{\emptyset}$. Therefore, though there is a map $A\to \mathcal{P}\brac{A}$, namely the empty map $\emptyset$, there can never be a map $\mathcal{P}\brac{A}\to A$. Hence there cannot possibly exist a bijective map between these sets, because otherwise it would imply the existence of a map from a non-empty domain to an empty co-domain (the inverse map due to bijectivity).
+
+The case of a non-empty $A$ is much more interesting. Suppose there is a map $g:A\to \mathcal{P}\brac{A}$ which is also a bijection. Consider the set $R=\obj{\omega\in A\vert \omega\notin g(\omega)}$, which as subset of $A$, whence clearly $R\in \mathcal{P}\brac{A}$. However every bijective map is surjective, which in this case implies that there must be $x\in A$ such that $g(x)=R$. There are two alternatives either $x\in R$ or $x\notin R$.
+In the first case, $x\in R$ implies that $x$ is such that $x\notin g(x)$, whence $x\notin R$ by fact that $g(x)=R$ for such $x\in A$.
+In the second case $x\notin R$, which by the very definition of this particular subset implies that $x$ is among those elements of $A$ which are contained within their image by $g$, i.e. $x\in g(x)$. Consequently, $x\in R$, since by surjectivity $x$ is such that $g(x)=R$.
+So the argument has arrived at two mutually contradictory statements reasoning logically from the claimed existence of such $x\in A$ that $g(x)=R$. Therefore the assumption of surjectivity and thus bijectivity of $g$ is contradictory. Therefore there can never be a bijective map from a set to its power set.
+
+Nevertheless the map $f:A\to \mathcal{P}\brac{A}$, turning an element of $A$ into a singleton subset, defined as $x(\omega)=\obj{\omega}$ is, obviously, injective. Therefore for any set $A$ the power set $\mathcal{P}\brac{A}$ has strictly larger cardinality.
+
+Prove that whenever $|A|=|B|$, $|\mathcal{P}\brac{A}|=|\mathcal{P}\brac{B}|$.
+
+Define the cardinal multiplication $|A\times B| = |A|\cdot |B|$.
+%% Prove the associative property $\brac{|A| \cdot |B|}\cdot |C| = |A| \cdot \brac{|B|\cdot |C|}$.
+Let $\xi_1:\brac{A\times B}\times C \to A\times B\times C$ be defined as $\xi_1(\brac{\brac{a,b},c}) = \brac{a,b,c}$, where $\brac{\brac{a,b},c} \in \brac{A\times B}\times C$. Then $\xi_1$ is obviously bijective. Indeed, $\xi_1(\brac{\brac{a,b},c})=\xi_1(\brac{\brac{a',b'},c'})$ implies that $\brac{a,b,c}=\brac{a',b',c'}$ from which follows that $\brac{a,b}=\brac{a',b'}$ and $c=c'$. Furthermore for any $\brac{a,b,c} \in A\times B\times C$, the element $\omega = \brac{\brac{a,b},c}$ of $\brac{A\times b}\times C$ is such that $\xi_1(\omega)=\brac{a,b,c}$. In an absolutely similar fashion it is shown that there exists a bijection $\xi_2$ between $A\times \brac{B\times C}$ and $A\times B\times C$. Therefore \[|\brac{A\times B}\times C| = |A\times B\times C| = |A\times \brac{B\times C}|\] From the definition of the cardinal multiplication follows the following chain of equalities:\[\brac{|A|\cdot |B|}\cdot |C| = \brac{|A\times B|} \cdot |C| = |\brac{A\times B}\times C| = |A\times \brac{B\times C}| = |A|\cdot \brac{|B\times C|} = |A|\cdot \brac{|B|\cdot |C|}\] ultimately demonstrating that the cardinal multiplication is associative.
+
+%% Prove the commutative property of the cardinal multiplication $|A\times B| = |B\times A|$.
+Let $\xi: A\times B\to B\times A$ be defined as $\xi(\brac{a,b})=\brac{b,a}$. First, $\brac{b,a}\in B\times A$ for any $\brac{a,b}\in A\times B$. Next, if $\brac{a,b}, \brac{a',b'}\in A\times B$ are such that $\xi(\brac{a,b})=\xi(\brac{a',b'})$ then $\brac{b,a}=\brac{b',a'}$, which implies that $a=a'$ and $b=b'$.
+Finally, for any $\brac{b,a}\in B\times A$, $\brac{a,b}\in A\times B$ is such that $\xi(\brac{a,b})=\brac{b,a}$. Therefore $\xi$ is a bijective map between $A\times B$ and $B\times A$, whence $|A\times B| = |B\times A|$. And therefore cardinal multiplication is commutative.
+
+Define the cardinal addition $|A|+|B|=|A\times \obj{0}\cup B\times \obj{1}|$.
+Show that the cardinal addition is associative $\brac{|A|+|B|}+|C| = |A|+\brac{|B|+|C|}$.
+Consider $\omega\in \brac{A\times \obj{0}\cup B\times \obj{1}}\times \obj{0}\cup C\times \obj{1}\times \obj{1}$. Then
+Let $\xi_1(\omega)$ 
+
+Show that the cardinal addition is commutative $|A|+|B| = |B|+|A|$.
+Prove that the cardinal multiplication is distributive over the cardinal addition $|A|\cdot \brac{|B|+|C|} = |A|\cdot |B|+|A|\cdot |C|$
+
+Define the cardinal exponentiation $|A^B| = {|A|}^{|B|}$.
+Show the general exponentiation rule ${|A|}^{|B|}\cdot {|A|}^{|C|} = {|A|}^\brac{|B|+|C|}$.
+
+%% Prove another exponentiation rule: if $\brac{{|A|}^{|B|}}^{|C|} = {|A|}^{|C|\cdot |B|}$.
+Consider the set $\brac{A^B}^C$, which is a set of maps parametrized by the elements of $C$: if $\phi\in \brac{A^B}^C$ then for all $c\in C$ $\phi(c)$ is a map $B\to A$. Let $\xi(\phi):C\times B\to A$ be defined for all $\brac{c, b}\in C\times B$ as $\xi(\phi)(\brac{c,b}) = \phi(c)(b)$. Then $\xi$ is a map from $\brac{A^B}^C$ into $A^\brac{B\times C}$.
+If $\phi_1\neq \phi_2$, then there exists $c'\in C$ such that $\phi_1(c')\neq \phi_2(c')$, further implying that $\exists b\in B$ with $\phi_1(c')(b')\neq \phi_2(c')(b')$. Then there exists a pair $\omega = \brac{c',b'}\in C\times B$ such that $\xi(\phi_1)(\omega)=\phi_1(c')(b')\neq \phi_2(c')(b')=\xi(\phi_2)(\omega)$. Hence $\xi(\phi_1)\neq \xi(\phi_2)$ whenever $\phi_1\neq \phi_2$, and therefore the map $\xi$ is injective.
+Consider some $\theta\in A^\brac{B\times C}$. Then for any fixed $c\in C$ let $\phi(c) = \theta(\brac{c,\cdot})$. This $\phi(c)$ is defined on $B$ and takes values in $A$, and thus is a map $B\to A$. Hence $\phi(c)\in A^B$ for any $c\in C$, and therefore $\phi\in \brac{A^B}^C$. Now $\xi(\phi)(\brac{c, b}) = \theta(\brac{c,\cdot})(b) = \theta(\brac{c,b})$ for all $c \in C$ and $b\in B$, thus proving the surjectivity of $\xi$. Therefore $\xi$ is a bijective map between $\brac{A^B}^C$ and $A^\brac{B\times C}$, whence $|\brac{A^B}^C| = |A^\brac{B\times C}|$. By the previously shown ``arithmetic'' properties $|\brac{A^B}^C| = {|A^B|}^{|C|} = \brac{{|A|}^{|B|}}^{|C|}$ and $|A^\brac{B\times C}| = {|A|}^\brac{|B\times C|} = {|A|}^\brac{|B|\times |C|}$. Thus \[\brac{{|A|}^{|B|}}^{|C|} = {|A|}^\brac{|B|\times |C|}\]
+
+%% Show that $|A|\leq |C|$ and $|B|\leq |D|$ imply $|A|\cdot |B|\leq |C|\cdot |D|$
+Suppose sets $A$, $B$, $C$ and $D$ are such that $|A|\leq |C|$ and $|B|\leq |D|$. Then there exist two injective maps $f:A\to C$ and $g:B\to D$. Define the map $\xi$ on $A\times B$ as follows: for any $a\in A$ and $b\in B$ let $\xi(\brac{a,b}) = \brac{f(a), g(b)}$. $\xi$ is a map $A\times B\to C\times D$, because $f(a)\in C$ and $g(b)\in D$ for all $\brac{a,b}\in A\times B$. Now let $\brac{a,b}$ and $\brac{a',b'}$ be such that $\xi(\brac{a,b}) = \xi(\brac{a',b'})$. Then it must hold that $f(a)=f(a')$ and $g(b)=g(b')$, which subsequently implies that $a=a'$ and $b=b'$. Therefore $\xi:A\times B\to C\times D$ built from the injections $f$ and $g$ is itself an injection. Hence $|A\times B|\leq |C\times D|$, whence $|A|\cdot |B|\leq |C|\cdot |D|$.
+
+%% Prove that if $|A|\leq |C|$ and $|B|\leq |D|$ then ${|A|}^{|B|}\leq {|C|}^{|D|}$
+Let $|A|\leq |C|$ and $|B|\leq |D|$. Then there are maps $f:A\to C$ and $g:B\to D$ which are injective. Let $\theta\in C^D$, which in other words means that $\theta$ is some map $D\to C$. Define $\xi:A^B\to C^D$ as follows: for any $\omega:B\to A$ let $\xi(\omega)\vert_G = f\circ \omega \circ g^{-1}$ and $\xi(\omega)\vert_{D\setminus G} = \theta\vert_{D\setminus G}$, where $G = g(B)$ the image of $B$ by the map $g$.
+First of all $\xi$ is a well-defined map. Indeed, both $\theta$ and $f$ take values in $C$, whence $\xi(\omega)(d)\in C$ for all $d\to D$ and any $\omega\in A^B$. Furthermore, for any $d\in g(B)$ there is at least one $b\in B$ such that $g(b)=d$ and this is the only pre-image of $d$ in the domain, as $g$ is injective. So the map $\xi(\omega): D\to C$ is well-defined.
+Suppose $\omega_1, \omega_2:B\to A$ are such that $\xi(\omega_1) = \xi(\omega_2)$. Then $\xi(\omega_1)(d) = \xi(\omega_2)(d)$ for all $d\in D$. First, note that since both maps coincide on $D' = D\setminus g(B)$, because $\xi(\omega_1)\vert_{D'} = \xi(\omega_2)\vert_{D'} = \theta\vert_{D'}$, and nothing could be inferred about either $\omega_1$ or $\omega_2$. So picking any $d\in g(B)$ by construction of $\xi$ it must be that $f\brac{\omega_1\brac{g^{-1}(d)}} = f\brac{\omega_2\brac{g^{-1}(d)}}$. Since $f$ is injective one gets $\omega_1\brac{g^{-1}(d)} = \omega_2\brac{g^{-1}(d)}$ which holds for all $d\in g(B)$.
+However $g$ is a one-to-one map $B\to g(B)$ and $g^{-1}(d)$ traverses every single element of $B$ for any singe $d\in g(B)$, implying that $\omega_1=\omega_2$. Indeed, let $b\in B$, then $d'=g(b)\in g(B)$ and therefore $\omega_1\brac{g^{-1}(d')} = \omega_2\brac{g^{-1}(d')}$. But $g^{-1}(d')=g^{-1}(g(b)) = b$, since $g$ is injective, whence $\omega_1(b) = \omega_2(b)$ for every $b\in B$, and consequently $\omega_1=\omega_2$. Therefore there is an injective map between sets $A^B$ and $C^D$, and consequently $|A^B|\leq |C^D|$. Therefore ${|A|}^{|B|}\leq {|C|}^{|D|}$.
+Yet another method of showing that thus defined map $\xi$ is injective is to assume that $\omega_1\neq \omega_2$. This implies that there is $b\in B$ such that $\omega_1(b) \neq \omega_2(b)$. Since $f$ is injective it is true that $f\brac{\omega_1(b)}\neq f\brac{\omega_2(b)}$. Now note, that since $g$ in injective, it is true that $g^{-1}\brac{g(b)}=b$, which implies $\xi(\omega_i)\brac{g(b)} = f\brac{\omega_i(b)}$, because obviously $g(b)\in G$. Therefore $\xi(\omega_1)\brac{g(b)}\neq \xi(\omega_2)\brac{g(b)}$, which ultimately means that $\xi(\omega_1)\neq \xi(\omega_2)$.
+
+% subsection cardinality_arithmetic (end)
+
+
+\subsection{Infinite Sets} % (fold)
+\label{sub:infinite_sets}
+An infinite set is simply a set that is not a finite set. A set $\Omega$ is defined as the latter if there exists a bijective map $f:\Omega\to\obj{1,\ldots, n}$ for some natural number $n$, known in this case as a finite cardinality of $\Omega$. Note that the empty set $\emptyset$ is considered finite with cardinality zero. Thus all elements of a finite set can be represented as a finite sequence.
+
+Let $\Omega$ be some set. Recall that the generalised Cartesian Product $\prod_{i\in I}\Omega_i$, where $I=\emptyset$, is the set of all maps $\theta:I\to \bigcup_{i\in I}\Omega_i$, such that $\theta(i)\in \Omega_i$ for all $i\in I$. According to the Axiom of Choice this set is non-empty if and only if none of the $\Omega_i$ are empty. As a particular case consider the intricate product, where the ``indices'' are the non-empty subsets of $\Omega$: let $I = \mathcal{P}\brac{\Omega}\setminus\obj{\emptyset}$ and $\Omega_i=i$ for all $i\in I$. Therefore by the Axiom of Choice the set $\prod_{i\in I}\Omega_i$ is non-empty and there exists a map $\theta$ which maps every non-empty subset of $\Omega$ to some member of this subset: $\theta(X)\in X$ for every $X\in \mathcal{P}\brac{\Omega}$, $X\neq \emptyset$. Thus $\theta$ literally specifies a particular element for every subset of $\Omega$, which has elements, because no element in the universe is a member of $\emptyset$. That is why $\theta$ may be called a ``choice function''.
+
+Let's construct a countable subset of an infinite set $\Omega$ by utilizing some choice function $\theta$. Set $x_1$ to $\theta(\Omega)\in \Omega$ and for any $n\geq 1$ define $x_{n+1}$ as $\theta(\Omega\setminus M_n)$, where $M_n = \bigcup_{k=1}^n\obj{x_k}$ and $M_0 = \emptyset$.
+Observe that $\Omega\setminus M_n$ is non-empty for every $n$. Indeed an empty set difference would have implied that there was a finite subset $M_k$ of $\Omega$ with $\Omega\subseteq M_k$, thereby contradicting the requirement that $\Omega$ is infinite.
+
+The properties of $\theta$ imply that $x_{n+1}\in \Omega\setminus M_n$, whence $x_{n+1}\notin M_n$ for any $n\geq 1$. Therefore $x_{n+1}\neq x_k$ for all previously chosen $k\leq n$, implying that $x_n\neq x_k$ for all $k\neq n$.Consequently, the map $\xi(n):n\to x_n$ on the domain $\mathbb{N}$ is injective. Consider $M_\infty$ the image of $\mathbb{N}$ by $\xi$. Since $M_\infty=\obj{ \xi(n)\vert n\geq 1}$, the map $\xi:\mathbb{N}\to M_\infty$ is bijective. Therefore $M_\infty$ is a countable subset of $\Omega$ by construction. Note that this set is also a union $\bigcup_{n=1}^{\infty}\obj{x_n}$.
+
+In the general case, the set $M_\infty$ might not be a proper subset of $\Omega$, because though $\Omega\setminus M_n\neq \emptyset$ for every $n\geq 1$, it still might be the case that  $\Omega\setminus M_\infty = \bigcap_{n=1}^\infty\brac{\Omega\setminus M_n}$ is empty. Indeed, if $\Omega=\mathbb{N}$ and it so happens that the choice function picks the least element in any non-empty subset, then $\Omega\setminus M_n = \obj{k\in \mathbb{N}|k>n} = \neq \emptyset$ and yet $\Omega\setminus M_\infty = \emptyset$, since $M_\infty = \mathbb{N}$.
+
+So one has to proceed cautiously as follows. If $N$ is some infinite proper subset of $\mathbb{N}$, then $M'=\xi(N)$ is a proper subset of $M_\infty$ and by extension a proper subset of $\Omega$. Indeed $M_\infty\subseteq M'$ would imply that $\xi(\mathbb{N})\setminus \xi(N)=\emptyset$. This would further mean that $\xi(\mathbb{N}\setminus N)=\emptyset$ and $\mathbb{N}\setminus N=\emptyset$, because $\xi$ is a bijective map. Consequently, $\mathbb{N}\subseteq N$, which would contradict the fact that $N$ is a proper subset of $\mathbb{N}$. Thus $M'\subset M_\infty\subseteq \Omega$.
+
+In order to avoid a cycle in the argument one must show that there is indeed a proper infinite subset of the natural numbers. Obviously the set of odd numbers is a countable proper subset of $\mathbb{N}$, since there is a simple bijection $n\to 2n-1$ for $n\geq 1$.
+
+To sum up, every infinite set has a countably infinite proper subset, provided the Axiom of Choice is accepted.
+
+Let $M$ be some infinite set. Suppose $A$ is some infinite proper subset of $M$ and that there is $A_1\subset A$ such that $|A_1|=|A|$. %% THIS IS A CIRCULAR ARGUMENT!!! Just select a countable set.
+
+Then there exists a one-to-one map $\phi:A\to A_1$. Let $A_2$ denote $A\setminus A_1$ and define $g:M\to M\setminus A_2$ as follows: $g(\omega)=\omega$ for all $\omega\in M\setminus A$, and $g(\omega)=\phi(\omega)$ for every $\omega\in A$.
+The claim is that $g$ thus defined is a well-defined bijection. Indeed, the sets $M\setminus A$ and $A$ partition $M$ into disjoint subsets, and so for every $\omega\in M$ the value of the map $g$ at $\omega$ is non-ambiguously defined by the aforementioned rule. Furthermore, by construction, $g$ maps $M$ to $A_1 \cup \brac{M\setminus A}$, which is nothing but $M\setminus A_2$, since $A_1\subset M\setminus A_2$.
+
+Suppose there are $\omega_1,\omega_2\in M$ such that $g(\omega_1)=g(\omega_2)$. If both are in $M\setminus A$, then $\omega_1=\omega_2$. If, alternatively, both are in $A$, then $\phi(\omega_1)=\phi(\omega_2)$ and, consequently, $\omega_1=\omega_2$, by the fact that $\phi$ is injective. So suppose each $\omega$ resides in a different subset: let $\omega_1\in M\setminus A$ and $\omega_2\in A$ without the loss of generality. Then $g(\omega_1)=g(\omega_2)$ implies that $\omega_1=\phi(\omega_2)$. However $\phi$ is a surjective map and thus $\phi(\omega_2)\in \phi(A)=A_1\subset A$. Hence there is an element $\omega_1\in M$, such that $\omega_1\in M\setminus A$, i.e. $\omega_1\notin A$, yet $\omega_1\in A$ which is self-contradictory. Therefore $\omega_1$ and $\omega_2$ cannot reside in different disjoint subsets. In conclusion, the map $g$ is an injection.
+
+Finally, the map $g$ is also surjective. Indeed, pick any $\theta\in M\setminus A_2$. If $\theta \notin A$, then letting $\omega=\theta$ yields $g(\omega)=\omega=\theta$, since $\omega\in M\setminus A$. On the other hand, if $\theta\in A$, then $\theta\notin A_2$ implies that $\theta\in A_1$. Now, if $\omega=\phi^{-1}(\theta)\in A$, allowed by the fact that $\phi$ is bijective, then $g(\omega)=\phi\brac{\phi^{-1}(\theta)}=\theta$. Therefore the map $g$ is surjective, and in conclusion, any infinite set can be identified with its infinite proper subset.
+
+
+%%If the axiom of choice holds, then a set is infinite if and only if it includes a countably infinite proper subset.
+Suppose a set $\Omega$ is finite. Then it cannot be equivalent to its proper subset, and therefore its subsets have strictly lower cardinality than $\Omega$. Hence it cannot have a countably infinite subset.
+
+$A\subseteq \Omega$ such that 
+%% FINISH WHAT was started here...
+Let $M$ be some infinite set, i.e. there is no $n \geq 0$ such that there is a bijective map between the set $\mathbb{S}_n := \obj{ m < n \vert m\in \mathbb{N}}$ and $M$.
+
+
+
+% subsection infinite_sets (end)
+
+
+\subsection{the Cantor-Bernstein theorem} % (fold)
+\label{sub:the_cantor_bernstein_theorem}
+The following result is of paramount importance: if there are maps $f:A\to B$ and $g:B\to A$ both injective, then there is a bijective map between the sets $A$ and $B$.
+
+Let $H$ be some subset of $g(B)$, the image of $B$ by $g$. Define a map $h:A\to B$ as: $h(\omega) = f(\omega)$ if $\omega\in A\setminus H$ and $g^{-1}(\omega)$ for $\omega\in H$.
+
+Let's figure out the necessary condition for the bijectivity of $h$. Since $h$ is, in particular, an injection it is true that $h(A)\setminus h(H) = h(A\setminus H)$, whence the definition of $h$ implies that $B\setminus g^{-1}(H) = f(A\setminus H)$. However $B$ is a superset of $g^{-1}(H)$ and therefore $g^{-1}(H) = B\setminus f(A\setminus H)$. Since $H\subseteq g(B)$, by definition of a direct image for any $\omega\in H$ there is $y\in B$ such that $g(y)=\omega$. Hence $y\in g^{-1}(H)$ and $\omega=g(y)\in g(g^{-1}(H))$. Since additionally for every $H$ it is true that $g(g^{-1}(H)) \subseteq H$ it must be that $H=g(g^{-1}(H))$. Consequently $H=g(g^{-1}(H))=g(B\setminus f(A\setminus H))$.
+
+It turns out that this condition is also sufficient for the bijectivity of $h$. Indeed for $\omega_1, \omega_2\in A$ such that $h(\omega_1)=h(\omega_2)$ three cases are possible. If $\omega_1, \omega_2\in A\setminus H$ then the very definition of $h$ and the injectivity if $f$ imply that $\omega_1=\omega_2$.
+In case when $\omega_1, \omega_2\in H$, $g^{-1}(\omega_1)=h(\omega_1)=h(\omega_2)=g^{-1}(\omega_2)$ implies that for every $y$ in both these sets it must be that $g(y)=\omega_1$ and $g(y)=\omega_2$, hence $\omega_1=\omega_2$.
+Finally if $\omega_1\in A\setminus H$ while $\omega_2\in H$ then $f(\omega_1)=g^{-1}(\omega_2)$. However $H=g(B\setminus f(A\setminus H))$ and the injectivity of $g$ imply that $g^{-1}(\omega_2)\in B\setminus f(A\setminus H)$, which is a contradiction, since $g^{-1}(\omega_2)=f(\omega_1)\in f(A\setminus H)$. Thus $h$ is an injective map.
+
+Consider any $y\in B$. On the one hand, if $y\in f(A\setminus H)$ then by the definition of a direct image there must be $\omega\in A\setminus H$ such that $f(\omega)=y$, and hence $h(\omega)=y$. On the other if $y\in B\setminus f(A\setminus H)$ then $\omega=g(y)\in H$ by the assumed condition. However this means that $h(\omega)=g^{-1}(g(y))$ which is equal to $y$ by injectivity of $g$. This completes that proof that $H=g(B\setminus f(A\setminus H))$ is the necessary and sufficient condition for $h$ to be a one-to-one map $A\to B$.
+
+Notwithstanding the demonstrated equivalence, the question of existence of such a set $H$ has to be addressed. Note that $H$ resembles a fixed point of a set map $\sigma:\mathcal{P}\brac{A}\to \mathcal{P}\brac{A}$ defined as $\sigma(T)=g(B\setminus f(A\setminus T))$ for any $T\subseteq A$. So if the existence of a fixed point of the set map $\sigma$ is proven, then automatically the bijective map $h$ as defined above comes into existence as well.
+
+This map preserves the ordering of sets according to set inclusion. Indeed for any $R\subseteq T\in\mathcal{P}\brac{A}$ it is true that $A\setminus T\subseteq A\setminus R$, whence $f(A\setminus T)\subseteq f(A\setminus R)$ by the definition of the direct image. This in turn implies that $B\setminus f(A\setminus R)\subseteq B\setminus f(A\setminus T)$ and subsequently $g(B\setminus f(A\setminus R))\subseteq g(B\setminus f(A\setminus T))$. Therefore $\sigma(R)\subseteq \sigma(T)$.
+
+Define a set of subsets of $A$ that are covered by their image by $\sigma$ \[\Gamma = \obj{ T\subseteq A\vert\, T\subseteq \sigma(T) }\]
+Let $H=\bigcup_{T\in \Gamma}T$. Then for every $T\in \Gamma$ it is true that $T\subseteq H$, which together with the order-preserving property implies $\sigma(T)\subseteq \sigma(H)$. However the every $T$ of $\Gamma$ is such that $T\subseteq \sigma(T)$, and therefore $T\subseteq \sigma(H)$ for every $T\in \Gamma$. Consequently $H=\bigcup_{T\in \Gamma}T\subseteq \sigma(H)$ which implies that $H\in \Gamma$.
+Fortunately for any $T\in \Gamma$ the fact that $\sigma$ is order-preserving implies that $\sigma(T)\subseteq \sigma(\sigma(T))$ which in turn means that $\sigma(T)\in \Gamma$. Applied to $H$, which is a member of $\Gamma$, this means that $\sigma(H)\in \Gamma$ and therefore $\sigma(H)\subseteq \bigcup_{T\in \Gamma}T=H$.
+
+Therefore the set $H$ constructed as the union of all sets which cover themselves with their image, turns out to be a fixed point of the set map $\sigma$. Consequently there exists $H=\sigma(H)=g(B\setminus f(A\setminus H))$ and thus the map $h$ defined in the beginning is one-to-one between $A$ and $B$. This finishes the proof of the Cantor-Bernstein theorem.
+To recap, whenever there are injections between $A$ and $B$ in both directions, then there is a one-to-one map between them.
+
+% subsection the_cantor_bernstein_theorem (end)
+
+
+\subsection{Product sets} % (fold)
+\label{sub:product_sets}
+
+Let $\Omega' = \prod_{\lambda \in \Lambda}(\prod_{i \in I_\lambda}\Omega_i)$,  $\Omega = \prod_{i \in I}\Omega_i$, where $(I_\lambda)_{\lambda \in \Lambda}$ are disjoint subsets of $I$, such that $I = \bigcup_{\Lambda \in \Lambda}I_\lambda$ -- a partition of I. Consider the map $\Phi:\Omega \to \Omega'$ defined by: $\Phi(\omega) = (\omega\vert_{I_\lambda})_{\lambda \in \Lambda}$, where, since by definition of the generalized Cartesian Product $\omega$ is a map from $I$ to $\bigcup_{i \in I}\Omega_i$ such that $\omega(i) \in \Omega_i$ for all $i \in I$, $\omega\vert_{i \in I}$ is the restriction of the domain of the map $\omega$ from $I$ to its subset $I_\lambda$.
+
+Let $\theta \in \Omega'$, then for all $\lambda \in \Lambda$ $\theta(\lambda) \in \prod_{i \in I_\lambda} \Omega_i$, therefore for all $\lambda \in \Lambda$ and all $i \in I_\lambda$ $\theta(\lambda)(i) \in \Omega_i$. Since $\Lambda$ is a partition of $I$, for any $i \in I$ there exists only one $\lambda \in \Lambda$ such that $i \in I_\lambda$. Denote such unique $\lambda$ as $\lambda_i$. Now let $\omega$ be defined as $\omega_i = \theta(\lambda_i)(i)$. Then, first of all, $\omega_i = \theta(\lambda_i)(i) \in \Omega_i$ for any $i \in I$. Therefore $\omega$ is in $\Omega$. Secondly, one must show that $\Phi(\omega) = \theta$. Indeed fix any $\lambda \in \Lambda$, then $\Phi(\omega) = \omega\vert_{I_\lambda}$ which means that for all $i \in I_\lambda$ $\omega\vert_{I_\lambda}(i) = \omega(i)$. But for every $i \in I_\lambda$ it is true that $\lambda_i = \lambda$. Hence $\Phi(\omega)(\lambda)(i) = \theta(\lambda)(i)$ for all $i \in I_\lambda$ and for any arbitrary $\lambda \in \Lambda$. So $\Phi(\omega) = \theta$. Thus $\Phi$ is a surjective map.
+
+Suppose there are two elements $\alpha, \beta \in \Omega$ such that $\Phi$ maps both into the same element of $\Omega'$. Then for any $\lambda \in \Lambda$ it is true that $\Phi(\alpha)(\lambda) = \Phi(\beta)(\lambda)$ and so for any $\lambda$ $\alpha\vert_{I_\lambda}=\beta\vert_{I_\lambda}$. But recalling that for an arbitrary $i \in I$ there is only one $\lambda \in \Lambda$ such that $i \in I_\Lambda$, one can get the following for any $i \in I$: \[\alpha_i = \alpha\vert_{I_\lambda}(i) = \Phi(\alpha)(\lambda)(i) = \Phi(\beta)(\lambda)(i) = \beta\vert_{I_\lambda)}(i) = \beta_i\] Therefore the map $\Phi$ is and injective projection. Hence $\Phi$ is a bijection.
+
+This $\Phi:\Omega \to \Omega'$ is not only bijection, it is a very natural map when there is a partition of the index set $I$. Indeed it just re-groups the domain of the elements of the Cartesian product according to the given non-overlapping sets. Also any map can be treated as a collection of its values indexed by all possible values of its arguments. So for any $\omega (\omega\vert_{I_\lambda})_{\lambda \in \Lambda}$ is just another way of writing $((\omega_i)_{i \in I_\lambda})_{\lambda \in \Lambda}$.
+
+This point-wise bijection can be extended to a set-mapping. Indeed for any subset $A$ of $\Omega$ consider the direct image of $A$ by $\Phi$, which by is a subset of $\Omega'$.
+Now let $A \subseteq \Omega$. Then simply by definitions of the direct and the inverse image by $\Phi$ it is true, that $A \subseteq \Phi^{-1}(\Phi( A ))$. Now if $\omega$ is an element of $\Phi^{-1}( \Phi(A) )$ then $\Phi(\omega)$ is in $\Phi(A)$ and so by the definition of the direct image there is some $z \in A$, such that $\Phi(z) = \Phi(\omega)$. Assuming that $\omega \notin A$ implies that $z$ and $\omega$ are completely different, yet are mapped into the same value by $\Phi$. But this contradicts the fact the $\Phi$ is an injection, and so it must be that $\omega \in A$, and $\Phi^{-1}( \Phi(A)) \subseteq A$.
+
+Now let $A, B \subseteq \Omega$ be such that $\Phi(A) = \Phi(B)$. By the above logic $A = \Phi^{-1}( \Phi(A) )$ and $B = \Phi^{-1}( \Phi(B) )$. But $\Phi(A)$ is the same as $\Phi(B)$ and so $A = B$. Therefore a set-mapping defined as the direct image by $\Phi$ is an injective set-map.
+
+Now let $A' \subseteq \Omega'$. Then by definitions of the direct and inverse images $\Phi( \Phi^{-1}(A') ) \subseteq A'$ (since for a general map not all elements from the co-domain may have a corresponding element in the domain, which $\Phi$ maps to). Let $\omega' \in A'$. As $\Phi$ is a surjective map, there exists some $\omega \in \Omega$ such that $\Phi(\omega) = \omega'$. Therefore $\omega \in \Phi^{-1}(A')$ and hence $\omega' \in \Phi( \Phi^{-1}(A') )$ by the definition of a direct image. Then $A' \subseteq \Phi( \Phi^{-1}(A') )$ and $A' = \Phi( \Phi^{-1}(A') )$.
+
+Therefore for any $A' \subseteq \Omega'$ the set $A = \Phi^{-1}( A' )$ is such that $\Phi( A ) = A'$. Thus the direct image by $\Phi$, is a surjective map. So the fact that $\Phi$ is a bijective point-mapping from $\Omega$ into $\Omega'$  implies that the direct image by $\Phi$ is a bijective set-mapping too. Also a direct image by any map is a very natural mapping itself, so the direct image of a natural bijection couldn't be more natural itself.
+
+OKay, so this map $\Phi$ is a natural bijection, which identifies points and by extension sets in $\Omega$ and $\Omega'$. The question now is whether it preserves structure (or other properties). Let $A = \prod_{i \in I}A_i$ be a subset of $\Omega$ and $A' = \prod_{\lambda \in \Lambda}(\prod_{i \in I_\lambda}A_i) \subseteq \Omega'$. First, for any $\omega \in A$, for all $i \in I$ it is true that $\omega(i) = \omega_i \in A_i$. As for $\Phi(\omega)$, for any $\lambda \in \Lambda$, $\Phi(\omega)(\lambda) = \omega\vert_{I_\lambda}$ which is a map (with restricted domain). Furthermore $\omega\vert_{I_\lambda}(i) = \omega_i$ and $\omega_i \in A_i$ for any $i \in I_\lambda$, since $\omega\vert_{I_\lambda}$ is just a restriction of $\omega to I_\lambda$. Thus $\Phi(\omega)(\lambda)(i) \in A_i$ for all $i \in I_\lambda$. Then $\Phi(\omega)(\lambda) \in \prod_{i \in I_\lambda}A_i$ for any $\lambda \in \Lambda$ and so $\Phi(\omega) \in A'$ by the definition of the generalized Cartesian Product. Hence $\Phi(\omega) \in A'$ when $\omega$ is from $A$. In other words $\Phi(A) \subseteq A'$.
+
+Now let $\omega' \in A'$. Then there is $\omega \in \Omega$, since $\Phi$ is a bijection, such that $\Phi(\omega) = \omega'$. In particular for all $i \in I$ $\omega_i = \omega'(\lambda)(i)$, where $\lambda$ is an element of $\Lambda$, unique for each $i \in I$, such that $i \in I_\lambda$. But $\omega'(\lambda)(i)$ for any $\lambda \in \Lambda$ and $i \in I_\lambda$ is a point in $A_i$. So $\omega_i \in A_i$ for all $i \in I$, and so $\omega \in A$. Thus $\Phi^{-1}(A')$ is a subset if $A$. But $\Phi$ is surjective and so $\Phi( \phi^{-1}(A') ) = A'$. Thus $A' \subseteq \Phi(A)$ and $\Phi(A) = A'$.
+
+Suppose there were another subset $B$ of $\Omega$ such that $\Phi(B) = A'$, then the fact that $\Phi$ is a one-to-one point-mapping and its direct image is also a one-to-one set mapping, implies that such $B$ is the same as $A$. Thus the sets $\prod_{i \in I}A_i \subseteq \Omega$ and $A' = \prod_{\lambda \in \Lambda}(\prod_{i \in I_\lambda}A_i) \subseteq \Omega'$ are identified by this set-map $\Phi$.
+
+% subsection product_sets (end)
+
+
+\subsection{Equivalence of $\mathbb{C}$ and $\mathbb{R}$} % (fold)
+\label{sub:equivalence_of_C_and_R}
+
+% subsection equivalence_of_C_and_R (end)
+
+% section some_preliminary_set_theory (end)
+
+
+\section{Number theory} % (fold)
+\label{sec:number_theory}
+
+Let's introduce a bit of notation. ``$b \vert a$'' is understood as ``b divides a'', i.e there is $q\in \mathbb{Z}$ such that $a = q b$.
+
+% section number_theory (end)
+
+
+\section{Some useful inequalities} % (fold)
+\label{sec:some_useful_inequalities}
+In this section let $n\geq 1$ be some fixed positive integer. For all $x, y \in \mathbb{R}^n$ -- some collections of real numbers for some fixed $n$, define the following: \[\brac{x, y} = \sum_{i=1}^n x_i y_i\]. The latter is well-defined since the expression under the square root is the sum of squares of real numbers.
+
+Let $\brac{a_i}_{i=1}^n$ and $\brac{b_i}_{i=1}^n$ be two collections of real numbers for some fixed $n$, and $t\in \mathbb{R}$. Then $\sum_{i=1}^n (a_i + t b_i)^2$ is non-negative and unwinds into $\sum_{i=1}^n a_i^2 + 2t \sum_{i=1}^n a_i b_i + t^2 \sum_{i=1}^n b_i^2$. Since any sum of squares of real numbers is non-negative, the quadratic equation with respect to $t$ must not have more than one real root. For this it is necessary and sufficient that the discriminant be non-positive \[4 \brac{\sum_{i=1}^n a_i b_i}^2 - 4 \sum_{i=1}^n a_i^2 \sum_{i=1}^n b_i^2 \leq 0\]. Thus $\brac{\sum_{i=1}^n a_i b_i}^2 \leq \sum_{i=1}^n a_i^2 \sum_{i=1}^n b_i^2$ for any collections of real numbers. This result is known as the \emph{Cauchy-Schwartz} inequality.
+
+For this inequality follows the triangle inequality of the $L^2$ norm $\nrm{x} = \sqrt{\brac{x, x}}$. Indeed, for any $a, b \in \mathbb{R}$ the previous result implies that $\abs{\brac{a,b}} \leq \nrm{a}\nrm{b}$, whence it follows that \[\nrm{a+b}^2 = \nrm{a}^2 + 2\brac{a,b} + \nrm{b}^2 \leq \nrm{a}^2 + 2 \nrm{a}\nrm{b} + \nrm{b}^2 = \brac{\nrm{a} + \nrm{b}}^2\]
+
+H\"older's inequality is the next important result, significance of which could not be over stated. It says that for any collections of real numbers $\brac{a_i}_{i=1}^n$ and $\brac{b_i}_{i=1}^n$ for some fixed $n$, and any $p,q>1$ such that $\frac{1}{p}+\frac{1}{q}=1$ \[\sum_{i=1}^n \abs{a_i b_i}\leq \brac{\sum_{i=1}^n \abs{a_i}^p}^{\frac{1}{p}}\brac{\sum_{i=1}^n \abs{b_i}^q}^{\frac{1}{q}}\] Let $\alpha  = \brac{\sum_{i=1}^n \abs{a_i}^p}^\frac{1}{p}$ and $\beta = \brac{\sum_{i=1}^n \abs{b_i}^q}^\frac{1}{q}$.
+
+Note that the inequality is true when either $\alpha = 0$ or $\beta = 0$. Indeed, if $\alpha = 0$ then $\sum_{i=1}^n \abs{a_i}^p = 0$, whence $\abs{a_i}^p = 0$ and further $a_i = 0$ for each $i=1 \ldots n$. This implies that $\sum_{i=1}^n \abs{a_i b_i} = 0 \leq 0 = \alpha \beta$.
+
+Before embarking on the proof, one should note, that this inequality of homogeneous, which means that for any non-zero scale coefficients $\lambda$ and $\mu$ \[\sum_{i=1}^n \abs{(\lambda a_i) (\mu b_i)} \leq \brac{\sum_{i=1}^n \abs{\lambda a_i}^p}^{\frac{1}{p}} \brac{\sum_{i=1}^n \abs{\mu b_i}^q}^{\frac{1}{q}}\] if and only if the original inequality holds for collections $\brac{a_i}_{i=1}^n$ and $\brac{b_i}_{i=1}^n$.
+
+Suppose for collections $\brac{a_i}_{i=1}^n$ and $\brac{b_i}_{i=1}^n$ with $\sum_{i=1}^n \abs{a_i}^p=\sum_{i=1}^n \abs{b_i}^q=1$, it can be proven that \[\sum_{i=1}^n \abs{a_i b_i} \leq 1\] then the original inequality holds. Indeed, if $\brac{a_i}_{i=1}^n$ and $\brac{b_i}_{i=1}^n$ are such that their $\alpha$ and $\beta$ are not zero, then $\sum_{i=1}^n \abs{\frac{a_i}{\alpha}}^p = \sum_{i=1}^n \abs{\frac{b_i}{\beta}}^q = 1$, whence \[\sum_{i=1}^n \abs{\frac{a_i}{\alpha} \frac{b_i}{\beta}} \leq 1 \Leftrightarrow \sum_{i=1}^n \abs{a_i b_i} \leq \alpha \beta = \brac{\sum_{i=1}^n \abs{a_i}^p}^\frac{1}{p} \brac{\sum_{i=1}^n \abs{b_i}^q}^\frac{1}{q}\]
+
+Let's show that for any collection $\brac{a_i}_{i=1}^n$ and $\brac{b_i}_{i=1}^n$ of real numbers, with $\sum_{i=1}^n \abs{a_i}^p=\sum_{i=1}^n \abs{b_i}^q=1$, it is true that $\sum_{i=1}^n \abs{a_i b_i} \leq 1$. To this end recall the following basic inequality, which holds for all values of $a$ and $b$ in $\left [ 0; +\infty \right ]$: \[a b \leq \frac{a^p}{p} + \frac{b^q}{q}\] where $p, q \in \mathbb{R}^+$ and $\frac{1}{p}+\frac{1}{q}=1$.
+
+Indeed, let $a,b$ take values in the non-negative extended real line. If one of these values is zero, then this inequality holds trivially, since the numbers involved are non-negative: $0 = a b \leq \frac{a^p}{p} + \frac{b^q}{q}$, noting that $0 \infty = 0$ by convention. If both are strictly positive, then there is the possibility of one of them being $+\infty$. But in this case once again $a b \leq \frac{a^p}{p} + \frac{b^q}{q} = +\infty$. So the remaining case is of the pair of strictly positive, yet finite values $a,b$. To resolve this, note that both values are in the domain of the real function $x\to\ln{x}$, which happens to be convex, i.e. for any $x_1, x_2 \in \brac{0; +\infty}$ and any $t\in\brac{0;1}$ it holds that $t \ln{x_1} + (1-t) \ln{x_2} \leq \ln{\brac{t x_1 + (1-t) x_2}}$.
+The convexity of the $\ln{x}$ follows from the re-statement of the definition of the convexity of a function in terms of the slope of the consecutive chords and the fact that the derivative of $\ln{x}$ is a non-increasing function.
+Since $p$ and $q$ are such that $\frac{1}{p}+\frac{1}{q}=1$, and, independently, $a^p, b^q\in\brac{0; +\infty}$ after letting $x_1 = a^p$, $x_2 = b^q$ and $t = \frac{1}{p}$, one can easily get this inequality in a logarithmic form from the convexity of $x\to\ln{x}$: \[\frac{\ln{a^p}}{p} + \frac{\ln{b^q}}{q} \leq \ln{\frac{a^p}{p} + \frac{b^q}{q}}\] Therefore for every non-negative and possibly infinite $a$ and $b$ their product is not greater than the weighted sum of their powers:\[ab \leq \frac{a^p}{p} + \frac{b^q}{q}\] provided $p,q>1$ are such that  $\frac{1}{p} + \frac{1}{q}=1$.
+
+Thus, plugging the non-negative $\abs{a_i}$ and $\abs{b_i}$ in to this result and summing the non-negative left- and right-hand sides through $i=1\ldots n$ one gets \[\sum_{i=1}^n \abs{a_i b_i} \leq \frac{1}{p} \sum_{i=1}^n \abs{a_i}^p + \frac{1}{q} \sum_{i=1}^n \abs{b_i}^q = \frac{1}{p} + \frac{1}{q} = 1\] because $\sum_{i=1}^n \abs{a_i}^p = \sum_{i=1}^n \abs{b_i}^q = 1$. Consequently, for any $\brac{a_i}_{i=1}^n, \brac{b_i}_{i=1}^n\in \bar{\mathbb{R}}$ and any $p,q>1$ with $\frac{1}{p}+\frac{1}{q}=1$ the following inequality holds \[\sum_{i=1}^n \abs{a_i b_i} \leq \brac{\sum_{i=1}^n \abs{a_i}^p}^\frac{1}{p} \brac{\sum_{i=1}^n \abs{b_i}^q}^\frac{1}{q}\] also known as the \emph{H\"older}'s inequality. Obviously it generalizes the Cauchy-Schwartz inequality.
+
+The third important inequality is the \emph{Minkowski} inequality, which though is much simpler to show, is nonetheless as important as the previous results. First note that for any non-negative $a$ and $b$ and any $p>1$ it is true that \[\brac{a+b}^p = \brac{a+b} \brac{a+b}^{p-1}\] which can be verified directly. Hence, for any two collections $\brac{a_i}_{i=1}^n, \brac{b_i}_{i=1}^n\in \bar{\mathbb{R}}$ it is true that \[\sum_{i=1}^n \brac{\abs{a_i} + \abs{b_i}}^p = \sum_{i=1}^n \abs{a_i}\brac{\abs{a_i} + \abs{b+i}}^{p-1} + \sum_{i=1}^n \abs{b_i}\brac{\abs{a_i} + \abs{b+i}}^{p-1}\]
+Now, apply the H\"older's inequality for this $p$ to each of the sums on the right hand side: \[\sum_{i=1}^n \abs{a_i}\brac{\abs{a_i} + \abs{b_i}}^{p-1}\leq \brac{\sum_{i=1}^n \abs{a_i}^p}^\frac{1}{p} \brac{\sum_{i=1}^n \brac{\abs{a_i} + \abs{b_i}}^{(p-1)q}}^\frac{1}{q}\] However $q = \frac{p}{p-1}$ and so after collecting everything together the right-hand side becomes \[\sum_{i=1}^n \brac{\abs{a_i} + \abs{b_i}}^p \leq \brac{\brac{\sum_{i=1}^n \abs{a_i}^p}^\frac{1}{p} + \brac{\sum_{i=1}^n \abs{b_i}^p}^\frac{1}{p}} \brac{\sum_{i=1}^n \brac{\abs{a_i} + \abs{b_i}}^p}^{1-\frac{1}{p}}\] If $\sum_{i=1}^n \brac{\abs{a_i} + \abs{b_i}}^p\neq 0$, then this inequality transforms into\[\brac{\sum_{i=1}^n \brac{\abs{a_i} + \abs{b_i}}^p}^\frac{1}{p} \leq \brac{\sum_{i=1}^n \abs{a_i}^p}^\frac{1}{p} + \brac{\sum_{i=1}^n \abs{b_i}^p}^\frac{1}{p}\] Note that $\sum_{i=1}^n \brac{\abs{a_i} + \abs{b_i}}^p$ is zero if and only if $a_i=b_i=0$ for all $i=1\ldots n$, because a sum of non-negative components is zero only when each component is zero. So in the other case the last inequality is still true.
+Therefore for any $\brac{a_i}_{i=1}^n, \brac{b_i}_{i=1}^n\in \bar{\mathbb{R}}$ and any $p>1$ it is true that\[\brac{\sum_{i=1}^n \brac{\abs{a_i} + \abs{b_i}}^p}^\frac{1}{p} \leq \brac{\sum_{i=1}^n \abs{a_i}^p}^\frac{1}{p} + \brac{\sum_{i=1}^n \abs{b_i}^p}^\frac{1}{p}\]
+
+% section some_useful_inequalities (end)
+
+
+\section{Equivalence relations} % (fold)
+\label{sec:equivalence_relations}
+A relation $\rho$ on $\Omega$ is non-empty subset $\Omega\times \Omega$. For any $a, b\in \Omega$, $a\rho b$ if and only if $\brac{a, b}\in \rho$.
+A relation $\rho$ on $\Omega$ is \emph{reflexive} if for every $a\in \Omega$, the pair $\brac{a, a}\in \rho$, i.e. $a\rho a$ is true.
+A relation $\rho$ on $\Omega$ is \emph{symmetric} if for every $a,b\in \Omega$ $\brac{a,b}\in \rho$ implies that $\brac{b,a}\in \rho$. Briefly, $a\rho b$ implies $b\rho a$.
+A relation $\rho$ on $\Omega$ is \emph{antisymmetric} if for every $a,b\in \Omega$ $\brac{a,b}, \brac{b,a}\in \rho$ implies that $a=b$. Briefly, $a\rho b$ and $b\rho a$ imply that $a$ is equal to $b$ (are the exactly the same entities).
+A relation $\rho$ on $\Omega$ is \emph{transitive} if for every $a,b,c\in \Omega$ with $\brac{a,b}, \brac{b,c}\in \rho$ it is true that $\brac{a,c}\in \rho$ as well. In shorter terms, $a\rho b$ and $b\rho c$ imply $a\rho c$.
+A relation $\rho$ on $\Omega$ is \emph{total} if for every $a, b\in \Omega$, either $\brac{a, b}\in \rho$ or $\brac{b, a}\in \rho$ or both, i.e. $a\rho b$ or $b\rho a$ is true.
+
+Consider a non-empty set $\Omega$. A relation $\sim$ on $\Omega$ is called an equivalence relation on $\Omega$ if and only if it is reflexive, symmetric and transitive. For every $\omega\in \Omega$ let $C_\omega$ be the set of all elements of $\Omega$ which are equivalent to $\omega$ under $\sim$. Call such $C_\omega$ ``the equivalence class'' of $\omega$. Since $\sim$ is symmetric, the equivalence class of $\omega$ obviously contains $\omega$ itself, and thus is non-empty.
+
+Suppose $\omega_1, \omega_2\in \Omega$ are such that $C_{\omega_1}\cap C_{\omega_2}\neq \emptyset$. Then there exists $\omega\in \Omega$ such that $\omega_1\sim \omega$ and $\omega_2\sim \omega$. Therefore by the symmetry and transitivity of $\sim$ on $\Omega$ it must be that $\omega_1\sim \omega_2$.
+Now let $\omega\in C_{\omega_1}$. Then $\omega_1\sim \omega$, and by transitivity $\omega\sim \omega_2$, whence $\omega\in C_{\omega_2}$. Conversely, if $\omega\in C_{\omega_2}$, then $\omega_1\sim \omega$, and, consequently, $\omega\in C_{\omega_1}$ since $\omega\sim \omega_1$ by the transitivity of $\sim$.
+Therefore whenever $\omega_1, \omega_2\in \Omega$ are such that $C_{\omega_1}\cap C_{\omega_2}\neq \emptyset$, then $\omega_1\sim \omega_2$ and $C_{\omega_1}=C_{\omega_2}$. Obviously, if two equivalence classes coincide, then their members are equivalent to one another and classes must overlap. Consequently, the equivalence classes are disjoint if and only if they are distinct, which holds if and only if their elements are not equivalent under $\sin$ on $\Omega$.
+
+Let $\Omega$ be some non-empty set. The subset of $\mathcal{P}\brac{\Omega}$ is called a partition of $\Omega$ if it its members are non-empty and for every $\lambda_1, \lambda_2\in \Lambda$ $\lambda_1\neq \lambda_2$ implies $\lambda_1\cap \lambda_2=\emptyset$ and $\Omega = \bigcup_{X\in \Lambda} X$.
+
+Let $\Gamma^\sim$ be the a subset of $\mathcal{P}\brac{\Omega}$ defined as the collection of all equivalence classes induced by the relation $\sim$ on $\Omega$:\[\Gamma^\sim = \obj{ C_\omega\vert \omega\in \Omega}\]
+Since every $\omega\in \Omega$ is equivalent to itself by the reflexivity of $\sim$, $\omega\in C_{\omega}$ and thus for any $\omega\in \Omega$ there exists $X\in \Gamma^\sim$ such that $\omega\in X\subseteq \Omega$. Therefore $\Omega = \bigcup_{\omega\in \Omega} C_\omega$. However whenever $\lambda_1, \lambda_2\in \Gamma^\sim$ are such that $\lambda_1\neq \lambda_2$ then $\lambda_1\cap \lambda_2=\emptyset$. Therefore $\Gamma^\sim$ is a partition of $\Omega$.
+
+Let $\Lambda$ be some partition of $\Omega$. Then for every $\lambda_1, \lambda_2\in \Lambda$ with $\lambda_1\neq \lambda_2$, $\lambda_1\cap \lambda_2=\emptyset$ and $\Omega=\bigcup_{X\in \Lambda} X$. Hence, one can define a map $\delta:\Omega\to \Lambda$, which associates with every $\omega\in \Omega$ the partition element it belongs to. Indeed, for every $\omega\in \Omega$, there is $\lambda_\omega\in \Lambda$ such that $\omega\in \lambda_\omega$, and if there is another $\lambda'\in \Lambda$ with $\omega\in \lambda'$, then $\lambda_\omega\cap \lambda'\neq \emptyset$ and therefore $\lambda_\omega=\lambda'$, being the elements of the partition $\Lambda$. Therefore $\delta_\Lambda(\omega) = \lambda_\omega$ is a well-defined map.
+Such map is unique. Indeed, if $\psi:\Omega\to \Lambda$ is another map, assigning to every $\omega$ its partition, then, obviously, $\psi(\omega) = \lambda_\omega = \delta_\Lambda(\omega)$, because the elements of the partition $\Lambda$ are disjoint.
+
+Suppose $\Lambda\subseteq \mathcal{P}\brac{\Omega}$ is a partition of the non-empty set $\Omega$. Define the relation $\sim_\Lambda$ on $\Omega$ as the following: for any $\omega_1, \omega_2\in \Omega$ $\omega_1\sim_\Lambda \omega_2$ if and only if $\delta_\Lambda(\omega_1)\cap\delta_\Lambda(\omega_2)\neq \emptyset$. Since $\Lambda$ is a partition of $\Omega$, the condition $\delta_\Lambda(\omega_1)\cap\delta_\Lambda(\omega_2)\neq \emptyset$ is logically equivalent to $\delta_\Lambda(\omega_1)=\delta_\Lambda(\omega_2)$ for any eligible $\omega_1, \omega_2\in \Omega$.
+First, by definition $\omega\in \delta_\Lambda(\omega)$ for every $\omega\in \Omega$, and for every $\omega\in \Omega$ the partition it belongs to is unique. Therefore $\omega\sim_\Lambda \omega$, and $\sim_\Lambda$ is \emph{reflexive}.
+Second, if $\omega_1, \omega_2\in \Omega$ are such, that $\omega_1\sim_\Lambda \omega_2$ then $\delta_\Lambda(\omega_1)=\delta_\Lambda(\omega_2)$, whence $\omega_2\sim_\Lambda \omega_1$. Thus $\sim_\Lambda$ is \emph{symmetric}.
+Third if $\omega_1, \omega_2, \omega_3\in \Omega$ are such that $\omega_1\sim_\Lambda \omega_2$ and $\omega_2\sim_\Lambda \omega_3$, then $\delta_\Lambda(\omega_1)=\delta_\Lambda(\omega_2)=\delta_\Lambda(\omega_3)$ and, obviously, $\omega_1\sim_\Lambda \omega_3$.
+
+Therefore $\sim_\Lambda$ induced by the partition $\Lambda$ of $\Omega$ is indeed an equivalence relation. It is therefore non-surprising, that the equivalence classes induced by $\sim_\Lambda$ coincide with the partition $\Lambda$.
+
+Let $\omega'\in \Omega$ and consider $\lambda\in \Lambda$ such that $\omega'\in \lambda$ (obviously, $\delta_\Lambda(\omega')=\lambda$). Since the equivalence classes themselves constitute a partition $\Gamma^{\sim_\Lambda}$ of $\Omega$, there is $X\in \Gamma^{\sim_\Lambda}$ such that $\omega'\in X$. Since, one obvious class is $C_{\omega'}$, every such $X$ coincides with it. Let $\omega\in C_{\omega'}$. Then $\omega\sim_\Lambda \omega'$ and $\delta_\Lambda(\omega')=\delta_\Lambda(\omega)=\lambda$. Since $\omega\in \delta_\Lambda(\omega)$ it must be that $\omega\in \lambda$. The converse holds as well: if $\omega\in \lambda$, then by definition $\omega\sim_\Lambda \omega'$, and thus $\omega\in C_{\omega'}$, because $\delta_\Lambda(\omega')=\lambda$. Therefore for every $\omega\in \Omega$, $C_\omega=\delta_\Lambda(\omega)$. Furthermore if $\lambda\in \Lambda$ then $\lambda\neq \emptyset$ and therefore $\exists \omega\in \Omega$ with $\omega\in \lambda$, whence $\lambda=C_\omega$. And if $X\in \Gamma^{\sim_\Lambda}$ then by the established reflexivity of $\sim_\Lambda$, $X\neq \emptyset$ and thus every for $\omega\in X$, $X=C_\omega=\delta_\Lambda(\omega)$.
+
+Thus for any equivalence relation $\sim$ on $\Omega$ its equivalence classes $\Gamma^\sim$ naturally induce a partition of $\Omega$. Conversely any partition $\Lambda$ of $\omega$ produces a natural equivalence relation $\sim_\Lambda$ on $\Omega$, equivalence classes of which coincide with the original partition.
+
+% section equivalence_relations (end)
+
+
+\section{Polya theory} % (fold)
+\label{sec:polya_theory}
+Let $\Omega$ be some set, $G\subseteq \Omega$ and $\ast$ be a binary operation on elements of $\Omega$ -- a map $\ast:\Omega\times \Omega\to \Omega$. For any $a,b\in \Omega$ the result of applying $\ast$ to the pair $\brac{a,b}$ is usually written in a infix form $a\ast b$ instead of a prefix form $\ast\brac{(a,b)}$.
+
+A pair $\brac{G, \ast}$ is called a magma if the set $G$ is closed under $\ast$. Note that no other properties are assumed, just the closure.
+
+An element $\epsilon\in G$ is left neutral if $\epsilon\ast a = a$ for every $a\in G$. Right neutrality is defined analogously. An element $\epsilon\in G$ of a magma is neutral if it is both left and right neutral: $a\ast \epsilon = \epsilon\ast a = a$ for all $a\in G$.
+
+Let $\brac{G,\ast}$ be a magma. Let $L=\obj{x\in G\vert \forall{a\in G}\; x\ast a = a}$ and $R=\obj{x\in G\vert \forall{a\in G}\; a\ast x = a}$. Suppose $L,R\neq \emptyset$ and consider any $l\in L$ and $r\in R$. Then $r$'s right neutrality implies that, in particular, $l = l\ast r$. Similarly, $l\ast r = r$, since $l$ is left neutral. Hence $l = l\ast r = r$, $l\in R$ and $r\in L$, yielding $L=R$. Furthermore if $l'\in G$ is another left neutral element, then $l' = l'\ast r = r = l$, which implies that there is at most one left neutral element. Similarly, for another right neutral $r'\in G$, $r' = l\ast r' = l = r$. Thus there is only one left and only one right element and both coincide, implying that in this case the magma has a unique neutral element.
+
+A pair $\brac{G, \ast}$ is called a semi-group if it is a magma and the operation $\ast$ is associative on $G$. The binary operation $\ast:G\times G\to G$ is \emph{associative} if and only if for any $a, b, c\in G$ it is true that $\brac{a\ast b}\ast c = a\ast \brac{b\ast c}$.
+
+A pair $\brac{G, \ast}$ is a monoid if it is a semi-group with a neutral element. Since every monoid is necessarily a magma, the neutral element of a monoid is unique. This justifies the usage of the definite article.
+
+Let $\brac{G, \ast}$ be a monoid with the neutral element $\epsilon$. Let $a\in G$. An element $l\in G$ is called a left inverse of $a$ if $l\ast a = \epsilon$. Similarly a right inverse of $a$ is such $r\in G$ that $a\ast r = \epsilon$. An element of $G$ is an inverse of $a$ if it is both a left and a right inverse of $a$.
+
+For every $a\in G$ let $L_a=\obj{l\in G\vert l\ast a = \epsilon}$ and $R_a=\obj{r\in G\vert a\ast r= \epsilon}$. Suppose $L_a, R_a\neq \emptyset$. Then for an arbitrary $l\in L_a$ and $r\in R_a$ the associativity of $\ast$ implies that\[l = l\ast \epsilon = l\ast \brac{a\ast r} = \brac{l\ast a}\ast r = \epsilon\ast r= r\] Hence $L_a=R_a$. Furthermore, if $r'$ is another right inverse of $a$ then $r'=\epsilon\ast r' = l\ast a\ast r' = l = r$. Therefore every left inverse of $a$ coincides with every right inverse of $a$, if both exist. This implies that there is only one left and only one right inverse of $a$ and both coincide. Hence in this case there is a unique inverse of $a$, and $a$ is called \emph{invertible}.
+
+Let $\brac{G, \ast}$ be a monoid and let $a\in G$ be an element with a left inverse $l$. Then for any $x,y\in G$ with $a\ast x= a\ast y$, it is true that $x = \brac{l\ast a}\ast x = l\ast \brac{a\ast x} = l\ast \brac{a\ast y} = \brac{l\ast a}\ast y = y$. Similarly an element of a monoid with a right inverse can be cancelled from the right of any equation.
+
+A pair $\brac{G, \ast}$ is called a group if it is a monoid and for every $a\in G$ there exists $a^{-1}\in G$ with $a\ast a^{-1} = a^{-1}\ast a = \epsilon$, where $\epsilon$ is the identity element of the monoid. The usage of $a^{-1}$ to denote the inverse of $a$ is unambiguous and is justified by the fact that whenever both left and right inverses exist they coincide and are unique.
+
+Suppose $g\in G$ is such that $g = g\ast g$. Since $\brac{G, \ast}$ is a group, for any $g$, there is the $g^{-1}\in G$ such that $g^{-1}\ast g = g\ast g^{-1} = \epsilon$. Therefore \[g = \epsilon\ast g = \brac{g^{-1}\ast g}\ast g = g^{-1}\ast \brac{g\ast g} = g^{-1}\ast g = \epsilon\] Hence $g$ is the identity of the group $G$.
+
+Actually the axiomatization of a group can be somewhat weakened. To be a group it suffices for a pair $\brac{G, \ast}$ to be a magma with associative operation $\ast$, to have a left neutral element $\epsilon$ and a left inverse for every element: $\forall a\in G$ $\exists l\in G$ such that $l\ast a = \epsilon$, i.e the result is \emph{the same} left neutral $\epsilon$ for every $a\in G$.
+
+First, for any $a\in G$ by definition there is at least one left inverse. Let $l\in G$ be such that $l\ast a=\epsilon$. For such $l$ there is $x\in G$ with $x\ast l=\epsilon$. Then the associativity and left-sided neutrality imply that \[a\ast l = \brac{\brac{x\ast l}\ast a}\ast l = x\ast \brac{\brac{l\ast a}\ast l} = x\ast l = \epsilon\] Hence every left inverse of $a$ is also a right inverse, implying that $a$ itself is a left inverse of any of its left inverses. Therefore there is also at least one right inverse for every $a\in G$.
+
+Pick any $a\in G$. Since every element in $\brac{G, \ast}$ has a left inverse, from the prior result it follows for any left inverse $l\in G$ of $a$ it is true $a\ast l = \epsilon$. Therefore $a = \epsilon\ast a = a\ast \brac{l\ast a} = a\ast \epsilon$ by the associativity of $\ast$, whence $\epsilon$ is also right neutral. Since $\brac{G, \ast}$ is a magma, the neutral element $\epsilon$ it is unique. Hence $G$ is a monoid in which every element has a left and a right inverse. Therefore for every $a\in G$ there exists a unique $a^{-1}\in G$ such that $a^{-1}\ast a = a\ast a^{-1} = \epsilon$.
+
+Let $H$ be a subset of $\brac{G,\ast}$ which is also a magma. Suppose $f\in H$ is such that $a\ast f=f\ast a = f$ for every $a\in H$. Let $x\in H$. Then $x\ast \epsilon = x = x\ast f$. However $G$ is a group, and for $x$ there is a unique element $x^{-1}$ with $\brac{x^{-1}\ast x}=\brac{x\ast x^{-1}} = \epsilon$. Hence $\epsilon = \brac{x^{-1}\ast x}\ast \epsilon = x^{-1}\ast \brac{x\ast \epsilon} = x^{-1}\ast \brac{x\ast f} = \brac{x^{-1}\ast x}\ast f = f$. Therefore the neutral element $f$ of $H$ is the same as the neutral element of the bigger parent group.
+
+Let $G$ be some set and $\ast$ be a binary operation defined on $G$. Then $\brac{G, \ast}$ is called an Abelian group, if $\brac{G, \ast}$ is a group and the operation $\ast$ is commutative: for every $a, b\in G$ it is true that $a\ast b = b\ast a$. Therefore $G$ is closed under $\ast$, $\ast$ is associative and commutative, there is such $\epsilon \in G$ that $a\ast \epsilon = \epsilon\ast a = a$ for every $a \in G$ and for any $b \in G$ there exists $z_b \in G$ such that $b\ast z_b = z_b\ast b = \epsilon$.
+
+Triple $\brac{K, +, \cdot}$ where $K$ is some non-empty set with a pair of operations $+$ (``addition'') and $\cdot$ (``multiplication'') is called a ring, if $\brac{K, +}$ is an Abelian group, and $\cdot$ is distributive with respect ot addition: for all $a,b,c \in K$ it holds that $a\cdot \brac{b+c}=a\cdot b + a\cdot c$ and $\brac{b+c}+ a=b\cdot a + c\cdot a$. The operations' naming and notational conventions are made identical to the respective arithmetic operations only for intuitive clarity and understanding.
+
+Suppose $\theta$ is the neutral element with respect to $+$ and let $a\in K$ and $b=\theta\cdot a$. Then the distributivity of $\cdot$ over $+$ implies: $b+b = \brac{\theta + \theta}\cdot a = \theta\cdot a = b$. Since $b\in K$ by definition, it has the unique inverse $-b$ with respect to $+$. Therefore $b = b+b + (-b) = b + (-b)=\theta$. Since the $\cdot$ distributes over $+$ from both sides, analogous argument shows that $a\cdot \theta = \theta$.
+
+Let $a, b\in K$ and consider $a\cdot(-b)$. From distributivity of $\cdot$ one gets $a\cdot (-b) + a\cdot b = a\cdot\brac{b+(-b)} = a\cdot\theta = \theta$. Thus an additive inverse of $a\cdot (-b)$ is nothing else than $a\cdot b$. Similar argument shows that $(-a) \cdot b$ is an additive inverse to $a\cdot b$ and, again, the correspondence is mutual. As for the element $x=a\cdot b \in K$, its additive inverse is just $-x = -\brac{a\cdot b}$. The uniqueness of additive inverses, which follows from the fact that $\brac{K, +}$ is a group, yields the following relationship: $a\cdot(-b) = (-a)\cdot b = -a\cdot b$ for any $a, b\in K$.
+
+Any ring $\brac{K, +, \cdot}$, the multiplication operation of which is commutative, is called a ``commutative ring''. Analogously if $\cdot$ is associative then the ring is dubbed ``associative ring''. Further if the set $K$ has an element $\epsilon$ that is both the left and the right neutral element with respect to $\cdot$, then $\brac{K, +, \cdot}$ is a unit ring.
+
+Consider a pathological case of a unit ring where $\epsilon=\theta$. The if $a\in K$ then $a = \theta \cdot a$, as $\theta$ is a neutral element of $K$ with respect to $\cdot$. However $\theta$ is also an additively neutral element, and so by the above demonstration $\theta \cdot a = \theta$. Therefore every element of such a unit ring is $\theta$ -- the additively neutral element.
+
+An element $a^{-1}$ of a unit ring $\brac{K, +, \cdot}$ is called an inverse to $a$ if $a^{-1}\cdot a = a\cdot a^{-1} = \epsilon$. Note that the element $\theta$ cannot have a multiplicative inverse, unless $\theta = \epsilon$. If this ring is also associative then whenever an element has an inverse its inverse is unique. This follows from the fact that $\brac{K, \cdot}$ is in this case a group, since it is closed, associative and has a neutral element.
+
+A field is a commutative associative unit ring, in which every element that is not $\theta$ is invertible.
+
+
+\subsection{Subgroups and co-sets} % (fold)
+\label{sub:subgroups_and_co_sets}
+A subgroup of a group $\brac{G, \ast}$ is a subset $H\subseteq G$ which is itself a group under the inherited operation $\ast$. The left co-set of a subgroup $H$ for an element $g\in G$ is the set $\obj{g\ast h\vert h\in H}$, denoted by $g\ast H$. The right co-set of $H$ for some element $g\in G$ is defined similarly: $H\ast g = \obj{h\ast g\vert h\in H}$. Everything proven below for the left co-sets of $H$ is true for the right co-sets of $H$ and their overall properties and behaviour is similar.
+
+Any left co-set of $H$ for some $g\in G$ is non-empty. Indeed $g\in g\ast H$, since $\epsilon\in H$ and $g=g\ast \epsilon$. Consequently, every element $g$ of $G$ is necessarily in at lest one left co-set of $H$.
+
+Let $g_1\ast H$ and $g_2\ast H$ be two left co-sets of $H$ for $g_1,g_2\in G$. Suppose that $g_1\ast H \cap g_2\ast H\neq \emptyset$. Then $\exists{w\in G}$ such that $w=g_1\ast h_1=g_2\ast h_2$ for some $h_1,h_2\in H$. Since $H$ is a subgroup of $\brac{G, \ast}$, this means that $g_1=g_2\ast (h_2\ast h_1^{-1})$ and, equivalently, $g_1\ast (h_1\ast h_2^{-1})=g_2$.
+Now if $a\in g_1\ast H$, then there is $h\in H$ such that $a=g_1\ast h$. Then, by the established relation between $g_1$ and $g_2$, $a=g_2\ast h'$, where $h'=h_2\ast h_1^{-1}\ast h$. However $h'\in H$ and therefore $g_2\ast h\in g_2\ast H$, whence $a\in g_2\ast H$. Conversely, if $a\in g_2\ast H$, then there is $h\in H$ with $a=g_2\ast h$. Hence $a=g_1\ast h'$, where $h'=h_1\ast h_2^{-1}\ast h\in H$ due to the fact that $H$ is a subgroup, and, consequently, $a\in g_1\ast H$. Therefore the left co-sets of a subgroup $H$ coincide whenever their intersection is non-empty.
+
+The reverse implication is obvious. Indeed if two co-sets are equal, their intersection is non-empty. Consequently the left co-sets of $H$ are distinct if and only if they are disjoint.
+
+Let $g_1, g_2\in g\ast H$ for some $g\in G$. Then there are $h_1, h_2\in H$ such that $g_i=g\ast h_i$. Since $H$ is a subgroup of $\brac{G, \ast}$, the inverse of $h_i$ exist in $H$ and are unique. Therefore $h_1^{-1}\ast h_2\in H$. Let $h = h_1\ast h_1^{-1}\ast h_2$ and notice that $g_2 = g\ast h_2 = g\ast\brac{(h_1\ast h_1^{-1})\ast h_2} = g\ast \brac{h_1\ast h_1^{-1}\ast h_2}$. Thus for such $g_1, g_2$ there exists $h\in H$ with $g_2=g_1\ast h$.
+Conversely, suppose $g_1, g_2\in G$ are such that there is $s\in H$ with $g_1=g_2\ast s$. Then obviously $g_1\in g_2\ast H$. However it is also true that $g_1\in g_1\ast H$. Hence the left co-sets $g_1\ast H$ and $g_2\ast H$ have a non-empty intersection. By the property shown above this implies that both co-sets of $H$ coincide: $g_1\ast H = g_2\ast H$. Therefore $g_1$ and $g_2$ belong to the same left co-set of $H$.
+
+In conclusion, any $g_1,g_2\in G$ belong to the same left co-set of $H$ if and only if exists such $s\in H$ that $g_1=g_2\ast s$.
+
+Let $\Gamma(H)\subseteq \mathcal{P}\brac{G}$ be defined as \[\Gamma(H) = \obj{ g\ast H\vert g\in G}\] Obviously, every $X\in \Gamma(H)$ is a subset of $G$ and for any $g\in G$ there is $X\in \Gamma(H)$ such that $g\in X$ ($g\in g\ast H$). Therefore \[G = \bigcup_{X\in \Gamma(H)} X\] Furthermore for any $X_1, X_2\in \Gamma(H)$ the following alternative holds: either $X_1$ and $X_2$ overlap and hence coincide, or they are disjoint and thus distinct. Indeed, $X_1\neq X_2$ holds if and only if $X_1\cap X_2=\emptyset$, by the prior observations. Therefore, combining the derived results together, the set of left co-sets of $H$, $\Gamma(H)$, is a partition of the set $G$. Furthermore, since $\Gamma(H)$ partitions $G$, there is a unique partition ``detection'' map $\delta:G\to \Gamma(H)$ such that $g\in \delta(g)$ for every $g\in G$ (c.f. the section on equivalence relations). This map therefore selects the left co-set of $H$ any element $g\in G$ is in.
+
+Let $X_1, X_2\in \Gamma(H)$. The definition then implies that there exist $g_1, g_2\in G$ such that $X_i=g_i\ast H$. Being elements of a group $G$, for each $g_i$ there is the inverse $g_i^{-1}\in G$. Thus $\gamma=g_2\ast g_1^{-1}$ is in $G$, and so is it's inverse $\gamma^{-1} = g_1\ast g_2^{-1}$.
+
+Define $\xi:X_1\to X_2$ as follows: $\xi(\omega) = \gamma\ast \omega$ for $\omega\in X_1$.
+First, for any $\omega\in X_1$, there is $h\in H$ such that $\omega = g_1\ast h$. Then $\xi(\omega)=\gamma\ast \omega = g_2\ast g_1^{-1}\ast g_1\ast h = g_2\ast h$, whence $\xi(\omega)$ is indeed an element of $X_2$.
+Second, let $\omega_1, \omega_2\in X_1$ be such that $\xi(\omega_1)=\xi(\omega_2)$. Then ``acting'' with $\gamma^{-1}$ through $\ast$ from the left yields the following: $\omega_1 = \epsilon\ast \omega_1 = \gamma^{-1}\ast \brac{\gamma\ast \omega_1} = \gamma^{-1}\ast \brac{\gamma\ast \omega_2} = \brac{\gamma^{-1}\ast \gamma}\ast \omega_2 = \omega_2$ by the properties of the inverse element. 
+Third, for any $\theta\in X_2$, $\gamma^{-1}\ast \theta$ is mapped by $\xi$ to $\theta$, since $\gamma\ast \gamma^{-1} = \epsilon$. Whether $\gamma^{-1}\ast \theta\in X_1$ is obvious. Indeed, since $\theta\in X_2$, there is $h\in H$ such that $\theta=g_2\ast h$. But then $\gamma^{-1}\ast \theta = g_1\ast g_2^{-1}\ast \theta = g_1\ast g_2^{-1}\ast g_2\ast h = g_1\ast h$, which implies that $\gamma^{-1}\ast \theta\in g_1\ast H=X_1$.
+
+These observations imply that $\xi$ thus defined is both an injective and a surjective map between $X_1$ and $X_2$, where $X_1, X_2\in \Gamma(H)$. Therefore there is a bijective map between $X_1$ and $X_2$, and consequently $|X_1|=|X_2|$. In other words $|g_1\ast H| = |g_2\ast H|$ for any $g_1, g_2\in G$. Note, that the left co-set of $H$ for $\epsilon\in G$ is $H$ itself. Hence every left co-set of $H$ has the same cardinality as the subgroup $H$ itself: $|g\ast H| = |H|$ for any $g\in G$.
+
+If the set $G$ is finite, and thus the group $\brac{G, \ast}$ is a finite sized group, then for any subgroup $H$ of $G$, the set of the left co-set of $H$, $\Gamma(H)$, has at most finite number of co-sets. Indeed, each member of $G$ is in exactly one left co-set of $H$, and there are no empty co-sets, that is why the set $\Gamma(H)$ has at most as many members as $G$ itself. But the set $\Gamma(H)$ partitions $G$ into subsets of equal size. Therefore in this case the volume of $G$ can be decomposed into the product \[|G| = |\Gamma(H)|\cdot|H|\] Therefore any subgroup of a finite group, which comprises a prime number of elements, is necessarily either a trivial subgroup, of the whole group itself.
+
+%% THIS SHOULD PROBABLY BE MOVED SOMEWHERE ELSE
+Let $H$ be as subgroup of $G$. Call the elements $g_1, g_2\in G$ equivalent under $H$, or $g_1\sim_H g_2$ if and only if there exists $h\in H$ with $g_1=g_2\ast h$. Therefore $g_1$ and $g_2$ are equivalent if and only if both are in the same left co-set of $H$. Since the set of all left co-sets of $H$, $\Gamma(H)$, partitions $G$, the relation $\sim_H$ thus defined is indeed an equivalence relation: it is reflexive, symmetric and transitive. The equivalence classes induced by the relation $\sim_H$ are exactly (and by definition) the left co-sets of $H$, whence $\Gamma(H)$ is the collection of all existing equivalence classes under $\sim_H$.
+
+Then $\sim_H$ is an equivalence relation. First, it is \emph{reflexive}, since $H$ is a subgroup of $G$ and for every $g\in G$, $g=g\ast \epsilon_G$. Second, if $a\sim_H b$ for some $a,b\in G$, then $\exists{s\in H}$ such that $a=b\ast s$. Now $H$ is a subgroup, and thus $s^{-1}\in H$, whence $b=b\ast \epsilon_G=b\ast s\ast s^{-1}=a\ast s^{-1}$. Therefore $b\sim_H a$, and $\sim_H$ is \emph{symmetric}. Third, $\sim_H$ is \emph{transitive}. Indeed, if $a_1,a_2,a_3\in G$ are such that $a_1\sim_H a_2$ and $a_2\sim_H a_3$ there exist $s_1, s_2\in H$ with $a_1=a_2\ast s_1$ and $a_2=a_3\ast s_2$. But, once again $H$ is a subgroup of $G$, implying that $s = s_2\ast s_1\in H$. Therefore $a_1=a_3\ast s_2\ast s_1=a_3\ast s$, from where it follows that $a_1$ and $a_3$ are equivalent under $H$.
+
+% subsection subgroups_and_co_sets (end)
+
+
+\subsection{Group Homomorphisms} % (fold)
+\label{sub:group_homomorphisms}
+Let $\brac{G,\ast}$ and $\brac{H,\star}$ be two groups. A map $\phi:G\to H$ is called a homomorphism if $\phi(g_1\ast g_2)=\phi(g_1)\star \phi(g_2)$ for any $g_1,g_2\in G$, i.e. it preserves the group operation.
+
+Any homomorphism associates the identity of $G$ with the identity of $H$. Indeed, let $\phi:G\to H$ be a homomorphism and $h=\phi(\epsilon_G)$, where $\epsilon_G$ is the identity of the group $G$. Then $\phi(\epsilon_G) = \phi(\epsilon_G\ast \epsilon_G) = \phi(\epsilon_G)\star \phi(\epsilon_G)$ by the core property of a homomorphism. However the relation $h=h\star h$ in the group $\brac{H,\star}$ implies that $h=\epsilon_H$. Consequently $\phi(\epsilon_G)=\epsilon_H$.
+
+Let $\phi:G\to H$ be a homomorphism and $g$ be an arbitrary element of the group $\brac{G, \ast}$. Let $h=\phi(g)$. On the one hand, $\epsilon_G = g^{-1}\ast g$ implies that $\phi(g^{-1}\ast g) = \epsilon_H$. However, it is also true that $\phi(g^{-1}\ast g) = \phi(g^{-1})\star \phi(g)$, which leads to $\epsilon_H = \phi(g^{-1})\star \phi(g)$. On the other hand $\epsilon_G = g\ast g^{-1}$ and thus $\epsilon_H = \phi(g\ast g^{-1}) = \phi(g)\star \phi(g^{-1})$. Consequently the element $\phi(g^{-1})$ of $H$ acts as an inverse of the element $h=\phi(g)$, and thus $h^{-1} = \phi(g^{-1})$. Therefore the image of the inverse of an element is the inverse of the image of the same element.
+
+Define the kernel of a homomorphism $\phi$ between the groups $\brac{G, \ast}$ and $\brac{H, \star}$ as the following subset of $G$:\[\ker{\phi} = \obj{g\in G\vert \phi(g)=\epsilon_H}\] The kernel of $\phi$ is always non-empty, because $\epsilon_G\in \ker{\phi}$ by the very fact that is a homomorphism: $\phi(\epsilon_G)=\epsilon_H$.
+The set $\ker{\phi}$ is closed under the group operation of $G$. Indeed, if $g_1, g_2\in \ker{\phi}$, then $\phi(g_1\ast g_2) = \phi(g_1)\star \phi(g_2) = \epsilon_H\star \epsilon_H = \epsilon_H$. Hence $g_1\ast g_2\in \ker{\phi}$.
+Let $g\in \ker{\phi}$. Since $\phi$ is a homomorphism, $\phi(g^{-1})=\brac{\phi(g)}^{-1}$. However $\phi(g)=\epsilon_G$, whence $\phi(g^{-1})=\epsilon_G$. Thus $g^{-1}\in \ker{\phi}$.
+
+These observations together state that the kernel of any homomorphism is a subgroup of $G$: it is closed under the inherited group operation, which is also associative, it contains the identity and it includes the inverse of any of its elements.
+
+Define the image of a homomorphism $\phi:\brac{G, \ast}\to \brac{H, \star}$ as the following subset of $H$:\[\im{\phi}=\obj{\phi(g)\vert g\in G}\]The image of a homomorphism is a subgroup of $H$. Obviously the inherited operation $\star$ is still associative when its domain is restricted to a subset.
+First, it is closed under the group operation $\star$. Indeed, if $h_1, h_2\in \im{\phi}$ then $\exists{g_1, g_2\in G}$ such that $h_i=\phi(g_i)$. Then $g_1\ast g_2\in G$, which implies that $\phi(g_1\ast g_2)\in \im{\phi}$. However $\phi(g_1\ast g_2) = \phi(g_1)\star \phi(g_2) = h_1\star h_2$.
+Second, since $\epsilon_G\in G$ and $\phi(\epsilon_G)=\epsilon_H$, $\epsilon_H\in \im{\phi}$.
+Third, if $h\in \im{\phi}$ then there exists $g\in G$ such that $h=\phi(g)$. Since $h^{-1} = \phi(g^{-1})$ and obviously $g^{-1}\in G$, $h^{-1}$ must be a member of $\im{\phi}$.
+
+If the kernel of a homomorphism contains only the identity, then the homomorphism is injective. Let $\phi:G\to H$ be a homomorphism, and suppose that $\ker{\phi}=\obj{\epsilon_G}$. Let $g_1, g_2\in G$ be such that $\phi(g_1)=\phi(g_2)$. Both the left hand and the right hand side of the condition being some elements of the group $H$, for each there is an inverse in $H$. In particular, $\epsilon_H = \brac{\phi(g_1)}^{-1}\star \phi(g_2)$. Since $\phi$ is a homomorphism, $\brac{\phi(g_1)}^{-1}\star \phi(g_2) = \phi(g_1^{-1})\star \phi(g_2) = \phi(g_1^{-1}\ast g_2)$, implying that $g_1^{-1}\ast g_2\in \ker{\phi}$. Hence $g_1^{-1}\ast g_2=\epsilon_G$. Consequently $g_1 = g_1\ast \epsilon_G = g_1\ast \brac{g_1^{-1}\ast g_2} = \brac{g_1\ast g_1^{-1}}\ast g_2 = \epsilon_G\ast g_2 = g_2$ by the associativity of $\ast$.
+
+Conversely, if a homomorphism $\phi:\brac{G, \ast}\to \brac{H, \star}$ is injective, then its kernel consists solely of the identity of the group $G$. Indeed, if $g\in \ker{\phi}$, then $\phi(g)=\epsilon_H=\phi(\epsilon_G)$. The injectivity of $\phi$ therefore implies that $g=\epsilon_G$.
+
+In conclusion, the homomorphism between groups $G$ and $H$ is injective if and only if its kernel is a trivial subgroup of $G$, defined as $\obj{\epsilon_G}$.
+
+Consider a group homomorphism $\phi:\brac{G, \ast}\to \brac{H, \star}$. Then $\ker{\phi}$ is a subgroup of $G$. Let $g_1, g_2\in G$ belong to the same left co-set of $\ker{\phi}$. Thus there exists $k\in \ker{\phi}$ such that $g_1=g_2\ast k$. So $\phi(g_1)=\phi(g_2\ast k)=\phi(g_2)\star \phi(k) = \phi(g_2)$, since $\phi(k)=\epsilon_H$. Therefore the members of the same left co-set of $\ker{\phi}$ are mapped by the homomorphism $\phi$ into the same element of $H$.
+
+Conversely, let $g_1, g_2\in G$ be such that $\phi(g_1)=\phi(g_2)$. In particular, this implies that $\brac{\phi(g_2)}^{-1}\star \phi(g_1)=\epsilon_H$ as a result of applying the inverse of $\phi(g_2)$ through $\ast$ from the left. However $\phi$ is a homomorphism, and so $\brac{\phi(g_2)}^{-1}=\phi(g_2^{-1})$, leading to $\phi(g_2^{-1}\ast g_1)=\epsilon_H$, whence $g_2^{-1}\ast g_1\in \ker{\phi}$. So there exists $k\in \ker{\phi}$ such that $g_2^{-1}\ast g_1=k$, and, consequently, $g_1=g_2\ast k$ for some $k\in \ker{\phi}$. Therefore $g_1$ and $g_2$ reside in the same left co-set. Note that by applying the inverse from the right one gets the same result for the right co-sets of $\ker{\phi}$.
+
+Let $\phi:\brac{G, \ast}\to \brac{H, \star}$ be a group homomorphism. Since $\ker{\phi}$ is a subgroup of $G$, its left (equivalently right) co-sets $\Gamma(\ker{\phi})$ induce a partition of $G$ into subsets of equal cardinality. Therefore there is a unique map associating with every $g\in G$ its unique left co-set of $\ker{\phi}$. Let $\lambda:G\to \Gamma(\ker{\phi})$ be such map.
+
+Consider $\im{\phi}$. By definition for every $h\in \im{\phi}$ there necessarily exists at least one $g\in G$ such that $h=\phi(g)$. Denote the set of such $g\in G$ as $\iota_h$. Then the map $\iota:\im{\phi}\to \mathcal{P}\brac{G}$ associates with every $h\in \im{\phi}$ a non-empty set of elements $g\in G$ with $h=\phi(g)$.
+Suppose $h_1, h_2\in \im{\phi}$ are such that $\iota_{h_1}\cap \iota_{h_2}\neq \emptyset$. Then there is $g\in G$ with $h_1=\phi(g)$, since $g\in \iota_{h_1}$, and $h_2=\phi(g)$, because $g\in \iota_{h_2}$. Therefore $h_1=h_2$, whence $\iota_{h_1}=\iota_{h_2}$.
+This map $\iota$ is injective, in the sense that the sets it produces for distinct arguments do not overlap. Indeed if $h_1, h_2\in \im{\phi}$ are such that $h_1\neq h_2$, then it must be that $\iota_{h_1}\cap \iota_{h_2}=\emptyset$.
+
+Let $h\in \im(\phi)$ and $g_1, g_2\in \iota_h$. Then $\phi(g_1)=h=\phi(g_2)$, from where it follows that there exists such $k\in \ker{\phi}$ that $g_1=g_2\ast k$. Therefore $\lambda(g_1)=\lambda(g_2)$, and thus all elements which are mapped by $\phi$ to $h$ are in the same left co-set of $\ker{\phi}$. Hence the map $\xi:\im{\phi}\to \Gamma(\ker{\phi})$ defined as $\xi(h) = \lambda(g)$ for any $g\in \iota_h$ is well-defined, despite $\iota$ being a point-to-set map.
+
+First, let $h_1, h_2\in \im{\phi}$ and $g_i\in \iota_{h_i}$. Suppose they are such that $\xi(h_1)=\xi(h_2)$. Then $g_1$ and $g_2$ are in the same left co-set of $\ker{\phi}$, and thus $\exists{k\in \ker{\phi}}$ such that $g_1=g_2\ast k$. Therefore $\phi(g_1)=\phi(g_2)$ and $\iota_{h_1}\cap \iota_{h_2}\neq \emptyset$, whence $\iota_{h_1} = \iota_{h_2}$ and $h_1=h_2$ since $\iota$ is injective. Therefore $\xi$ is an injective map.
+
+Second, let $\lambda\in \Gamma(\ker{\phi})$. Thus $\lambda(g)=\lambda$ for every $g\in \lambda$ and $\phi(g)=\phi(g')$ for any $g'\in \lambda$. Let $h=\phi(g)$. Then $h=\phi(g')$ for any $g'\in \iota_h$ and thus every $\lambda(g')=\lambda(g)$ as $\phi(g)=\phi(g')$. So $\xi(h)=\lambda(g)=\lambda$, and, consequently, $\xi$ is a surjective map.
+
+In conclusion, $|\im{\phi}| = |\Gamma(\ker{\phi})|$ because there is a bijective map between the image of the homomorphism $\phi$ and the set of all left co-sets of its kernel.
+
+Now if $\phi:\brac{G, \ast}\to \brac{H,\star}$ is a group homomorphism and $G$ is a finite group, then the equivalence of $\im{\phi}$ to $\Gamma(\ker{\phi})$ implies that \[|G| = |\Gamma(\ker{\phi})|\cdot |\ker{\phi}| = |\im{\phi}|\cdot |\ker{\phi}|\] Then, once again, if $G$ has a prime number of elements, then for any homomorphism $\phi$ the following alternatives are possible:
+\begin{enumerate}
+	\item If $|\im{\phi}|=|G|$, then $|\ker{\phi}| = 1$. Since $\ker{\phi}$ is a subgroup of $G$, $\epsilon_G\in \ker{\phi}$, and hence $\ker{\phi}=\obj{\epsilon_G}$. Therefore in this case the homomorphism $\phi$ is injective.
+	\item If $|\ker{\phi}|=|G|$, then $\phi$ is a trivial homomorphism. Indeed, in this case $\im{\phi}=\obj{\epsilon_H}$ and every element of $G$ is mapped to the identity of $H$.
+\end{enumerate}
+
+
+% subsection group_homomorphisms (end)
+
+
+\subsection{The group of automorphisms} % (fold)
+\label{sub:the_group_of_automorphisms}
+Let $D$ be some set. An automorphism of $D$ is any bijective map from $D$ into itself. Suppose $\phi_1, \phi_2$ are automorphisms of $D$, then obviously their composition $\phi_1\circ \phi_2$ is an automorphism as well. The map $\epsilon:D\to D$ defined as $\epsilon(x)=x$ is known as the identity automorphism of $D$. Finally, if $\phi$ is an automorphism of $D$, then it is bijective, whence follows the existence of a unique bijective map $\phi^{-1}:D\to D$, such that $\phi\circ\phi^{-1} = \phi^{-1}\circ \phi = \epsilon$. Therefore the collection of all automorphisms of some set $D$ with the map composition operation $\circ$ naturally forms a group.
+
+Furthermore the set of automorphisms of a set naturally acts on objects defined on that set. Indeed any automorphism $\phi$ of $D$ induces in a natural way an action on any map $f:D\to K$ by the following rule $f'(d) = f\brac{\phi^{-1}(d)}$ for every $d\in D$.
+
+Any two maps $f_1, f_2\in K^D$ are considered equivalent, $f_1\sim f_2$ if and only if there exists an automorphism $\phi:D\to D$ such that $f_2 = f_1\circ \phi$.
+This relation is \emph{reflexive}, since for any $f:D\to K$, $f = f\circ \epsilon$, where $\epsilon$ is the identity automorphism.
+The relation $\sim$ is symmetric since for any automorphism there is the inverse automorphism. Indeed if $f_1\sim f_2$, then there exists an automorphism $\phi$ of $D$ such that $f_1=f_2\circ \phi$. Applying $f_1$ to $\phi^{-1}$ yields $f_1\circ \phi^{-1} = \brac{f_2\circ\phi} \circ\phi^{-1} = f_2\circ \brac{\phi\circ \phi^{-1}} = f_2$. Therefore $f_2\sim f_1$.
+For any $f, g, h\in K^D$ with $f\sim g$ and $g\sim h$ there are automorphisms $\phi, \psi$ of $D$ such that $f = g\circ \phi$ and $g = h\circ \psi$. Since the composition of automorphisms is an automorphism itself, $f=\brac{h\circ \psi}\circ \phi = h\circ \brac{\psi\circ \phi}$.
+Thus the set of all maps $D\to K$ is partitioned into equivalence classes in which every function exhibits somewhat similar patterns.
+
+Let $\phi$ be some automorphism of $D$. For any $k\geq 1$ define the power of the automorphism as a composition of $k$ instances of $\phi$: $\phi^k = \phi\circ \ldots \circ \phi$. By convention for any automorphism $\phi$ the zeroth power is just the identity automorphism of $D$ i.e $\phi^0 = \epsilon$. The associativity of the map composition guarantees that this repeated application is a well-defined map, equal to both $\phi\circ\phi^{k-1}$ and to $\phi^{k-1}\circ \phi$. The fact that $\phi$ is bijective implies that $\phi^k$ is a bijective map either. Furthermore $\phi^k:D\to D$, since its basic building blocks $\phi$ are automorphisms.
+The negative power of an automorphism is defined as $\phi^k = \brac{\phi^{-1}}^{|k|}$, which is certainly well defined, because $\phi$ is bijective and thus $\phi^{-1}$ is a proper map and a map and its inverse cancel each other out: $\phi\circ \phi^{-1} = \phi^{-1}\circ \phi = \epsilon$. Therefore $\phi^k$ is an automorphism of $D$ for every $k\in \mathbb{Z}$, since the map composition is associative and inverse maps cancel each other out.
+
+For the following we shall have to limit our attention to the case when the set $D$ is finite. This restriction implies that there is a finite number of automorphisms of $D$: $n!$, where $n=|D|$. By the way, when the set is finite automorphisms of it are called permutations.
+
+Let $\phi$ be some automorphism of $D$. Suppose $d\in D$ is such that $d\neq \phi^m(D)$ for all $m\geq 1$. Let $d_m = \phi^m(d)$. Suppose that $d_i = \phi^i(d) = \phi^j(d) = d_j$ for some $i<j$. Then $d = \epsilon(d) = \phi^j\circ \phi^{-i}(d) = \phi^{i-j}(d)$ since the inverse of the automorphism $\phi^i$ is the automorphism $\phi^{-i} = \brac{\phi^{-1}}^i$. Hence there is $m\geq 1$ such that $d = \phi^m(d)$, which contradicts the initial	assumption made for this $d\in D$, whence $\phi^n(d)\neq \phi^m(d)$ for every $n\neq m$. Therefore there is an injective map $\xi:\mathbb{N}\to D$ defined as $\xi(m) = \phi^m(d)$, implying that $|\mathbb{N}|\leq |D|$. But this contradicts the assumption that the set $D$ is finite. Thus the very first supposition is contradictory, yielding the following conclusion, applicable to every automorphism $\phi$ of $D$: for every $d\in D$ there exists such $k\geq 1$ that $d=\phi^k(d)$. Note that if $\phi^k(d) = d$ for some $k\geq 1$ then $d = \brac{\phi^{-k}\circ \phi^k}(d) = \phi^{-k}(\phi^k(d)) = \phi^{-k}(d)$.
+
+Consider any automorphism $\phi$ of $D$, pick any $d\in D$ and let $L_\phi(d) = \obj{k\geq 1\vert d=\phi^k(d)}$. Then by the above $L_\phi(d)$ is a non-empty subset of non-negative integers for every $d\in D$ and automorphism $\phi$. As s subset of a naturally well-ordered set $\mathbb{N}$, $L_\phi(d)$ has the least element. Suppose that $k\in L_\phi(d)$ is such that $n\notin L_\phi(d)$ for every $n<k$. Let $m\in L_\phi(d)$ and let $p,q\in \mathbb{Z}$ be such that $m = kp+q$ with $0\leq q < k$. Then the associativity implies that $d = \phi^{pk+q}(d) = \brac{\phi^q\circ\phi^{pk}}(d)$. By definition $\phi^{pk} = \brac{\phi^k}^p = \brac{\phi^k}^{p-1}\circ \phi^k$ and $\phi^k(d) = d$, which therefore implies that $\phi^{kp}(d) = \phi^{k(p-1)}(d) = \ldots = \phi^k(d) = d$, whence $d = \phi^{pk+q}(d) = \phi^q(d)$. If $q\geq 1$ then $q\in L_\phi(d)$ and $q<k$ which is a contradiction since $k$ is the least number in $L_\phi(d)$. Therefore $q=0$ and every $m\in L_\phi(d)$ is divisible by $k$, implying that $L_\phi(d) = k\mathbb{Z}$.
+
+Let $\phi$ be an automorphism of $D$. Then for every $d\in D$ there is a unique $k_d\geq 1$ such that $d=\phi^{k_d}(d)$ and $d\neq \phi^k(d)$ for any $k<k_d$. Let $C_\phi(d) = \obj{\phi^k(d)\vert k=0\ldots k_d}$. Note that since for every $k\geq 1$ there are $p,q\in \mathbb{Z}$ such that $k = k_d p + q$ with $0\leq q < k_d$, it is true that $\phi^k(d) = \brac{\phi^q\circ\phi^{p k_d}}(d) = \phi^q(d)\in C_\phi(d)$. Note that for every $0 < k \leq k_d$ it is true that $\phi^{-k}(d) = \brac{\phi^{-k}\circ \phi^k}(d) = \phi^{k_d-k}(d)\in C_\phi(d)$ since $0\leq k_d-k < k_d$. Furthermore for every $k\leq 0$ there is $p\in \mathbb{Z}$ such that $p k_d - k > 0$, implying that $\phi^k(d) = \phi^{p k_d - k}(d)\in C_\phi(d)$. In conclusion, $\phi^m(d)\in C_\phi(d)$ for every $m\in \mathbb{Z}$. 
+
+Let $\phi$ be some automorphism of $D$. Then it is true that $d=\phi^0(d)=\epsilon(d)$ for any $d\in D$, whence $d\in C_\phi(d)\subseteq D$. Therefore $D = \bigcup_{d\in D}C_\phi(d)$ for every automorphism $\phi$ of $D$.
+
+Let $d_1, d_2\in D$ be such that $C_\phi(d_1)\cap C_\phi(d_2)\neq \emptyset$. Then there exist $0\leq m_1 < k_{d_1}$ and $0\leq m_1 < k_{d_2}$ such that $\phi^{m_1}(d_1) = \phi^{m_2}(d_2)$, whence $d_1=\phi^{m_2-m_1}(d_2)$.
+If $d\in C_\phi(d_1)$, then $d=\phi^m(d_1)$ for some $0\leq m < k_{d_1}$, and therefore $d=\phi^{m+m_1-m_2}(d_2)\in C_\phi(d_2)$. Conversely, if $d\in C_\phi(d_2)$, then there is $0\leq m < k_{d_2}$ such that $d=\phi^m(d_2)$. However the inverse of $\phi^{m_2-m_1}$ is the unique automorphism $\phi^{m_1-m_2}$ and so $d_2 = \phi^{m_1-m_2}(d_1)$, whence $d = \phi^{m+m_1-m_2}(d_1) \in C_\phi(d)$. Therefore $C_\phi(d_1) = C_\phi(d_2)$ whenever $C_\phi(d_1)$ and $C_\phi(d_2)$ have a common element.
+
+Now for every $d\in D$ the set $C_\phi(d)$ is invariant under the automorphism $\phi$. So its elements transform into each other and after $k_d$ applications of $\phi$ each is mapped back to itself, after visiting every other element. Thus $C_\phi(d)$ is the unique cycle containing $d$ created by $\phi$, and therefore all cycles induced by $\phi$ make up a partition of the set $D$.
+
+Let $\phi$ be some automorphism of $D$ and let $d\in D$ and $d_1, d_2\in C_\phi(d)$. Then for such $d_i$ there is $m_i$ with $d_i = \phi^{m_i}(d)$, whence $d_2 = \phi^{m_2-m_1}(d_1)$. Thus there exists $m\in \mathbb{Z}$ such that $d_2=\phi^m(d_1)$. Conversely, suppose $d_1=\phi^m(d_2)$ for some $m\in \mathbb{Z}$. Then clearly $d_1\in C_\phi(d_1)$ and $\phi^m(d_2)\in C_\phi(d_2)$. Hence $C_\phi(d_1)\cap C_\phi(d_2)\neq \emptyset$ and, consequently, $C_\phi(d_1)=C_\phi(d_2)$. Thus $d_1, d_2$ belong to the same cycle if and only if there is $m\in \mathbb{Z}$ such that $d_1 = \phi^m(d_2)$.
+
+Let $F_\phi = \obj{f\in K^D\vert f\circ \phi = f}$, the set of all maps $D\to K$ fixed by the automorphism $\phi$. Let $f\in F_\phi$, and $d_1\neq d_2\in D$ belong to the same cycle induced by $\phi$. Without the loss of generality there is $k\geq 1$ such that $d_1 = \phi^k(d_2)$ (indeed, $d_2 = \phi^{-k}(d_1)$ and $d_1\neq d_2$).
+Suppose $f(d_1)\neq f(d_2)$. Then there exists $0\leq s\leq k-1$ such that $f(\phi^s(d_2))\neq f(\phi^{s+1}(d_2))$. Indeed, if $f(\phi^s(d_2)) = f(\phi^{s+1}(d_2))$ for all $s=0\ldots k-1$ then it has to be that $f(d_2) = f(\phi^0(d_2)) = f(\phi^k(d_2)) = f(d_1)$, which contradicts the initial assumption. Let $0\leq s<k$ be such that $f(d')\neq f(\phi(d'))$, where $d'=\phi^s(d_2)$. However this contradicts $f\in F_\phi$, which requires that $f(d) = f(\phi(d))$ for every $d\in D$. Therefore $f(d_1)=f(d_2)$ for any $d_1, d_2\in D$ such that $d_1 = \phi^k(d_2)$ for some $k\geq 1$, whenever $f\in F_\phi$. In plainer terms to be fixed by an automorphism $\phi$ a map $f:D\to K$ must be constant on every subset of the cycle partition of $D$ induced by $\phi$.
+
+Conversely, let $f\in K^D$. If for every $d_1, d_2\in D$ such that there is $k\in \mathbb{Z}$ with $d_1=\phi^k(d_2)$ is $f(d_1)=f(d_2)$ then $f\in F_\phi$. Indeed, the cycles induced by $\phi$ partition $D$, and so for every $d\in D$  then $\phi(d)\in C_\phi(d)$. However, the fact that $f$ is ``constant'' over every cycle of $\phi$ implies that $f(\phi(d)) = f(d)$ for every $d\in D$. The conclusion follows.
+
+
+% subsection the_group_of_automorphisms (end)
+
+
+% section polya_theory (end)
+
+
+\section{Some linear algebra} % (fold)
+\label{sec:some_linear_algebra}
+Suppose $V$ is a finite-dimensional linear space over the field $\mathbb{F}$. Define $N_k = \ker{T^k}$ and $R_k = \im{T_k}$, $N_k, R_k \subseteq V$, $k\geq 0$ and $T^0$ -- the identity map. If $x_1, x_2\in N_k$ then the linearity of $T$ implies that $T^k(x_1+x_2) = T^k(x_1)+T^k(x_2) = 0_V$ since $T^k(x_1) = T^k(x_2) = 0_V$. Or if $\lambda\in \mathbb{F}$ and $x\in N_k$ then $T^k\brac{\lambda x} = \lambda T^k(x) = 0_V$, since $T$ and hence $T^k$ is a linear map. Now, for $y_1, y_2\in R_k$ there exist such $z_1, z_2\in V$ that $y_i=T^k(z_i)$. Since $T^k$ is linear, $T^k\brac{z_1+z_2} = y_1+y_2$, implying $y_1+y_2\in R_k$. Analogously, if $y\in R_k$ and $z\in V$ is such that $y=T^k(z)$, then $T$'s linearity implies that $T^k(\lambda z) = \lambda T^k(z) = \lambda y$ for any $\lambda \in \mathbb{F}$. Therefore $N_k$ and $R_k$ are linear spaces over $\mathbb{F}$ for any $k\geq 0$.
+
+Now, if $x\in N_k$ then $T^k(x) = 0_V$ and $T^k\brac{T(x)} = T^{k+1}(x) = T\brac{T^k(x)}=0_V$, whence $T(x)\in N_k$. Furthermore if $y\in R_k$ then there is $z\in V$ with $y=T^k(z)$. However for $x=T(z)$ it is true that $T(y)=T\brac{T^k(z)} = T^k\brac{T(z)} = T^k(x)$, which implies that $T(y)\in R_k$ as well. This demonstrates that for any $k\geq 0$ the spaces $N_k$ and $R_k$ are $T$-invariant subspaces of $V$.
+
+If $x\in N_k$ then $x\in N_{k+1}$, because $T$ is linear, $T^{k+1}(x) = T\brac{T^k(x)}$ and $T^k(x) = 0_V$. If $y\in R_{k+1}$ then there is $x\in V$ with $y=T^{k+1}(x)$, meaning that $y\in R_k$ because $y = T^{k+1}(x) = T^k(z)$ for $z=T(x) \in V$.
+
+Suppose there is $m\geq 1$ such that $N_m=N_{m+1}$, then $N_s=N_{s+1}$ for all $s\geq m$. For $x\in N_{s+1}$ it is true that $T^{s+1}(x)=0_V$. Now $T^{m+1}\circ T^{m-s}$, for $T$ is linear, implies $T^{m+1}\brac{T^{s-m}(x)} = 0_V$, whence $T^{s-m}(x)\in N_{m+1} = N_m$. Thus $T^s(x) = T^m\brac{T^{s-m}(x)} = 0_V$ and so $x\in N_s$.
+
+Let $n=\dim{V}$ and suppose $N_k\neq N_{k+1}$ for any $k\leq n$. Every $N_k$ is a subspace of a finite dimensional space $V$ and hence $d_k = \dim{N_k}\leq n$, $d_0 = 0$. Since $N_k\subset N_{k+1}$ any to get a basis in $N_{k+1}$ any basis in $N_k$ would have to be extended by a least one vector from $N_{k+1}\setminus N_k\neq \emptyset$, whence $d_{k+1}-d_k\geq 1$. Now $d_{n+1} = \sum_{k=0}^n{d_{k+1}-d_k} \geq n+1$, which contradicts $d_k\leq n$ for all $k\geq 0$. Therefore it must be true that $N_n=N_{n+1}$, implying that the sequence of telescoping subspaces $\brac{N_k}_{k\geq 0}$ is stationary for all $k\geq \dim{V}$.
+
+For any $k\geq 0$ the dimensionality of both $N_k$ and $R_k$ adds up to the dimensionality of $V$, since $T^k$ is a linear map. Therefore $N_k=N_{k+1}$ if and only if $R_k=R_{k+1}$, which means that $N_k$ and $R_k$ stabilize simultaneously.
+
+Let $m$ be the smallest $k\geq 0$ such that $N_m = N_{m+1}$. Define $N_\infty$ and $R_\infty$ as $N_m$ and $R_m$ respectively. Then $N_k=N_\infty$ and $R_k=R_\infty$ fro all $k\geq n \geq m$, and both are $T$-invariant subspaces of $V$. Now, if $x\in N_\infty\cap R_\infty$ then $T^m(x) = 0_V$ and $x=T^m(z)$ for some $z\in V$. For such $z\in V$ it is true that $T^{2m}(z) = T^m\brac{T^m(z)} = 0_V$, whence $z\in N_{2m} = N_m$. Therefore $x=T^m(z)=0_V$, implying that $R_\infty$ and $N_\infty$ have trivial intersection. This and the fact that dimensionalities of $N_\infty$ and $R_\infty$ add to the dimensionalitiy of $V$ implies that the whole space $V$ can be decomposed into a direct sum $N_\infty\oplus R_\infty$ of $T$-invariant subspaces.
+
+Let $x\in V$ and $k\geq 1$ such that $T^k(x) = 0_V$, but $T^{k-1}(x)\neq 0_V$. Consider $v_i = T^{i-1}(x)$ for $1\leq i < k$, each $v_i$ is non-zero. The collection $\brac{v_i}_{i=1}^k$ is linearly independent. Indeed, if $\sum_{i=1}^k \alpha_i v_i = 0_V$ then applying $T^{k-j}$ to it yields $0_V = \sum_{i=1}^k \alpha_i T^{k-j}(v_i)$. However $T^{k-j}(v_i) = T^{k-j}\brac{T^{i-1}(x)} = 0_V$ for all $i\geq j+1$. Therefore for all $1\leq j \leq k$ \[0_V = \sum_{i=1}^j \alpha_i T^{k+i-j-1}(x)=\sum_{i=1}^j \alpha_i v_{k-(j-i)}\] For $j=1$ this yields $\alpha_1 v_k = 0_V$, which implies that $\alpha_1 = 0\in \mathbb{F}$. Now $\brac{\alpha_i}_{i=1}^s=0\in \mathbb{F}$ all together combined with $\sum_{i=1}^s \alpha_i v_{k-(s+1-i)} + \alpha_{s+1} v_k = 0_V$ imply that $\alpha_{s+1}=0$. Therefore $\alpha_i = 0$ for every $1\leq i\leq k$, whence the $\brac{T^{i-1}(x)}_{i=1}^k \in V$ is a linearly independent collection.
+
+%% For every linear map on $V$ there is a polynomial that annihilates $A$
+%% Every linear map has an eigenvalue.
+
+Let $A:V\to V$ be an endomorphism (a linear map from $V$ to itself), and $\lambda$ be an eigenvalue. Then there is $v\in V$, $v\neq 0_V$ such that $\brac{A-\lambda}(v)=0_V$. Denote $T=A-\lambda$.
+
+Define the generalized eigenspace of $T$ as follows:\[E_\lambda = \obj{ x\in V\vert \brac{T-\lambda}^k(x)=0_V \text{ for some } k\geq 1}\]
+If $x, y\in E_\lambda$ then for some $m,k\geq 1$ it is true that $\brac{T-\lambda}^k(x)=0_V$ and $\brac{T-\lambda}^m(y)=0_V$. Then from the linearity of $T$ for $s=m\wedge k$ it holds that \[\brac{T-\lambda}^s(x+y)=\brac{T-\lambda}^s(x)+\brac{T-\lambda}^s(y)=\brac{T-\lambda}^{s-m}\brac{T-\lambda}^m(x)+\brac{T-\lambda}^{s-k}\brac{T-\lambda}^k(y)=0_V\] Further, for any $\alpha\in \mathbb{F}$ the linearity of $T$ implies that $\brac{T-\lambda}^k(\lambda x)=\lambda \brac{T-\lambda}^k(x)=0_V$. Therefore $E_\lambda$ is a non-trivial subspace of $V$, as $\lambda$ is an eigenvalue.
+
+Let $r=\dim{E_\lambda}\leq \dim{V}$ and $\brac{e_i}_{i=1}^r$ be a basis of $E_\lambda$. Then there is a collection $\brac{k_i}_{i=1}^r\geq 1$ such that $\brac{T-\lambda}^{k_i}(e_i)=0_V$. Taking $k$ to be the maximal $r_i$, one can see that $\brac{T-\lambda}^k(e_i)=0_V$ for all $i=1\ldots r$. Then for any $x\in E_\lambda$ $x=\sum_{i=1}^r x_i e_i$ and so $\brac{T-\lambda}^k(x)=\sum_{i=1}^r x_i \brac{T-\lambda}^k(e_i)=0_V$, whence $x\in \ker{\brac{T-\lambda}^k}$. If, in turn, $x\in \ker{\brac{T-\lambda}^k}$ then, by definition, $x\in E_\lambda$.
+Thus there exists $k\geq 1$ such that $E_\lambda = \ker{\brac{T-\lambda}^k}$.
+
+Further note that for every $m\geq 1$ the nullity $N_m = \ker{\brac{T-\lambda}^m}$ is a subspace of $E_\lambda$ by definition of the latter. Thus if $N_m$ stabilizes it does so at some $m\leq \dim{E_\lambda}$. Now $E_\lambda = N_k \subseteq N_{k+1} \subseteq E_\lambda$, implying that $N_m$ definitely stabilizes at $m=k$. Therefore $E_\lambda = N_{\dim{V}} = N_r$, since by the above nullity is certainly stable for indices not less than the dimension of the enclosing space.
+
+Consider $W_\lambda = R_r = \im{\brac{T-\lambda}^r}$. Since at $r$ the nullity is stabilized it follows that $W_\lambda = R_\infty$ and $E_\lambda = N_\infty$, which implies that $V = E_\lambda \oplus W_\lambda$ and both are $T$-invariant subspaces. In general, any subspace invariant under some linear map $A$ is also invariant under linear combinations and self--compositions such as $A-\alpha\text{id}$ and $A^n$ for $n\geq 0$ due to linearity of the space of linear maps and the preservation of linearity under map composition. Hence invariant subspaces remain invariant under any linear transformation obtained by ``applying'' a finite-degree polynomial $p\in \mathbb{F}[x]$ to $T$. In particular both subspaces are invariant under $\brac{T-\lambda}^r$.
+
+Suppose $T$ has two distinct eigenvalues $\mu$ and $\xi$. Then $V = W_\xi \oplus E_\xi = W_\mu \oplus E_\mu$ and all subspaces are $T$, and thus $\brac{T-\mu}^m$ and $\brac{T-\xi}^k$ invariant. Consider the restriction of $\brac{T-\mu}$ to $E_\xi$ and denoted by $A$. Since $E_\xi$ is invariant $A:E_\xi\to E_\xi$, and $\im{A}$ and $\ker{A}$ are subspaces of $E_\xi$. Upon closer inspection it turns out that $\ker{A}=\obj{x\in E_\xi\vert A(x)=0_V}$ is $E_\xi \cap E_\mu$.
+
+If there is a non-zero $v\in E_\mu\cap E_\xi$, then $\brac{T-\mu}^m(v)=\brac{T-\xi}^k(v)=0_V$ for some $m,k\geq 1$. Then there is $1\leq s\leq k$ such that $\brac{T-\xi}^s(v)=0_V$ while $\brac{T-\xi}^{s-1}(v)\neq 0_V$. The collection $\brac{\brac{T-\xi}^{i-1}(v)}_{i=1}^s$ is linearly independent and $\brac{T-\xi}^i(v)=0_V$ for all $i\geq s$. Further, note that by linearity \[\brac{T-\mu}^m=\brac{T-\xi+\xi-\mu}^m = \sum_{i=0}^m c_i \brac{T-\xi}^i\] where $c_i=C_m^i \brac{\xi-\mu}^{m-i}\neq 0\in\mathbb{F}$ for all $i=1\ldots m$, since the eigenvalues $\mu$ and $\xi$ are distinct. Therefore since $v\in E_\mu$ it is true that \[0_V = \brac{T-\mu}^m(v) = \sum_{i=0}^{p-1} c_i \brac{T-\xi}^i(v)\] where $p=m\vee s\geq 1$, as $v\neq 0_V$. Hence $\brac{c_i}_{i=0}^{p-1}$ must be all zero, and, consequently, either $v=0_V$ or $\xi=\mu$. Therefore the intersection of $E_\mu$ and $E_\xi$ is trivial whenever $\mu\neq \xi$. Thus the map $A$ is injective and $\dim{E_\xi}\leq \dim{\im{A}}$, which, together with the observation that the image space is a subspace of $E_\xi$ implies that $\im{A}=E_\xi$. Therefore the range of $A$ stabilizes after the first action of $A$, and, consequently, $\im{A^m} = \obj{A(z)\vert z\in \im{A^{m-1}}} = E_\xi$. Now the image of the restricted map is a subset of the image of the unrestricted map by definition: $\im{A^m}\subseteq \im{\brac{T-\mu}^m}$. Hence $E_\xi\subseteq W_\mu$ whenever $\xi\neq \mu$.
+
+
+Since an operator has no eigenvalues if and only if it is defined on a trivial space, the subspace $\bigcap_{i=1}^s W_{\lambda_i}$ is trivial, since on it the operator cannot have an eigenvalue.
+
+
+Suppose $N_1\cap R_1 = \obj{0_V}$ and consider any $x\in N_2$. Then $T^2(x)=T\brac{T(x)}=0_V$, whence $y=T(x)\in N_1\cap R_1$, since clearly there exists $z\in V$ such that $y=T(z)$. Hence $y=0_V$, which implies that $x\in V$ is such that $T(x)=0_V$, yielding $N_2=N_1$.
+
+Conversely if $N_2=N_1$. For any $x\in N_1\cap R_1$ it is true that $T(x) = 0_V$ and there is $z\in V$ such that $x=T(z)$, whence $z\in N_2$ since $T^2(z) = T\brac{T(z)} = 0_V$. But then $z\in N_1$ and $x=T(z)=0_V$.
+
+
+% section some_linear_algebra (end)
+
+
+\section{Some introductory topology} % (fold)
+\label{sec:some_introductory_topology}
+\subsection{Separability axioms} % (fold)
+\label{sub:separability_axioms}
+A topological space $\brac{\Omega, T}$ is called $T_1$ space if for any $x\neq y\in \Omega$ there exist $U,V\in T$ with $x\in U$ and $y\in V$ such that $y\notin U$ and $x\notin V$.
+
+If a space is $T_1$ then every point is a closed set. Indeed consider $x\in \Omega$, let $y\neq x$. Then there exists $V\in T$ -- a neighbourhood of $y$ such that $x\notin V$, whence $y\notin \clo{x}$. Thus $\obj{x}$ coincides with its closure in $\brac{\Omega, T}$ and, consequently, is closed.
+
+A limit point of a set $M\subseteq \Omega$ is such point $x\in \Omega$ that every open neighbourhood of $x$ contains points of $M$ other than $x$: for every $U\in T$, with $x\in U$ $U\cap M\setminus \obj{x}\neq \emptyset$.
+
+Let $\brac{\Omega, T}$ be a $T_1$ topological space and $M$ be some subset of $\Omega$. Suppose $\omega\in \Omega$ is such that there is $V\in T$ with $\omega\in V$, which contains at most finitely many points of $M$ except for $\omega$ itself: $V\cap M\setminus \obj{\omega} = \obj{x_n\vert n=1\ldots N}$ for some $N\geq 1$. Since the space is $T_1$, each one-point set is closed and, because every finite union of closed sets remains closed, the set $\obj{x_n\vert n=1\ldots N}$ is closed in $\brac{\Omega, T}$. Thus $W=V\setminus \obj{x_n\vert n=1\ldots N}$ is an open neighbourhood of $\omega$, because a complement of a closed set is open by definition, a finite intersection of open sets is open, and $\omega\notin \obj{x_n\vert n=1\ldots N}$. By construction $W\cap M\setminus\obj{\omega} = \emptyset$. Therefore for this $\omega$ there exists $W\in T$ with $\omega\in W$ such that $W\cap M\setminus \obj{\omega} = \emptyset$, implying that $\omega$ is not a limit point of $M$.
+Consequently, a limit point of $M$ is such $x\in \Omega$, for which its every open neighbourhood contains infinitely many points of $M$ other than $x$. The converse is true by the very definition of a limit point.
+
+A topological space $\brac{\Omega, T}$ is called $T_2$ space, or Hausdorf, if for any $x\neq y\in \Omega$ there exist $U,V\in T$ with $x\in U$ and $y\in V$ such that $U\cap V = \emptyset$. Obviously $T_2$ space is also $T_1$.
+
+A topological space $\brac{\Omega, T}$ is called $T_3$ space if for any set $X$ closed in $\brac{\Omega, T}$ and $y\in \Omega \setminus X$ there exist $U,V\in T$ with $X\subseteq U$ ($U$ is a neighbourhood of $X$) and $y\in V$ such that $U\cap V = \emptyset$. A topological space that is both $T_3$ and $T_1$ is called \emph{regular}.
+
+Suppose $x\in \Omega$ and $U\in T$ is such that $x\in U$. Then $F=U^c$ is closed in $\brac{\Omega, T}$ (by definition) and $x\notin F$, where $U^c$ is the complement of $U$ in $\Omega$. If the enclosing space is $T_3$ then there exist $V,W\in T$ with $F\subseteq V$ and $x\in W$ such that $V\cap W = \emptyset$. Therefore the closure of $W$ cannot contain points from $F$, whence $\clo{W}\subseteq F^c = U$. Therefore $x\in W\subseteq \clo{W}\subseteq U$. Thus in a $T_3$ space inside any open set around some point there is always the closure of a smaller open neighbourhood of the same point.
+
+The converse is also true. Indeed, if $M$ is a closed set and $x\notin M$, then $M^c$ is an open neighbourhood of $x$, and thus there is $U\in T$, such that $x\in U$ and $\clo{U}\subseteq M^c$. Let $W=\Omega\setminus \clo{U}$ and note that $M\subseteq W$ and $W\in T$. Now $U\cap W = \emptyset$, since $U\subseteq \clo{U}$.
+
+A topological space $\brac{\Omega, T}$ is called $T_4$ space if for any sets $X, Y$ closed in $\brac{\Omega, T}$ with $X\cap Y=\emptyset$ there exist $U,V\in T$ with $X\subseteq U$ and $Y\subseteq V$ such that $U\cap V = \emptyset$. This property is a straightforward generalisation of $T_3$ axiom. Similarly, a topological space that is both $T_4$ and $T_1$ is called \emph{normal}.
+
+Analogously to the case of $T_3$ space, $T_4$ is equivalent to the following property: for any set closed $X$ and its open neighbourhood $U$ in $\brac{\Omega, T}$ there is another smaller open neighbourhood $V$ of $X$ such that $X\subseteq V\subseteq \clo{V}\subseteq U$. The proof is identical to the $T_3$ case except that instead of a point a closed set is considered.
+
+
+\subsubsection{Urysohn's lemma} % (fold)
+\label{ssub:urysohn_s_lemma}
+The following lemma is rather complicated, but is so awesome, that I just have to prove it here. It states that for any sets $A,B\subseteq \Omega$ with $A\cap B = \emptyset$ and closed in $\brac{\Omega, T}$, which is a $T_4$ topological space, there exists a continuous function $\phi:\brac{\Omega, T}\to \mathbb{R}$ such that $\phi\brac{A}=0$ and $\phi\brac{B}=1$.
+
+The $T_4$ axiom, or normality of the space in other words, allows one to construct a collection of prototypical level sets on which the function is to be defined. But prior to the actual construction of the level sets consider $\Lambda = \obj{ \frac{m}{2^n} \vert n\geq 0, m = 1\ldots 2^n}$. This set is countable, since $\abs{\Lambda} \leq \abs{\mathbb{N}\times\mathbb{N}} = \abs{\mathbb{N}}$. This is also a set of so-called binary rational numbers and is known to be dense in $\clo{0, 1}$ with respect to the natural subspace topology. Indeed, for any $x \in \brac{0,1}$ and any $\epsilon>0$ take any $n \geq \lfloor -\log_2 \brac{\epsilon\wedge x} \rfloor + 1$ (for negative $n$ just take $n=1$) and $m = \lfloor x \cdot 2^n \rfloor$. Then $\frac{m}{2^n} \leq x < \frac{m+1}{2^n}$ , which implies that $0\leq x - \frac{m}{2^n} < \frac{1}{2^n} < \epsilon$. Therefore $\brac{0,1}\subseteq \clo{\Lambda}$.
+
+If $x = 0$, then for any $\epsilon > 0$, there is $n \geq \lfloor -\log_2 \epsilon \rfloor + 1$ such that, $\frac{1}{2^n} - x < \epsilon$. Thus $0\in \clo{\Lambda}$. Finally, for $x=1$ and any $\epsilon > 0$, there is $n \geq \lfloor -\log_2 \epsilon \rfloor + 1$, $x - \frac{2^n-1}{2^n} = \frac{1}{2^n} < \epsilon$. Thus $\clo{0,1} \subseteq \clo{\Lambda}$.
+
+The construction of the prototypical level sets is performed inductively. 
+Let's start with $n=0$ and $m=1\ldots 2^n$, which makes $m=1$. From $A\cap B = \emptyset$ follows that $A\subset \Omega \setminus B$, so set $V_0 = A$ and $V_{\frac{m}{2^n}} = V_1 = \Omega \setminus B$. Note that $V_0 = \clo{V_0}\subset V_1$ and $V_1$ is open in $\brac{\Omega, T}$, while $V_0$ is not.
+
+Now suppose that the collection of sets has been constructed for $n-1 \geq 0$. Let $m = 1\ldots 2^n$. If $m=2k$ for some $k=1\ldots 2^{n-1}$ set $V_{\frac{m}{2^n}} = V_{\frac{k}{2^{n-1}}}$, which, by induction, is open in $\brac{\Omega, T}$, since $k\neq 0$. If $m=2k+1$ for some $k=1\ldots 2^{n-1}-1$ the set $V_{\frac{m}{2^{n+1}}}$ is obtained from the normality of the topological space $\brac{\Omega, T}$ under consideration. Indeed, by construction, \[V_{\frac{m-1}{2^n}} = V_{\frac{k}{2^{n-1}}}\;\text{and}\;V_{\frac{m+1}{2^n}} = V_{\frac{k+1}{2^{n-1}}}\] are open in $\brac{\Omega, T}$ and \[\clo{V_{\frac{k}{2^{n-1}}}} \subset V_{\frac{k+1}{2^{n-1}}}\] Consequently, the normality of $\brac{\Omega, T}$ implies that there is a set $V_{\frac{m}{2^n}}\subseteq \Omega$ open in $\brac{\Omega, T}$, such that \[\clo{V_{\frac{m-1}{2^n}}} \subset V_{\frac{m}{2^n}} \subset \clo{V_{\frac{m}{2^n}}} \subset V_{\frac{m+1}{2^n}}\]
+
+For any $A,B\subseteq \Omega$ closed in $\brac{\Omega, T}$ with $A\cap B = \emptyset$, this inductive procedure assigns an open set in $\brac{\Omega, T}$ to every binary rational from $\Lambda$. The resulting countable collection $\brac{V_\lambda}_{\lambda\in \Lambda} \in T$ is such that for any $\lambda_1 < \lambda_2$ from $\Lambda$ \[A = V_0 \subset V_{\lambda_1} \subset \clo{V_{\lambda_1}} \subset V_{\lambda_2} \subseteq V_1 = \Omega \setminus B\]
+
+With the collection of level sets defined, construct $\phi:\brac{\Omega, T}\to \clo{0,1}$ as follows: for $x\in V_1$ define it as $\phi(x) = \inf \obj{\lambda \in \Lambda \vert x\in V_\lambda}$ and $\phi(x) = 1$ otherwise.
+
+By definition, $\phi(x) = 1$ for every $x\notin V_1$, which means that $\phi = 1$ everywhere on $B$, since $\Omega \setminus V_1 = B$.
+
+The map $\phi$ has a pair of very useful properties due to the density of $\Lambda$ in $\clo{0,1}$ and the way the collection $\brac{V_\lambda}_{\lambda \in \Lambda}$ has been constructed. Indeed, for any $x\in V_0$ it is true that $x\in V_\lambda$ for every $\lambda \in \Lambda$. Furthermore, for every $\epsilon > 0$ there is $\lambda \in \Lambda$ such that $0 < \lambda < \epsilon$. Thus $x\in V_\lambda$ and, by definition, $\phi(x) \leq \lambda$. Hence $\phi(x) < \epsilon$ for every $\epsilon > 0$, implying that $\phi(x)\leq 0$. Therefore $\phi = 0$ on $V_0$, which coincides with $A$. Now let $x\in \clo{V_\beta}$ for some $\beta \in \Lambda$. Assume that $\phi(x) > \beta$. Then there is some $\lambda \in \Lambda$ with $\beta < \lambda < \phi(x)$ and $\clo{V_\beta} \subset V_\lambda$. Hence $x \in V_\lambda$ and $\phi(x) \leq \lambda$, which contradicts $\lambda < \phi(X)$. Therefore in this case it must be $\phi(x)\leq \beta$. To summarize for any $\beta\in \Lambda\cup \obj{0}$ it is true that if $\phi(x) > \beta$ then $x \notin \clo{V_\beta}$.
+
+This time, the fact that $\Lambda$ is dense in $\clo{0,1}$ is not used, just the properties of the greatest lower bound in $\clo{0,1}$. Let $\beta \in \Lambda$ and $\phi(x) < \beta$. Then, by definition of $\phi$, there is $\lambda\in \Lambda$ with $\phi(x) \leq \lambda < \beta$ such that $x\in V_\lambda$. By construction $\clo{V_\lambda} \subset V_\beta$ which implies that $x\in V_\beta$. Consequently, if $x\notin V_\beta$ then $\phi(x)\geq \beta$. For $\beta = 0$ the property holds since $\phi\geq 0$ by definition.
+
+Now let $x\in \Omega$ be such that $\phi(x) \in \brac{a,b}$, with $a,b \in \brac{0,1}$. Since $\brac{a,b}$ is open in $\mathbb{R}$, there is some $\epsilon > 0$ small enough to fit $\brac{\phi(x)-\epsilon, \phi(x)+\epsilon}$ inside $\brac{a,b}$. Since $\Lambda$ is dense in $\clo{0,1}$, there are $p,q\in \Lambda$ with $0<a<\phi(x)-\epsilon<p<\phi(x)$ and $\phi(x)<q<\phi(x)+\epsilon<b<1$. Therefore $x\in V_q$ and $x\notin \clo{V_p}$. Consequently $x\in V_q\setminus \clo{V_p}$, which, being a finite intersection of open sets, is open in $\brac{\Omega, T}$. Now, if $y\in V_q\setminus \clo{V_p}$, then $y\in V_q$ and $y\notin \clo{V_p}$. The former implies that $y\in \clo{V_q}$ yielding $\phi(y)\leq q$, while the latter gives $\phi(y) \geq p$, since $y\notin \clo{V_p}$ implies that $ y\notin V_p$. Therefore $\phi(y)\in \clo{p,q}$ and the interval is contained in $\brac{\phi(x)-\epsilon, \phi(x)+\epsilon} \subseteq \brac{a,b}$. Hence for any $x\in \phi^{-1}\brac{\brac{a,b}}$ there are $p,q\in \Lambda$ such that $x \in V_q\setminus \clo{V_p} \subseteq \phi^{-1}\brac{\brac{a,b}}$.
+
+Let $x\in \phi^{-1}\brac{\left ( a, 1 \right ]}$, for some $a\in \brac{0,1}$. If $\phi(x)<1$ then the previous case applies. If, however, $\phi(x) = 1$, then, since $\left ( a, 1 \right ]$ is open in $\clo{0,1}$ and $\Lambda$ is dense, there exists $p\in \Lambda$ such that $a < p < 1$. But then $\phi(x) > p$, whence $x\in \Omega\setminus \clo{V_p}$, which is open in $\brac{\Omega, T}$. Now, if $y\in \Omega\setminus \clo{V_p}$, then $p\leq \phi(y)\leq 1$. Thus $\phi(y) \in \clo{p,1} \subset \left ( a, 1 \right ]$, whence $\Omega\setminus \clo{V_p}\subseteq \phi^{-1}\brac{\left ( a, 1 \right ]}$. To sum up, for every $x\in \phi^{-1}\brac{\left ( a, 1\right ]}$ there is $p\in \Lambda$ such that $x\in \Omega\setminus \clo{V_p} \subset \phi^{-1}\brac{\left ( a, 1 \right ]}$.
+
+Finally, let $x\in \phi^{-1}\brac{\left [0, b \right )}$, for some $b\in \brac{0,1}$. Once again, if $\phi(x) > 0$ then the first case, studied above, applies. If however, $\phi(x)=0$ then the openness of $\left [ 0, b \right )$ in $\clo{0,1}$ and density of $\Lambda$ guarantee the existence of $q\in \Lambda$, such that $0 < q < b$. Thus $\phi(x) < q$ implies that $x\in V_q$. If $y\in V_q\subset \clo{V_q}$, then $0\leq \phi(y) \leq q < b$. Therefore $\phi(y) \in \left [0, b \right )$ whence $V_q \subseteq \phi^{-1}\brac{\left [ 0, b \right ) }$. Therefore for any $x\in \phi^{-1}\brac{\left [0, b \right )}$ there is $q\in \Lambda$ such that $x\in V_q \subset \phi^{-1}\brac{\left [0, b \right )}$.
+
+In summary for any $U\subseteq \clo{0,1}$ of the form $\brac{a, b}$, $\left [ 0, b \right )$ or $\left ( a, 1 \right ]$ for $a, b \in \brac{0,1}$ it is true that for any $x\in \phi^{-1}\brac{U}$ there is $W\subseteq \Omega$ open in $\brac{\Omega, T}$ such that $x\in W\subset \phi^{-1}\brac{U}$. Thus $\phi^{-1}\brac{U}$ can be represented as an arbitrary union $\bigcup_{W\in \Gamma} W$, where $\Gamma = \obj{ W\in T\vert V\subseteq \phi^{-1}\brac{U}}$. However such sets form a topological basis of the natural topology on $\clo{0,1}$, induced by the natural topology on $\mathbb{R}$ generated by the basis, defined by the sets of the form $\brac{a, b}$ for $a,b \in \mathbb{R}$. Therefore $\phi: \brac{\Omega, T} \to \clo{0,1}$ is a continuous map, since any open set in $\clo{0,1}$ is a union of arbitrary collection of sets from the basis of the topology.
+
+
+% subsubsection urysohn_s_lemma (end)
+
+
+%% A metric space is $T_1$.
+%% Any metric space is $T_4$.
+
+
+% subsection separability_axioms (end)
+
+
+% section some_introductory_topology (end)
+
+
+\end{document}

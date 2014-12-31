@@ -1,0 +1,107 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+% \usepackage{fullpage}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\crab}[1]{{\left ] #1 \right [}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Rbar}{{\bar{\mathbb{R}}}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Zinf}{\clo{ 0, +\infty }}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Tcal}{\mathcal{T}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\Scal}{\mathcal{S}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Ecal}{\mathcal{E}}
+\newcommand{\Fcal}{\mathcal{F}}
+\newcommand{\borel}[1]{\mathcal{B}\brac{#1}}
+\newcommand{\Ex}[1]{\mathbb{E}\brac{#1}}
+\newcommand{\Var}[1]{\text{Var}\brac{#1}}
+
+\newcommand{\pwr}[1]{\mathcal{P}\brac{#1}}
+\newcommand{\Dyns}[1]{\mathfrak{D}\brac{#1}}
+\newcommand{\Ring}[1]{\mathcal{R}\brac{#1}}
+\newcommand{\Supp}[1]{\operatorname{supp}\nolimits\brac{#1}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+\newcommand{\lpto}{\mathop{\overset{L^p}{\to}}\nolimits}
+
+\newcommand{\re}{\operatorname{Re}\nolimits}
+\newcommand{\im}{\operatorname{Im}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+\selectlanguage{english}
+
+\title{Studying Self-similar Processes Using the Croosing Tree}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}}
+
+\begin{document}
+\pagenumbering{gobble}
+%% Russian title page
+\selectlanguage{russian}
+\include{titlepage--rus}
+\clearpage
+
+%% English title page
+\selectlanguage{english}
+\include{titlepage}
+\clearpage
+
+%% Draft title page
+\selectlanguage{english}
+\maketitle
+\begin{abstract}
+Time-series data presenting scale invariance do not posses a well-defined time scale. Instead, their dynamics are understood when studied across a whole range of scales. Examples of data with empirical scale-invariance include network traffic, financial time-series, and other natural phenomena in physics and biology. The crossing-tree is a recent tool to analyze this kind of signals. It provides an ad-hoc representation of the data which is adapted to its dynamics, and thus represents an alternative to wavelet decompositions. In this project, the student will first learn about scale invariance, and how the crossing-tree has been used previously as a tool to analyze self-similar signals. The next step is to analyze self-similar processes with stationary increments (known as H-SSSI processes) using the crossing tree. It is expected that for this class of processes, the crossing tree presents common features which need to be extracted.
+\end{abstract}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+%% The project itself
+\selectlanguage{english}
+
+\section{Introduction} % (fold)
+\label{sec:introduction}
+Crossing tree
+
+% section introduction (end)
+
+\section{Literature review} % (fold)
+\label{sec:literature_review}
+Reviewed papers \cite{jones2004}, \cite{jonesshen2005} and \cite{decrouez2013}.
+
+% section literature_review (end)
+
+%% End of the report: lists of object and references
+% \clearpage \listoffigures
+% \clearpage \listoftables
+
+\clearpage
+\selectlanguage{english}
+\bibliographystyle{amsplain}
+\bibliography{literature}
+
+%% Supplementary material
+% \include{appendix}
+\end{document}

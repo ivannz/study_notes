@@ -1,0 +1,826 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{fullpage}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+\newcommand{\obj}[1]{\left\{ #1 \right \}}
+\newcommand{\clo}[1]{\left [ #1 \right ]}
+\newcommand{\clop}[1]{\left [ #1 \right )}
+\newcommand{\ploc}[1]{\left ( #1 \right ]}
+
+\newcommand{\brac}[1]{\left ( #1 \right )}
+\newcommand{\crab}[1]{\left ] #1 \right [}
+\newcommand{\induc}[1]{\left . #1 \right \vert}
+\newcommand{\abs}[1]{\left | #1 \right |}
+\newcommand{\nrm}[1]{\left\| #1 \right \|}
+\newcommand{\brkt}[1]{\left\langle #1 \right\rangle}
+
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+
+\newcommand{\Rbar}{{\bar{\mathbb{R}}}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Zinf}{\clo{ 0, +\infty }}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Tcal}{\mathcal{T}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\Scal}{\mathcal{S}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Ecal}{\mathcal{E}}
+\newcommand{\Fcal}{\mathcal{F}}
+\newcommand{\borel}[1]{\mathcal{B}\brac{#1}}
+\newcommand{\pwr}[1]{\mathcal{P}\brac{#1}}
+\newcommand{\Dyns}[1]{\mathfrak{D}\brac{#1}}
+\newcommand{\Ring}[1]{\mathcal{R}\brac{#1}}
+\newcommand{\Supp}[1]{\operatorname{supp}\nolimits\brac{#1}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+\newcommand{\lpto}{\mathop{\overset{L^p}{\to}}\nolimits}
+
+\newcommand{\re}{\operatorname{Re}\nolimits}
+\newcommand{\im}{\operatorname{Im}\nolimits}
+
+\usepackage[russian, english]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Report on Core Concepts in Data Analysis}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}}
+
+\begin{filecontents}{references.bib}
+@inproceedings{street1993nuclear,
+  title={Nuclear feature extraction for breast tumor diagnosis},
+  author={Street, W Nick and Wolberg, William H and Mangasarian, Olvi L},
+  booktitle={IS\&T/SPIE's Symposium on Electronic Imaging: Science and Technology},
+  pages={861--870},
+  year={1993},
+  organization={International Society for Optics and Photonics}
+}
+\end{filecontents}
+
+\begin{document}
+\selectlanguage{english}
+\begin{titlepage}
+  \thispagestyle{empty}
+  \vbox to \textheight{\renewcommand{\baselinestretch}{1}\selectfont
+
+    \begin{center}
+    \textsc{\LARGE
+    National Research University\\[0.5cm]
+    Higher School of Economics}\\[1.5cm]
+
+    \textsc{\Large Master’s programme in Data Science}\\[0.5cm]
+
+    \rule{\linewidth}{0.5mm}\\[1.0cm]
+
+    {\huge \bfseries A report on\\[0.4cm] Core Concepts in Data Analysis}\\[0.5cm]
+    \end{center}
+
+    \vspace{2.0cm}
+
+    \begin{flushright}
+    \large Ivan \textsc{Nazarov}\\[0.5cm]
+    \rus{101мНОД(ИССА)}\\[3cm]
+    \end{flushright}
+  
+    \vspace{2.0cm}
+
+    \vfill
+    \begin{center}
+    Moscow\\
+    2014\\[3cm]
+    % \includegraphics{hsecmyk}\\[1cm]
+    \end{center}
+  }
+\end{titlepage}
+\clearpage
+
+\begin{abstract}
+\noindent A report covering the topics discussed in the course ``Core Concepts in Data Analysis'' led by Prof. Boris G. Mirkin.
+\end{abstract}
+\tableofcontents
+\clearpage
+
+\section{Introduction} % (fold)
+\label{sec:introduction}
+Early detection and diagnosis of breast tumours is extremely important for proper therapy and for patients' quality of life.
+
+In order to diagnose a tumour, once it has been localised, it is necessary to assess its malignancy, which determines the need for surgery and the treatment. Whether the tumour is malignant or benign is decided by studying samples of breast tissue. Apart from performing a full biopsy, which is an invasive surgical procedure, tissue samples, though in a lesser volume, can be obtained by a less intrusive technique of fine needle aspirations (FNA).
+
+However, to be able to diagnose successfully using FNAs, the characteristics of individual cells and important contextual features such as the size of cell clumps, must be carefully examined.
+
+% section introduction (end)
+
+\section{Description of dataset} % (fold)
+\label{sec:description_of_dataset}
+The breast cancer database was obtained from the University of Wisconsin Hospitals, Madison from Dr. William H. Wolberg and made accessible by W. Nick Street. The database is a result of digital processing of 569 images, which yielded a dataset of 30-dimensional points, which describe characteristics of the cell nuclei present in an image. \cite{street1993nuclear}
+
+The features were measured via digital image analysis of small drops of fluid from breast tumour tissue. All of the features were modelled with a view to ensuring that larger values typically indicate a higher likelihood of malignancy of a tumour. Different characteristics of shape were introduced so as to distinguish elongated cell nuclei, which do not necessarily indicate an increased likelihood of malignancy.
+\begin{itemize}
+  \item \emph{Radius}: The average length of the outward radial line segments from the centroid of the digitized boundary of a cell's nucleus.
+  \item \emph{Perimeter}: The total length of the digitized boundary.
+  \item \emph{Area}: The number of pixels within the interior of the nuclear perimeter
+  \item \emph{Compactness}: Defined as a ratio of perimeter squared to the area and corrected for bias due to limited accuracy of digitization. The more the shape of a nucleus represents a circular disc, the less the ratio, whereas the more irregular the boundary or the more elongated the cell nucleus is the higher the ratio.
+  \item \emph{Smoothness}: Thus feature of was quantified by measuring the how much the length of a radial line differs from the average length of the lines in its small neighbourhood.
+  \item \emph{Concavity}: The magnitude of severity of concavities or indentations measured by the extent to which the nuclear contour lies inside of a collection of chords.
+  \item \emph{Concave Points}: This measures the number, rather than the magnitude, of contour concavities.
+  \item \emph{Symmetry}: This feature is derived from the differences in lengths of chords perpendicular to the longest chord through the centre of the nucleus.
+  \item \emph{Fractal Dimension}: The fractal dimension of a cell is approximated using the ``coastline approximation''. A higher value corresponds to a more rough contour of a nucleus.
+  \item \emph{Texture}: The variance of the grey scale pixel intensities within the nucleus.
+\end{itemize}
+The exact features, selected for this study are the largest values per sample of the characteristics listed, since extreme are the most intuitively useful as only a few malignant cells may occur in a given sample.
+
+% section description_of_dataset (end)
+
+\section{1-dimensional summarization} % (fold)
+\label{sec:1d_summarization}
+
+The data and its description file are stored separately in files ``wdbc.cols'' and ``wdbc.data'' respectively. The following code properly loads the dataset:
+\begin{Scode}{fig=FALSE,echo=TRUE}
+## Read the names of the columns
+wdbc_meta <-
+  scan( "./data/wdbc.cols", quiet = TRUE, sep = "",
+    comment.char = "#", fill = TRUE, what = list(
+      names = character( ),
+      classes = character( ),
+      description = character( ) ) )
+names( wdbc_meta$description ) <- wdbc_meta$names
+
+## Load the data with format determined by its description
+wdbc_data <-
+  read.table( "./data/wdbc.data",
+    col.names = wdbc_meta$names,
+    colClasses = wdbc_meta$classes,
+    header = FALSE, sep = "," )
+
+## Columns 23 to 32 contain our features of interest and
+##   column 2 contains the diagnosis. For ease of use name
+##   the features as columns 3 to 12 
+wdbc <-
+  structure( wdbc_data[ c(2, 23:32) ] ,
+    names = names( wdbc_data )[ c(2, 03:12) ] )
+wdbc_names <- wdbc_meta$description[ names( wdbc ) ] ## $
+\end{Scode}
+
+To have a grasp of the data the first thing to do is to compute marginal summary statistics. The mean, variance, median, and quantiles are readily available in R, whereas simpler range and half-range are not. The code below defines them:
+\begin{Scode}{fig=FALSE,echo=TRUE}
+## The mid-range a measure of centrality
+  midrange <- function( x )
+    .5 * ( max( x ) + min( x ) )
+
+## The half-range measures the absolute spread of the data
+  halfrange <- function( x )
+    .5 * ( max( x ) - min( x ) )
+\end{Scode}
+
+Informally and in the case of a discrete distribution, the mode is a most frequently observed data point. This makes it best suited for categorical data. For continuous distributions, mode is a value at which the density function peaks, and represents a value $x\in\Real$ such that $\Pr\brac{\xi\in\clo{x, x+h}}$ is maximized for infinitesimally small $h>0$. Distributions with a unique mode value are known as \emph{unimodal}, in stark contrast to \emph{multi-modal} distributions, which have multiple modes.
+\begin{Scode}{fig=FALSE,echo=TRUE}
+## Split the data into the required number of bind of equal width
+  histmode <- function( x, n = 30 ) {
+    HD <- hist( x, plot = FALSE, n = n )
+    HD$mids[ which.max( HD$density ) ]
+  }
+\end{Scode}
+
+With all necessary function defined, the following chunk of code computes summary statistics for all features in one sweep:
+\begin{Scode}{fig=FALSE,echo=TRUE}
+wdbc_centrality <-
+  data.frame( row.names = wdbc_names[ names( wdbc[-1] ) ],
+    mean          = sapply( wdbc[-1], mean ),
+    mode          = sapply( wdbc[-1], histmode ),
+    `mid-range`   = sapply( wdbc[-1], midrange ),
+    check.names = FALSE )
+
+wdbc_spread <-
+  data.frame( row.names = wdbc_names[ names( wdbc[-1] ) ],
+    variance      = sapply( wdbc[-1], var ),
+    std           = sapply( wdbc[-1], sd ),
+    `half-range`  = sapply( wdbc[-1], halfrange ),
+    check.names = FALSE )
+
+wdbc_quantiles <-
+  data.frame( row.names = wdbc_names[ names( wdbc[-1] ) ],
+    `5`           = sapply( wdbc[-1], quantile, probs = .05 ),
+    `25`          = sapply( wdbc[-1], quantile, probs = .25 ),
+    median        = sapply( wdbc[-1], median ),
+    `75`          = sapply( wdbc[-1], quantile, probs = .75 ),
+    `95`          = sapply( wdbc[-1], quantile, probs = .95 ),
+    check.names = FALSE )
+\end{Scode}
+
+
+The code, when run, produces a summary table of centrality measures, which is displayed in table \ref{tab:01}. As for the spread and quantile characteristics, they are presented in tables \ref{tab:02} and \ref{tab:03}. As is the case for all extreme observations, the sampled features show evidence of being distributed according to a heavy tailed law: due to non-negativity of the data, large values tend to be more likely. This sheds light on the causes of large spread characteristics shown in table \ref{tab:02}.
+
+\begin{Scode}{results=tex,echo=FALSE}
+library( xtable )
+
+print( xtable( wdbc_centrality, digits = 2, align = "crrr",
+  label = "tab:01", caption = "Centrality characteristics of the breast tissue features" ) )
+\end{Scode}
+\begin{Scode}{results=tex,echo=FALSE}
+print( xtable( wdbc_spread, digits = 4, align = "crrr",
+  label = "tab:02", caption = "characteristics of spread of the features" ) )
+\end{Scode}
+\begin{Scode}{results=tex,echo=FALSE}
+print( xtable( wdbc_quantiles, digits = 2, align = "crrcll", 
+  label = "tab:03", caption = "The 5\\%, 25\\%, 50\\%, 75\\% and 95\\% quatiles of the featres" ) )
+\end{Scode}
+
+Though summary statistics suffice for some preliminary data analysis, all of them are specific characteristics of the empirical distribution of the observed features. Histograms provide a way to study the observed sample and help in identifying specific features and tools that might facilitate data analysis. For instance, by varying the parameters, which determine the construction of a histogram, it is possible to decide on how reasonable it is to transform the quantitative into categorical data.
+
+Let's load the \textbf{ggplot} library and define the default design of the plots used in this report. The library \emph{ggplot} allows generation of nice-looking and informative plots. 
+\begin{Scode}{fig=FALSE,echo=TRUE}
+library( ggplot2 )
+theme0 <-
+  function( ... ) theme_bw( ) +
+    theme_minimal( base_size = 18 ) +
+    theme( legend.position = "none" )
+\end{Scode}
+
+One of the interesting features on cell nuclei in the dataset is the perimeter of the nuclear contour. So let's create a histogram object which would serve as a basis for displaying histograms with different number of bins.
+\begin{Scode}{fig=FALSE,echo=TRUE}
+hist_plot <-
+  ggplot( wdbc, aes( x = perimeter, fill = diagnosis ) ) +
+  labs( y = "" ) + theme0( )
+\end{Scode}
+
+The actual creation of the histograms is performed by the following invocation.
+\begin{Scode}{fig=FALSE,echo=TRUE}
+H_perimeter <-
+  lapply( c( 5, 15, 30 ),
+    function( binwidth )
+      hist_plot +
+      geom_histogram(
+        aes( y = ..density.. ),
+        colour = "black",
+        binwidth = binwidth ) )
+\end{Scode}
+
+The histograms of the perimeter for different number of bins are presented in figures \ref{fig:hist01}, \ref{fig:hist02} and \ref{fig:hist03}. Mild red colour represents observations diagnosed as benign tumours, whereas light blue is used to distinguish malignant cases.
+\begin{figure}[htb]\begin{center}
+  \begin{minipage}[t]{0.45\textwidth}
+    \begin{Scode}{fig=TRUE,echo=FALSE}
+      print( H_perimeter[[ 3 ]] )
+    \end{Scode}
+    \caption{A histogram for width 30}
+  \label{fig:hist01}
+  \end{minipage}
+  \hspace{0.025\textwidth}
+  \begin{minipage}[t]{0.45\textwidth}
+    \begin{Scode}{fig=TRUE,echo=FALSE}
+      print( H_perimeter[[ 2 ]] )
+    \end{Scode}
+    \caption{A histogram for width 15}
+  \label{fig:hist02}
+  \end{minipage}
+\end{center}\end{figure}
+
+The best insight into peculiarities of the feature is given by the histogram with smaller amount of bins (fig~\ref{fig:hist03}), but not too small so as to depict individual observations.
+\begin{figure}[htb]\begin{center}
+  \begin{Scode}{fig=TRUE,echo=FALSE}
+    print( H_perimeter[[ 1 ]] )
+  \end{Scode}
+  \caption{Histogram of the nuclear perimeter with the smallest width of each bin, acceptably balancing detail against aggregation}
+\label{fig:hist03}
+\end{center}\end{figure}
+
+Let's examine the marginal distributions of some other features, for example, compactness and concavity of the tumour cell nuclei.
+\begin{Scode}{fig=FALSE,echo=FALSE}
+hist_plot <-
+  ggplot( wdbc, aes( x = compactness, fill = diagnosis ) ) +
+  labs( y = "" ) + theme0( )
+H_compactness <-
+  lapply( c( .02, .10 ),
+    function( binwidth )
+      hist_plot +
+      geom_histogram(
+        aes( y = ..density.. ),
+        colour = "black",
+        binwidth = binwidth ) )
+hist_plot <-
+  ggplot( wdbc, aes( x = concavity, fill = diagnosis ) ) +
+  labs( y = "" ) + theme0( )
+H_concavity <-
+  lapply( c( .03, .15 ),
+    function( binwidth )
+      hist_plot +
+      geom_histogram(
+        aes( y = ..density.. ),
+        colour = "black",
+        binwidth = binwidth ) )
+\end{Scode}
+Figures \ref{fig:hist04} and  \ref{fig:hist05} reveal that the distribution of the observed compactness scores is similar in shape to the distribution is the cell nucleus' perimeter.
+\begin{figure}[htb]\begin{center}
+  \begin{minipage}[t]{0.45\textwidth}
+    \begin{Scode}{fig=TRUE,echo=FALSE}
+      print( H_compactness[[ 1 ]] )
+    \end{Scode}
+    \caption{A histogram of nuclear compactness for width 0.02}
+  \label{fig:hist04}
+  \end{minipage}
+  \hspace{0.025\textwidth}
+  \begin{minipage}[t]{0.45\textwidth}
+    \begin{Scode}{fig=TRUE,echo=FALSE}
+      print( H_compactness[[ 2 ]] )
+    \end{Scode}
+    \caption{Cell nucleus' compactness histogram for width of bins set at 0.10}
+  \label{fig:hist05}
+  \end{minipage}
+\end{center}\end{figure}
+As shown in figures \ref{fig:hist06} and \ref{fig:hist07} the concavity score is distributed slightly differently than the features explicitly mentioned above.
+\begin{figure}[htb]\begin{center}
+  \begin{minipage}[t]{0.45\textwidth}
+    \begin{Scode}{fig=TRUE,echo=FALSE}
+      print( H_concavity[[ 1 ]] )
+    \end{Scode}
+    \caption{A histogram of cellular concavity score (width 0.03)}
+  \label{fig:hist06}
+  \end{minipage}
+  \hspace{0.025\textwidth}
+  \begin{minipage}[t]{0.45\textwidth}
+    \begin{Scode}{fig=TRUE,echo=FALSE}
+      print( H_concavity[[ 2 ]] )
+    \end{Scode}
+    \caption{Cell concavity histogram (width 0.15)}
+  \label{fig:hist07}
+  \end{minipage}
+\end{center}\end{figure}
+
+It is worth mentioning that histograms of each feature above clearly show that breast tissue cells with malignant tumour are more likely to take larger values than benign.
+
+% section 1d_summarization (end)
+
+
+\section{2-dimensional analysis of quantitative features} % (fold)
+\label{sec:2d_analysis_of_quantitative_features}
+Since feature redundancy impose serious multicollinearity issues in multiple regression analysis it is useful to perform pairwise correlation analysis can be used to eliminate features which are likely to be linearly dependent.
+
+The Ordinary Least Squares yields fast, consistent and asymptotically normal estimators of the coefficients of a multiple linear regression, provided the linear model is not misspecified. 
+
+Suppose $X$ is a $n\times k$ matrix of independent variables and $Y$ is an $n\times 1$ column vector of observed dependent feature of the data, where $n$ is the number of observations and $k$ is the number explanatory variables. Furthermore suppose $Y = X\beta + \varepsilon$ is the correct model of $Y$, given $X$, and one wishes to minimize over $\beta$ the $l^2$ norm of the deviation of $X\beta$ from $Y$. Then straightforward calculation of the first order conditions for a local minimum, gives the following optimal coefficients of $\beta$ and the values of $Y$ predicted from $X$: 
+\begin{align}
+  \hat{\beta} & \defn \brac{X'X}^{-1} \brac{X'Y}\\
+  \hat{Y} & \defn X \hat{\beta} = P Y\\
+\end{align}
+where $P \defn X\brac{X'X}^{-1}X'$ is the linear projector of any $n$ dimensional vector onto the linear subspace spanned by $k$ vectors in $X$.
+
+Having computed that estimates of $\beta$ it is possible to obtain a score, characterising the overall fitness of the estimated linear model. The coefficient of determination $R^2$ is defined as the ratio of explained variance of the dependent variable to the total variance of the variable. It should be noted though that computation of $R^2$ makes sense only if the total variance of $Y$ can be decomposed into the variance due to variability of explanatory features. This means that values of $R^2$ are meaningful only if the linear span of $k$ $n\times 1$ dimensional vectors in $X$ contains a vector on ones, then it is possible to meaningfully compute the mentioned $R^2$ score. However, depending on the specifics of analysed data, a statistically significant intercept term in the model might complicate interpretation, since the intercept shows the intrinsic base level of the regressed variable, when no other factors influence it.
+
+For example, there is no perfect linear relation of nuclear contour smoothness and its compactness. And, as shown in table~\ref{tab:02}, the degree of strength linear relationship between them is moderate.
+\begin{Scode}{fig=TRUE,echo=TRUE}
+ggplot( wdbc,
+  aes( x = compactness, y = symmetry ) ) +
+  theme0( ) + geom_rug( size = 0.1, aes( colour = diagnosis ) ) +
+  geom_smooth( method = lm, fullrange = TRUE ) +
+  geom_point( shape = 1, aes( colour = diagnosis ) )
+\end{Scode}
+
+For the model of the form $y=\alpha + x\beta +\varepsilon$, where $y$ and $x$ are column vectors, the matrix equations can be simplified to $\hat{\alpha}\defn \bar{y}-\hat{\beta}\bar{x}$ and $\hat{\beta}\defn \hat{\rho} \sqrt{\frac{\text{Var}\brac{y}}{\text{Var}\brac{x}}}$, where $\hat{\rho}$ is the sample correlation of $x$ and $y$. In this bivariate case the coefficient of determination, $R^2$, is equal to $\hat{\rho}^2$.
+\begin{Scode}{fig=FALSE,echo=TRUE}
+rho <- cor( wdbc$compactness, wdbc$symmetry )
+beta <- rho * sd( wdbc$symmetry ) / sd( wdbc$compactness )
+alpha <- mean( wdbc$symmetry ) - mean( wdbc$compactness ) * beta
+Rsq <- rho^2
+\end{Scode}
+\begin{Scode}{results=tex,echo=FALSE}
+print( xtable( data.frame( alpha = alpha, beta = beta, rho = rho, R2 = Rsq, row.names=NULL, check.names = FALSE ) ) )
+\end{Scode}
+\begin{Scode}{results=tex,echo=FALSE}
+print( xtable( summary( lm( symmetry ~ compactness, wdbc ) ),
+  digits = 2, caption = "The summary of a bivariate regression of symmetry over compactness" ) )
+\end{Scode}
+
+There are two methods of getting estimates of the 95\% confidence intervals of the regression coefficients: parametric and non-parametric. Since no distributional assumptions are readily available in the case at hand, it is reasonable to use pairs (strong)bootstrapping technique. The code below implements bootstrap:
+\begin{Scode}{fig=FALSE,echo=TRUE}
+bootstrap <- function( x, y ) {
+## Draw observations with replacement
+  bi <- sample( seq_along( y ), replace = TRUE )
+## Get the sample correlation coefficient
+  rho <- cor( bx <- x[ bi ], by <- y[ bi ] )
+## Recover the slope and the intercept
+  beta <- rho * sd( by ) / sd( bx )
+  alpha <- mean( by ) - mean( bx ) * beta
+## No need for standardization by s.e. just yet
+  c( alpha = alpha, beta = beta, rho = rho )
+}
+
+result <-
+  as.data.frame( do.call( rbind,
+    replicate( n = 5000, simplify = FALSE,
+      bootstrap( y = wdbc$symmetry, x = wdbc$compactness ) ) ) )
+\end{Scode}
+
+The 95\% confidence intervals, displayed in table~\ref{tab:04}, clearly show that the linear relationship between symmetry and compactness of nuclei is stably positive though moderate.
+\begin{Scode}{results=tex,echo=FALSE}
+xtable( do.call( rbind, lapply(
+  result, quantile, probs = c( .025, .975 ) ) ), caption = "2.5\\% and 97.5\\% quantiles of the bivariate regression coefficients of symmetry$\\sim$compactness", label = "tab:04" )
+\end{Scode}
+
+% section 2d_analysis_of_quantitative_features (end)
+
+\section{2-dimensional analysis: the case of categorical data} % (fold)
+\label{sec:2d_categorical_data_analysis}
+In order to understand whether malignancy of breast tumour cells is determined by the selected features it is useful to construct a contingency table. A contingency table permits computation of the joint and conditional distributions, which reveal the dependence structure more directly. Finally, Quetelet indices and Pearson's $\chi^2$ statistical test enable evaluation of degree of likelihood that the frequency distribution of certain events observed in a sample is consistent with pairwise independence.
+ 
+The only categorical feature of the dataset is the diagnosis, which means that in order to build a contingency table it is necessary to categorize the data. In the code below, a procedure for categorizing data given the interval parameters is defined.
+\begin{Scode}{fig=FALSE, echo=TRUE}
+## A function for categorizing data according to the supplied
+##  set of split-points
+categorize <- function( data, splits, digits = 3 ) {
+## Arrange data into bins according to breaks
+  bins <- .bincode( data, c( -Inf, splits, +Inf ) )
+
+## Create suitable labels
+  chsplits <- formatC( splits, digits = digits, width = 1L )
+  labels <- c( paste0( '<', head( chsplits, n = 1 ) ),
+    paste0( "(", head( chsplits, n = -1 ), ", ", tail( chsplits, n = -1 ), "]" ),
+    paste0( tail( chsplits, n = 1 ), '<' ) )
+## Return the categorical data with proper labels 
+  factor( bins, seq_along( labels ), labels )
+}
+\end{Scode}
+
+One method of determining an adequate categorization of the data is to use split by the local minima of a histogram of the observed feature. The histogram of compactness, for instance, has minima approximately at 0.11, 0.27 and 0.45 (fig~\ref{fig:hist04}). By the same method nuclear contour concavity can can be categorized into $\ploc{-\infty, 0.225}$, $\ploc{0.225, 0.475}$ and $\brac{0.475, +\infty}$ (fig~\ref{fig:hist06}). The third feature which it is interesting to compare with the diagnosis, is texture. The table \ref{tab:03} shows that splitting the values into 4 categories is reasonable (fig~\ref{fig:hist08}).
+\begin{Scode}{echo=TRUE}
+compactness_bins <-
+  categorize( wdbc$compactness, c( 0.11, 0.27, 0.45 ) ) #$
+concavity_bins <-
+  categorize( wdbc$concavity, c( 0.225, 0.475 ) ) #$
+texture_bins <-
+  categorize( wdbc$texture, c( 18.5, 23.5, 32.5 ) ) #$
+\end{Scode}
+\begin{figure}[htb]\begin{center}
+  \begin{Scode}{fig=TRUE,echo=FALSE}
+    hist <-
+      ggplot( wdbc, aes( x = texture, fill = diagnosis ) ) +
+        geom_histogram( aes( y = ..density.. ), colour = "black" ) +
+        labs( y = "" ) + theme0( )
+    print( hist )
+  \end{Scode}
+  \caption{Histogram of the variance of texture within the nucleus}
+\label{fig:hist08}
+\end{center}\end{figure}
+
+The contingency table is basically a representation of a bivariate joint discrete distribution. The following code constructs tables \ref{tab:05}, \ref{tab:06} and \ref{tab:07}.
+\begin{Scode}{fig=FALSE, echo=TRUE}
+ctable <- function( row, col, joint = FALSE, border = TRUE ) {
+## Compute the observed frequencies, assuming that unobserved
+##  events have zero frequency.
+  core <- tapply( row, list( row, col ), length )
+  core[ is.na( core ) ] <- 0
+
+## Append row and  column totals
+  ctab <- if( !border ) core else {
+    rows <- cbind( core, sum = rowSums( core, na.rm = TRUE ) )
+    rbind( rows, sum = colSums( rows, na.rm = TRUE ) )
+  }
+  if( joint ) ctab / sum( core ) else ctab
+}
+\end{Scode}
+\begin{Scode}{results=tex,echo=FALSE}
+xtable( ctable( wdbc$diagnosis, concavity_bins ),  #$
+  digits = 0, label = "tab:05", caption = "The contingency table for the diagnosis versus concavinty of cell border" )
+\end{Scode}
+\begin{Scode}{results=tex,echo=FALSE}
+xtable( ctable( wdbc$diagnosis, compactness_bins ), #$
+  label = "tab:06" , digits = 0, caption = "The contingency table for the diagnosis versus compactness")
+\end{Scode}
+\begin{Scode}{results=tex,echo=FALSE}
+xtable( ctable( wdbc$diagnosis, texture_bins ), #$
+  digits = 0, label = "tab:07", caption = "The contingency table for the diagnosis versus cellular texture" )
+\end{Scode}
+
+Though contingency table is a complete description of the joint distribution of two discrete variables, sometimes it is more intuitively clear to study the conditional probabilities of one variable given the other. Quetelet indices achieve this goal. 
+
+Suppose $\brac{A_i}_{i=1}^n$ and $\brac{B_j}_{j=1}^m$ are events. 
+Then the Quetelet index of $A_i$ given $B_j$ is the relative deviation of the conditional probability of $A_i$ given $B_j$ from the unconditional probability of $A_i$: \[Q_{ij}\defn \frac{\Pr\brac{\induc{A_i}B_j} - \Pr\brac{A_i}}{\Pr\brac{A_i}} \] Using the definition of the conditional probability, the expression simplifies to \[Q_{ij} = \frac{\Pr\brac{A_i \cap B_j}}{\Pr\brac{A_i}\Pr\brac{B_j}} - 1\] which reveals that $Q_{ij}$ quantifies the degree of \emph{non-independence} of events $A_i$ and $B_j$. The following R function computes the Quetelet index for a given sample of events.
+\begin{Scode}{fig=FALSE,echo=TRUE}
+quetelet <- function( row, col ) {
+  joint <- ctable( row, col, joint = TRUE, border = TRUE )
+  quetelet <- joint / outer(
+    joint[ , ncol( joint ) ],
+    joint[ nrow( joint ), ] ) - 1
+  quetelet[ -nrow( quetelet ), -ncol( quetelet ) ]
+}
+\end{Scode}
+
+Tables \ref{tab:08}, \ref{tab:09} and \ref{tab:10} display the index matrices of diagnostic qualities of various features.
+\begin{Scode}{results=tex,echo=FALSE}
+xtable( quetelet( wdbc$diagnosis, concavity_bins ), #$
+  digits = 3, label = "tab:08", caption = "Quetelet indices of diagnosis and concavinty of cell border" )
+\end{Scode}
+\begin{Scode}{results=tex,echo=FALSE}
+xtable( quetelet( wdbc$diagnosis, compactness_bins ), #$
+  digits = 3, label = "tab:09", caption = "Quetelet indices for diagnosis versus compactness" )
+\end{Scode}
+\begin{Scode}{results=tex,echo=FALSE}
+xtable( quetelet( wdbc$diagnosis, texture_bins ), #$
+  digits = 3, label = "tab:10", caption = "Quetelet indices of diagnostic quality of cellular texture" )
+\end{Scode}
+
+Quetelet indices are closely related to a specific case of Pearson's $\chi^2$ test, which tests the hypothesis of statistical independence of bivariate discrete data. Indeed, the test-statistic is \[\chi^2 \defn \sum_{i=1}^n\sum_{j=1}^m\frac{ \brac{ f_{ij} - F_{ij}}^2 }{F_{ij}}\] where $f_{ij}$ is the frequency of mutual occurrence of $A_i$ and $B_j$, while $F_{ij}$ is defined as follows \[F_{ij} \defn \frac{\brac{\sum_{k=1}^m f_{ik}}\brac{\sum_{k=1}^n f_{kj}}}{N}\] and $N\defn \sum_{i=1}^n\sum_{j=1}^m f_{ij}$ is the total number of observations. Minor simplifications yield the following expression of the $\chi^2$ statistic through Quetelet indices: \[\chi^2 = N \sum_{i=1}^n\sum_{j=1}^m \Pr\brac{A_i}\Pr\brac{B_j} Q_{ij}^2\] where $\Pr\brac{A_i}$ is the observed probability of $A_i$ defined as $\frac{\sum_{k=1}^m f_{ik}}{N}$, $\Pr\brac{B_j}$ as $\frac{\sum_{k=1}^n f_{kj}}{N}$ and $N$ is the total number of observations.
+
+In R Pearson's $\chi^2$ test is performed using a built-in function $\emph{chisq.test}$ which accepts the matrix of a bivariate joint distribution as its input. For example, in order to test the independence of malignancy and compactness measure of the nucleus.
+\begin{Scode}{fig=FALSE,echo=TRUE}
+  joint_tab <-
+    ctable( border = FALSE,
+      wdbc$diagnosis, compactness_bins ) #$
+
+  chisq.test( joint_tab )
+\end{Scode}
+
+\noindent Results of $\chi^2$ test for concavity :
+\begin{Scode}{fig=FALSE,echo=FALSE}
+  chisq.test( ctable( border = FALSE,
+    wdbc$diagnosis, concavity_bins ) ) #$
+\end{Scode}
+and texture feature:
+\begin{Scode}{fig=FALSE,echo=FALSE}
+  chisq.test( ctable( border = FALSE,
+    wdbc$diagnosis, texture_bins ) ) #$
+\end{Scode}
+
+The conclusions from both the Quetelet index tables, and the Pearson's $\chi^2$ unanimously suggest that the hypothesis of independence of the tumour tissue malignancy and the selected features should be rejected.
+
+% section 2d_categorical_data_analysis (end)
+
+\section{Analysis using Neural Networks} % (fold)
+\label{sec:neural_networks}
+By approximating the inner working of a biological brain, neural networks enable researchers to develop efficient solutions to the prediction and feature extraction problems. Sufficiently complex neural networks, such as with multiple extensive hidden layers, or feedback loops, or self-organization features, excel especially at image recognition.
+
+Let's define a function, which linearly rescales the input data into the range $\clo{a, b}$.
+\begin{Scode}{fig=FALSE,echo=TRUE}
+resc <- function( X, a = -1, b = 1 ) {
+## Force X into a matrix if needed
+  if( !is.matrix( X ) )
+    X <- as.matrix( X )
+## Get the range of X
+  xr <- apply( X, 2, range )
+  xl <- xr[2, ] - xr[1, ]
+## Normalize each column of X to [0,1]
+  xu <- sweep( sweep( X, 2, xr[1,], `-` ), 2, xl, `/` )
+
+## Re-scale
+  xu * ( b - a ) + a
+}
+\end{Scode}
+
+This chunk of code sets up a neural network with one hidden layer, normalizes the input and output data and returns a model object.
+\begin{Scode}{fig=FALSE,echo=TRUE}
+init_snn <- function( X, Y, H = 10 ) {
+## Normalize the data 
+  X <- cbind( resc( X, -1, 1 ), ..bias.. = 1 )
+  Y <- resc( Y, -1, 1)
+
+## Initialize the input-hidden layer weights
+  W1 <- matrix( rnorm( ncol( X ) * H ), ncol( X ), H )
+
+## ... and the hidden-output layer weights
+  W2 <- matrix( rnorm( H * ncol( Y ) ), H, ncol( Y ) )
+
+## Compile a model object
+  return( list(
+    data = list(
+      input = X,
+      output = Y ),
+    model = list(
+      layers = c( H ),
+      weights = list( W1 = W1, W2 = W2 ) ) ) )
+}
+\end{Scode}
+
+In order to see, what the neural network predicts for a given set of input data, it is necessary to define the following function, which on input accepts the model object and outputs the prediction:
+\begin{Scode}{fig=FALSE,echo=TRUE}
+run_snn <- function( object, input ) {
+  W1 <- object$model$weights$W1
+  W2 <- object$model$weights$W2
+  as.matrix( apply( input, 1, function( x ) {
+    OL1 <- 2 / ( 1 + exp( -x %*% W1) ) - 1
+    OL2 <- OL1 %*% W2
+  } ) )
+}
+\end{Scode}
+
+The heart of the training a neural network is the error back-propagation algorithm, which sequentially adjusts the weights of the network so as to match the output more closely. On each iteration the procedure trains the model on the input-output pairs in random order. Each training comprises feeding the input vector forward through the two-layered network, estimating the error of the network output and propagating the error backwards adjusting the weight layer by layer. As any optimization function \emph{fit\_snn} is constrained by the number of iteration until it gives up, and by the required accuracy of its prediction.
+\begin{Scode}{fig=FALSE,echo=TRUE}
+fit_snn <- function( object, mu = 0.001,
+            maxiter = 10000, abs.error = 0.01 ) {
+
+  W1 <- object$model$weights$W1
+  W2 <- object$model$weights$W2
+
+  X <- object$data$input
+  Y <- object$data$output
+
+## The main forward-backward pass loop
+  niter <- 0
+  repeat {
+    sq <- sample( seq_len( nrow( X ) ) )
+## Initialize mean absolute error to zero
+    abs_err <- numeric( nrow( X ) )
+    for( i in sq ) {
+      x <- X[i,, drop = FALSE] ; y <- Y[i,, drop = FALSE]
+## Forward pass
+      OL1 <- 2 / ( 1 + exp(- x %*% W1) ) - 1
+      OL2 <- OL1 %*% W2
+## Accumulate the error
+      ERR <- y - OL2
+      abs_err[ i ] <- abs( ERR )
+
+## Error back-prapagation.
+## dW2 the gradient of the second layer
+      dW2 <- -t( OL1 ) %*% ERR
+      t1 <- W2 %*% t( ERR )
+      t2 <- ( 1 - OL1 ) * ( 1 + OL1 ) / 2
+      t3 <- t2 * t( t1 )
+      dW1 <- -t( x ) %*% t3
+## Update the weights of both layers
+      W2 <- W2 - mu * dW2
+      W1 <- W1 - mu * dW1
+    }
+## Stop if the required accuracy has been achieved
+    if( mean( abs_err ) < abs.error ) break
+## Or if the limit on the number of iterations has been exceeded
+    if( niter > maxiter ) break
+    niter <- niter + 1
+  }
+
+## Return a proper object
+  new_model <- object$model
+  new_model$weights <- list( W1 = W1, W2 = W2 )
+  return( list(
+    data = object$data, #$
+    model = new_model,
+    error = mean( abs_err ),
+    niter = niter ) )
+}
+\end{Scode}
+
+It is interesting to see, whether a neural network can distinguish malignant tumour cells from benign on the present features. However, in order to test whether the network has learned to extract latent features of the input data and extrapolate them into an accurate prediction, it is necessary to perform a cross-validation experiment. In cross-validation, the original sample is split into two sub-samples: one for training, the other -- for testing purposes.
+\begin{Scode}{fig=FALSE,echo=TRUE}
+## Initialize the layered neural network model
+mdl <-
+  ( snn <-
+    init_snn(
+      wdbc[-1],
+      as.numeric( wdbc$diagnosis ), #$
+      H = 20 ) )
+
+## Split the sample in two: one for learning, the other for testing.
+train_sample <- sample( seq_len( nrow( wdbc ) ), nrow( wdbc ) * 2/3 )
+
+## Restrict to the learning sample only
+snn$data$input <- snn$data$input[ train_sample, , drop = FALSE ]
+snn$data$output <- snn$data$output[ train_sample, , drop = FALSE ]
+
+## Train the neural network
+snn <- fit_snn( snn, maxiter = 2000 )
+
+## Print the means absolute error
+snn$error #$
+\end{Scode}
+
+The back-propagation algorithm trained the network so that it can reproduce the training set with relatively small error, which means that it was able to discover hidden features of the data. Let's see how well the network fares on the validation sub-sample.
+\begin{Scode}{fig=FALSE,echo=TRUE}
+tX <- mdl$data$input[ -train_sample, , drop = FALSE ]
+tY <- mdl$data$output[ -train_sample, , drop = FALSE ]
+oY <- run_snn( snn, tX )
+mean( abs( oY - tY ) )
+\end{Scode}
+
+This result shows that back-propagation did not overfit the network to the training set. The decision rule is simple: $\delta = \text{malignant}$ if the output is $y \geq 0$ and $\delta = \text{benign}$ otherwise.
+\begin{Scode}{results=tex,echo=TRUE}
+  predicted <-
+    factor( c( "B", "M" )[resc( oY >= 0, 1, 2)] )
+
+  actual <-
+    wdbc$diagnosis[ - train_sample ] #$
+
+  conf_tbl <- ctable( actual, predicted )
+\end{Scode}
+
+The confusion matrix of the neural network on the testing set, which shows the frequency of correct predictions and mispredictions is shown in table~\ref{tab:11}.
+\begin{center}
+\begin{Scode}{results=tex,fig=FALSE,echo=FALSE}
+  library( tables )
+  latex( tabular( actual ~ predicted ), label = "tab:11",
+    caption = "The confusion matrix of the neural network on the test sample" )
+\end{Scode}
+\end{center}
+The specificity and sensitivity of the neural network with this decision rule are \Sexpr{formatC(conf_tbl[1,1]/conf_tbl[3,1]*100, digits=2)}\% and \Sexpr{formatC(conf_tbl[2,2]/conf_tbl[3,2]*100, digits = 2)}\% respectively. The accuracy of the neural network with 20 neurons in the hidden layer is \Sexpr{formatC((conf_tbl[1,1]+conf_tbl[2,2])/conf_tbl[3,3] * 100, digits = 2)}\%
+
+% section neural_networks (end)
+
+\section{Multivariate linear regression} % (fold)
+\label{sec:multivariate_linear_regression}
+It has already been shown in section \ref{sec:2d_analysis_of_quantitative_features} that linear regression is basically a projection of the dependent variable on the linear sub-space, spanned by the independent variables. Furthermore in section \ref{sec:2d_categorical_data_analysis} it has been established that there is indeed, a certain causal relationship between malignancy and the textural and geometric features of cell nuclei.
+
+In addition to the formulae in section \ref{sec:2d_analysis_of_quantitative_features}, below is an expression used to compute the covariance matrix of the estimator\[\text{cov}\brac{\hat{\beta}}\defn \mathbb{E}\brac{\hat{\beta}\hat{\beta}'} = \brac{X'X}^{-1}X' \mathbb{E}\brac{\varepsilon \varepsilon'} X \brac{X'X}^{-1}\] since $\mathbb{E}\brac{\hat{\beta}} = \beta$ as the estimator $\hat{\beta}$ is asymptotically unbiased and efficient, if the linear model is not misspecified. Assuming correct model specification and homoskedastic residuals, this expression could be simplified to \[\text{cov}\brac{\hat{\beta}} = \brac{X'X}^{-1}X' \sigma^2\]
+
+Since the linear sub-space generated by the observed vectors of independent variables is assumed to contain the vector of ones,it is possible to compute the multiple correlation coefficient $R^2$ ( coefficient of determination), which becomes \[ R^2 \defn \frac{ Y' \brac{I-P} Y }{ Y' \brac{I-\pi} Y } \] where is the projector onto the column-space of $X$ defined as $P \defn X\brac{X'X}^{-1} X'$ and $\pi$ is the projector onto the space, spanned by the vector $1\in \Real^n$, and defined as $\pi\defn 1 \brac{1'1}^{-1} 1' = \frac{1}{n} 1\times 1'$.
+
+The code below, estimates the linear regression coefficients using the projections method, which actually is the most general method to perform OLS estimation. First a matrix of independent variables is compiled out of all cellular features, including the intercept. Then using the built-in function \emph{crossprod}, which computes a $X'\times Y$, the coefficient vector of the linear regression is obtained. Finally the projector (\emph{proj}~$\defn X\times \brac{X'\times X}^{-1} \times X'$) is computed, which is used to cast a projection of $Y$ onto the column-space of $X$.
+\begin{Scode}{fig=FALSE,echo=TRUE} 
+  X <- as.matrix( cbind( wdbc[-1], ..intercept.. = 1 ) )
+  Y <- resc( as.numeric( wdbc$diagnosis ) ) #$
+
+  XX_inv <- solve( crossprod( X ) )
+  beta <- XX_inv %*% crossprod( X, Y )
+  residuals <- Y - X %*% beta
+
+  RSS <- crossprod( residuals )
+  ESS <- crossprod( X %*% beta  - mean( Y ) )
+  TSS <- crossprod( Y - mean( Y ) )
+
+  beta_se <- sqrt( diag( XX_inv ) * RSS / nrow( Y ) )
+  t_stat <- beta / beta_se
+  R2 <- ESS / TSS
+\end{Scode}
+
+The coefficient of determination $R^2 = \Sexpr{formatC(R2, digits=4)}$ indicates a strong linear relationship between the malignancy of tumour cells and their shape, texture and dimensions. Table~\ref{tab:12} summarizes the estimation results.
+\begin{Scode}{results=tex,echo=FALSE}
+  fittness <- 
+    data.frame( row.names = rownames( beta ),
+      value = beta, s.e. = beta_se, `t-stat` = t_stat )
+
+  print( xtable( fittness, file="", label = "tab:12",
+    caption = "OLS estimation results", digits = 4 ) )
+\end{Scode}
+
+% section multivariate_linear_regression (end)
+
+\section{PCA analysis} % (fold)
+\label{sec:pca_analysis}
+
+There are 10 numerical features of the studied dataset, so it is only natural to try to reduce the dimensionality of the data. One of the most suitable methods is the principal component analysis. The idea is to find such transformation of the standardized input data, that the resulting synthetic features are orthogonal with each having the largest variance possible. The first component is computed as the weighing vector  such that \[w_1 = \text{argmax}_{\nrm{w}=1}\nrm{Xw} = \text{argmax} \frac{w'X'Xw}{w'w}\] This ratio, also known as the Rayleigh quotient, is maximized $w_1\in \Real^d$ equal to the eigenvector of $X'X$ with the largest associated eigenvalue $\lambda_1$. Further principal components are computed sequentially: $w_k$ is the maximizer of the Rayleigh quotient for the symmetric matrix $X_k'X_k$ where $X_k = X'X - \sum_{i=1}^{k-1} \lambda_i w_i w_i'$.
+
+First, the perform the standardization step: each required numeric feature must be centred and scaled, so that the resulting normalized features be dimensionless.
+\begin{Scode}{echo=TRUE,fig=FALSE}
+## 1. Normalize the data: subtract centrality
+##  and divide by scale. Diagnosis feature is omitted.
+center <- sapply( wdbc[-1], mean )
+stddev <- sqrt( diag( var( wdbc[-1] ) ) )
+wdbc_s <- mapply( function( x, a, s ) ( x - a ) / s,
+  wdbc[-1], center, stddev )
+\end{Scode}
+
+The principal components are computed from the variance matrix of the standardized dataset. Though the linear algebra behind the PCA suggests using eigendecomposition of a matrix, in practice it is better to use the singular value decomposition as it is more numerically stable. Furthermore, singular values generalize eigenvalues.
+\begin{Scode}{echo=TRUE,fig=FALSE}
+## 2. Compute the covariance matrix and its singular decomposition
+sv <- svd( crossprod( wdbc_s ) )
+## Compute each component and its standard deviation 
+sv$d <- sv$d / sqrt( nrow( wdbc_s ) - 1 )
+sv_pc <- data.frame( wdbc_s %*% sv$v )
+## Collect the results into a single object
+colnames( sv_pc ) <- paste0( "PC", seq_along( sv_pc ) )
+wdbc_pc <- cbind( diagnosis = wdbc$diagnosis, sv_pc ) # $
+\end{Scode}
+
+The scatter plot of the first two principal components (depicted on fig.~\ref{fig:pc_biplot01}). The plot shows that the indecision region, separating benign tumours from malignant has tightened. The share of total variation of original feature explained by the principal components is pictured in the scree plot on fig.~\ref{fig:pc_scree_02}. The first two principal components explain almost 95\% of the 10-dimensional dataset.
+\begin{figure}[htb]\begin{center}
+  \begin{Scode}{fig=TRUE,echo=FALSE}
+    ggplot( data = wdbc_pc ) + theme0( ) +
+      geom_point( aes( PC1, PC2, colour = diagnosis ) )
+  \end{Scode}
+  \caption{Scatter plot of the first two principal components. Mild red colour represents observations diagnosed as benign tumours, whereas light blue is used to distinguish malignant cases.}
+\label{fig:pc_biplot01}
+\end{center}\end{figure}
+
+\begin{figure}[htb]\begin{center}
+  \begin{Scode}{fig=TRUE,echo=FALSE}
+    qplot( y = cumsum( sv$d ^ 2 ) / sum( sv$d ^ 2 ) ) +
+      geom_line( stat = "identity" ) + theme0( ) +
+      labs( x = "No. of Components", y = "Variance share" )
+  \end{Scode}
+  \caption{Explained variance against the number of the principal components.}
+\label{fig:pc_scree_02}
+\end{center}\end{figure}
+
+% section pca_analysis (end)
+
+% \section{k-Means clustering} % (fold)
+% \label{sec:k_means_clustering}
+% 
+% % section k_means_clustering (end)
+% % - data clustering with k-means, interpretation of the results.
+
+\clearpage
+%%
+
+%% rm( list = ls(all.names = TRUE ) ) ; invisible( gc() )
+%% setwd( "/users/user/Desktop/studies 2014-2015/MIRKIN/report/" )
+%% Sweave( file = "report.Stex" )
+
+
+\section{References} % (fold)
+\label{sec:references}
+\bibliographystyle{plain}
+\bibliography{references}
+
+% section references (end)
+\end{document}

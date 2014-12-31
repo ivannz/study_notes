@@ -1,0 +1,59 @@
+
+## Lecture 01
+
+D\defn \obj{\text{the patient has the disease}}
+T\defn \obj{\text{the test is positive}}
+\Pr(T\vert D) = .95
+\Pr(T\vert D^c) = .01
+\Pr(D) = \frac{1}{1000}
+
+\Pr(T) = \Pr(T\cap D) + \Pr(T\cap D^c) = \Pr(T\vert D)\Pr(D) + \Pr(T\vert D^c)\Pr(D^c)
+
+\Pr(D\vert T) = \frac{\Pr(D\cap T)}{\Pr(T)} = \frac{0.001\cdot 0.95}{0.001\cdot 0.95 + 0.999\cdot 0.01} = 0.32
+
+(A_n)_{n\geq1}\in \Fcal
+B_{n+1} \defn A_{n+1}\setminus \bigcup_{i=1}^n A_i
+
+\biguplus_{n\geq1} B_n = \bigcap_{n\geq1} A_n
+
+\Pr(A_n)\leq \Pr(B_n)
+\Pr(\bigcup_{n\geq}A_n)
+
+
+## Lecture 02
+
+## Lecture 03
+
+Suppose $F:\Real\to \Real^+$ is non-decreasing and right-continuous. Then by then Stieltjes theorem there exists a unique measure on $\brac{\Real, \borel{\Real}}$, denoted by $dF\brac{\ploc{a,b}} = F(b)-F(a)$ for all $a, b\in\Real$ with $a\leq b$.
+
+Let $x_0\in \Real$ and suppose $\brac{x_n}_{n\geq1}\in \ploc{-\infty, x_0}$ is such that $x_n\uparrow x_0$. Thus $\ploc{x_n,x_0}\downarrow\obj{x_0}$. Since $dF\brac{\ploc{x_n, x_0}} < +\infty$ it is true that $dF\brac{\ploc{x_n,x_0}}\downarrow dF\brac{\obj{x_0}}$.
+
+Now for any $f\in L^1_\Cplx\brac{\Real,\bprel{\Real},dF}$ it is true that $f 1_{\ploc{x_n,x_0}}\overset{\Cplx}{\to} f 1_{\obj{x_0}}$ and the sequence is dominated by $\abs{f}\in L^1_\Real\brac{\Real,\bprel{\Real},dF}$. Thus by the DCT \[\lim_{n\to \infty} \int \abs{f 1_{\ploc{x_n,x_0}} - f 1_{\obj{x_0}}} dF = 0\] whence $f(x_0)dF\brac{\obj{x_0}} = \lim_{n\to \infty} \int^{x_0}_{x_n} f dF$.
+
+Let $T$ be the waiting time until some event, which happens with intensity $\lambda>0$.
+
+$T:\brac{\Omega, \Fcal}\to\brac{\Zinf,\borel{\Zinf}}$
+
+For any $t\in \Real^+$ by the time $t$ there have happened $Bi\brac{\frac{\lambda}{n}, n}$ events over some time-grid with steps $\frac{1}{n}$. Taking an increasingly finer grid yields the probability that no event has take place up to the moment $t$ is asymptotically \[\brac{1-\frac{\lambda}{n}}^{nt}\to e^{-nt}\]
+
+Waiting time until the $r^\text{th}$ independently occurring event can be modelled by the gamma distribution. \begin{align*}
+\Gamma\brac{r} &= \brac{r-1} \Gamma\brac{r-1}\\
+\Gamma\brac{r} &= \int_0^\infty x^{r-1} e^{-x} dx\\\end{align*}
+
+\begin{align*}\frac{1}{2\pi}\int_\Real \int_\Real e^{-\frac{x^2+y^2}{2}}dxdy
+ =\frac{1}{2\pi}\int_0^{+\infty} \int_0^{2\pi} e^{-\frac{r^2}{2}} r dr d\theta\\
+&=\frac{1}{2\pi}\int_0^{+\infty} e^{-\frac{r^2}{2}} d\brac{\frac{r^2}{2}} \int_0^{2\pi}d\theta\\
+&=\int_0^{+\infty} e^{-x} dx \\
+&=1 \end{align*}
+
+
+
+
+
+
+
+
+
+
+
+

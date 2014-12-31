@@ -1,0 +1,69 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+
+\newcommand{\Ctx}{\mathbb{K}}
+\newcommand{\Pat}{\mathbb{P}}
+\newcommand{\supp}{\text{supp}}
+\newcommand{\conf}{\text{conf}}
+
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\begin{filecontents}{references.bib}
+@book{diestel2006,
+  title={Graph Theory},
+  author={Diestel, R.},
+  isbn={9783540261834},
+  lccn={99057468},
+  series={Electronic library of mathematics},
+  url={http://books.google.ru/books?id=aR2TMYQr2CMC},
+  year={2006},
+  publisher={Springer}
+}
+\end{filecontents}
+
+
+\title{Summary of Diestel's graph theory}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+	A summary of a great book on graph theory.
+\end{abstract}
+
+\tableofcontents
+\clearpage
+
+Summary of book~\cite{diestel2006}.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

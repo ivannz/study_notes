@@ -1,0 +1,720 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{fullpage}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+\let\originalleft\left
+\let\originalright\right
+\renewcommand{\left}{\mathopen{}\mathclose\bgroup\originalleft}
+\renewcommand{\right}{\aftergroup\egroup\originalright}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\crab}[1]{{\left ] #1 \right [}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Rbar}{{\bar{\mathbb{R}}}}
+\newcommand{\Real}{{\mathbb{R}}}
+\newcommand{\Zinf}{{\clo{ 0, +\infty }}}
+\newcommand{\Cplx}{{\mathbb{C}}}
+\newcommand{\Tcal}{{\mathcal{T}}}
+\newcommand{\Dcal}{{\mathcal{D}}}
+\newcommand{\Hcal}{{\mathcal{H}}}
+\newcommand{\Ccal}{{\mathcal{C}}}
+\newcommand{\Scal}{{\mathcal{S}}}
+\newcommand{\Ncal}{{\mathcal{N}}}
+\newcommand{\Ecal}{{\mathcal{E}}}
+\newcommand{\Fcal}{{\mathcal{F}}}
+\newcommand{\borel}[1]{{\mathcal{B}\brac{#1}}}
+\newcommand{\Ex}[0]{{\mathbb{E}}}
+\newcommand{\pr}[0]{{\mathbb{P}}}
+\newcommand{\Var}[1]{{\text{Var}\brac{#1}}}
+
+\newcommand{\pwr}[1]{{\mathcal{P}\brac{#1}}}
+\newcommand{\Dyns}[1]{{\mathfrak{D}\brac{#1}}}
+\newcommand{\Ring}[1]{{\mathcal{R}\brac{#1}}}
+\newcommand{\Supp}[1]{{\operatorname{supp}\nolimits\brac{#1}}}
+
+\newcommand{\defn}{{\mathop{\overset{\Delta}{=}}\nolimits}}
+\newcommand{\lpto}{{\mathop{\overset{L^p}{\to}}\nolimits}}
+
+\newcommand{\re}{\operatorname{Re}\nolimits}
+\newcommand{\im}{\operatorname{Im}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+\selectlanguage{russian}
+
+% \title{Assignment \#01}
+% \author{Nazarov Ivan, \rus{101мНОД(ИССА)}}
+
+\usepackage{Sweave}
+\begin{document}
+% \maketitle
+\begin{titlepage}
+	\selectlanguage{russian}
+	\thispagestyle{empty}
+	\vbox to \textheight {
+		\renewcommand{\baselinestretch}{1}\selectfont
+		\begin{center}
+			\textsc{\LARGE
+			Национальный Исследовательский Университет\\[0.5cm]
+			Высшая Школа Экономики}\\[1.5cm]
+
+			\textsc{\Large
+			Магистерская программа Науки о Данных}\\[0.5cm]
+
+			\rule{\linewidth}{0.5mm}\\[1.0cm]
+
+			{\huge \bfseries Домашняя работа \#1}\\[0.5cm]
+			{\large \bfseries по курсу ``Робастные Методы в Статистике''}\\[0.5cm]
+		\end{center}
+
+		\vspace{2.0cm}
+
+		\begin{flushright}
+			\large Иван \textsc{Назаров}\\[0.5cm]
+			\rus{101мНОД(ИССА)}\\[3cm]
+		\end{flushright}
+
+		\vspace{2.0cm}
+
+		\vfill
+		\begin{center}
+			Москва\\
+			2014\\[3cm]
+		\end{center}
+	}
+\end{titlepage}
+\clearpage
+
+\begin{abstract}
+\selectlanguage{russian}
+\noindent Домашняя работа по курсу ``Робастные Методы в Статистике''. Вариант \# 1.
+\end{abstract}
+
+\selectlanguage{russian}
+\section{Задание \# 1} % (fold)
+\label{sec:task_1}
+
+Пусть $X$ -- случайный вектор из $\Real^n$, распределённый согласно многомерному стандартному нормальному закону со средним $\mu$ и ковариационной матрицей $\Sigma$. Тогда плотность распределения $X$ задаётся следующей функцией: \[f_X\brac{\brac{x_k}_{k=1}^n}\defn \frac{1}{\sqrt{2\pi^n \text{det}{\Sigma}}} exp\brac{ -\frac{1}{2} \brac{x-\mu}' \Sigma^{-1} \brac{x-\mu} }\]
+
+Поскольку ковариационная матрица является положительно определенной матрицей, то существует её обратная, поэтому, если ковариационная матрица имеет блочно-диагональную структуру \[\Sigma = \begin{pmatrix} S_1 & 0 \\ 0 & S_2 \end{pmatrix}\] где $S_k\in \Real^{n_k\times n_k}$ для $k=1,2$ и $n_1+n_2=n$, то в силу единственности обратной легко показать, что \[\Sigma^{-1} = \begin{pmatrix} S_1^{-1} & 0 \\ 0 & S_2^{-1} \end{pmatrix}\] Тогда $\text{det}{\Sigma} = \text{det}{S_1} \text{det}{S_2}$ и, положив $X = \brac{Y_1, Y_2}$, $Y_k\in \Real^{n_k}$, и $\mu = \brac{\mu_1, \mu_2}$, $\mu_k\in \Real^{n_k}$, можно увидеть, что \[\brac{X-\mu}' \Sigma^{-1} \brac{X-\mu} = \brac{Y_1-\mu_1}' S_1^{-1} \brac{Y_1-\mu_1} + \brac{Y_2-\mu_2}' S_2^{-1} \brac{Y_2-\mu_2}\] откуда вытекает, что \[f_X\brac{\brac{x_k}_{k=1}^n} = f_{Y_1}\brac{y_1} f_{Y_2}\brac{y_2} \] где $f_{Y_k}$ -- плотность $n_k$-мерного нормального распределения со средним $\mu_k$ и ковариационной матрицей $S_k$. Таким образом, случайные векторы-компоненты $X$, $Y_1$ и $Y_2$, соответствующие блокам ковариационной матрицы являются независимыми случайными величинами.
+
+Также, прежде чем приступить к самому заданию, следует отметить, что для любого нетривиального вектора $\beta\in\Real^n$ случайная величина $\beta' X$ имеет нормальное распределение со средним $\beta'\mu$ и дисперсией $\beta' \Sigma \beta$. Действительно пусть $ Y = \alpha + B X$, где $B$ -- матрица $k\times n$ полного ранга и $\alpha\in\Real^n$. Тогда производящая функция моментов $Y$ равна \begin{align*}
+	M_Y\brac{t} & = \Ex\brac{ e^{t'Y} } = e^{t'\alpha} \Ex\brac{ e^{t'B X} } = e^{t'\alpha} M_X\brac{ B' t }
+\end{align*} где $M_X\brac{ t }$ -- производящая функция моментов многомерного нормального распределения со средним $\mu$ и ковариационной матрицей $\Sigma$. Заметим, что в силу положительной определённости $\Sigma$ существует симметричная матрица $C$ размера $n\times n$, такая что $\Sigma = C'C$. Тогда $X = \mu + C Z$ для $Z\sim \mathcal{N}\brac{\vec{0}, I_n}$ и \begin{align*}
+	M_X\brac{ t } & = \Ex\brac{ e^{t'X} } = e^{t'\mu} \Ex\brac{ e^{t'C Z} } = e^{t'\mu} M_Z\brac{C't}
+\end{align*} Поскольку производящая функция моментов стандартного многомерного нормального распределения $M_Z\brac{t}$ равна \begin{align*}
+	M_Z\brac{t} & = \Ex\brac{ e^{t'Z} } = \prod_{j=1}^n\Ex\brac{ e^{t_j Z_j} }= \prod_{j=1}^n e^{\frac{t_j^2}{2}} = e^{\frac{1}{2} t't}
+\end{align*} то $M_X\brac{ t } = e^{t'\mu+\frac{1}{2} t'\Sigma t}$.
+Однако, поскольку $B$ -- полного ранга, то и $B\Sigma B'$ полного ранга, и является ковариационной матрицей. Таким образом, \begin{align*}
+M_Y\brac{t} &= e^{t'A} e^{t'B\mu} e^{\frac{1}{2} t'B C C'B't} = e^{t'\brac{A+B\mu} + \frac{1}{2} t'B \Sigma B't}
+\end{align*} откуда следует, что $Y\sim \mathcal{N}\brac{A+B\mu, B\Sigma B'}$. Замечу, что нетривиальный вектор $\beta$ является матрицей полного ранга размера $n\times 1$.
+
+Итак пусть $X = \brac{x_k}_{k=1}^3$ -- многомерный нормальный вектор с параметрами распределения $\mu=\vec{0}$ и $\Sigma=\text{diag}\brac{16,9,9}$, где $\text{diag}\brac{\brac{a_k}_{k=1}^n}$ диагональная матрица $n \times n$ со значениями $\brac{a_k}_{k=1}^n$. Рассмотрим распределение случайной величины, заданной функцией \[\xi\defn \frac{ 3 x_2 + x_1 x_3 }{\sqrt{9 + x_1^2}}\] Поскольку матрица ковариации блочно-диагональна, то случайный двумерный вектор $\brac{x_2,x_3}$ и одномерная случайная величина $x_1$ независимы, откуда \[ f_X\brac{x_1, x_2, x_3} = f_{\induc{X_2,X_3}X_1}\brac{\induc{x_2, x_3}x_1} f_{X_1}\brac{x_1} = f_{X_2,X_3}\brac{x_2, x_3} f_{X_1}\brac{x_1}\]
+
+Рассмотрим вероятность $\pr\brac{\xi\leq c}$ для некоторого $c\in\Real$. Поскольку, $\pr\brac{\xi\leq c} = \Ex\brac{1_{\obj{\xi\leq c}}}$ и справедливо, что \[\Ex\brac{1_{\obj{\xi\leq c}}} = \Ex\brac{ \Ex\brac{\induc{1_{\obj{\xi\brac{X_1}\leq c}}}X_1}}\] то для выяснения итогового распределения сначала следует проанализировать условное распределение $\xi\brac{X_1}$ при фиксированном $X_1$.
+
+При фиксированном $X_1$ случайная величина $\xi\brac{X_1}$ является линейной комбинацией $X_2$ и $X_3$ с весами $\frac{3}{\sqrt{9+X_1^2}}$ и $\frac{X_1}{\sqrt{9+X_1^2}}$ соответственно. Учитывая независимость от $X_1$, получаем, что 
+\begin{align*}
+	\pr\brac{\induc{\xi\brac{x_1}\leq c}X_1=x_1} & = \int\limits_{\Real^2} 1_{\obj{\xi\brac{x_1}\leq c}} f_{\induc{X_2,X_3}X_1}\brac{\induc{x_2, x_3}x_1} dx_2 dx_3 \\& = \int\limits_{\Real\times \Real} 1_{\obj{\xi\brac{x_1}\leq c}} f_{X_2,X_3}\brac{x_2, x_3} dx_2 dx_3 \\ &= \mathbb{E}_{\mathcal{N}_2}\brac{1_{\obj{\xi\brac{x_1}\leq c}}} \\
+\end{align*}
+Из свойств линейной комбинации многомерного нормального распределения следует, что условное распределение $\xi$ при заданном $x_1$ является нормальным, причём
+\begin{align*}
+	\Ex\brac{ \xi\brac{x_1} } & = \frac{3}{\sqrt{9+X_1^2}}\mu_2 + \frac{X_1}{\sqrt{9+X_1^2}}\mu_3\\ 
+	\Var{ \xi\brac{x_1} } & = \frac{3^2}{9+X_1^2}\sigma_{22} + \frac{X_1^2}{9+X_1^2}\sigma_{33} + 2\frac{3 X_1}{9+X_1^2}\sigma_{23}\\& = \frac{3^2}{9+X_1^2}\sigma_{22} + \frac{X_1^2}{9+X_1^2}\sigma_{33} + 2\frac{3 X_1}{9+X_1^2}\sqrt{\sigma_{22}\sigma_{33}} \rho_{23} 
+\end{align*} где $\rho_{23}$ -- корреляция 2 и 3 компонент случайного вектора $X$, равная по определению $\rho_{23} \defn \frac{\sigma_{23} }{\sqrt{\sigma_{22} \sigma_{33}}}$, и \[\begin{pmatrix}\sigma_{22}&\sigma_{23}\\\sigma_{32}&\sigma_{33}\end{pmatrix} = \begin{pmatrix}9&0\\0&9\end{pmatrix}\] есть блок матрицы $\Sigma$ и $\mu_2 = \mu_3 = 0$. Если $\sigma_{22} = \sigma_{33} = \sigma^2$ и $\rho_{23}=0$, то \[\Var{ \xi\brac{x_1} } = \sigma^2\brac{1 + 2\frac{3 X_1}{9+X_1^2} \rho_{23}} = \sigma^2\]
+
+Итак условное распределение $\xi\brac{X_1}$ при фиксированном $X_1$ не зависит от $X_1$ и $\xi\brac{X_1}\sim \mathcal{N}\brac{0,\sigma^2}$, откуда вытекает, что \[\Ex\brac{\induc{1_{\obj{\xi\brac{X_1}\leq c}}}X_1} = \pr\brac{\induc{\xi\brac{x_1}\leq c}X_1=x_1} = \Phi\brac{\frac{c}{\sigma}}\] где $\Phi$ функция распределения стандартного нормального распределения. Таким образом, $\pr\brac{\xi\leq c} = \Ex\brac{ \Phi\brac{\frac{c}{\sigma}} } = \Phi\brac{\frac{c}{\sigma}}$. В частности, поскольку $\sigma^2 = 3^2$, то $\pr\brac{\xi\leq c} = \Phi\brac{\frac{c}{3}}$.
+
+% section task_1 (end)
+
+\section{Задание \# 2} % (fold)
+\label{sec:task_2}
+\begin{Scode}{fig=FALSE,echo=FALSE}
+library( xtable )
+library( ggplot2 )
+theme0 <-
+  function( ... ) theme_bw( ) +
+    theme_minimal( base_size = 18 ) +
+    theme( legend.position = "none" )
+
+set.seed( 1234 )
+N <- 10
+\end{Scode}
+Начнём с того, что смоделируем выборку $X = \brac{x_k}_{k=1}^N$ независимых наблюдений размера $N=\Sexpr{N}$, имеющих нормальное распределение с параметрами $\mu=2$ и $\sigma = 4$.
+\selectlanguage{english}
+\begin{Scode}{fig=FALSE,echo=TRUE}
+X <- rnorm( n = N, mean = 2, sd = 4 )
+\end{Scode}
+\selectlanguage{russian}
+Среднее, $\bar{X} \defn \frac{\sum\limits_{i=1}^n x_i}{N}$ и дисперсия, $\hat{S} \defn \frac{\sum\limits_{i=1}^N \brac{x_i-\bar{X}}^2}{N}$ рассчитываются как
+\selectlanguage{english}
+\begin{Scode}{fig=FALSE,echo=TRUE}
+mX <- sum( X ) / N
+s2X <- sum( X^2 ) / N - mX^2
+\end{Scode}
+\selectlanguage{russian}
+и равны \Sexpr{formatC( mX, format = "fg", digits = 4 )} и \Sexpr{formatC( s2X, format = "fg", digits = 4 )} соответственно.
+
+Поскольку каждый $X_k$ независимо и одинаково нормально распределён, то $\bar{X}\sim \mathcal{N}\brac{\mu, \frac{\sigma^2}{N}}$, и при этом $\frac{N \hat{S}}{\sigma^2}$ имеет $\chi^2$ распределение с $N-1$ степенью свободы. Таким образом, отношение $\frac{\bar{X}}{\sqrt{\hat{S}}}$ распределено как $t_{N-1}$. Построим $3\sigma$-выборочный доверительный интервал для $\mu$:
+\[ \clo{\bar{X}-3\frac{\hat{S}}{\sqrt{N}}, \bar{X}+3\frac{\hat{S}}{\sqrt{N}}}\Rightarrow \clo{\Sexpr{formatC( mX - 3*sqrt( s2X / N ), format = "fg", digits = 4 )}, \Sexpr{formatC( mX + 3*sqrt( s2X / N ), format = "fg", digits = 4 )}}\] Этот доверительный интервал имеет вероятность покрытия \Sexpr{formatC( ( pt( 3, df = N-1 ) - pt( -3, df = N-1 ) )*100, format = "fg", digits = 4 )}\%. Истинное значение $\mu = 2$ \Sexpr{ if( abs(mX - 2) < 3*sqrt( s2X / N ) ) "покрывается построенным интервалом" else "не содержится в интервале" }.
+
+Изменим немного условия задачи, а именно, модифицируем исходное распределение так, чтобы оно имело тяжёлые ``хвосты'': \begin{equation*}
+p\brac{x}\defn \left\{\begin{matrix}
+	c \brac{ x^2 + 1 }^{-1} & x<0\\
+	\phi_X\brac{x} & x\in \clo{0,4}\\
+	c \frac{x-4}{ \brac{x-4}^2 + 1 } & x>4
+	\end{matrix}\right.
+\end{equation*}
+Тогда, для того, чтобы $p\brac{x}$ была функцией плотности некоторого распределения, необходимо, чтобы $\int_{-\infty}^{+\infty} p\brac{x}dx = 1$. Чтобы найти такое $c$ при котором $p\brac{x}$ интегрируется в единицу следует рассмотреть составные части $p\brac{x}$ каждую по-отдельности. Интеграл левого ``хвоста'' при $x<0$ \begin{align*}
+	\int_{-\infty}^x p\brac{s} ds & = c \int_{-\infty}^x \brac{ s^2 + 1 }^{-1} ds = c \induc{\arctan\brac{s}}_{-\infty}^x \\ & = c \brac{\arctan{\brac{x}}-\lim_{s\to-\infty}\arctan{\brac{s}}} = c\brac{\arctan{\brac{x}} - \brac{-\frac{\pi}{2}}}
+\end{align*} и правого ``хвоста'' для $x>4$
+\begin{align*}
+	\int_4^x p\brac{s} ds & = c \int_4^x \frac{s-4}{\brac{s-4}^4 + 1} ds = \frac{c}{2}\int_0^{x-4}\frac{1}{ y^4 + 1 } 2y dy \\& = \frac{c}{2} \int_0^{\brac{x-4}^2} \brac{ t^2 + 1 }^{-1} dt = \frac{c}{2} \induc{\arctan\brac{t}}_0^{\brac{x-4}^2} \\& = \frac{c}{2} \arctan{\brac{x-4}^2}
+\end{align*}
+При этом интеграл ``центра'' для $x\in \clo{0,4}$ есть ни что иное как \begin{align*}
+	\int_0^x p\brac{s} ds & = \int_0^x \frac{1}{\sqrt{2\pi \sigma^2}}e^{-\frac{1}{2}\brac{\frac{s-\mu}{\sigma}}^2} ds \\ &= \int_{\frac{-\mu}{\sigma}}^{\frac{x-\mu}{\sigma}} \frac{1}{\sqrt{2\pi}} e^{-\frac{t^2}{2}} dt \\ &= \Phi\brac{\frac{x-\mu}{\sigma}}-\Phi\brac{\frac{-\mu}{\sigma}}
+\end{align*} где $\Phi$ есть функция распределения стандартного нормального распределения.
+
+Итак, подставляя значения $\mu=2$ и $\sigma = 4$, нормирующая константа $c$ определяется из выражения \begin{align*}
+	1 & = \int_{-\infty}^{+\infty} p\brac{x} dx = \int_{-\infty}^0 p\brac{x} dx + \int_0^4 p\brac{x} dx + \int_4^{+\infty} p\brac{x} dx \\ &= c \frac{\pi}{2} + \Phi\brac{\frac{4-\mu}{\sigma}}-\Phi\brac{\frac{-\mu}{\sigma}} + \frac{c}{2} \lim_{y\to\infty}\arctan{\brac{y-4}^2} \\ &=
+	c \frac{\pi}{2} + \Phi\brac{\frac{4-\mu}{\sigma}}-\Phi\brac{\frac{-\mu}{\sigma}} + \frac{c}{2} \frac{\pi}{2} \\ &=
+	\frac{3c}{2} \frac{\pi}{2} + \Phi\brac{\frac{4-2}{4}}-\Phi\brac{\frac{-2}{4}} = c\frac{3\pi}{4} + \Phi\brac{\frac{1}{2}}-\brac{1-\Phi\brac{\frac{1}{2}}} \\ &= c\frac{3\pi}{4} + 2 \Phi\brac{\frac{1}{2}}-1
+\end{align*}
+Откуда получается искомое значение $c\defn \frac{8 \brac{1-\Phi\brac{\sfrac{1}{2}}}}{3 \pi}$. Используя встроенные в \eng{R} численные аппроксимации
+\selectlanguage{english}
+\begin{Scode}{echo=TRUE,fig=FALSE}
+B <- pnorm( .5 )
+C <- 8 * ( 1 - B ) / ( 3 * pi )
+\end{Scode}
+\selectlanguage{russian}
+получаем, что $c \approx \Sexpr{formatC( C, format = "fg", digits = 4 )}$
+
+Функция распределения, соответствующая введённой функции плотности, задаётся следующим выражением: \begin{equation*}
+F\brac{x}\defn \left\{\begin{matrix}
+	c \arctan\brac{x} + c\frac{\pi}{2} & x<0 \\
+	\Phi\brac{\frac{x-2}{4}} + \frac{c\pi}{2} + \Phi\brac{\frac{1}{2}} - 1 & x\in \clo{0,4} \\
+	\frac{c}{2} \arctan\brac{x-4}^2 + \frac{c\pi}{2} + 2 \Phi\brac{\frac{1}{2}} - 1 & x>4
+	\end{matrix}\right.
+\end{equation*}
+Примечательно то, что выведенная функция распределения легко обратима -- это существенно упрощает генерацию случайных величин, распределённых согласно $F$.
+\begin{equation*}
+F^{-1}\brac{u}\defn \left\{\begin{matrix}
+	\tan\brac{ \frac{1}{c}\brac{ u - c\frac{\pi}{2}} } & u\in \clop{ 0, c\sfrac{\pi}{2}}\\
+	\Phi^{-1}\brac{ \Phi\brac{-\frac{1}{2}} + u - c \frac{\pi}{2} } & u-c\frac{\pi}{2}\in \clop{ 0, 2 \Phi\brac{\frac{1}{2}} - 1} \\
+	4 + \sqrt{ \tan\brac{ \frac{2}{c} \brac{ u-c\frac{\pi}{2} + 1 - 2 \Phi\brac{\frac{1}{2}} } } } & u\in \clop{ c\frac{\pi}{2} + 2 \Phi\brac{\frac{1}{2}} - 1, 1}
+	\end{matrix}\right.
+\end{equation*}
+Приведённый ниже \eng{R}-код реализует как функцию $F$ так и её обратную (процедура \eng{suppressWarnings($\ldots$)} позволяет нивелировать ``неудобные'' особенности выполнения примитива \eng{ifelse($\ldots$)}):
+\selectlanguage{english}
+\begin{Scode}{fig=FALSE,echo=TRUE}
+F <- function( x ) suppressWarnings(
+  C * pi / 2 + ifelse( x < 0, C * atan( x ),
+    B - 1 + ifelse( x <= 4, pnorm( ( x - 2 ) / 4 ),
+      B + C/2 * atan( ( x - 4 )^2 ) ) ) )
+
+F_inv <- function( u ) suppressWarnings(
+  ifelse( u < C * pi / 2, tan( u / C - pi / 2 ),
+    ifelse( u <= C * pi / 2 + 2 * B - 1,
+      4 * qnorm( u - C * pi / 2 + 1 - B ) + 2,
+        4 + sqrt( tan( 2 * ( u - C * pi / 2 - 2 * B + 1 ) / C ) ) ) ) )
+\end{Scode}
+\selectlanguage{russian}
+
+Пусть $Y=\brac{y_k}_{k=1}^n$ -- выборка независимых случайных величин, одинаково распределённых согласно $F$, соответствующей функции плотности $p\brac{x}$. Для порждения выборки воспользуемся методом обратного преобразования, сгенерировав предварительно необходимый объём равномерно распределённых случайных величин с помощью \eng{runif($\ldots$)}:
+\selectlanguage{english}
+\begin{Scode}{fig=FALSE,echo=TRUE}
+Y <- F_inv( runif( n = N ) )
+mY <- sum( Y ) / N
+s2Y <- sum( Y^2 ) / N - mY^2
+\end{Scode}
+\selectlanguage{russian}
+Выборочное среднее и дисперсия равны  \Sexpr{formatC( mY, format = "fg", digits = 4 )} и \Sexpr{formatC( s2Y, format = "fg", digits = 4 )} соответственно, и $3\sigma$-выборочный доверительный интервал для $\mu$ выглядит так $\clo{\Sexpr{formatC( mY - 3 * sqrt( s2Y / N ), format = "fg", digits = 4 )}, \Sexpr{formatC( mY + 3 * sqrt( s2Y / N ), format = "fg", digits = 4 )}}$. Предполагаемое истинное значение $\mu = 2$ \Sexpr{ if( (mY - 2)^2 < 3 * sqrt( s2Y / N ) ) "покрывается построенным интервалом" else "не содержится в интервале" }.
+
+Повторим эксперимент несколько раз, последовательно увеличивая объём выборки. Пусть $Z_k = \brac{y_{ki}}_{i=1}^{n_k}$ выборка размера $n_k = \Sexpr{N} \cdot 2^k$, $k=1,2,3$ из распределения с плотностью $p\brac{x}$.
+\selectlanguage{english}
+\begin{Scode}{fig=FALSE,echo=TRUE}
+Z <- lapply( c( 2, 4, 8 ) * N,
+  function( n ) F_inv( runif( n = n ) ) )
+mZ <- sapply( Z, mean )
+s2Z <-
+  sapply( Z, function( x, n = length( x ) )
+    sum( ( x - mean( x ) )^2 ) / n )
+CI_lwr <- mZ - 3 * sqrt( s2Z / N )
+CI_upr <- mZ + 3 * sqrt( s2Z / N )
+\end{Scode}
+\selectlanguage{russian}
+\begin{figure}[htb]\begin{center}
+  \begin{Scode}{fig=TRUE,echo=FALSE}
+    print( qplot( Z[[3]], geom="histogram", y=..density.. ) + theme0() + labs( y = "", x = "z" ) )
+  \end{Scode}
+  \caption{Гистограмма выборки $Z$ размера \Sexpr{length( Z[[3]] )}}
+\label{fig:hist01}
+\end{center}\end{figure}
+В таблице~\ref{tab:01} приведена сводка общих характеристик сгенерированных выборок, а на рисунке~\ref{fig:hist01} приведена гистограмма выборки наибольшего объёма.
+\begin{Scode}{results=tex,echo=FALSE}
+smry <- data.frame( no = seq_along( Z ), mu = mZ, sigma = s2Z )
+colnames( smry ) <- c( "\\#", "$\\mu$", "$\\sigma^2$" )
+print( xtable( smry, format = "fg", digits = 4, align = "c|r|cc|", label = "tab:01", caption = "Характеристики выборок" ), include.rownames = FALSE, sanitize.text.function = function(x){x} )
+\end{Scode}
+Ниже перечислены $3\sigma$ доверительные интервалы для предполагаемого теоретического среднего:\begin{itemize}
+	\item Для первой выборки $\clo{\Sexpr{formatC( CI_lwr[1], format = "fg", digits = 4 )}, \Sexpr{formatC( CI_upr[1], format = "fg", digits = 4 )}}$
+	\item Для второй выборки $\clo{\Sexpr{formatC( CI_lwr[2], format = "fg", digits = 4 )}, \Sexpr{formatC( CI_upr[2], format = "fg", digits = 4 )}}$
+	\item Для третьей выборки $\clo{\Sexpr{formatC( CI_lwr[3], format = "fg", digits = 4 )}, \Sexpr{formatC( CI_upr[3], format = "fg", digits = 4 )}}$
+\end{itemize}
+Как легко убедиться каждый из интервалов покрывает предполагаемое теоретическое значение среднего $\mu = 2$, что наталкивает на мысль что $3\sigma$ доверительному интервалу можно ``доверять''. Более того, предполагая, что вероятность покрытия $3\sigma$-интервала близка к 99\%, статистически щначимых причин отвергать гипотезу $\mu = 2$ нет. Однако, на этой радостной ноте следует обратить внимание на истинное теоретическое значение среднего случайной величины $Z\sim F = \int p\brac{x} dx$, поскольку теоретическое распределение всё-таки известно.
+
+Исследуем асимптотику ``хвостов'' распределения $F$. Применив правило Лопиталя, получаем что для достаточно больших положительных $a$ ($a\geq 4$) выполняется
+\begin{align*}
+	\pr\brac{Z\geq a} &= c \int_a^{+\infty} p\brac{x} dx = c \int_a^{+\infty} \frac{x-4}{ \brac{x-4}^4 + 1 } dx \\ & = c \frac{\pi}{4} - \frac{с}{2} \arctan{\brac{a-4}^2} \sim O\brac{\abs{a}^{-2}}
+\end{align*}
+а при достаточно больших отрицательных $a$:\[\pr\brac{Y\leq a} = c \int_{-\infty}^a p\brac{s} ds = c \brac{\frac{\pi}{2} - \arctan\brac{-a}}\\ \sim O\brac{\abs{a}^{-1}}\] где $f\brac{x}=O\brac{g\brac{x}}$ означает, что предел $\frac{f\brac{x}}{g\brac{x}}$ при $x\to+\infty$ конечен и не равен нулю.
+
+Теперь, согласно неравенству Маркова для любого $m>0$ и любого $a\in \Real^+$ выполняется \[\pr\brac{\abs{Z}\geq a} \leq \frac{\Ex\brac{\abs{Z}^m}}{a^m}\] Поскольку $\pr\brac{Z\leq -a}\leq \pr\brac{\abs{Z}\geq a}$ для любого $a\in \Real^+$, то из неравенства Маркова получается следующее предельное неравенство \[\lim\limits_{a\to\infty} a^m \pr\brac{Z\leq -a} \leq \Ex\brac{\abs{Z}^m}\] Для $m=2$ из $\pr\brac{Z\leq -a} \sim O\brac{\abs{a}^{-1}}$ вытекает, что $\Ex\brac{Z^2}=+\infty$, из чего следует, что $Z$ не имеет конечной дисперсии.
+
+Что же касается теоретического среднего значения $Z$, то оно равно $-\infty$. Действительно, \[\Ex\brac{Z} =\int_\Real x p\brac{x} dx = \int_{-\infty}^0 x p\brac{x} dx + \int_0^4 x p\brac{x} dx + \int_4^\infty x p\brac{x} dx \]
+При этом ``центральная'' часть распределения вносит конечный вклад в значение $\Ex\brac{Z}$: \[ \int_0^4 x p\brac{x} dx = \int_0^4 \frac{x}{4\sqrt{2\pi}} e^{\frac{1}{2}\brac{\frac{x-2}{4}}^2} dx = 0 + 2 \brac{\Phi\brac{\frac{1}{2}} - \Phi\brac{-\frac{1}{2}}} \] Аналогично, правый ``хвост'' добавляет конечное слагаемое в среднее:
+\begin{align*}
+	\int_4^\infty x p\brac{x} dx &= c \int_4^\infty x\frac{x-4}{\brac{x-4}^4+1} dx = c \int_0^\infty s\frac{s+4}{s^4+1} ds \\ &= \frac{c}{2} \frac{\pi}{2\sqrt{2}} + 2c \frac{\pi}{2} = c \frac{1+4\sqrt{2}}{4\sqrt{2}} \pi
+\end{align*} Однако левый ``хвост'' портит всю ``картину'':
+\[\int_{-\infty}^0 x p\brac{x} dx = c \int_{-\infty}^0 \frac{x}{x^2+1} dx = \frac{c}{2} \induc{\ln \abs{x^2+1}}_{-\infty}^0 = -\infty\] При этом вероятность попадания в левый ``хвост'' равна \[\pr\brac{Z\leq 0} = c\frac{\pi}{2} = \frac{4 \brac{1-\Phi\brac{\sfrac{1}{2}}}}{3} = \Sexpr{ formatC( ( 4*(1-pnorm( 0.5 ) )/3 )*100, format = "fg", digits = 4) }\%\]
+
+Таким образом, распределение, задаваемое функцией плотности $p\brac{x}$, не имеет ни конечного среднего, ни дисперсии, а значит построенные выше доверительные интервалы в действительности бессмысленны и гипотеза $\mu=2$ была принята ошибочно. Более того, простым увеличением объёма выборки проблема не решается.
+
+% section task_2 (end)
+
+\selectlanguage{russian}
+\section{Задание \# 3} % (fold)
+\label{sec:task_3}
+
+Пусть $\brac{\Omega, \Fcal, \mu}$ пространство с мерой, $\mathcal{X}$ -- некоторое метрическое пространство и $X: \brac{\Omega, \Fcal}\to \brac{\mathcal{X}, \borel{\mathcal{X}}}$ случайная величина. Пусть также задано некоторое параметрическое семейство вероятностных мер $\brac{\pr_\theta}_{\theta\in\Theta}$, $\Theta\neq \emptyset$, на измеримом пространстве $\brac{\Omega,\Fcal}$, таких что $\pr_\theta$ абсолютно непрерывна относительно $\mu$ для каждого $\theta\in \Theta$. Функция распределения $X$ при некотором $\theta$ задана через $F_\theta\defn \pr_\theta \circ X^{-1}$.
+
+Например, на пространстве $\brac{\Real^+,\borel{\Real^+}}$ таким семейством являются меры Стильтьеса от функций $\brac{x\to 1-e^{-\theta x}}_{\theta>0}$ являющиеся абсолютно непрерывными относительно меры Лебега $dx$ для любого $\theta>0$. Вдобавок, на пространстве $\brac{{\Real^+}^n,\borel{{\Real^+}^n}}$, $n\geq1$, вероятностная мера-произведение $\bigotimes_{k=1}^n dF_{\theta_k}$ также абсолютно непрерывна относительно меры $dx^n$ для любого $\theta\in\Theta$.
+
+Поскольку $F_\theta$ абсолютно непрерывна относительно $\nu\defn \mu \circ X^{-1}$, то существует семейство неотрицательных измеримых функций $\brac{f_\theta}_{\theta\in\Theta}$ -- плотностей $F_\theta$ относительно $\nu$ (производных Радона-Никодима), таких что $F_\theta\brac{E} = \int_E f_\theta\brac{x} d\nu\brac{x}$ для любых $E\in\borel{\mathcal{X}}$.
+
+Если $\brac{\mathcal{X}, \borel{\mathcal{X}}}$ есть некоторое пространство-произведение $n\geq1$ измеримых пространств и компоненты $X = \brac{x_i}_{i=1}^n$ независимы между собой по мере $\pr_\theta$, то $F_\theta$ является произведением вероятностных мер на каждом пространстве-проекции, заданных через $\Psi^k_{\theta}\defn \pr_\theta\circ X_k^{-1}$ для $k=1\ldots n$. В этом случае совместная плотность $f_\theta$ может быть представлена как произведение плотностей $\Psi^k_{\theta}$ относительно меры $\mu\circ X_k^{-1}$ в силу равномерной непрерывности.
+
+Пусть имеется наблюдение $\brac{x_k}_{k=1}^n\in \mathcal{X}$ случайной величины $X$, на основании которого необходимо вынести решение о значении параметра $\theta\in\Theta$, $\Theta=\obj{\theta_0,\theta_1}$, вероятностной меры $\pr_\theta$, относительно которой распределена $X$.
+
+Рассмотрим случай общий случай рандомизированного теста простой гипотезы $H_0:\theta=\theta_0$ против простой гипотезы $H_1:\theta=\theta_1$. Пусть $\phi:\brac{\mathcal{X}, \borel{\mathcal{X}}}\to \brac{\clo{0,1},\borel{\clo{0,1}}}$ -- некоторая измеримая функция, задающая вероятность принятия гипотезы $H_0$ при известном значении $X$. Таким образом тесту требуется некоторая случайная величина $d:\brac{\Omega,\Fcal}\to\obj{0,1}$,, принимающая решение, с указанной вероятностью при наблюдаемом $\brac{x_k}_{k=1}^n$ согласно условному распределению $\pr\brac{\induc{d=0}X} \defn \phi\brac{X}$ при фиксированном $X$.
+
+Важными характеристиками теста являются вероятности ошибок первого рода и второго рода. Ошибка первого рода есть ни что иное как шанс принять $H_0$, что эквивалентно $d=0$, когда истинной вероятностной мерой является $\pr_{\theta_1}$. Симметрично, ошибка второго рода -- вероятность отвергнуть $H_0$ ($d=1$), в случае когда вероятность определяется мерой $\pr_{\theta_0}$. Таким образом \begin{align*}
+\alpha\brac{\phi} &\defn \pr_{\theta_1}\brac{d=0} = \Ex_{\theta_1}\brac{\pr\brac{\induc{d=0}X}} = \Ex_{\theta_1}\brac{\phi\brac{X}}\\
+ \beta\brac{\phi} &\defn \pr_{\theta_0}\brac{d=1} = \Ex_{\theta_0}\brac{\pr\brac{\induc{d=1}X}} = \Ex_{\theta_0}\brac{1-\phi\brac{X}}
+\end{align*} где \[\Ex_\theta\brac{\cdot}\defn \int_\Omega (\cdot) d\pr_\theta = \int_\mathcal{X} (\cdot) dF_\theta = \int_\mathcal{X} (\cdot) f_\theta d\nu\] Обозначим $\Phi_\alpha \defn \obj{\induc{\phi}\,\alpha\brac{\phi}\leq\alpha}$ класс рандомизированных тестов, чья вероятность ложного несрабатывания, (ошибка первого рода) не превышает уровень $\alpha\in\clo{0,1}$.
+
+Суть теоремы Неймана-Присона об оптимальном критерии проверки простой гипотезы состоит в том, что для заданного $\alpha\in\clo{0,1}$ существует такая пара $\lambda$ -- пороговое значение, и $\pi\in\clo{0,1}$, что рандомизированный тест $\phi^*$ является оптимальным в классе тестов $\Phi_\alpha$ в смысле \[\beta\brac{\phi^*} = \inf_{\phi\in\Phi_\alpha} \beta\brac{\phi}\] При этом $\Ex_{\theta_1}\brac{\phi^*} = \alpha$ и сам оптимальный тест $\phi^*$ основывается на взвешенном соотношении правдоподобия и имеет чрезвычайно простую структуру \begin{equation*}
+\phi\brac{X}\defn \left\{\begin{matrix}
+		1 	& f_{\theta_0}\brac{X} > \lambda f_{\theta_1}\brac{X}\\
+		\pi & f_{\theta_0}\brac{X} = \lambda f_{\theta_1}\brac{X}\\
+		0 	& f_{\theta_0}\brac{X} < \lambda f_{\theta_1}\brac{X}
+	\end{matrix}\right.
+\end{equation*}
+
+Для непосредственного определения параметров оптимального теста строится вспомогательная функция \[g\brac{\lambda}\defn \pr_{\theta_1}\brac{f_{\theta_0}\brac{X} > \lambda f_{\theta_1}\brac{X}}\] которая является невозрастающей и в непрерывной справа, что нетрудно показать из фундаментальных свойств меры. Порог $\lambda$ определяется исходя из уравнения \[g\brac{\lambda-}\geq\alpha\geq g\brac{\lambda}\] Затем, если $g$ имеет разрывы, то параметр $\pi$ вычисляется как \[\pi\defn \frac{\alpha- g\brac{\lambda}}{g\brac{\lambda-} - g\brac{\lambda}}\] что необходимо для выполнения равенства $\alpha\brac{\phi^*}=\alpha$. В случае если $\pr_{\theta_1}\brac{f_{\theta_0}\brac{X} = \lambda f_{\theta_1}\brac{X}} = 0$, то параметр $\pi$ неопределён, однако его можно установить в любое значение из $\clo{0,1}$. Сам критерий $\phi^*$ при этом удобнее формулировать в виде обыкновенной пороговой функции \begin{equation*}
+\phi\brac{X}\defn \left\{\begin{matrix}
+		1 	& f_{\theta_0}\brac{X} \geq \lambda f_{\theta_1}\brac{X}\\
+		0 	& f_{\theta_0}\brac{X} < \lambda f_{\theta_1}\brac{X}
+	\end{matrix}\right.
+\end{equation*}
+
+Пусть $X=\brac{X_k}_{k=1}^n\sim \text{Exp}\brac{\theta}$ -- выборка независимых одинаково экспоненциально распределённых случайных величин. 
+Функция распределения $X_k$ равна $F_\theta\brac{x}\defn 1-e^{-\theta\!x}$ и поскольку $F_\theta$ непрерывная функция на $\Real^+$, то $F_\theta << dx$. Производная Радона-Никодима (плотности вероятности) меры $dF_\theta$ по мере $dx$ совпадает с производной $\frac{d}{dx} F_\theta = \theta e^{-\theta\!x}$. Таким образом совместная функция плотности (по мере $dx^n$) выборки в силу независимости и одинаковой распределённости выражается через \[f_\theta\brac{x_1,\ldots, x_n}\defn \theta^n e^{-\theta\!\sum_{k=1}^n x_k}\]
+
+Построим критерий проверки гипотезы $H_0:\theta=\theta_0=3$ против $H_1:\theta=\theta_1=6$. Отношение правдоподобия выборки при основной ($H_0$) и альтернативной гипотезах ($H_1$) задаётся следующим выражением: \[\Lambda\brac{X} \defn \frac{f_{\theta_0}\brac{x_1,\ldots, x_n}}{f_{\theta_1}\brac{x_1,\ldots, x_n}} = \frac{\theta_0^n e^{-\theta_0\!\sum_{k=1}^n X_k}}{\theta_1^n e^{-\theta_1\!\sum_{k=1}^n X_k}} = \brac{\frac{\theta_0}{\theta_1}}^n  e^{-\brac{\theta_0 - \theta_0}\!\sum_{k=1}^n X_k} \] Функция $g\brac{\lambda}$, определяемая как \[g\brac{\lambda}\defn \pr_{\theta_1}\brac{\Lambda\brac{X} > \lambda}\] как было указано выше, невозрастающая и непрерывная справа, однако в силу абсолютной непрерывности относительно меры Лебега она также является и непрерывной слева. Поскольку $f_{\theta_1}\brac{x_1,\ldots, x_n}>0$ Таким образом критерий ``вырождается'' из рандомизированного в детерминированный: \begin{equation*}
+\phi\brac{X}\defn \left\{\begin{matrix}
+		1 	& \Lambda\brac{X} \geq \lambda \\
+		0 	& \Lambda\brac{X} < \lambda
+	\end{matrix}\right.
+\end{equation*}
+
+Найдём такое $\lambda$, при котором $\pr_{\theta_1}\brac{\Lambda\brac{X} \geq \lambda} = \alpha$, или, что эквивалентно, \[S_n \geq \frac{\ln\lambda}{\theta_1-\theta_0} + n\!\frac{\ln \theta_1 - \ln \theta_0}{\theta_1-\theta_0}\]
+где $S_n\defn \sum_{k=1}^n X_k$. Поскольку $X_k\sim\text{Exp}\brac{\theta}$ независимы и одинаково распределены, то $S_n\sim\gamma\brac{\theta,n}$ -- имеет Гамма распределение с параметрами $\theta$ и $n$ и плотностью: \[f_\gamma\brac{s} = \frac{\theta^n}{\Gamma\brac{n}} s^{n-1} e^{-\theta\!s}\] В этом можно убедиться, рассчитав функцию моментов $\gamma\brac{\theta,n}$ и воспользовавшись тем, что если $X$ и $Y$ независимы, то $\Ex\brac{e^{t\brac{X+Y}}} = \Ex\brac{e^{tX}}\Ex\brac{e^{tY}}$.
+
+Искомое $\lambda$ равно \[\lambda \defn \frac{\theta_0^n}{\theta_1^n} e^{\brac{\theta_1-\theta_0}q^\brac{\!n\!,\theta_1\!}_{1-\alpha}}\] где $q^\brac{\!n\!,\theta_1\!}_{1-\alpha}\in \Real^+$ есть $1-\alpha$ квантиль Гамма распределения с параметрами $\theta_1$ и $n$: \[\alpha = \frac{\theta_1^n}{\Gamma\brac{n}} \int_0^{q^\brac{\!n\!,\theta_1\!}_{1-\alpha}} s^{n-1} e^{-\theta_1\!s}ds\] Подставляя в выражение для $\lambda$ значения $\theta_0$ и $\theta_1$ получаем: \[\lambda = 2^{-n}\!e^{3\!q^\brac{\!n\!,\theta_1\!}_{1-\alpha}}\]
+
+\begin{Scode}{fig=FALSE,echo=FALSE}
+N <- 3
+alpha <- 1 - 0.8
+theta_0 <- 3
+theta_1 <- 6
+\end{Scode}
+Сгенерируем выборку объёма $N=\Sexpr{formatC( N, format = "fg", digits = 2 )}$ из $\mathbb{U}\brac{\clo{0.1,0.4}}$
+\selectlanguage{english}
+\begin{Scode}{fig=FALSE,echo=TRUE}
+u <- 0.1 + runif( n = N ) * ( 0.4 - 0.1 )
+\end{Scode}
+\selectlanguage{russian}
+и рассчитаем параметры критерия
+\selectlanguage{english}
+\begin{Scode}{fig=FALSE,echo=TRUE,label=NP_test}
+## Compute the sufficient statistic
+##  In the case of iid exponential RVs it is their sum.
+S <- sum( u )
+
+## The 1 - alpha quantile of the \gamma(\theta_1, N) distribution
+q_a <- qgamma( 1 - alpha, shape = N, rate = theta_1 )
+
+## The likelihood ratio
+Lambda <- exp(
+  N * ( log( theta_0 ) - log( theta_1 ) ) +
+    - ( theta_0 - theta_1 ) * sum( u ) )
+
+## Critical threshold for the likelihood ratio
+lambda <-
+  exp( N * ( log( theta_0 ) - log( theta_1 ) ) +
+    - ( theta_0 - theta_1 ) * q_a )
+\end{Scode}
+\selectlanguage{russian}
+При уровне доверия $1-\alpha = \Sexpr{formatC( 1 - alpha, format = "fg", digits = 3 )}$ оптимальный порог отношения правдоподобия $\Lambda$ равен \Sexpr{formatC( lambda, format = "fg", digits = 3 ) }, при том что само отношение правдоподобия равно \Sexpr{formatC( Lambda, format = "fg", digits = 3 ) }. Согласно оптимальному критерию, гипотезу $H_0$ \Sexpr{if(Lambda >= lambda) "отвергать оснований нет" else "следует отклонить"}.
+
+\begin{figure}[htb]\begin{center}
+  \begin{Scode}{fig=TRUE,echo=FALSE}
+    N <- 5 * N
+    u <- 0.1 + runif( n = N ) * ( 0.4 - 0.1 )
+    \Scoderef{NP_test}
+    print( qplot( u, geom="histogram" ) + theme0() + labs( y = "", x = "u" ) )
+  \end{Scode}
+  \caption{Гистограмма полученной выборки из $\mathbb{U}\brac{\clo{0.1,0.4}}$.}
+\label{fig:hist02}
+\end{center}\end{figure}
+Соберём выборку из того же самого распределения с количеством наблюдений $N=\Sexpr{formatC( N, format = "fg", digits = 2 )}$ (см. рис.~\ref{fig:hist02}). Отношение правдоподобия равно \Sexpr{formatC( Lambda, format = "fg", digits = 4 ) }, а оптимальный порог \Sexpr{formatC( lambda, format = "fg", digits = 3 ) }, откуда получается, что гипотезу $H_0$ \Sexpr{ if(Lambda >= lambda) "нет оснований отвергать" else "нужно отклонить"}.
+
+На примере данного задания можно увидеть то, что статистический критерий различить именно то, что в него заложено. Тот факт, что критерий Неймана-Присона оптимален в классе критериев различия простых гипотез с вероятностью ложного несрабатывания не превышающей $\alpha$, абсолютно не важен в случае, когда истинное распределение не лежит во множестве тех, по которым производится проверка. Построенным критерием пытались различить множества вероятностных мер $\mathcal{P}_0 = \obj{dF_{\theta_0}}$ и $\mathcal{P}_1 = \obj{dF_{\theta_1}}$, $\mathcal{P}_1\cap \mathcal{P}_0=\emptyset$, в то время как истинная вероятностная мера $\pr\notin\brac{\mathcal{P}_0\cup \mathcal{P}_1}$.
+
+Итак, можно сделать вывод о том, не имея априори верного представления об истинном распределении, невозможно построить критерий проверки простых гипотез, принимающего решения хоть сколько-нибудь близкие к истине.
+
+% section task_3 (end)
+
+\selectlanguage{russian}
+\section{Задание \# 4} % (fold)
+\label{sec:task_4}
+
+Итак пусть задан вектор набор отклика при повторяющихся наблюдениях $n$ различных наборов из $k$ факторов: $R_{N\times n}$ есть матрица повторов наблюдений, $F_{n\times k}$ матрица различных наборов факторов и $Y_{N\times 1}$ -- наблюдаемых отклик на заданный набор факторов. Предполагается линейная зависимость откликов от факторов: $y\sim f' \beta$, где $\beta_{k\times 1}$ -- вектор параметров модели, $f_{k\times 1}$ -- факторы. Предполагая, что в процессе эксперимента наблюдения были подвержены случайным ошибкам, независимым между наблюдениями, из указанной модели следует, что полученная выборка описывается следующей статистической моделью \[Y = R F \beta + \eta\] где $\eta_{N\times 1}\sim \mathcal{N}_N\brac{0,\sigma_\eta^2\,I_N}$ -- ошибки наблюдений. В дальнейшем положим $X\defn R F$ -- $N\times k$ матрица ``фактических'' факторов.
+
+Метод наименьших квадратов состоит в подборе такого вектора $\beta$, что сумма квадратов отклонений наблюдаемых откликов $Y_i$ от предполагаемых значений $X_i \beta$ минимальна. В матричном виде задача записывается следующим образом:\[\brac{Y-X\beta}'\brac{Y-X\beta} \to \min\limits_{\beta\in \Real^k}\] Данная задача выпуклого программирования имеет единственное решение (при условии, что матрица $X$ полного ранга), определяемое следующим уравнением:\[\brac{X'X} \beta - \brac{X'Y} = 0_{k\times 1}\Rightarrow \hat{\beta} \defn \brac{X'X}^{-1}\brac{X'Y}\] В оптимуме значение суммы квадратов отклонений равно ($I_N$ -- единичная матрица порядка $N$) \begin{align*}
+	\hat{S}^2 &\defn \brac{Y-X\hat{\beta}}'\brac{Y-X\hat{\beta}} \\ &= Y'\brac{I_N - X\brac{X'X}^{-1}X'}' \brac{I_N - X\brac{X'X}^{-1}X'}Y \\ &= Y'\brac{I_N - P_X} Y
+\end{align*} где последнее преобразование справедливо в силу свойств матрицы $X\brac{X'X}^{-1}X'$, о которых рассказано ниже.
+
+Необходимо заметить, что матрица $P_X \defn X\brac{X'X}^{-1}X'$ симметрична и идемпотентна, тк по сути является проектором на линейное подпространство, порождённое столбцами матрицы $X$. Из симметричности следует, что существует ортогональный базис из собственных векторов $P_X$ и сама матрица представима в виде $V\Lambda V'$, где $\Lambda$ -- диагональная матрица собственных значений $\brac{\lambda_j}_{j=1}^N$, и $V=\brac{V_j}_{j=1}^N$ -- матрица, $V_j$ колонка которой является собственным вектором для $\lambda_j$, причём $V'V = I_N$. Из идемпотентности ($P_X P_X = P_X$) вытекает то, что собственные значения $P_X$ равны либо $0$, либо $1$. При этом матрица $I_N-P_X$ есть проектор на подпространство, ортогональное пространству, порождённому $X$.
+
+На практике часто возникает необходимость получения оценки параметров $\beta$ при условии выполнения некоторых ограничений. Пусть задана матрица $Q_{r\times k}$ и вектор $q_{r\times 1}$, причём $r\leq k$ и $Q$ полного ранга, совместно определяющие линейные ограничения на параметры $\beta$: $Q\beta = q$. В таких условиях поиск оптимального набора $\beta$, в смысле среднеквадратичного отклонения отклика от модельного значения, производится решением задачи условного выпуклого программирования:\begin{equation*}
+	\left\{\begin{matrix}
+		\brac{Y-X\beta}'\brac{Y-X\beta} \to \min\limits_{\beta\in \Real^k} \\
+		Q\beta = q
+	\end{matrix}\right.
+\end{equation*}
+
+Для решения этой задачи составляется функция Лагранжа: \[\mathcal{L} = \tfrac{1}{2}\brac{Y-X\beta}'\brac{Y-X\beta} + \brac{Q\beta - q}'\lambda\] где $\lambda_{r\times 1}$ -- вектор множителей Лагранжа. Решение выводится из следующих условий первого порядка в векторной форме (оптимальность гарантируется тем, что квадратичная форма $\beta'\brac{X'X}\beta$ в недрах $\mathcal{L}$ положительно определена): \begin{align*}
+	\frac{\partial \mathcal{L}}{D \beta} &= - X'Y + X'X \beta + Q'\lambda = 0_{k\times 1}\\
+	\frac{\partial \mathcal{L}}{D \lambda} &= Q\beta - q = 0_{r\times 1}
+\end{align*} Путём нехитрых преобразований (выразив $\beta$ из первого, помножив слева на $Q$ и воспользовавшись вторым) можно вывести следующие формулы для оптимальных значений параметров $\beta$ и $\lambda$: \begin{align*}
+	\overset{*}{\beta} &\defn \hat{\beta} - \brac{X'X}^{-1}Q' \overset{*}{\lambda}\\
+	\overset{*}{\lambda} &\defn \brac{Q\brac{X'X}^{-1}Q'}^{-1} \brac{Q\hat{\beta}-q}
+\end{align*}
+Оптимальное значение среднеквадратичного отклонения отклика от модели имеет вид \begin{align*}
+	\overset{*}{S^2} &\defn \brac{Y-X\overset{*}{\beta}}'\brac{Y-X\overset{*}{\beta}} \\&= \brac{Y-X\hat{\beta}}'\brac{Y-X\hat{\beta}} + \brac{\hat{\beta} - \overset{*}{\beta}}'\brac{X'X}\brac{\hat{\beta} - \overset{*}{\beta}} \\&= \hat{S}^2 + \brac{Q\hat{\beta}-q}'\brac{Q\brac{X'X}^{-1}Q'}^{-1} \brac{Q\hat{\beta}-q}
+\end{align*} поскольку $\brac{I_N - P_X}' X = 0_{N\times k}$.
+
+Прежде чем приступать к описанию вероятностных свойств оценок $\beta$ и значений сумм квадратов ошибок в оптимумах, необходимо вспомнить следующие два факта:
+
+\label{thm:fact01}\emph{Факт 1}: Если $\xi\sim \mathcal{N}_n\brac{0, I_n}$ и матрица $A\in \Real^{n\times n}$ симметрична, идемпотентна и имеет ранг $m>0$, то $\xi'A\xi\sim \chi^2_m$.
+
+\label{thm:fact02}\emph{Факт 2}: Если $\xi\sim \mathcal{N}_n\brac{0, I_n}$ и $A,B\in \Real^{n\times n}$ симметричные идемпотентные матрицы ненулевого ранга, то случайные величины $\xi'A\xi$ и $\xi'B\xi$ независимы, когда $AB = 0_{n\times n}$.
+
+Предполагая, что статистическая модель специфицирована верно, можно вывести следующие свойства оценок и значений сумм квадратов ошибок в оптимумах. Поскольку $Y = X\beta + \eta$ и $\Ex\brac{\eta} = 0_{N\times 1}$, то из линейности $\hat{\beta}$ по $Y$ вытекает, что \[\Ex\hat{\beta} = \brac{X'X}^{-1} X'X\beta + \brac{X'X}^{-1} X'\Ex{\eta} = \beta\] причём математические ожидания берутся по тем вероятностным мерам, при которых спецификация модели верна. Дисперсия оценок МНК равна $\Var{\hat{beta}} = \sigma_\eta^2 \brac{X'X}^{-1}$. Из свойств матрицы $I_n-P_X$ можно получить то, что $\frac{1}{\sigma^2}\hat{S}^2\sim \chi^2_{N-k}$, тк $\tfrac{1}{\sigma}\eta\sim\mathcal{N}_N\brac{0, I_N}$, факт~1 определяет класс распределений и ранг $I_N-P_X$ равен $N-k$.
+
+Что касается свойств оценок условного МНК и значения функции потерь в оптимуме, то они во многом схожи с только что указанными. Рассмотрим распределение прироста квадратичного отклонения \emph{условного} МНК по сравнению с \emph{безусловным}, $\Delta \defn \overset{*}{S^2} - \hat{S}^2 \geq 0$. Подразумевая верно специфицированную модель и что для истинного вектора $\beta$ выполнено $Q\beta = q$, можно получить:\begin{align*}
+	\Delta &= \overset{*}{S^2} - \hat{S}^2 = \brac{Q\hat{\beta}-q}'\brac{Q\brac{X'X}^{-1}Q'}^{-1} \brac{Q\hat{\beta}-q} \\ &= \eta'X\brac{X'X}^{-1}Q'\brac{Q\brac{X'X}^{-1}Q'}^{-1} Q\brac{X'X}^{-1}X'\eta \\
+\end{align*}
+Матрица \[P_Q\defn X\brac{X'X}^{-1}Q'\brac{Q\brac{X'X}^{-1}Q'}^{-1} Q\brac{X'X}^{-1}X'\] аналогично матрице $P_X$, является проектором и удовлетворяет соотношению $\brac{I_N - P_X}P_Q = 0_{N\times N}$. Более того её ранг равен $r$, поскольку она идемпотентна и \begin{align*}
+\text{tr}\brac{P_Q} &= \text{tr}\brac{\brac{Q\brac{X'X}^{-1}Q'}^{-1} Q\brac{X'X}^{-1}X'X\brac{X'X}^{-1}Q'} \\ &= \text{tr}\brac{\brac{Q\brac{X'X}^{-1}Q'}^{-1} Q\brac{X'X}^{-1}Q'} = \text{tr}{I_r} = r
+\end{align*} Благодаря факту~1 из свойств $P_Q$ вытекает, что $\frac{1}{\sigma^2}\Delta\sim \chi^2_r$, а в силу факта~2 и соотношения между $P_X$ и $P_Q$ справедливо, что случайные величины $\eta'P_Q\eta$ и $\eta'\brac{I_N-P_X}\eta$, а стало быть и $\frac{1}{\sigma^2}\Delta$ и $\frac{1}{\sigma^2}\hat{S}^2$ независимы.
+\\
+
+Для проверки гипотезы наличия линейных ограничений $H_0: Q\beta=q$ против $H_1: Q\beta \neq q$ можно сконструировать оптимальный критерий Неймана-Присона, предприняв попытку свести критическое множество отношения правдоподобия к отношению сумм квадратов отклонений.  
+
+Действительно, рассматривая только те вероятностные меры, согласно которым корректна спецификация линейной модели $Y = X\beta + \eta$ c $\eta\sim \mathcal{N}_N\brac{0,\sigma_\eta^2\,I_N}$, наблюдаемые отклики $Y$ распределены согласно $\mathcal{N}_N\brac{X\beta,\sigma_\eta^2\,I_N}$. Так как оценками максимального правдоподобия дисперсии $\sigma_\eta^2$ и среднего являются $\tfrac{\hat{S}^2}{N}$ и $X\hat{\beta}$ соответственно, то значение максимального правдоподобия в отсутствии ограничений на $\beta$ (при $H_1$) равна \[\sup\limits_{\beta\in \Real^k} p\brac{Y,\beta} = \brac{2\pi}^{\tfrac{-N}{2}} \brac{\hat{S}^2}^{\tfrac{-N}{2}} \exp\brac{-\frac{1}{2\hat{S}^2}\sum_{i=1}^N\brac{Y_i - X_i\hat{\beta}}^2 }\] Аналогично, максимум правдоподобия при наличии ограничений на $\beta$ (при $H_0$) задаётся как \[\sup\limits_{\substack{\beta\in \Real^k\\Q\beta=q}} p\brac{Y,\beta} = \brac{2\pi}^{\tfrac{-N}{2}} \brac{\overset{*}{S^2}}^{\tfrac{-N}{2}} \exp\brac{-\frac{1}{2\overset{*}{S^2}}\sum_{i=1}^N\brac{Y_i - X_i\overset{*}{\beta}}^2 }\]
+
+Отношение правдоподобия при указанных гипотезах равно \[\Lambda\brac{Y} \defn \frac{\sup\limits_{\beta\in \Real^k} p\brac{Y,\beta}}{\sup\limits_{\substack{\beta\in \Real^k\\Q\beta=q}} p\brac{Y,\beta}} = \brac{\frac{\overset{*}{S^2}}{\hat{S}^2}}^\frac{N}{2}\] После очевидных арифметических преобразований критической областью отвержения гипотезы $H_0$ уровня $\alpha$ является \[\Lambda\brac{Y}\geq \lambda \Leftrightarrow \frac{\sfrac{\Delta}{r}}{\sfrac{\hat{S}^2}{N-k}} \geq \frac{N-k}{r} \brac{\lambda^\frac{2}{N}-1} \] Поскольку для мер, для которых выполнена гипотеза $H_0$ наличия линейных ограничений $Q\beta = q$, справедливо, что \[\frac{\sfrac{\Delta}{r}}{\sfrac{\hat{S}^2}{N-k}}\sim \frac{\chi^2_r}{\chi^2_{N-k}} \overset{\mathcal{D}}{=} \mathbb{F}\brac{r, N-k}\] где $\mathbb{F}\brac{m_1,m_2}$ есть распределение Фишера с параметрами $m_1$ и $m_2$ соответственно, то искомый порог критической области отвержения $H_0$ определяется из уравнения $\frac{N-k}{r} \brac{\lambda^\frac{2}{N}-1} = f_{1-\alpha}$, где $f_q$ есть $q$ квантиль распределения Фишера с параметрами $r$ и $N-k$ соответственно.
+
+При корректно специфицированной функциональной форме модели регрессии $Y = R F \beta + \eta$, $\eta\sim \mathcal{N}_N\brac{0,\sigma_\eta^2\,I_N}$, методика проверки линейных ограничений на параметры $\beta$ позволяет проводить глубокий анализ линейных влияний факторов $F$ на отклик $Y$.
+
+\begin{Scode}{echo=FALSE}
+set.seed( -5678L )
+N <- 12
+alpha <- 0.05
+\end{Scode}
+Пусть имеются $N$ наблюдений откликов $Y_{N\times 1}$ на повторяющиеся наблюдения согласно плану $R_{N\times n}$ факторов $F_{n\times k}$, причём истинная модель отклика от фактора задана \[y = c_1 + c_2 x_1 + c_2 x_2 + c_3 c_1 x_2 + \eta\] где $\eta\sim\mathcal{N}\brac{0,1}$ и параметры $c_1$, $c_2$ и $c_3$ равны $0.3$, $-0.5$ и $0.05$ соответственно.
+
+Сначала сгенерируем ошибки наблюдений $\eta$ и сформируем матрицу факторов $F$:
+\selectlanguage{english}
+\begin{Scode}{echo=TRUE,fig=FALSE}
+## Generate a small (fixed) sample of standard noise
+eta <- rnorm( n = N )
+## Form the factor matrix according to the specified model
+factors <-
+  expand.grid( x1 = c(-1, 0, 1), x2 = c(1, 2) )
+F <- model.matrix( ~ 1 + x1 + x2 + x1 * x2, factors )
+\end{Scode}
+\selectlanguage{russian}
+Определим матрицу плана наблюдений $R$:
+\selectlanguage{english}
+\begin{Scode}{echo=TRUE,fig=FALSE}
+## Set the experiment plan
+obs <- c( 2, 3, 1, 3, 1, 2 )
+\end{Scode}
+\begin{Scode}{echo=TRUE,fig=FALSE,label=plan_expand}
+R <- diag( 1, length( obs ) )[
+  rep( seq_along( obs ), obs ), ]
+\end{Scode}
+\selectlanguage{russian}
+Используя указанный выше процесс порождения данных (DGP), сгенерируем отклики:
+\selectlanguage{english}
+\begin{Scode}{echo=TRUE,fig=FALSE}
+## The vector of true parameters
+C <- c( 0.3, -0.5, -0.5, 0.05 )
+## The data generation process
+Y <- ( X <- R %*% F ) %*% C + eta
+\end{Scode}
+\selectlanguage{russian}
+
+Оценим параметр $\beta$ регрессионной модели $Y = X\beta + \eta$, где $X\defn R F$\[y \sim \beta_1 + x_1 \beta_2 + x_2 \beta_3 + x_1\cdot x_2 \beta_4\] Код на \eng{R} представленный ниже реализует VYR(функция \eng{crossprod($A,B$)} эффективно реализует расчёт $A'B$ и с меньшей погрешностью вычислений):
+\selectlanguage{english}
+\begin{Scode}{echo=TRUE,fig=FALSE}
+## OLS of the unconstrained model Y ~ F
+beta <- solve( crossprod( X ) ) %*% crossprod( X, Y )
+S2_hat <- as.vector( crossprod( Y - X %*% beta ) )
+beta.se <- sqrt(
+  diag( solve( crossprod( X ) ) ) *
+    S2_hat / ( N - ncol( X ) ) )
+\end{Scode}
+\selectlanguage{russian}
+На сгенерированных наблюдениях $Y$ вектор оценок $\hat{\beta}$ и характеристики приведены в таблице~\ref{tbl:smry01}
+\begin{Scode}{results=tex,echo=FALSE}
+smry <- data.frame( alpha = beta, s.e. = beta.se, `t-stat` = beta/beta.se, Pv = 2-2*pt( abs( beta ) / beta.se, N - ncol( X ) ) )
+colnames( smry ) <- c( "$\\beta$", "s.e$\\,\\beta$", "t", "$\\Pr\\brac{\\abs{T}\\geq t}$" )
+rownames( smry ) <- c( "1", "$x_1$", "$x_2$", "$x_1\\cdot x_2$" )
+print( xtable( smry, row.names=NULL, check.names = FALSE, label = "tbl:smry01", format = "fg", digits = 4, align = "c||c|c|c|c", caption = "Результаты МНК модели без линейных ограничений" ), include.rownames = TRUE, sanitize.text.function = function(x){x} )
+\end{Scode}
+\\
+
+Проверим гипотезу незначимости фактора $x_1$, которая эквивалентна проверке линейного ограничения $\beta_2 = \beta_4 = 0$. Для этого необязательно конструировать матрицу $Q$ и вектор $q$, и можно всего лишь оценить модель в отсутствии факторов $x_1$ (столбец~2) и $x_1\cdot x_2$ (столбец~4):
+\selectlanguage{english}
+\begin{Scode}{echo=TRUE,fig=FALSE}
+## Test whether x1 is insignificant: -- Drop columns 2 and 4
+X_c <- X[ , c( -2, -4 ), drop = FALSE ]
+\end{Scode}
+\selectlanguage{russian}
+Непосредственная оценка МНК, вычисление критической статистики производится при помощи кода, представленного ниже:
+\selectlanguage{english}
+\begin{Scode}{echo=TRUE,fig=FALSE,label=C_OLS}
+##  -- Estimate the constrained model
+beta_c <- solve( crossprod( X_c ) ) %*% crossprod( X_c, Y )
+##  -- Compute its squared sum of errors
+S2_star <- as.vector( crossprod( Y - X_c %*% beta_c ) )
+##  -- Compute the standard errors of estimators
+beta_c.se <-
+  sqrt( S2_star / ( N - ncol( X_c ) ) *
+    diag( solve( crossprod( X_c ) ) ) )
+##  -- Compute the likelihood ratio statistic and its P-value
+F_stat <-
+  ( S2_star - S2_hat ) * ( N - ncol( X ) ) /
+    ( S2_hat * ( ncol( X ) - ncol( X_c ) ) )
+\end{Scode}
+\selectlanguage{russian}
+Оценки параметров представлены в таблице~\ref{tbl:smry02}. На имеющихся наблюдениях значение критической статистики равно \[ \frac{\sfrac{\Delta}{r}}{\sfrac{\hat{S}^2}{N-k}} = \frac{\Sexpr{formatC( ( S2_star - S2_hat ) / ( ncol( X ) - ncol( X_c ) ), format = "fg", digits = 4 )}}{\Sexpr{formatC( S2_hat / ( N - ncol( X ) ), format = "fg", digits = 4 )}} = \Sexpr{formatC( F_stat, format = "fg", digits = 4 )} \] в то время как критический порог уровня $\alpha=\Sexpr{formatC( alpha, format = "fg", digits = 4 )}$ равен \Sexpr{formatC( qf( 1 - alpha, ncol( X ) - ncol( X_c ), N - ncol( X ) ), format = "fg", digits = 4 )}. Таким образом гипотезу о незначимости фактора $x_1$ \Sexpr{ if( F_stat >= qf( 1 - alpha, ncol( X ) - ncol( X_c ), N - ncol( X ) ) ) "можно отвергнуть" else "нет оснований отвергать" }.
+\begin{Scode}{results=tex,echo=FALSE}
+smry_c <- data.frame( alpha = beta_c, s.e. = beta_c.se, `t-stat` = beta_c/beta_c.se, Pv = 2-2*pt( abs( beta_c ) / beta_c.se, N - ncol( X ) ) )
+colnames( smry_c ) <- c( "$\\beta$", "s.e$\\,\\beta$", "t", "$\\Pr\\brac{\\abs{T}\\geq t}$" )
+rownames( smry_c ) <- c( "1",  "$x_2$" )
+print( xtable( smry_c, row.names=NULL, check.names = FALSE, label = "tbl:smry02", format = "fg", digits = 4, align = "c||c|c|c|c", caption = "Результаты МНК модели при условии $\\beta_2 = \\beta_4 = 0$" ), include.rownames = TRUE, sanitize.text.function = function(x){x} )
+\end{Scode}
+\\
+
+Аналогично проверяется гипотеза незначимости фактора $x_2$, эквивалентная проверке линейного ограничения $\beta_3 = \beta_4 = 0$: оцениваем модель в отсутствии факторов $x_2$ (столбец~3) и $x_1\cdot x_2$ (столбец~4):
+\selectlanguage{english}
+\begin{Scode}{echo=TRUE,fig=FALSE}
+## Test whether x1 is insignificant: -- Drop columns 3 and 4
+X_c <- X[ , c( -3, -4 ), drop = FALSE ]
+\end{Scode}
+\begin{Scode}{echo=FALSE,fig=FALSE}
+  \Scoderef{C_OLS}
+\end{Scode}
+\selectlanguage{russian}
+В таблице~\ref{tbl:smry03} представлена сводка результатов оценивания модели. Значение критической статистики равно \[ \frac{\sfrac{\Delta}{r}}{\sfrac{\hat{S}^2}{N-k}} = \frac{\Sexpr{formatC( ( S2_star - S2_hat ) / ( ncol( X ) - ncol( X_c ) ), format = "fg", digits = 4 )}}{\Sexpr{formatC( S2_hat / ( N - ncol( X ) ), format = "fg", digits = 4 )}} = \Sexpr{formatC( F_stat, format = "fg", digits = 4 )} \] что \Sexpr{ if( F_stat >= qf( 1 - alpha, ncol( X ) - ncol( X_c ), N - ncol( X ) ) ) "больше" else "меньше" } порога \Sexpr{formatC( qf( 1 - alpha, ncol( X ) - ncol( X_c ), N - ncol( X ) ), format = "fg", digits = 4 )} уровня $\alpha=\Sexpr{formatC( alpha, format = "fg", digits = 4 )}$. Гипотеза о незначимости фактора $x_2$ \Sexpr{ if( F_stat >= qf( 1 - alpha, ncol( X ) - ncol( X_c ), N - ncol( X ) ) ) "должна быть отвергнута" else "не может быть отвергнута" }.
+\begin{Scode}{results=tex,echo=FALSE}
+smry_c <- data.frame( alpha = beta_c, s.e. = beta_c.se, `t-stat` = beta_c/beta_c.se, Pv = 2-2*pt( abs( beta_c ) / beta_c.se, N - ncol( X ) ) )
+colnames( smry_c ) <- c( "$\\beta$", "s.e$\\,\\beta$", "t", "$\\Pr\\brac{\\abs{T}\\geq t}$" )
+rownames( smry_c ) <- c( "1",  "$x_1$" )
+print( xtable( smry_c, row.names=NULL, check.names = FALSE, label = "tbl:smry03", format = "fg", digits = 4, align = "c||c|c|c|c", caption = "Результаты МНК модели при условии $\\beta_3 = \\beta_4 = 0$" ), include.rownames = TRUE, sanitize.text.function = function(x){x} )
+\end{Scode}
+\\
+
+Гипотезу отсутствия взаимного влияния факторов на отклик $\beta_4 = 0$ можно проверить аналогично проверенным выше, однако на самом деле в дополнительных вычислениях необходимости нет. Достаточно взглянуть на строку, отвечающую фактору $x_1\cdot x_2$, в таблице результатов МНК без ограничений (таблица~\ref{tbl:smry01}). Действительно значение критической статистики $t$-теста значимости параметра $\beta_4$, равно \Sexpr{formatC( smry[4,3], format = "fg", digits = 4 )} c $P$-значением \Sexpr{formatC( smry[4,4], format = "fg", digits = 4 )}, что \Sexpr{ if( smry[4,4] >= alpha ) "выше" else "ниже" } уровня значимости $\alpha=\Sexpr{formatC( alpha, format = "fg", digits = 4 )}$. Таким образом взаимодействие факторов статистически \Sexpr{ if( smry[4,4] >= alpha ) "незначимо" else "значимо" }.
+
+\begin{Scode}{echo=FALSE,fig=FALSE}
+## Test whether x1:x2 is insignificant: enforce c_4 = 0
+##  constraint by dropping the fourth variable.
+X_c <- X[ , -4, drop = FALSE ]
+\Scoderef{C_OLS}
+\end{Scode}
+
+Что касается оценки дисперсии ошибки наблюдений, то после оценивания модели с ограничением $\beta_4=0$ (см. таблицу~\ref{tbl:smry04}), она равна \Sexpr{formatC( S2_star / ( N - ncol( X_c ) ), format = "fg", digits = 4 )} (дисперсия модели без ограничений равна \Sexpr{formatC( S2_hat / ( N - ncol( X ) ), format = "fg", digits = 4 )}).
+\begin{Scode}{results=tex,echo=FALSE}
+smry_c <- data.frame( alpha = beta_c, s.e. = beta_c.se, `t-stat` = beta_c/beta_c.se, Pv = 2-2*pt( abs( beta_c ) / beta_c.se, N - ncol( X ) ) )
+colnames( smry_c ) <- c( "$\\beta$", "s.e$\\,\\beta$", "t", "$\\Pr\\brac{\\abs{T}\\geq t}$" )
+rownames( smry_c ) <- c( "1",  "$x_1$",  "$x_2$" )
+print( xtable( smry_c, row.names=NULL, check.names = FALSE, label = "tbl:smry04", format = "fg", digits = 4, align = "c||c|c|c|c", caption = "Результаты МНК модели при условии $\\beta_4 = 0$" ), include.rownames = TRUE, sanitize.text.function = function(x){x} )
+\end{Scode}
+\\
+
+Факторы $x_1$ и $x_2$ по сути разные, однако в истинной модели оказывают симметричное влияние на отклик. При этом регрессионный анализ и проверка гипотез не позволяют выявить это свойство в силу малого объёма выборки и неравномерного повторения наблюдений, из-за чего недостаточно хорошо покрыта область всевозможных наборов факторов.
+
+Проведём аналогичный анализ с несколько иным планом эксперимента: изменим некоторым образом матрицу повторов наблюдений, сохраняя при этом реализовавшиеся ошибки наблюдений. Откорректируем объёмы повторений наблюдений $R$ так, чтобы снизить мультиколлинеарность плана эксперимента $X = R F$. Для этого, следует корректируя $R$, но не изменяя общего объёма наблюдений, снизить число обусловленности матрицы $X'X$, которое определяется квадратным корнем отношения наибольшего собственного значения к наименьшему ($X'X$ симметрична и положительно определена). Число обусловленности исходного плана эксперимента в \eng{R} вычисляется так
+\selectlanguage{english}
+\begin{Scode}{echo=FALSE,fig=FALSE,label=cnd_num}
+ei <- eigen( crossprod( R %*% F ) )
+cnd_num <- sqrt( max( ei$values ) / min( ei$values ) )
+\end{Scode}
+\begin{Scode}{echo=TRUE,fig=FALSE}
+obs <- c( 2, 3, 1, 3, 1, 2 )
+\Scoderef{plan_expand}
+## Compute the eigenvalues of the model matrix
+\Scoderef{cnd_num}
+\end{Scode}
+\selectlanguage{russian}
+и равно \Sexpr{formatC( cnd_num, format = "fg", digits = 4 )}. Для плана эксперимента с одинаковым объёмом повторений каждого наблюдения
+\selectlanguage{english}
+\begin{Scode}{echo=TRUE,fig=FALSE}
+obs <- c( 2, 2, 2, 2, 2, 2 )
+\end{Scode}
+\begin{Scode}{echo=FALSE,fig=FALSE}
+\Scoderef{plan_expand}
+cnd_num0 <- cnd_num
+\Scoderef{cnd_num}
+\end{Scode}
+\selectlanguage{russian}
+число обусловленности равно \Sexpr{formatC( cnd_num, format = "fg", digits = 4 )}.
+
+Пусть план эксперимента определяется следующим вектором повторений, в котором игнорируются ``промежуточные'' значения фактора $x_1$ в пользу его краевых значений.
+\selectlanguage{english}
+\begin{Scode}{echo=TRUE,fig=FALSE}
+## Set the experiment plan so that extreme
+##   combinations of factors are oversampled.
+obs <- c( 3, 0, 3, 3, 0, 3 )
+\end{Scode}
+\begin{Scode}{echo=FALSE,fig=FALSE}
+\Scoderef{plan_expand}
+cnd_num1 <- cnd_num
+\Scoderef{cnd_num}
+\end{Scode}
+\selectlanguage{russian}
+При данном векторе повторений, число обусловленности данного равно \Sexpr{formatC( cnd_num, format = "fg", digits = 4 )}, что гораздо меньше, чем при оригинальном плане повторных наблюдений. Стоит отметить тот факт, что подобный анализ числа обусловленности матрицы $X'X$ ради снижение мультиколлинеарности плана эксперимента можно проводить перед самим экспериментом, при условии, что факторы сами по себе не являются случайными величинами или результатом наблюдений.
+
+\begin{Scode}{echo=FALSE,fig=FALSE}
+## The data generation process
+Y <- ( X <- R %*% F ) %*% C + eta
+## OLS of the unconstrained model Y ~ F
+beta <- solve( crossprod( X ) ) %*% crossprod( X, Y )
+S2_hat <- as.vector( crossprod( Y - X %*% beta ) )
+beta.se <- sqrt(
+  diag( solve( crossprod( X ) ) ) *
+    S2_hat / ( N - ncol( X ) ) )
+
+smry <- data.frame(
+    alpha = beta, s.e. = beta.se, `t-stat` = beta/beta.se
+  , Pv = 2-2*pt( abs( beta ) / beta.se, N - ncol( X ) ) )
+
+colnames( smry ) <- c(
+  "$\\beta$", "s.e$\\,\\beta$",
+  "t", "$\\Pr\\brac{\\abs{T}\\geq t}$" )
+
+rownames( smry ) <- c( "1", "$x_1$", "$x_2$", "$x_1\\cdot x_2$" )
+\end{Scode}
+
+На вновь сгенерированных наблюдениях $Y$ вектор оценок $\hat{\beta}$ и характеристики приведены в таблице~\ref{tbl:smry05}. Гипотезу отсутствия взаимного влияния факторов на отклик $\beta_4 = 0$ \Sexpr{ if( smry[4,4] >= alpha ) "нет оснований отклонять" else "следует отклонить" }.
+\begin{Scode}{results=tex,echo=FALSE}
+print( xtable( smry, row.names=NULL, check.names = FALSE, label = "tbl:smry05", format = "fg", digits = 4, align = "c||c|c|c|c", caption = "Результаты МНК модели без линейных ограничений" ), include.rownames = TRUE, sanitize.text.function = function(x){x} )
+\end{Scode}
+
+\begin{Scode}{echo=FALSE,fig=FALSE}
+X_c <- X[ , c( -2, -4 ), drop = FALSE ]
+\Scoderef{C_OLS}
+\end{Scode}
+Оценки параметров модлеи с линейниым ограничением $\beta_2 = \beta_4 = 0$ представлены в таблице~\ref{tbl:smry06}. На имеющихся наблюдениях значение критической статистики равно \[ \frac{\sfrac{\Delta}{r}}{\sfrac{\hat{S}^2}{N-k}} = \frac{\Sexpr{formatC( ( S2_star - S2_hat ) / ( ncol( X ) - ncol( X_c ) ), format = "fg", digits = 4 )}}{\Sexpr{formatC( S2_hat / ( N - ncol( X ) ), format = "fg", digits = 4 )}} = \Sexpr{formatC( F_stat, format = "fg", digits = 4 )} \] в то время как критический порог уровня $\alpha=\Sexpr{formatC( alpha, format = "fg", digits = 4 )}$ равен \Sexpr{formatC( qf( 1 - alpha, ncol( X ) - ncol( X_c ), N - ncol( X ) ), format = "fg", digits = 4 )}. Таким образом гипотезу о незначимости фактора $x_1$ \Sexpr{ if( F_stat >= qf( 1 - alpha, ncol( X ) - ncol( X_c ), N - ncol( X ) ) ) "можно отвергнуть" else "нет оснований отвергать" }.
+\begin{Scode}{results=tex,echo=FALSE}
+smry_c <- data.frame( alpha = beta_c, s.e. = beta_c.se, `t-stat` = beta_c/beta_c.se, Pv = 2-2*pt( abs( beta_c ) / beta_c.se, N - ncol( X ) ) )
+colnames( smry_c ) <- c( "$\\beta$", "s.e$\\,\\beta$", "t", "$\\Pr\\brac{\\abs{T}\\geq t}$" )
+rownames( smry_c ) <- c( "1",  "$x_2$" )
+print( xtable( smry_c, row.names=NULL, check.names = FALSE, label = "tbl:smry06", format = "fg", digits = 4, align = "c||c|c|c|c", caption = "Результаты МНК модели при условии $\\beta_2 = \\beta_4 = 0$" ), include.rownames = TRUE, sanitize.text.function = function(x){x} )
+\end{Scode}
+\\
+
+\begin{Scode}{echo=FALSE,fig=FALSE}
+## Test whether x1 is insignificant: -- Drop columns 3 and 4
+X_c <- X[ , c( -3, -4 ), drop = FALSE ]
+\Scoderef{C_OLS}
+\end{Scode}
+В таблице~\ref{tbl:smry07} представлена сводка результатов оценивания модели с ограничением $\beta_3 = \beta_4 = 0$. Значение критической статистики равно \[ \frac{\sfrac{\Delta}{r}}{\sfrac{\hat{S}^2}{N-k}} = \frac{\Sexpr{formatC( ( S2_star - S2_hat ) / ( ncol( X ) - ncol( X_c ) ), format = "fg", digits = 4 )}}{\Sexpr{formatC( S2_hat / ( N - ncol( X ) ), format = "fg", digits = 4 )}} = \Sexpr{formatC( F_stat, format = "fg", digits = 4 )} \] что \Sexpr{ if( F_stat >= qf( 1 - alpha, ncol( X ) - ncol( X_c ), N - ncol( X ) ) ) "больше" else "меньше" } порога \Sexpr{formatC( qf( 1 - alpha, ncol( X ) - ncol( X_c ), N - ncol( X ) ), format = "fg", digits = 4 )} уровня $\alpha=\Sexpr{formatC( alpha, format = "fg", digits = 4 )}$. Гипотеза о незначимости фактора $x_2$ \Sexpr{ if( F_stat >= qf( 1 - alpha, ncol( X ) - ncol( X_c ), N - ncol( X ) ) ) "должна быть отвергнута" else "не может быть отвергнута" }.
+\begin{Scode}{results=tex,echo=FALSE}
+smry_c <- data.frame( alpha = beta_c, s.e. = beta_c.se, `t-stat` = beta_c/beta_c.se, Pv = 2-2*pt( abs( beta_c ) / beta_c.se, N - ncol( X ) ) )
+colnames( smry_c ) <- c( "$\\beta$", "s.e$\\,\\beta$", "t", "$\\Pr\\brac{\\abs{T}\\geq t}$" )
+rownames( smry_c ) <- c( "1",  "$x_1$" )
+print( xtable( smry_c, row.names=NULL, check.names = FALSE, label = "tbl:smry07", format = "fg", digits = 4, align = "c||c|c|c|c", caption = "Результаты МНК модели при условии $\\beta_3 = \\beta_4 = 0$" ), include.rownames = TRUE, sanitize.text.function = function(x){x} )
+\end{Scode}
+\\
+
+Итак, несмотря на то, что ``подкрутив'' матрицу плана эксперимента, было достигнуто улучшение точности оценок МНК, перераспределение повторений наблюдений не позволило изменить выводы о влиянии факторов.
+
+% section task_4 (end)
+
+\section{Приложение} % (fold)
+\label{sec:appendix_1}
+
+Вклад правого хвоста в математическое ожидание в задании \# 2 рассчитывался с использованием следующей первообразной:
+\begin{align*}
+	\int s\frac{s+4}{s^4+1} ds & = \frac{1}{2} \int \frac{s^2+1}{s^4+1} ds + \frac{1}{2} \int \frac{s^2-1}{s^4+1} ds + 2\int \frac{2s}{s^4+1} ds \\ &= \frac{1}{4\sqrt{2}} \brac{2 \arctan\brac{\frac{s^2-1}{\sqrt{2}s}} + \ln\abs{\frac{s^2-\sqrt{2}s+1}{s^2+\sqrt{2}s+1}}} \\ &+ 2 \arctan\brac{s^2} + C
+\end{align*}
+поскольку первое слагаемое равно
+\begin{align*}
+	\int \frac{s^2+1}{s^4+1} ds &= \int \frac{1+s^{-2}}{s^2+s^{-2}-2+2} ds = \int \frac{1+s^{-2}}{\brac{s-s^{-1}}^2+2} ds \\ &= \int \brac{u^2+2} du = \frac{1}{\sqrt{2}} \arctan\brac{\frac{u}{\sqrt{2}}}\\ &= \frac{1}{\sqrt{2}} \arctan\brac{\frac{s^2-1}{\sqrt{2}s}} + C
+\end{align*}
+а первообразная второго равна
+\begin{align*}
+	\int \frac{s^2-1}{s^4+1} ds &= \int \frac{1-s^{-2}}{s^2+s^{-2}-2+2} ds = \int \frac{1-s^{-2}}{\brac{s+s^{-1}}^2-2} ds \\ &= \int \brac{u^2-2} du = \frac{1}{2\sqrt{2}} \ln\abs{\frac{u-\sqrt{2}}{u+\sqrt{2}}} \\ &= \frac{1}{2\sqrt{2}} \ln\abs{\frac{s^2-\sqrt{2}s+1}{s^2+\sqrt{2}s+1}} + C
+\end{align*}
+При этом третий интеграл в выражении равен
+\begin{align*}
+	\int \frac{2s}{s^4+1} ds &= \int \brac{t^2+1} dt = \arctan\brac{t} \\ &= \arctan\brac{s^2} + C
+\end{align*}
+Интеграл в выражении вклада левого хвоста равен
+\begin{align*}
+	\int \frac{x}{x^2+1} dx &= \frac{1}{2} \int \frac{2x}{x^2+1} dx = \frac{1}{2} \int t^{-1} dx = \frac{1}{2} \ln\abs{t} \\ &= \frac{1}{2} \ln\abs{x^2+1} + C
+\end{align*}
+Первообразная ``центральной'' части плотности $p\brac{x}$ равна
+\begin{align*}
+	\int \frac{x}{4\sqrt{2\pi}} e^{-\frac{1}{2}\brac{\frac{x-2}{4}}^2} dx &= \int \frac{4s+2}{\sqrt{2\pi}} e^\frac{-s^2}{2} ds \\ &= \frac{4}{\sqrt{2\pi}} \int s e^\frac{-s^2}{2} ds + \frac{2}{\sqrt{2\pi}} \int e^\frac{-s^2}{2} ds \\ &= -\frac{4}{\sqrt{2\pi}} e^\frac{-s^2}{2} + 2 \int \frac{1}{\sqrt{2\pi}} e^\frac{-s^2}{2} ds \\ &= -\frac{4}{\sqrt{2\pi}} e^\frac{-s^2}{2} + 2 \Phi\brac{s} \\  &= -\frac{4}{\sqrt{2\pi}} e^{-\frac{1}{2}\brac{\frac{x-2}{4}}^2} + 2 \Phi\brac{\frac{x-2}{4}} + C
+\end{align*}
+
+% section appendix_1 (end)n
+
+\end{document}
+

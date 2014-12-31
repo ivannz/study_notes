@@ -1,0 +1,407 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{fullpage}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+\let\originalleft\left
+\let\originalright\right
+\renewcommand{\left}{\mathopen{}\mathclose\bgroup\originalleft}
+\renewcommand{\right}{\aftergroup\egroup\originalright}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\crab}[1]{{\left ] #1 \right [}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Rbar}{{\bar{\mathbb{R}}}}
+\newcommand{\Real}{{\mathbb{R}}}
+\newcommand{\Zinf}{{\clo{ 0, +\infty }}}
+\newcommand{\Cplx}{{\mathbb{C}}}
+\newcommand{\Tcal}{{\mathcal{T}}}
+\newcommand{\Dcal}{{\mathcal{D}}}
+\newcommand{\Hcal}{{\mathcal{H}}}
+\newcommand{\Ccal}{{\mathcal{C}}}
+\newcommand{\Scal}{{\mathcal{S}}}
+\newcommand{\Ncal}{{\mathcal{N}}}
+\newcommand{\Ecal}{{\mathcal{E}}}
+\newcommand{\Fcal}{{\mathcal{F}}}
+\newcommand{\Xcal}{{\mathcal{X}}}
+\newcommand{\borel}[1]{{\mathcal{B}\brac{#1}}}
+\newcommand{\Ex}[0]{{\mathbb{E}}}
+\newcommand{\pr}[0]{{\mathbb{P}}}
+\newcommand{\Var}[1]{{\text{Var}\brac{#1}}}
+
+\newcommand{\pwr}[1]{{\mathcal{P}\brac{#1}}}
+\newcommand{\Dyns}[1]{{\mathfrak{D}\brac{#1}}}
+\newcommand{\Ring}[1]{{\mathcal{R}\brac{#1}}}
+\newcommand{\Supp}[1]{{\operatorname{supp}\nolimits\brac{#1}}}
+
+\newcommand{\defn}{{\mathop{\overset{\Delta}{=}}\nolimits}}
+\newcommand{\lpto}{{\mathop{\overset{L^p}{\to}}\nolimits}}
+
+\newcommand{\re}{\operatorname{Re}\nolimits}
+\newcommand{\im}{\operatorname{Im}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+\selectlanguage{russian}
+
+% \title{Assignment \#01}
+% \author{Nazarov Ivan, \rus{101мНОД(ИССА)}}
+
+\usepackage{Sweave}
+\begin{document}
+% \maketitle
+\begin{titlepage}
+	\selectlanguage{russian}
+	\thispagestyle{empty}
+	\vbox to \textheight {
+		\renewcommand{\baselinestretch}{1}\selectfont
+		\begin{center}
+			\textsc{\LARGE
+			Национальный Исследовательский Университет\\[0.5cm]
+			Высшая Школа Экономики}\\[1.5cm]
+
+			\textsc{\Large
+			Магистерская программа Науки о Данных}\\[0.5cm]
+
+			\rule{\linewidth}{0.5mm}\\[1.0cm]
+
+			{\huge \bfseries Домашняя работа \#2}\\[0.5cm]
+			{\large \bfseries по курсу ``Робастные Методы в Статистике''}\\[0.5cm]
+		\end{center}
+
+		\vspace{2.0cm}
+
+		\begin{flushright}
+			\large Иван \textsc{Назаров}\\[0.5cm]
+			\rus{101мНОД(ИССА)}\\[3cm]
+		\end{flushright}
+
+		\vspace{2.0cm}
+
+		\vfill
+		\begin{center}
+			Москва\\
+			2014\\[3cm]
+		\end{center}
+	}
+\end{titlepage}
+\clearpage
+
+\begin{abstract}
+\selectlanguage{russian}
+\noindent Домашняя работа по курсу ``Робастные Методы в Статистике''. Вариант \# 1.
+\end{abstract}
+
+\selectlanguage{russian}
+\section{Задача \#1} % (fold)
+\label{sec:task_1}
+
+Задача нахождения мнений в тексте и определения его характера (\eng{Sentiment analysis}). Есть несколько подходов к её решению \begin{description}
+	\item[Словарный:] \hfill\\ Подход основан на синтаксическом разборе предложения\footnote{Подлежащее, сказуемое, объекты и обстоятельства} и стемминга и лемматизации частей речи.\footnote{Приведение глаголов к инфинитиву, с сохранением модальности, аспекта и времени; для существительных -- выделение корня слова, числа и модификаторов, таких как суффиксы или приставки.} По выделенным частям речи определяется объект высказывания и  происходит проверка принадлежности к списку положительной или отрицательной тональности (\eng{Affective lexicons}). В принципе может быть независим от языка;
+	\item[Машинное обучение:] \hfill\\ Построение классификатора типов тональности высказывания -- положительная, отрицательная или нейтральная, на основе входящих наборов $n$ слов. При наличии серьёзного риска опечаток также конструируются классификаторы на основе символьных $n$-грамм. Данный подход сильно привязывается к конкретному языку.
+\end{description}
+
+Пусть $X$ -- конечный алфавит. Строки конечной длины есть элементы множества $X^*$, определяемого как $\cup_{k=0}^\infty X^k$. Множество строк бесконечной длины есть $X^\infty = X^\mathbb{N}$. Если $x\in X^*$ и $y\in X^*\cup X^\infty$ конкатенация $xy$ есть строка, начинающаяся с $x$ со строкой $y$, следующей прямо за ней. Множество строк с префиксом $x$ есть следующее цилиндрическое подмножество $X^\infty$ \[\Gamma_x\defn \obj{ \induc{x\omega}\, \omega\in X^\infty}\]
+
+Пусть $\Fcal_{\leq n} \defn \sigma\brac{ \obj{\induc{\Gamma_x}\,x\in X^n } }$, где $\sigma\brac{\mathcal{C}}$ есть наименьшая $\sigma$-алгебра, содержащая $\mathcal{C}$. Измеримое пространство префиксов длины не более $n$ есть $\brac{X^\infty,\Fcal_{\leq n}}$. Заметим, что по построению и согласно свойствами оператора $\sigma(\cdot)$, выполнено $\Fcal_{\leq n}\subseteq \Fcal_{\leq n+1}$ для любого $n\geq 0$.
+
+Далее, если $\Fcal \defn \sigma\brac{ \obj{\induc{\Gamma_x}\,x\in X^* } }$, то пространство строк бесконечной длины есть $\brac{X^\infty, \Fcal}$. Более того $\Fcal_{\leq n}\subseteq \Fcal$ для любого $n\geq 0$ по построению. По сути построенное измеримое пространства идентично счётному произведению измеримых пространств. Коллекция $\brac{\Fcal_{\geq n}}_{n\geq 0}$ является фильтрацией. Однако в силу того, что задачи определения тональности по своей природе не содержит последовательного поступления ``информации'', то в дальнейшем фильтрация не нужна.
+
+Любое слово $w$, будучи конечным набором символов, есть элемент из $X^*$, а не $X^\infty$. Однако его можно отождествить с множеством $\Gamma_w\in \Fcal$.
+
+Вероятностная мера $\mu$ сначала определяется на цилиндрических множествах $\text{Cyl}\defn\obj{\induc{\Gamma_x}\,x\in X^*}$, затем продолжается с полу-кольца $\text{Cyl}$ на порождённое им кольцо и далее на всю $\sigma$-алгебру при помощи теоремы Каратеодори. Вероятность слова $\mu(w)$ для $w\in X^*$ определяется как $\mu\brac{\Gamma_w}$, а вероятность наблюдения префикса $xy$ при условии наблюдения префикса $x$ задаётся отношением $\mu\brac{\induc{y}\,x} = \frac{\mu(xy)}{\mu(x)}$
+
+Построенное вероятностное пространство пригодно для обоих подходов: строку можно представить как элемент $X^*$ -- как непрерывная последовательность символов, а $n$-граммы как префиксы фиксированной длины.
+
+Однако для того, чтобы включить в модель не только сами слова, или их нормализованную форму, необходимо рассматривать расширенное пространство $\brac{X^\infty\times D, \Fcal\otimes \Dcal}$ слов и их описаний. Упомянутая ранее предобработка, при на основе априорных знаниях лингвистики и филологии, включённых в $\Fcal_0$, реализует расширение $\pi:X^*\to X^*\times D$ входного слова до пары лемма-описание.
+
+Пространство описаний (семантических и эмоциональных характеристик слов) задаётся как произведение конечных измеримых пространств $\brac{D_f,\Dcal_f}_{f\in F}$, индексируемых конечным набором признаков $F$. При этом естественный частичный порядок на измеримых подмножествах описаний эквивалентен отношению ``быть более специфичными'': действительно любое слово с описанием $d\in A$ также подпадает под описание $B$ если $A\subseteq B$. Итак пространство описаний есть $\brac{\prod_{f\in F} D_f, \bigotimes_{f\in F} \mathcal{D}_f}$.
+
+На рисунке~\ref{fig:plutchik} приведена диаграмма возможных эмоциональных окрасок с различной степенью.\footnote{\eng{Plutchik, R. (1984). Emotions: A general psychoevolutionary theory. Approaches to emotion, 1984, 197-219.}} Очевидно, что классифицировать предложения по тональности на ``черное и белое'' чревато излишней грубостью правил принятия решений, а с другой стороны чрезмерная детализация описаний может привести к тому, что решающее правило не сможет отличить смежные гипотезы при наличии шума в предложении.
+\begin{figure}[htb]\begin{center}
+  \def\svgwidth{30em}
+  \input{Plutchik.pdf_tex}
+  \caption{Классификация эмоций по интенсивности.}
+\label{fig:plutchik}
+\end{center}\end{figure}
+
+% section task_1 (end)
+
+\selectlanguage{russian}
+\section{Задача \# 2} % (fold)
+\label{sec:task_2}
+
+Рассмотрим пространство $\brac{\Real^+, \borel{\Real^+}, dx}$, где $dx$ -- мера Лебега на $\Real^+$. Зададим множество вероятностных мер на $\brac{\Real^+, \borel{\Real^+}}$ следующим образом: \begin{align*}
+	\text{Exp}_\lambda &\defn \int \lambda e^{ -\lambda x } dx \\
+	\chi^2_k &\defn \int \brac{ \sqrt{2}^k \Gamma\brac{\sfrac{k}{2}}}^{-1} x^{\frac{k}{2}-1} e^{-\frac{x}{2}} dx
+\end{align*} Пусть далее $\brac{\Omega, \Fcal, \mu}$ другое вероятностное пространство, причём $\Omega \defn \obj{0,1}$, $\Fcal \defn \pwr{\Omega}$ и $\mu\brac{E} \defn \theta 1_E\brac{0} + \brac{1-\theta} 1_E\brac{1}$, $\theta\in\clo{0,1}$ -- вероятность что событие $A$ не наступает. Поскольку рассматриваемые пространства $\sigma$-конечны, можно рассмотреть произведение пространств с мерой $\brac{ \Real^+\times \Omega, \borel{\Real^+}\otimes \Fcal, dx\otimes \mu }$.
+
+Пусть $f_0, f_1$ -- некоторые плотности, неотрицательные измеримые функции, что $\int_{\Real^+} f_k dx = 1$. Тогда $p:\brac{\Real^+\times \Omega} \to \Real^+$, заданная как $p\defn f_0(x) 1_\obj{0}\brac{y} + f_1(x) 1_\obj{1}\brac{y}$, измерима, поскольку является суммой $\borel{\Real^+}\otimes \Fcal$ измеримых функций. Тогда по простейшим свойствам интеграла Лебега и в силу теоремы о монотонной сходимости в пространстве $\brac{ \Real^+\times \Omega, \borel{\Real^+}\otimes \Fcal, dx\otimes \mu }$ и \[P\brac{A} \defn \int_{\Real^+\times \Omega} 1_A\brac{x, \omega} p\brac{x, \omega} dx\otimes d\mu\] является мерой на $\brac{ \Real^+\times \Omega, \borel{\Real^+}\otimes \Fcal}$. В силу теоремы Фубини для любого $A\times B\in \borel{\Real^+}\otimes \Fcal$ справедливо \begin{align*}
+	P\brac{A\times B} &= \int_{\Real^+\times \Omega} 1_{A\times B}\brac{x, \omega} p\brac{x, \omega} dx\otimes d\mu \\ & = \int_{\Real^+} \brac{ \int_\Omega p\brac{x, \omega} 1_A(x) 1_B(\omega) d\mu(\omega) } dx \\ & = \int_{\Real^+} 1_A(x) \brac{ f_0(x) \int_B 1_\obj{0}\brac{y} d\mu(\omega) + f_1(x) \int_B 1_\obj{1}\brac{y} d\mu(\omega) } dx \\ & = \int_A f_0(x) dx \mu\brac{B\cap \obj{0}} + \int_A f_1(x) dx \mu\brac{B\cap \obj{1}} \\ & = \pr_{f_0}\brac{A} \mu\brac{B\cap \obj{0}} + \pr_{f_1}\brac{A} \mu\brac{B\cap \obj{1}}
+\end{align*}
+Таким образом $P$ есть вероятностная мера на $\brac{ \Real^+\times \Omega, \borel{\Real^+}\otimes \Fcal}$, поскольку \[P\brac{\Real^+\times\Omega} = \pr_{f_0}\brac{\Real^+} \mu\brac{\Omega\cap \obj{0}} + \pr_{f_1}\brac{\Real^+} \mu\brac{\Omega\cap \obj{1}} = 1\]
+
+Пусть $Z$ есть ``тождественная'' случайная величина $\Real^+\times \Omega$. Тогда, закон распределения $Z$ равен $\text{Law}_Z\brac{A} = P\brac{A}$ для любого $A\in \borel{\Real^+}\otimes \Fcal$. Предположим, что случайную величину $Z$ можно наблюдать в двух режимах:\begin{itemize}
+	\item наблюдаются обе компоненты $Z = (X,\omega)$;
+	\item доступно лишь значение проекции $Z$ на $\brac{\Real^+, \borel{\Real^+}}$, $X = \pi_1\brac{Z}$, где $\pi_1\brac{x, \omega} = x$.
+\end{itemize}
+
+Рассчитаем расстояние между гипотезами \begin{align*}
+	\Hcal_1:\,& f_0 = \frac{d\text{Exp}_1}{dx}\,\text{\rus{и}}\,f_1 = \frac{d\text{Exp}_{\frac{1}{2}}}{dx}\\
+	\Hcal_2:\,& f_0 = \frac{d\chi^2_1}{dx}\,\text{\rus{и}}\,f_1 = \frac{d\chi^2_2}{dx}
+\end{align*} В качестве расстояния используем информационное отклонение Кульбака-Лейблера между вероятностными мерами $P<<Q$ на измеримом пространстве $\brac{S,\Sigma}$, равное $I\brac{P,Q} \defn \int \ln\frac{dP}{dQ} dP$. Если $P,Q << \nu$, то $\sfrac{\frac{dP}{d\nu}}{\frac{dQ}{d\nu}} = \frac{dP}{dQ}$ $\nu$-почти наверное, откуда $I\brac{P,Q} = \int \ln\sfrac{\frac{dP}{d\nu}}{\frac{dQ}{d\nu}} \frac{dP}{d\nu} d\nu$.
+
+Распределение величины $X\defn \pi_1\brac{Z}$ для любого $A\in\borel{\Real}$ равно \[\text{Law}_X\brac{A} = P\brac{\pi_1^{-1}\brac{A}} = P\brac{A\times \Omega} = \pr_{f_0}\brac{A} \theta + \pr_{f_1}\brac{A} \brac{1-\theta} \] и является вероятностной мерой на $\brac{\Real^+, \borel{\Real^+}}$, абсолютно непрерывной относительно $dx$. Плотность равна $g(x) = f_0(x) \theta + f_1(x) \brac{1 - \theta}$.
+
+При гипотезе $\Hcal_1$ плотность равна $g_1 = \theta e^{ -x } + \brac{ 1 - \theta } \frac{1}{2} e^{ -\frac{1}{2} x }$, а при $\Hcal_2$ -- $g_2 = \theta \frac{1}{\sqrt{2 x \pi}} e^{-\frac{x}{2}} + \brac{ 1 - \theta } \frac{1}{2} e^{-\frac{x}{2}}$. Таким образом расстояние Кульбака-Лейблера между $\Hcal_1$ и $\Hcal_2$ равно \begin{align*}
+	I\brac{G_1,G_2}
+	% & = \int\limits_0^{+\infty} \ln\frac{g_1}{g_2} g_1 dx \\
+	& = \int\limits_0^{+\infty} \ln\frac{\theta e^{ -x } + \brac{ 1 - \theta } \tfrac{1}{2} e^{ -\tfrac{1}{2} x }}{\theta \tfrac{1}{\sqrt{2 x \pi}} e^{-\tfrac{1}{2}x} + \brac{ 1 - \theta } \tfrac{1}{2} e^{-\tfrac{1}{2} x}} \brac{\theta e^{ -x } + \brac{ 1 - \theta } \tfrac{1}{2} e^{ -\tfrac{1}{2} x }} dx \\ & = \int\limits_0^{+\infty} \ln\frac{2 \theta e^{ -\tfrac{1}{2} x } + \brac{ 1 - \theta } }{\theta \tfrac{2}{\sqrt{2 x \pi}} + \brac{ 1 - \theta } } \brac{2 \theta e^{ -\tfrac{1}{2} x } + \brac{ 1 - \theta } } \tfrac{1}{2} e^{ -\tfrac{1}{2} x } dx \\ &= \int\limits_0^1 \ln\frac{2 \theta t + \brac{ 1 - \theta } }{\theta \brac{\sqrt{\pi \abs{\ln t}}}^{-1} + \brac{ 1 - \theta } } \brac{2 \theta t + \brac{ 1 - \theta } } dt
+\end{align*} а между $\Hcal_2$ и $\Hcal_1$ -- \begin{align*}
+	I\brac{G_2,G_1}
+	% & = \int\limits_0^{+\infty} \ln\frac{g_2}{g_1} g_2 dx \\
+	& = \int\limits_0^{+\infty} \ln\frac{\theta \tfrac{2}{\sqrt{2 x \pi}} + \brac{ 1 - \theta } }{2 \theta e^{ -\tfrac{1}{2} x } + \brac{ 1 - \theta } }
+	\brac{\theta \brac{\tfrac{2}{\sqrt{2 x \pi}}} + \brac{ 1 - \theta }} \tfrac{1}{2} e^{-\tfrac{1}{2}x} dx \\ &= \int\limits_0^1 \ln\frac{\theta \brac{\sqrt{\pi \abs{\ln t}}}^{-1} + \brac{ 1 - \theta } }{2 \theta t + \brac{ 1 - \theta } } \brac{\theta \brac{\sqrt{\pi \abs{\ln t}}}^{-1} + \brac{ 1 - \theta } } dt
+\end{align*}
+
+Зависимость расстояния между гипотезами $\Hcal_1$ и $\Hcal_2$ от вероятности $\obj{\omega = 0}$ из $\brac{\Omega, \Fcal, \mu}$ отражена на рисунке~\ref{fig:KL01}.
+\begin{figure}[htb]\begin{center}
+	\begin{Scode}{echo=FALSE,fig=TRUE}
+	ln_p_pq <- function( x, theta ) {
+	  d1 <- ( 1 - theta ) + 2 * theta * x
+	  d2 <- ( 1 - theta ) + theta / sqrt( - pi * log( x ) )
+	  log( d1 / d2 ) * d1
+	}
+
+	i_pq <-
+	  function( theta ) integrate( ln_p_pq, 0, 1, theta = theta,
+	    stop.on.error = FALSE, subdivisions = 200 )$value
+	i_pq_a <- function( theta ) i_pq( 1 ) * theta + i_pq( 0 ) * ( 1 - theta )
+
+	ln_q_qp <- function( x, theta ) {
+	  d2 <- ( 1 - theta ) + theta / sqrt( - pi * log( x ) )
+	  d1 <- ( 1 - theta ) + 2 * theta * x
+	  log( d2 / d1 ) * d2
+	}
+
+	i_qp <-
+	  function( theta ) integrate( ln_q_qp, 0, 1, theta = theta,
+	    stop.on.error = FALSE, subdivisions = 200 )$value
+	i_qp_a <- function( theta ) i_qp( 1 ) * theta + i_qp( 0 ) * ( 1 - theta )
+
+	x <- seq( 0, 1, by = 0.001 )
+	data <-
+	  data.frame( x = rep( x, 2 ),
+	  	y = c( sapply( x, i_qp ), sapply( x, i_pq ) ),
+	  	z = c( sapply( x, i_qp_a ), sapply( x, i_pq_a ) ),
+	    KL = factor( c( rep( 0, length( x ) ), rep( 1, length( x ) ) ),
+	      labels = c( '2~1', '1~2' ) ) )
+
+	library( ggplot2 )
+	theme0 <- function( ... ) theme_bw( ) +
+	  theme_minimal( base_size = 18 ) + theme( legend.position = "bottom" )
+
+	ggplot( data ) + theme0( ) + labs( x = expression( theta ), y = NULL ) + xlim( 0, 1 ) +
+	  geom_rect( aes( xmin = 0.5, xmax = 0.7, ymin = -Inf, ymax = +Inf ), fill = 'gray85', alpha = 1 ) +
+	  geom_line( aes( x = x, y = y, colour = KL ) ) +
+	  geom_vline( xintercept = 0.6, colour = "black" )
+	\end{Scode}
+  \caption{Расстояние между гипотезами в зависимости от $\theta$ при отсутствии информации о второй координате $Z$.}
+\label{fig:KL01}
+\end{center}\end{figure}
+при чём $\theta = \mu\brac{\obj{0}} = P\brac{\Real^+\times \obj{0}} = P\brac{\pi_2(Z)=0}$.
+
+Если же $Z$ наблюдается полностью, то расстояние между гипотезами $\Hcal_1$ и $\Hcal_2$ отличается в зависимости от того какое значение имеет $\pi_2(Z)$. Когда $\pi_2(Z)=0$ ($A$ не наступает) то \[I\brac{\induc{G_1,G_2}\,\neg A} = \int \ln\frac{e^{ -x }}{\brac{\sqrt{2 x \pi}}^{-1} e^{-\tfrac{1}{2}x}} e^{ -x } dx > 0 \] но когда известно, что $A$ наступило ($\pi_2(Z)=1$), то \[I\brac{\induc{G_1,G_2}\,A} = \int \ln\frac{\tfrac{1}{2} e^{ -\tfrac{1}{2} x }}{\tfrac{1}{2} e^{ -\frac{1}{2} x }} \frac{1}{2} e^{ -\frac{1}{2} x } dx = 0 = I\brac{\induc{G_2,G_1}\,A} \] благодаря тому, что $\text{Exp}_{\frac{1}{2}} = \chi^2_2$.
+
+Отсюда $I\brac{G_1,G_2} = I\brac{\induc{G_1,G_2}\,\neg A} \theta + I\brac{\induc{G_1,G_2}\,A} \brac{1-\theta} = I\brac{\induc{G_1,G_2}\,\neg A} \theta$ и  $I\brac{G_2,G_1} = I\brac{\induc{G_2,G_1}\,\neg A} \theta$. Расстояние в рамках данного режима наблюдений изображено на рисунке~\ref{fig:KL02}.
+\begin{figure}[htb]\begin{center}
+	\begin{Scode}{echo=FALSE,fig=TRUE}
+	ggplot( data ) + theme0( ) + labs( x = expression( theta ), y = NULL ) + xlim( 0, 1 ) +
+	  geom_rect( aes( xmin = 0.5, xmax = 0.7, ymin = -Inf, ymax = +Inf ), fill = 'gray85', alpha = 1 ) +
+	  geom_line( aes( x = x, y = z, colour = KL ) ) +
+	  geom_vline( xintercept = 0.6, colour = "black" )
+	\end{Scode}
+  \caption{Расстояние между гипотезами при наличии полной информации в зависимости от $\theta$ -- вероятности ненаступления события $A$}
+\label{fig:KL02}
+\end{center}\end{figure}
+
+Стоит заметить, что в случае полной информации о $Z$ с вероятностью $1-\theta$ различить гипотезы невозможно, по причине того, что меры $\text{Exp}_{\frac{1}{2}}$ и $\chi^2_2$ идентичны. А это значит, что для того, чтобы иметь возможность различить гипотезы $\Hcal_1$ и $\Hcal_2$ требуется $\frac{1}{1-\theta}$ раз больший объём наблюдений, нежели чем в первом случае, когда наблюдается лишь часть $Z$. На этом примере можно сделать вывод о то, что возможны ситуации, при которых эффективнее иметь неполную информацию о наблюдении.
+
+% section task_2 (end)
+
+\selectlanguage{russian}
+\section{Задача \# 3} % (fold)
+\label{sec:task_3}
+
+Пусть плотность распределения задана следующим образом
+\begin{equation*}
+p\brac{x}\defn \left\{\begin{matrix}
+	c \brac{ x^2 + 1 }^{-1} & x<0\\
+	\phi_X\brac{x} & x\in \clo{0,4}\\
+	c \frac{x-4}{ \brac{x-4}^2 + 1 } & x>4
+	\end{matrix}\right.
+\end{equation*}
+причём $c = \frac{8 \brac{1-\Phi\brac{\sfrac{1}{2}}}}{3 \pi}$. Функция распределения $F(x)$ равна интегралу $\int_{-\infty}^x p(x) dx$. Для того, чтобы генерировать наблюдения её следует обратить: \begin{equation*}
+F^{-1}\brac{u}\defn \left\{\begin{matrix}
+	\tan\brac{ \frac{1}{c}\brac{ u - c\frac{\pi}{2}} } & u\in \clop{ 0, c\sfrac{\pi}{2}}\\
+	\Phi^{-1}\brac{ \Phi\brac{-\frac{1}{2}} + u - c \frac{\pi}{2} } & u-c\frac{\pi}{2}\in \clop{ 0, 2 \Phi\brac{\frac{1}{2}} - 1} \\
+	4 + \sqrt{ \tan\brac{ \frac{2}{c} \brac{ u-c\frac{\pi}{2} + 1 - 2 \Phi\brac{\frac{1}{2}} } } } & u\in \clop{ c\frac{\pi}{2} + 2 \Phi\brac{\frac{1}{2}} - 1, 1}
+	\end{matrix}\right.
+\end{equation*}
+\begin{Scode}{echo=FALSE,fig=FALSE}
+set.seed( -12345678L )
+
+B <- pnorm( .5 )
+C <- 8 * ( 1 - B ) / ( 3 * pi )
+## Define functions
+## The actual distribution function
+F <- function( x ) suppressWarnings(
+  C * pi / 2 + ifelse( x < 0, C * atan( x ),
+    B - 1 + ifelse( x <= 4, pnorm( ( x - 2 ) / 4 ),
+      B + C/2 * atan( ( x - 4 )^2 ) ) ) )
+## The inverse of the distribution function
+F_inv <- function( u ) suppressWarnings(
+  ifelse( u < C * pi / 2, tan( u / C - pi / 2 ),
+    ifelse( u <= C * pi / 2 + 2 * B - 1,
+      4 * qnorm( u - C * pi / 2 + 1 - B ) + 2,
+        4 + sqrt( tan( 2 * ( u - C * pi / 2 - 2 * B + 1 ) / C ) ) ) ) )
+\end{Scode}
+
+Рассмотрим робастную оценку среднего Пирсона-Тьюки на основе пяти квантилей эмпирического распределения: \[\hat{x}\defn \tfrac{1}{6}\brac{ x_\brac{\sfrac{n}{16}} + x_\brac{\sfrac{4 n}{16}} + x_\brac{\sfrac{8 n}{16}} + x_\brac{\sfrac{12 n}{16}} + x_\brac{\sfrac{15 n}{16}} }\] где $x_\brac{k}$ -- порядковая статистика выборки $\brac{x_k}_{k=1}^n$. Дробные индексы округляются до ближайшего целого. Код, представленный ниже определяет процедуру расчёта оценки Пирсона-Тьюки на входной выборке $x$:
+\selectlanguage{english}
+\begin{Scode}{echo=TRUE,fig=FALSE}
+## This function implements the Pearson-Tukey robust
+##  mean estimator with 5 quantiles.
+pt.mean <- function( x ) {
+## The selected quantiles
+  q <- c( 1, 4, 8, 12, 15 ) / 16
+## ... are weighted according to:
+  w <- c( 1, 1, 2,  1,  1 ) / 6
+## Compute the weighted mean on rounded quantiles
+  sum( w * sort( x )[ round( q * length( x ) ) ] )
+}
+\end{Scode}
+\selectlanguage{russian}
+
+Вторая оценка это робастная оценка Ходжеса-Лемана по средним Уолша, равная медиане выборки $\brac{\frac{x_i + x_j}{2}}_{i\leq j}$ (\eng{R}-код её расчёта приведён ниже).
+\selectlanguage{english}
+\begin{Scode}{echo=TRUE,fig=FALSE}
+## An implementation of the Hodges-Lehman estimator
+hl.mean <- function( x ) {
+## Compute all pairwise means
+  w <- outer( x, x, function( a, b ) .5*( a + b ) )
+## Discard a half
+  median( w[ outer( seq_along( x ), seq_along( x ), `>=` ) ] )
+}
+\end{Scode}
+\selectlanguage{russian}
+Третья оценка это обыкновенное выборочное среднее.
+
+Для удобства определим процедуру генерирующую нужное количество выборок заданного размера и рассчитывающую на каждой репликации заданный набор статистик.
+\selectlanguage{english}
+\begin{Scode}{echo=TRUE,fig=FALSE}
+## Carry out a simulation study
+sim_study <- function( nobs, samples,
+  seed = NULL, fun = c( mean, pt.mean, hl.mean ) ) {
+## Run the simulation
+  if( is.numeric( seed ) ) set.seed( seed )
+  generated <- replicate( n = samples, {
+    F_inv( runif( n = nobs ) )
+  }, simplify = FALSE )
+## Compute the supplied functions of each replication
+  names( fun ) <- as.character( substitute( fun )[-1] )
+  result <- do.call( data.frame, args =
+    lapply( fun, function( fn ) sapply( generated, fn ) ) )
+}
+\end{Scode}
+\selectlanguage{russian}
+
+Введём три функционала риска\begin{description}
+	\item[\eng{r1}:] $r_1(\hat{\theta},\theta) \defn \abs{\hat{\theta}-\theta}^2$ 
+	\item[\eng{r2}:] $r_2(\hat{\theta},\theta) \defn \min\brac{\abs{\hat{\theta}-\theta},1}$ 
+	\item[\eng{r3}:] $r_3(\hat{\theta},\theta) \defn g\brac{\abs{\hat{\theta}-\theta}}$, где $g(x) \defn x \cdot 1_\clop{0.3, +\infty}(x)$ и $1_A$ -- индикатор множества $A$.
+\end{description} 
+\begin{Scode}{echo=FALSE,fig=FALSE} 
+## Square Loss
+r1 <- function( theta, theta_0 )
+  abs( theta - theta_0 ) ^ 2
+## Risk well function
+r2 <- function( theta, theta_0 )
+  pmin( 1, abs( theta - theta_0 ) )
+## L^1 risk with an indistinguishability region
+r3 <- function( theta, theta_0 )
+  ifelse( abs( theta - theta_0 ) >= .3,
+    abs( theta - theta_0 ), 0 )
+## Estimate risk
+compute_risk <- function( data, risk, ... )
+  mean( do.call( risk, args = c( list( data ), list( ... ) ) ) )
+\end{Scode}
+
+Следующий код порождает выборки по 50 значений оценок, посчитанных по нарастающему объёму наблюдений, рассчитывает оценку среднего риска $\rho \defn \Ex\brac{r(\hat{\theta},\theta_0)}$ при гипотезе $\theta_0=2$ и трансформирует полученные данные в пригодную для анализа форму. Результаты приведены на рисунке~\ref{fig:risk_dyn}.
+\selectlanguage{english}
+\begin{Scode}{echo=TRUE,fig=FALSE}
+N <- 10 * c( 1, 2, 4, 8, 16, 32, 64, 128 )
+study_list <- lapply( N, function( nobs ) {
+## Generate simulated samples of the estimators
+  sim_est <- sim_study( nobs = nobs, samples = 50 )
+## Compute the estimate of the expected risk
+  sapply( c( r1 = r1, r2 = r2, r3 = r3 ),
+    function( r ) sapply( sim_est, compute_risk, risk = r, theta_0 = 2 ) )
+} )
+## Reshape the simulation results into a long data frame
+library( plyr )
+data <- adply( simplify2array( study_list ), c( 3, 1, 2 ) )
+colnames( data ) <- c( "size", "fun", "risk", "value" )
+data$size <- factor( data$size, labels = N )
+\end{Scode}
+\selectlanguage{russian}
+
+\begin{figure}[htb]\begin{center}
+  % \begin{Scode}{echo=FALSE,fig=FALSE}
+  % sw_cairo <- function(name, width, height, ...)
+  %   grDevices::cairo_pdf(filename = paste(name, "pdf", sep = "."),
+  %     width = width, height = height)
+  % \end{Scode}
+  % \begin{Scode}{echo=FALSE,grdevice=sw_cairo,fig=TRUE}
+  \begin{Scode}{echo=FALSE,fig=TRUE}
+  ggplot( data ) + theme0( ) +
+    labs( x = "N", y = expression( hat(rho) ) ) +
+    ## labs( x = "N", y = expression( log( hat(rho) ) ) ) +
+    geom_line( aes( size, value, group = fun, color = fun ) ) +
+    facet_grid( risk ~ . ) +
+    scale_y_log10( )
+  \end{Scode}
+  \caption{Динамика среднего риска исследуемых оценок в зависимости от размера выборки наблюдений.}
+\label{fig:risk_dyn}
+\end{center}\end{figure}
+
+При оценивании эффективности при помощи функции ущерба $r_2$ оценки среднего слабо отличаются друг от друга и не прослеживается изменение эффективности при увеличении размера выборки. Подобная ``неразличимость'' вызвана тем, что $r_2$ ограничена сверху, что приводит к искусственному завышению эффективности оценок, не являющихся робастными или эффективными согласно другим функциям ущерба. Например, известно, что среднее арифметическое не является робастной оценкой, хотя согласно динамике риска можно сделать ошибочный вывод о том, что у оценки робастные свойства, поскольку её риск сопоставим с риском робастных оценок. Делать какие-либо практические честные выводы по риску $r_2$ можно только в том случае если риск имеет предел и безразлично, как часто этот предел достигается.
+
+Функция $r_1$ позволяет выявить неэффективные оценки, однако из-за того, что она не имеет области ``безразличия'' она не позволяет получить оценку, устойчивую к отклонениям от гипотетического распределения. Это не желательно почти наверное истинный параметр непрерывного распределения не равен некоторому значения.
+
+Функция ущерба $r_3$ имеет область индифферентности, которая позволяет принимать суб-оптимальные решения, поскольку задаётся окрестность допустимой ошибки внутри которой не имеет заначения угадана ли вероятностная мера или нет.
+
+Согласно функциям ущерба $r_1$ и $r_3$ оценка Ходжеса-Лемана эффективнее всех, поскольку её риск наименьший. Оценка Пирсона-Тьюки оптимальна согласно среднему риску при росте объёма выборки. Выборочное среднее ведёт себя хуже всего. Можно сделать вывод о том, что параметр центральности лучше всего оценивается робастными оценками, в частности оценкой Ходжеса-Лемана.
+
+Однако не всё так ``радужно'' как хотелось бы. Математическое ожидание истинного распределения не является конечным, а значит любые конечные значения оценки заведомо будут далеки от теоретического среднего. Из этого можно сделать вывод о том, что даже у теоретически робастных оценок есть границы применимости и что с их помощью можно умышленно не опровергать предпочитаемые гипотезы. Действительно, в данном примере риск оценки Ходжеса-Лемана среднего при гипотезе от том, что среднее равно ``приблизительно'' 2, наиболее низкий.
+ 
+% section task_3 (end)
+
+\end{document}
+

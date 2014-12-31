@@ -1,0 +1,114 @@
+Bi(n, p) \to N(np, np(1-p)) as n\to \infty
+On the other hand
+Bi(n, p) \to Pois(np) as p\to 0 and n\to \infty
+and Pois(\lambda) \to N(\lambda, \lambda) as \lambda\to\infty
+Do not worry about np(1-p) \neq \lambda, since 1-p \approx 1
+
+Point estimation
+
+\brac{X_k}_{k=1}^n
+sample mean \bar{X} = \frac{\sum_{k=1}^n X_k}{n}
+it is good what about other parameters
+
+We are in a parametric situation P\in \mathcal{P} where \mathcal{P} is some
+parametric family of probability measures with respect to some parameter space \Theta \subseteq \Real^d.
+
+Suppose the underlying distribution is known up to some parameter \theta_0 which is unknown.
+
+An estimator (a sufficient statistic) is a measurable function u = u(X_1, ..., X_n)of the random sample (X_k)_{k=1}^n \sym F_{\theta_0}
+
+Is F_{\theta_0} a multivariate distribution?
+
+Bias how close the estimator is to the estimated parameter
+b(\hat{\theta}) = E_\theta(\hat{\theta} - \theta), where the expectaion is taken over the measure with respect to the true parameter: E_\theta f = \int f dP_\theta
+
+How small E |\hat{\theta} -\theta|? Moduli are inconvenient, so let's look at the square distance.
+
+Minimize the mean square error: the bias-variance decomposition
+
+E_\theta{(\hat{\theta} - \theta)}^2 = E_\theta{(\hat{\theta} - E_\theta\hat{\theta} + E_\theta\hat{\theta}- \theta)}^2 = E_\theta{(\hat{\theta} - E_\theta\hat{\theta})^2 + E_\theta{E_\theta\hat{\theta}-\theta)}^2 = Var(\hat{\theta}) + b^2(\hat{\theta})
+
+bias-variance trade off
+
+Consistency: a sequence of estimators \brac{\hat{\theta}_n}_{n\geq1} of \theta \in \Theta converges in probability to \theta: \hat{\theta}_n \overset{\Pr}{\to} \theta as n\to \infty
+
+Plug in estimators: parameter of interest of a distribution is a function of the distribution function itself
+
+mean : \mu(F) = \int x dF(x)
+variance : \sigma^2(F) = \int (x - \mu(F))^2 dF(x)
+median : q_\alpha(F) = \int {x| F(x)\geq \alpha}
+
+The empirical distribution function: for all x\in \Real
+\hat{F}(x) = \frac{1}{n}\sum_{k=1}^n 1_{X_k\leq x}
+
+piecewise constant (locally constant) right-continuous map with jumps at X_k of size \frac{1}{n}
+
+What are the asymptotic properties of the plug-in estimators?
+Consistency: parameter is actually a functional on distributions function: \theta = G(F_\theta)
+just plug in the ECDF and get the estimator!
+
+If \hat{F}_n\to F is some sense then if G is ``continuous'', we have G(\hat{F}_n)\to G(F)
+By by the Law of Large Numbers \hat{F}_n(x) \to F(x) in probability (and almost surely) at all points of continuity of F. Glivenko-Cantelli Theorem: \sup_{t\in \Real}\abs{\hat{F}_n\brac{t}-F\brac{t}} \to 0
+
+Asymptotic normality: \sqrt{n}(\hat{\theta}_n-\theta)\overset{\mathcal{D}}{\to} \mathcal{N}(0, \sigma^2_\theta)
+
+X_k \sym F
+U_k \defn F(X_k), U_k\sym U\clo{0,1}
+
+\hat{F}_n(x) = \frac{1}{n}\sum_{k=1}^n 1_{X_k\leq x} = \frac{1}{n}\sum_{k=1}^n 1_{F^{-1}(U_k)\leq x}  = \frac{1}{n}\sum_{k=1}^n 1_{U_k\leq F(x)} = \hat{U}_n(F(x))
+
+where  \hat{U}_n is the empirical distribution function of a uniform random sample
+
+Now for any t\in \clo{0,t} it is true that  1_{U_k\leq t} \synm B(t)
+thus n \hat{U}_n(t) \sym Bi(t, n)
+
+Using CLT for Bi(t,n) gives \frac{n\hat{U}_n(t) - nt}{\sqrt{ nt(1-t) }} \overset{\mathcal{D}}{\to} \mathcal{N}(0,1)
+Thus \sqrt{n}\frac{\hat{U}_n(t) - t}{\sqrt{t(1-t) }} \overset{\mathcal{D}}{\to} \mathcal{N}(0,1)
+
+whence \sqrt{n}({\hat{U}_n(t) - t}) \overset{\mathcal{D}}{\to} \mathcal{N}(0,t(1-t))
+
+If G is highly-nonlinear but still ``continuous'', as n is bigger and bigger would become more and more linear and so using the delta-method.
+
+Maximum Likelihood Estimation (Fisher)
+
+Collect a random sample \brac{X_k}_{k=1}^n \sym B(p) iid
+P( X_k = x_k for all k=1...n ) = \prod_{k=1}^n p^{x_k}{(1-p)}^{1-x_k}
+
+Maximize the join probability of the collected sample of observations of some parametric family!!!
+
+Let \brac{X_k}_{k=1}^n be random variables with joint density f\brac{x_1,\ldots,\,x_n;\,\theta} with \theta\in \Theta. The likelihood function L\brac{\theta} = f\brac{\brac{X_k}_{k=1}^n};\,\theta}
+
+pick theta so that L is maximized! 
+\hat{\theta}_{ML} = \argmax_{\theta \in \Theta} L\brac{\theta} so that $L\brac{\hat{\theta}}\geq L\brac{\theta}$ for all $\theta \in\Thetas$
+
+Usually the log-likelihood is more tractable
+
+\brac{X_k}_{k=1}^n \sym Geom(p) : \Pr\brac{X_k = m} = \brac{1-p}^m p
+
+The likelihood function: L(p) =\prod_{k=1}^n p\brac{1-p}^{x_k}
+The log-likelihood function: l(p) =n \log{p} + \log{1-p}\sum_{k=1}^n x_k
+So \hat{p} : \frac{n}{p} +\frac{-n}{1-p} \frac{\sum_{k=1}^n x_k}{n} = 0
+
+Observe that \hat{p} = \brac{1+\bar{X}}, whereas p = \brac{1+E(X)}
+Method of moment estimator compute theoretical moments and find such parameter \theta that theoretical moments match (are close to) the sample moments. 
+
+\frac{d l}{d \theta} = \frac{d}{d\theta} \sum_{k=1}^n \log f\brac{X_k;\, \theta} = \sum_{k=1}^n \frac{\frac{d}{d\theta} f\brac{X_k;\, \theta}}{f\brac{X_k;\, \theta}} \sum_{k=1}^n Y_k
+
+using regularity conditions look up in any book on statistics:
+E\brac{Y_k} = \int \frac{\frac{d}{d\theta} f\brac{X_k;\, \theta}}{f\brac{X_k;\, \theta}}f\brac{X_k;\, \theta} dX_k = \int \frac{d}{d\theta} f\brac{X_k;\, \theta} dX_k = \frac{d}{d\theta} \int f\brac{X_k;\, \theta} dX_k = 0
+
+Therefore E\brac{\frac{d l}{d \theta} } = 0
+
+Let's look at 
+
+\frac{d}{d \theta} E\brac{\frac{d \log f\brac{X;\,\theta}}{d \theta} } = \frac{d}{d \theta}\int \frac{d \log f\brac{X;\,\theta}}{d \theta} f\brac{X;\, \theta} dX = \int \frac{d}{d \theta}\brac{\frac{d \log f\brac{X;\,\theta}}{d \theta} f\brac{X;\, \theta}} dX = \int \frac{d f\brac{X;\,\theta}}{d \theta} \frac{d \log f\brac{X;\,\theta}}{d \theta} + 
+f\brac{X;\,\theta} \frac{d^2 \log f\brac{X;\,\theta}}{d \theta^2} dX = \int \brac{ \brac{\frac{d \log f\brac{X;\,\theta}}{d \theta}}^2 + \frac{d^2 \log f\brac{X;\,\theta}}{d \theta^2} }f\brac{X;\,\theta} dX = 0
+Whence I\brac{\theta} = E\brac{ \frac{d^2 \log f\brac{X;\,\theta}}{d \theta^2} } = - E\brac{ \brac{\frac{d \log f\brac{X;\,\theta}}{d \theta}}^2 } 
+
+
+Cramer-Rao lower bound: Under some regularity conditions
+Var\brac{\hat{\theta}}\geq \frac{\brac{\frac{d E\brac{\hat{\theta}}}^2}{d\theta}}{n I\brac{\theta}} = \frac{\brac{1+b'\brac{\theta}}^2}{n I\brac{\theta}}
+
+
+
+

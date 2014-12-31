@@ -1,0 +1,115 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{fullpage}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+\newcommand{\obj}[1]{\left\{ #1 \right \}}
+\newcommand{\clo}[1]{\left [ #1 \right ]}
+\newcommand{\clop}[1]{\left [ #1 \right )}
+\newcommand{\ploc}[1]{\left ( #1 \right ]}
+
+\newcommand{\brac}[1]{\left ( #1 \right )}
+\newcommand{\crab}[1]{\left ] #1 \right [}
+\newcommand{\induc}[1]{\left . #1 \right \vert}
+\newcommand{\abs}[1]{\left | #1 \right |}
+\newcommand{\nrm}[1]{\left\| #1 \right \|}
+\newcommand{\brkt}[1]{\left\langle #1 \right\rangle}
+
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+
+\newcommand{\Rbar}{{\bar{\mathbb{R}}}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Zinf}{\clo{ 0, +\infty }}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Tcal}{\mathcal{T}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\Scal}{\mathcal{S}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Ecal}{\mathcal{E}}
+\newcommand{\Fcal}{\mathcal{F}}
+\newcommand{\borel}[1]{\mathcal{B}\brac{#1}}
+\newcommand{\pwr}[1]{\mathcal{P}\brac{#1}}
+\newcommand{\Dyns}[1]{\mathfrak{D}\brac{#1}}
+\newcommand{\Ring}[1]{\mathcal{R}\brac{#1}}
+\newcommand{\Supp}[1]{\operatorname{supp}\nolimits\brac{#1}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+\newcommand{\lpto}{\mathop{\overset{L^p}{\to}}\nolimits}
+
+\newcommand{\re}{\operatorname{Re}\nolimits}
+\newcommand{\im}{\operatorname{Im}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Домашнее задание \#01}
+\author{Назаров Иван, \rus{101мНОД(ИССА)}}
+
+\begin{document}
+\selectlanguage{russian}
+\maketitle
+\noindent Домашнее задание \# 1 по курсу Упорядоченные множества в анализе данных.
+
+\section{Задание 5} % (fold)
+\label{sec:task_5}
+Пусть задано множетсво $A$ и $R_1, R_2$ -- это бинарные отношения на $A$. Докажем следующее вспомогательное утверждение: если $R_1, R_2$ -- это симметричные бинарные отношения на $A$, то $\brac{R_2\circ R_1}^d = R_1\circ R_2$.
+
+Поскольку, при необходимости, можно переобозначить упомянутые отношения, то дотаточно доказать включение лишь в отну сторону. Дейтсвительно, если $\brac{x,y}\in R_1\circ R_2$, то $\exists \omega\in A$ такой что $\brac{x,\omega}\in R_1$ и $\brac{\omega,y}\in R_2$. Отсюда, в силу симметричности $R_1$ и $R_2$ следует то, что $\brac{\omega,x}\in R_1$ и $\brac{y,\omega}\in R_2$, откуда $\brac{y,x}\in R_2\circ R_1$.
+
+Далее, пусть $R_1$ и $R_2$ отношения эквивалентности на $A$. Если предположить, что $R_1\circ R_2 = A\times A$, то справедливо, что $R_2\circ R_1 = \brac{R_1\circ R_2}^d = \brac{A\times A}^d = A\times A$. Отсюда следует, что $R_1\circ R_2 = A\times A$ \textbf{тогда и только тогда}, когда $R_2\circ R_1 = A\times A$.
+
+% section task_5 (end)
+
+\section{Залание 4} % (fold)
+\label{sec:task_4}
+Пусть $\brac{A,\preceq}$ и $\brac{B, \leq }$ два частично упорядоченных множества и $f:A\to B$ монотонное биективное отображение. Поскольку $f$ биекция, то \emph{существует} обратное отображение $f^{-1}:B\to A$.
+
+\textbf{Монотонность} означает, что для любых $x,y\in A$ выполнение $x\preceq y$ влечёт выполнение $f(x)\leq f(y)$. Итак пусть $u,v\in B$ таковы, что $u\leq v$. В этом случае в силу монотонности либо $f^{-1}(u)$ и $f^{-1}(v)$ \emph{не сравнимы} относительно порядка $\preceq$, либо $f^{-1}(u)\preceq f^{-1}(v)$. Здесь и кроется возможность того, что обратная функция $f^{-1}$ может не являться монотонной.
+
+Приведу пример. Пусть $A=\obj{a_1,a_2}$ и $B=\obj{1,2}$. Зададим порядок $\preceq$ на $A$ следующим образом: $\preceq \defn \obj{\brac{a_1, a_1}, \brac{a_2, a_2}}$. Это отношение рефлексивно по определению, однако оно антисимметрично и транзитивно потому, что не существеут пар из $A\times A$, противоречащих этим свойствам. На $B$ пусть задан порядок $\leq$ соответствующий естественному частичному порядку на натуральных числах ``меньше, либо равно''.
+
+Пусть $f:A\to B$ задана следующим образом $f(a_1)=1$ и $f(a_2)=2$. Очевидно, что $f$ является взаимо однозначным отображением. Его монотонность следует из того, что \emph{не существует} пар $\brac{x,y}\in A\times A$ таких, что $x\preceq y$ и при этом $f(x)\not\leq f(y)$. При этом несмотря на то, что $1\leq 2$, тем не менее $f^{-1}(1)\not\preceq f^{-1}(2)$, из чего следует, что $f^{-1}$ \emph{не является} монотонной.
+
+% section task_4 (end)
+
+\section{Задание 3} % (fold)
+\label{sec:task_3}
+Пусть задано множество $A$, $B\subseteq A$ и $R$ частичный порядок на $A\times A$. Частичный порядок подразумевает рефлексивность, антисимметричность и транзитивность бинарного отношения $R$. Пусть $P\defn \induc{R}_{B\times B}$, означающее, что отношение сужено с множества $A$ до подмножества $B$. Иными словами $P = R\cap B\times B$.
+
+Возьмём любое $x\in B$. Тогда $x\in A$ и согласно рефлексивности $R$ выполнено $\brac{x,x}\in R$. Поскольку $\brac{x,x}\in B\times B$, имеем $\brac{x,x}\in P$. Слдеовательно отношение $P$ \textbf{рефлексивно}.
+
+Пусть $x,y\in B$ таковы, что $\brac{x,y}\in P$ и $\brac{y,x}\in P$. Тогда $\brac{x,y},\brac{y,x}\in R$ и из анти-симметричности $R$ следует, что $x=y$. Поэтому отношение $P$ на $B$ \textbf{антисимметрично}.
+
+Пусть $x,y,z\in B$ таковы, что $\brac{x,y},\brac{y,z}\in P$. Тогда по определению $P$ выполнено $\brac{x,y},\brac{y,z}\in R$ откуда в силу транзитивности следует, что $\brac{x,z}\in R$. Поскольку $\brac{x,z}\in B\times B$, то в итоге выполнено $\brac{x,z}\in P$. Из этого следует, что $P$ -- \textbf{транзитивное} отношение.
+
+И вышеизложенных рассуждений следует, что $P=\induc{R}_{B\times B}$ -- это отношение \textbf{частичного порядка} на $B$ при условии, что $R$ отношение частичного порядка на $A$ и $B\subseteq A$.
+
+% section task_3 (end)
+
+\section{Задание 1} % (fold)
+\label{sec:task_1}
+
+Пусть $R\subseteq A\times A$ бинарное отношение. Любое бинарное отношение однозначно определяется функцией $r:A\times A\to \obj{0,1}$ следующим образом: $\brac{x,y}\in R$ тогда и только тогда, когда $r\brac{x,y}=1$. На конечных множествах это означает, что бинарные отношения однозначно определяются ``характеристическими матрицами'', $(0,1)$-матрицами размера $n\times n$, где $n\defn \abs{A}$.
+
+Если $R$ рефлексивное и симметричное отношение на $A$, то $r_{x,y} = r_{y,x}$ для всех $x\neq y\in A$ и $r_{x,x}=1$ для любого $x\in A$. Таким образом, из-за того, что рефлексивность ``фиксирует'' значения $r_{x,x}$, то отношение однозначно поределяется значением $r_{x,y}$ для каждой неупорядоченной пары-элемента $\obj{x,y}$ из $\Scal_2(A)$, где \[\Scal_m(S)\defn \obj{ \induc{\obj{x_i,\,i=1\ldots m}}\, \brac{x_i}_{i=1}^m\in S,\,x_i\neq x_j\,\forall i\neq j }\] Таким образом количество рефлексивных и симметричных отношений равно сумме по всевозможным $J\subseteq \Scal_2(A)$ всех количеств отношений с $r_{x,y}=1$ для всех пар $\obj{x,y}\in J$. Таким образом \[\sum_{m=0}^{C^2_n} 1 = 2^{C^2_n}\] Получаем, что для $n=5$ количество равно $2^{5 \cdot 2} = 1024$.
+
+Далее для антирефлексивного и антисимметричного отношения $R$ на $A$ справедливо, что $r_{x,x}=0$ для любого $x\in A$ в силу антирефлексивности, в то время как антисимметричность означает, что $r_{x,y}\cdot r_{y,x}=0$ для любых $x,y\in A$, таких что $x\neq y$. Тогда для заданной пары $\obj{x,y}\in \Scal_2(A)$ имеется три допустимых значения $r_{x,y}$ и $r_{y,x}$: $(0,0)$, $(0,1)$ и $(1,0)$. Пусть $J\subseteq \Scal_2(A)$ фиксированый набор неупорядоченных пар из $A$. Тогда количество отношений с $r_{x,y}=0$ для $\obj{x,y}\in J$ и $r_{x,y}=1$ для $\obj{x,y}\in {\Scal_2(A)}\setminus J$ равно \[ 2 ^{\abs{J}} 1^{N-\abs{J}} \] где $N\defn \abs{\Scal_2(A)} = C^2_n$. Из этого следует, что количество нужных отношений равно сумме \[\sum_{J\subseteq \Scal_2(A)} 2 ^{\abs{J}} = \sum_{m=0}^N C^m_N 2^m = \brac{1+2}^N = 3^N = 3^{C^2_n} \] Для $n=5$ количество равно $3^{5\cdot 2} = 59049$.
+
+Относительно количества асимметричных транзитивных отношений общей формулы вывести не удалось. Однако вполне можно написать программу, подсчитывающую их количество прямым перебором. Действительно, если $A=\obj{a_1,\ldots, a_n }$, то любое бинарное отношение можно представить, как строку из $\obj{0,1}$ длины $n^2$ следующим взаимооднозначным соответствием: \[\phi\brac{R}\defn \brac{1_R\brac{a_i,a_j} }_{i,j=1}^{n,n}\] где $1_\Omega(x) = 1$ если $x\in \Omega$ и $1_\Omega(x) = 0$ если $x\notin \Omega$. Благодаря этому соответствию каждому целому числу из $\obj{0,\ldots,2^{n^2}-1}$ можно поставить в однозначное соответствие некоторое бинарное отношение на $A$. Таким образом ядром программы является цикл от $0$ до $2^{n^2}-1$ проверяющий для числа соответствует ли его разложение в двоичной системе асимметричному и транзитивному отношению. Поскольку сложность проверки на транзитивность доминирует над сложностью проверки на асимметричность, $O(n^3)$ против $O(n^2)$, то сложность всей программы составляет $O(n^3 2^{n^2})$. Для $n=5$ количество искомых отношений равно $4231$.
+
+% Пусть для заданного $A$ множество $P_{x,y}$ содержит все антирефлексивные бинарные отношения на множестве $A$, у которых $r_{x,y}\cdot r_{y,x}=1$ для $x,y\in A$. Тогда множество всех бинарных отношений $R$ таких, что $\exists x,y\in A,\,x\neq y$ удовлетворяющие $\brac{x,y}, \brac{y,x}\in R$, равно объединению $P_{x,y}$ по всем подмножествам $A$ состоящим из двух элементов $\Scal_2(A)$, где \[\Scal_m(S)\defn \obj{ \induc{\obj{x_i,\,i=1\ldots m}}\, \brac{x_i}_{i=1}^m\in S,\,x_i\neq x_j\,\forall i\neq j }\] Заметим, что $\abs{\Scal_2(A)} = C^2_n$.
+
+% Согласно формуле включений-исключений \[\abs{\bigcup_{p\in \Scal_2(A)} P_{x,y}} = \sum_{I\subseteq \Scal_2(A),\,I\neq \emptyset} \brac{-1}^{\abs{I}-1} \abs{\bigcap_{p\in I} P_p }\] При этом для любого непустого $I\subseteq \Scal_2(A)$ справедливо, что $\cap_{p\in I} P_p$ является множеством тех бинарных отношений, для которых выполнено $r_{x,y} = r_{y,x}=1$ для всех $\obj{x,y}=p\in I$. Таким образом при $N\defn \abs{\Scal_2(A)} = C^2_n = \frac{n\brac{n-1}}{2}$ выполнено $\abs{\cap_{p\in I} P_p} = 2^{N - \abs{I}}$, откуда следует \begin{align*}\abs{\bigcup_{\obj{x,y}\in \Scal_2(A)} P_{x,y}} &= \sum_{\emptyset\neq I\subseteq \Scal_2(A)} \brac{-1}^{\abs{I}-1} \abs{\bigcap_{\obj{x,y}\in I} P_{x,y}}\\ &= \sum_{m=1}^N C^m_N\brac{-1}^{m-1} 2^{N - m}\\ &= -\sum_{m=1}^N C^m_N \brac{-1}^m 2^{N - m}\\ &= -\brac{- 2^N + \sum_{m=0}^N C^m_N \brac{-1}^m 2^{N - m} }\\&= 2^N - \brac{2-1}^N\end{align*}
+
+% Поскольку общее количество антирефлексивных бинарных отношений равно $2^{n\brac{n-1}}$, то количество искомых антирефлексивных и антисимметричных
+% section task_1 (end)
+
+
+\end{document}

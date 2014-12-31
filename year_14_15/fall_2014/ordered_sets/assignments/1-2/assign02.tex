@@ -1,0 +1,265 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{fullpage}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+\newcommand{\obj}[1]{\left\{ #1 \right \}}
+\newcommand{\clo}[1]{\left [ #1 \right ]}
+\newcommand{\clop}[1]{\left [ #1 \right )}
+\newcommand{\ploc}[1]{\left ( #1 \right ]}
+
+\newcommand{\brac}[1]{\left ( #1 \right )}
+\newcommand{\crab}[1]{\left ] #1 \right [}
+\newcommand{\induc}[1]{\left . #1 \right \vert}
+\newcommand{\abs}[1]{\left | #1 \right |}
+\newcommand{\nrm}[1]{\left\| #1 \right \|}
+\newcommand{\brkt}[1]{\left\langle #1 \right\rangle}
+
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+
+\newcommand{\Rbar}{{\bar{\mathbb{R}}}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Zinf}{\clo{ 0, +\infty }}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Tcal}{\mathcal{T}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\Scal}{\mathcal{S}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Ecal}{\mathcal{E}}
+\newcommand{\Fcal}{\mathcal{F}}
+\newcommand{\borel}[1]{\mathcal{B}\brac{#1}}
+\newcommand{\pwr}[1]{\mathcal{P}\brac{#1}}
+\newcommand{\Dyns}[1]{\mathfrak{D}\brac{#1}}
+\newcommand{\Ring}[1]{\mathcal{R}\brac{#1}}
+\newcommand{\Supp}[1]{\operatorname{supp}\nolimits\brac{#1}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+\newcommand{\lpto}{\mathop{\overset{L^p}{\to}}\nolimits}
+
+\newcommand{\re}{\operatorname{Re}\nolimits}
+\newcommand{\im}{\operatorname{Im}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Домашнее задание \#02}
+\author{Назаров Иван, \rus{101мНОД(ИССА)}}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes.geometric}
+
+\begin{document}
+\selectlanguage{russian}
+\maketitle
+\noindent Домашнее задание \# 2 по курсу Упорядоченные множества в анализе данных.
+
+\section{Задча 1} % (fold)
+\label{sec:task_1}
+
+Пусть $\brac{L, \wedge, \vee}$ некоторая решётка на частичном порядке $\brac{L,\leq}$. По определению для операций $\wedge$ и $\vee$ для любого $x\in L$ и любых $y,z\in L$ справедливо, что $x\wedge y\leq x$ и $x\leq x\vee z$, откуда в силу транзитивности $\leq$ вытекает, что $x\wedge y\leq x\vee z$.
+
+Пусть $a,b,c,d\in L$, тогда в силу вышесказанного справедливо \begin{align*}
+a\wedge b &\leq a\vee c\\a\wedge b &\leq b\vee d\\
+c\wedge d &\leq a\vee c\\c\wedge d &\leq b\vee d\\
+\end{align*} Отсюда по определению операции $\wedge$ выполнено \begin{align*}
+a\wedge b &\leq \brac{a\vee c} \wedge \brac{b\vee d}\\
+c\wedge d &\leq \brac{a\vee c} \wedge \brac{b\vee d}\\
+\end{align*} В свою очередь по определению операции $\vee$ \[\brac{a\wedge b} \vee \brac{c\wedge d} \leq \brac{a\vee c} \wedge \brac{b\vee d}\]
+
+% section task_1 (end)
+
+\section{Задача 2} % (fold)
+\label{sec:task_2}
+
+Пусть $L$ некоторое линейное пространство над полем $K$, где $K = \Real$ или $\Cplx$. Рассмотрим естественный частичный порядок на подмножествах $L$, заданный отношением $\subseteq$.
+
+Множество $C\subseteq L$ называется выпуклым если для любых $x,y\in C$ и для любого $t\in\clo{0,1}$ выполнено $t x + (1-t) y \in C$. Например, множество $\emptyset$ выпукло по свойствам импликации, а $L$ выпукло потому, что является векторным пространством над $K$ и $\clo{0,1}\subseteq K$.
+
+Пусть множества $C_1, C_2\subseteq L$ выпуклы. Тогда для любых $x,y\in C_1\cap C_2$ и любого $t\in \clo{0,1}$ из выпуклости $C_1$ и $C_2$ следует, что $t x + (1-t) y\in C_1, C_2$, откуда $t x + (1-t) y\in C_1\cap C_2$. Аналогично, показывается что пересечение произвольного набора выпуклых множеств также выпукло.
+
+Пусть $M\subseteq L$ произвольное подмножество пространства $L$ и семейство множеств $\Gamma_M$ задаётся следующим образом\[\Gamma_M \defn \obj{\induc{C\subseteq L}\,M\subseteq C,\,C\,\text{-- convex}}\] Поскольку $L$ выпукло, то коллекция $\Gamma_M$ не является пустой, тк $L\in \Gamma_M$. Определим оператор \[M^\star\defn \bigcap_{C\in \Gamma_M} C\] Очевидно, что $M^\star\subseteq L$. Далее, если $x\in M$, то $x\in C$ для каждого $C\in \Gamma_M$, поскольку $M\subseteq M$, откуда следует, что $x\in M^\star$. Итак, $M\subseteq M^\star$.
+
+Множество $M^\star$ выпукло в силу того, что пересечение выпуклых множеств выпукло. Более того, множество $M^\star$ является наименьшим выпуклым множеством, содержащим $M$. Действительно для любого $C\subseteq L$ такого, что $C$ выпукло и $M\subseteq C$ из определения $M^\star$ следует, что $M^\star\subseteq C$.
+
+Пусть $M_1, M_2\subseteq L$ таковы, что $M_1\subseteq M_2$. Тогда в силу вышесказанного выполнено $M_1\subseteq M_2\subseteq M_2^\star$, откуда следует, что $M_1^\star \subseteq M_2^\star$.
+
+Пусть $M\subseteq L$ является выпуклым подмножеством. Тогда в силу минимальности $M^\star\subseteq M$, хотя по определению $M\subseteq M^\star$. Следовательно, если $M$ выпукло, то $M = M^\star$. Из этого вытекает, что $\brac{M^\star}^\star = M^\star$.
+
+Итак опратор $\star$ обладает следующими свойствами: \begin{itemize}
+	\item $M\subseteq M^\star$ для любого $M\subseteq L$
+	\item $\brac{M^\star}^\star=M^\star$ для любого $M\subseteq L$
+	\item $M_1^\star \subseteq M_2^\star$ для любых $M_1, M_2\subseteq L$ таких, что $M_1\subseteq M_2$
+\end{itemize} Таким образом, $\star$ является оператором замыкания множества $M\subseteq L$. 
+
+Рассмотрим подмножества $A,B,C\subseteq L$ и докажем, что \[\brac{A\cup \brac{B\cup C}^\star}^\star = \brac{A\cup B\cup C}^\star\] Действительно, из $B\cup C\subseteq \brac{B\cup C}^\star$ вытекает $A\cup B\cup C\subseteq A\cup \brac{B\cup C}^\star$ откуда \[\brac{A\cup B\cup C}^\star\subseteq \brac{A\cup \brac{B\cup C}^\star}^\star\] Наоборот, так как $B\cup C\subseteq A\cup B\cup C$, то выполняется $\brac{B\cup C}^\star \subseteq \brac{A\cup B\cup C}^\star$. Более того, поскольку $A\subseteq \brac{A\cup B\cup C}^\star$, то выполнено $A\cup \brac{B\cup C}^\star \subseteq \brac{A\cup B\cup C}^\star$ откуда \[\brac{A\cup \brac{B\cup C}^\star}^\star \subseteq \brac{\brac{A\cup B\cup C}^\star}^\star = \brac{A\cup B\cup C}^\star\]
+
+Стоит также отметить, что $\brac{A\cup B}^\star = \brac{B\cup A}^\star$ для любых $A,B\subseteq L$ из-за коммутативности объединения множеств.
+
+Пусть $\Ccal\subseteq \pwr{L}$ есть коллекция всех выпуклых подмножеств линейного пространства $L$. Определим операцию инфимума на $\Ccal$ следующим образом: $A\wedge B \defn A\cap B$ для любых $A,B\in \Ccal$. Замтим, что $C\in\Ccal$ таково, что $A\cap B\subseteq C$ и при этом $C\subseteq A,B$, то справедливо, что $C=A\cap B$ в силу антисимметричности порядка $\subseteq$.
+
+Операцию супремума зададим так: $A\vee B \defn \brac{A\cup B}^\star$ для любых $A,B\in \Ccal$. При этом если $C\in \Ccal$ таково, что $A, B\subseteq C$ хотя $C\subseteq \brac{A\cup B}^\star$, то в силу минимальности выпуклого замыкания $\star$ и опять-таки благодаря антисимметричности $\subseteq$ получается, что $\brac{A\cup B}^\star=С$. Итак операции $\vee$ и $\wedge$ корректно определены.
+
+Для того, чтобы $\brac{\Ccal, \wedge, \vee}$ являлась решёткой, необходимо и достаточно чтобы операции $\vee$ и $\wedge$ обладали следующими свойствами: для любых $X,Y,Z\in \Ccal$ \begin{itemize}
+	\item $X\wedge X = X\vee X = X$
+	\item $X\wedge Y = Y\wedge X$ и $X\vee Y = Y\vee X$
+	\item $X\wedge \brac{Y\wedge Z} = \brac{X\wedge Y}\wedge Z$ и $X\vee \brac{Y\vee Z} = \brac{X\vee Y}\vee Z$
+	\item $X\wedge \brac{X\vee Y} = X\vee \brac{X\wedge Y} = X$
+\end{itemize}
+
+Пусть $X,Y,Z\in \Ccal$. По определению, $X\vee X = \brac{X\cup X}^\star = X^\star = X$ и $X\wedge X = X\cap X = X$. Далее соотношения $X\wedge Y = Y\wedge X$ и $X\vee Y = Y\vee X$ выполнены в силу симметричности операций пересечения и объединения множеств соответственно. Далее \[X\wedge \brac{Y\wedge Z} = X\cap \brac{Y\cap Z} = \brac{X\cap Y}\cap Z = \brac{X\wedge Y}\wedge Z\] в то время как ассоциативность $\vee$ следует из свойств $\star$:\begin{align*}
+X\vee \brac{Y\vee Z} &= \brac{X\cup \brac{Y\cup Z}^\star}^\star \\ &=\brac{X\cup Y\cup Z}^\star \\ &=\brac{\brac{X\cup Y}^\star \cup Z}^\star \\ &=\brac{X\vee Y}\vee Z\end{align*}
+
+Пусть $X,Y\in \Ccal$. Поскольку $X\subseteq X\cup Y \subseteq \brac{X\cup Y}^\star$, то $X\cap \brac{X\cup Y}^\star = X$, откуда $X\wedge \brac{X\vee Y} = X$. Теперь, поскольку $X\cup \brac{X\cap Y} = X$, то $\brac{X\cup \brac{X\cap Y}}^\star = X^\star$. Однако, $X\in\Ccal$ что означает что $X$ выпукло и $X=X^\star$, откуда $X\vee \brac{X\wedge Y} = X$. Следовательно $\brac{\Ccal, \wedge, \vee}$ -- решётка.
+
+Пусть $S\subseteq \Ccal$ произвольная непустая коллекция выпуклых множеств. Положим $V\defn \brac{\bigcup_{X\in S} X}^\star$ и $U = \bigcap_{X\in S} X$.
+Во-первых $X\subseteq V$ для любого $X\in \S$ и для любых $W\in \Ccal$, таких что $X\subseteq W$ для всех $X\in S$, в силу свойств выпуклого замыкания выполнено $V\subseteq W$. Далее $U\subseteq X$ для каждого $X\in S$ и при этом $W\subseteq U$ для всех $W\in \Ccal$, таких что $W\subseteq X$ для всех $X\in S$. Итак выполнено \[\bigvee_{X\in S} X = \brac{\bigcup_{X\in S} X}^\star\,\text{и}\,\bigwedge_{X\in S} X = \bigcap_{X\in S} X\]
+
+Теперь, для любого $X\in\Ccal$ справедливо, что $X\wedge \emptyset = \emptyset$, $X\vee \emptyset = X$, $X\wedge L = X$ и $X\vee L = L$ поскольку $\emptyset, L\in \Ccal$. В свою очередь, из этого следует \[\bigvee_{X\in \Ccal} X = L\,\text{и}\,\bigwedge_{X\in\Ccal} X = \emptyset\] Таким образом множество всех выпуклых подмножеств линейного пространства $L$ над полем $K$ является полной решёткой относительно операций $\wedge$ и $\vee$.
+
+% section task_2 (end)
+
+\section{Задача 3} % (fold)
+\label{sec:task_3}
+
+Пусть $\brac{P, \leq}$ цепь. По определению цепь это линейно упорядоченное множество согласно порядка $\leq$, что в свою очередь означает, что любые два элемента сравнимы, те для любых $x,y\in P$ либо $x\leq y$, либо $y\leq x$, либо $x\leq y$ и $y\leq x$ одновременно.
+
+На полностью упорядоченном множестве естественно возникает структура решётки. Действительно, поскольку любые пары сравнимы, операцию инфимум, $x\vee y$, можно задать как $y$ если $y\leq x$ и $x$ в противном случае. Аналогично супремум, $x\wedge y$, равен $x$ если $y\leq x$, иначе $y$. При таких определениях выполнены необходимые условия на то, чтобы классифицировать $\brac{P, \wedge, \vee}$ как решётку:
+\begin{itemize}
+	\item Рефлексивность $\leq$ влечёт $x\wedge x = x$ и $x\vee x = x$ для любого $x\in P$.
+	\item Операции определены так, чтобы автоматически выполнялось $y\wedge x = x\wedge y$ и $x\vee y = y\vee x$ для любых $x,y\in P$.
+	\item Ассоциативность и свойство поглощения $\wedge$ и $\vee$ проверяется непосредственным перебором всевозможных троек $x,y,z\in P$.
+\end{itemize}
+
+Пусть $x,y,z\in P$. Предположим, что $x\leq y,z$. Тогда по определению супермума $y,z\leq y\vee z$, откуда вытекает, что $x\leq y\vee z$ и $x \wedge (y\vee z) = x$. С другой стороны выполнены равенства $x\wedge y = x$ и $x\wedge z = x$, влекущие за собой $(x\wedge y) \vee (x\wedge z) = x\vee x = x$.
+
+Далее, если $y,z\leq x$, то $y\vee z\leq x$ по свойствам супремума и выполняется $x\wedge (y\vee z) = y\vee z$. При этом, в данном случае $x\wedge y = y$ и $x\wedge z = z$, что означает \[(x\wedge y)\vee (x\wedge z) = y\vee z = x\wedge (y\vee z)\]
+
+Последним случаем, без потери общности, является $y\leq x\leq z$, при котором с одной стороны $x\wedge y = y$ и $x\wedge z = x$, откуда $(x\wedge y)\vee (x\wedge z)=x$, а с другой -- $y\vee z = z$ и $x\wedge (y\vee z) = x\wedge z = x$. Таким образом цепь является дистрибутивной решёткой относительно естественных операций супремума и инфимума.
+
+% section task_3 (end)
+
+\section{Задача 4} % (fold)
+\label{sec:task_4}
+
+Пусть задан формальный контекст $\mathbb{K} = \brac{\mathbb{G}, \mathbb{M}, \mathcal{R}}$, где $\mathbb{G} = \obj{1,\,\dots,\,8}$ -- объекты, $\mathbb{M} = \obj{a,\,b,\,\ldots,\,i}$ -- признаки, а $\mathcal{R}$ -- бинарное отношение, такое что $(g,m)\in \mathcal{R}$ тогда и только тогда, когда объект $g$ обладает признаком $m$. Формальный контекст задан матрицей:
+\begin{center}\begin{tabular}{| c | c | c | c | c | c | c | c | c | c |}
+\hline
+- & a & b & c & d & e & f & g & h & i \\ \hline
+1 & + & + &   &   &   &   & + &   &   \\ \hline
+2 & + & + &   &   &   &   & + & + &   \\ \hline
+3 & + & + & + &   &   &   & + & + &   \\ \hline
+4 & + &   & + &   &   &   & + & + & + \\ \hline
+5 & + & + &   & + &   & + &   &   &   \\ \hline
+6 & + & + & + & + &   & + &   &   &   \\ \hline
+7 & + &   & + & + & + &   &   &   &   \\ \hline
+8 & + &   & + & + &   & + &   &   &   \\ \hline\hline
+\end{tabular}\end{center}
+
+Пусть множественное отображение $f^*:\pwr{\mathbb{G}}\to \pwr{\mathbb{M}}$ для любого $A\subseteq \mathbb{G}$ задано как \[f^*\brac{A}\defn \obj{\induc{ m\in \mathbb{M} }\,\forall g\in A,\,\brac{g,m}\in \mathcal{R}}\] а отображение $f_*:\pwr{\mathbb{M}}\to \pwr{\mathbb{G}}$ для любого $B\subseteq \mathbb{M}$ как \[f_*\brac{B}\defn \obj{\induc{ g\in \mathbb{G} }\,\forall m\in B,\,\brac{g,m}\in \mathcal{R}}\] Такая пара задаёт отображение Галуа на частично упорядоченных множествах $\mathbb{G}$ и $\mathbb{M}$ относительно естественного порядка вложения подмножеств на каждом из них.
+
+Свойства этих отображений позволяют задать на подмножествах операцию замыкания. Во-первых, данные отображения $f^*$ и $f_*$ антимонотонны в том смысле, что $\phi\brac{B}\subseteq \phi\brac{A}$ если $A\subseteq B$. Во-вторых, для любых $A\subseteq \mathbb{G}$ и $B\subseteq \mathbb{M}$ для них справедливо следующее утверждение: \[A\subseteq f_*\brac{B} \Leftrightarrow\, B\subseteq f^*\brac{A}\] И в-третьих, благодаря вышеуказанным свойствам композиции $f_*\circ f^*: \pwr{\mathbb{G}}\to \pwr{\mathbb{G}}$ и $f^*\circ f_*: \pwr{\mathbb{M}}\to \pwr{\mathbb{M}}$ обладают тремя определяющими свойствами оператора замыкания: \begin{itemize}
+\item для любых $X\subseteq \Omega$ справедливо $X\subseteq \text{cl}\brac{X}$
+\item для любых $X\subseteq Y$ выполнено $\text{cl}\brac{X}\subseteq \text{cl}\brac{Y}$
+\item $\text{cl}\brac{\text{cl}\brac{X}}=\text{cl}\brac{X}$ для любых $X\subseteq \Omega$
+\end{itemize} Пусть $\text{cl}_{\mathbb{G}} \defn f_*\circ f^*$ и $\text{cl}_{\mathbb{M}} \defn f^*\circ f_*$ операторы замыкания для множеств объектов $\mathbb{G}$ и атрибутов $\mathbb{M}$ соответственно.
+
+Формальным понятием контекста $\mathbb{K}$ является пара $(A,B)$ подмножеств $\mathbb{G}$ и $\mathbb{M}$ соответственно, для которых справедливо, что $A=f^*\brac{B}$ и $B=f_*\brac{A}$. На самом деле можно показать, что в силу корректности определения отображения Галуа и благодаря свойствам оператора замыкания, пара является формальным понятием тогда и только тогда когда $\text{cl}_{\mathbb{G}}\brac{A} = A$ (и соответственно $\text{cl}_{\mathbb{M}}\brac{B} = B$).
+
+В следующей таблице приведены все найденные формальные понятия данного контекста $\mathbb{K}$. Для построения множества замыкай использовалась программа написанная на \emph{C}. Подмножествам ставились в соответствие строки бит, на которых перебором производился поиск замкнутого множества объектов.\begin{center}\begin{tabular}{ l | l || l | l }
+Объект & Признак & Объект & Признак \\ \hline\hline
+$\emptyset$ & abcdefghi & 3 & abcgh \\ \hline
+23 & abgh & 123 & abg \\ \hline
+4 & acghi & 34 & acgh \\ \hline
+234 & agh & 1234 & ag \\ \hline
+6 & abcdf & 36 & abc \\ \hline
+56 & abdf & 12356 & ab \\ \hline
+7 & acde & 68 & acdf \\ \hline
+568 & adf & 678 & acd \\ \hline
+34678 & ac & 5678 & ad \\ \hline
+12345678 & a & -- & -- \\ \hline
+\end{tabular}\end{center}
+
+Для формальных понятий $(A_1,B_1)$ и $(A_1,B_1)$ из базовых свойств отображений $f^*$ и $f_*$ вытекает, $A_1\subseteq A_2$ тогда и только тогда, когда $B_2\subseteq B_1$. На основании этого наблюдения на множестве формальных понятий естественно ввести частичный $\preceq$ на основе вложения подмножества, причём неважно на объектной или аттрибутивной части понятия. 
+
+Пусть $(A_1,B_1)$ и $(A_1,B_1)$ формальные понятия. Тогда из свойств оператора замыкания $\text{cl}_{\mathbb{G}}$ на множестве объектов вытекает $A_1\cap A_2\subseteq \text{cl}_{\mathbb{G}}\brac{A_1\cap A_2}$, и что $\text{cl}_{\mathbb{G}}\brac{A_1\cap A_2}\subseteq \text{cl}_{\mathbb{G}}\brac{A_1}, \text{cl}_{\mathbb{G}}\brac{A_2}$, откуда из того, что $A_1$ и $A_2$ замкнуты, вытекает $\text{cl}_{\mathbb{G}}\brac{A_1\cap A_2}\subseteq A_1\cap A_2$. Аналогичное свойство выполняется для атрибутов формальных понятий: \[B_1\cap B_2 \subseteq \text{cl}_{\mathbb{M}}\brac{B_1\cap B_2} \subseteq B_1\cap B_2\] Это наблюдение, в совокупности со свойствами оператора пересечения множеств, позволяет определить на частично упорядоченном множестве формальных понятий операторы инфимума и супремума следующим образом: \begin{align*}
+	\brac{A_1, B_1}\vee \brac{A_2, B_2} &\defn \brac{f^*\brac{B_1\cap B_2}, B_1\cap B_2}\\
+	\brac{A_1, B_1}\wedge \brac{A_2, B_2} &\defn \brac{A_1\cap A_2, f_*\brac{A_1\cap A_2}}\\
+\end{align*}
+Непосредственно проверяется тот факт, что операторы, заданные таким образом, определяют решётку на частично упорядоченном множестве формальных понятий контекста.
+
+Для данного контекста $\mathbb{K}$ можно построить следующую решётку формальных понятий.
+\begin{figure}[htb]\begin{center}
+	\begin{tikzpicture}[>=stealth, 
+    % Installed for every node.
+    every concept/.style={
+        draw,
+        font=\sf,
+        fill=white,
+        text=black
+},
+% Set some node styles if required
+n12345678/.style={fill=blue!20, text=black},
+n-/.style={fill=red!20, text=black}]
+
+\foreach \group [count=\l from 0] in {
+		{1/1/12345678/a},
+		{3/1/12356/ab,3/1.5/34678/ac},
+		{2/1/1234/ag,2/1/5678/ad},
+		{4/1/123/abg,4/1/234/agh,4/1/568/adf,4/1/678/acd},
+		{5/1/56/abdf,5/1/36/abc,5/1/68/acdf,5/1/34/acgh,5/1/23/abgh},
+		{4/1/6/abcdf,4/1/7/acde,4/1/4/acghi,4/1/3/abcgh},
+		{1/1/-/abcdefghi}}
+	\foreach \c\s\x\y [count=\n from 0] in \group
+		\node [x=1.5cm, y=2cm, every concept/.try, n\x/.try] 
+			at ({ 10*(\n+1)*\s /(\c+1)}, -\l) (n\x) {$\obj{\x,\y}$};
+
+	\draw [<-] (n12345678) -- (n12356);
+	\draw [<-] (n12356) -- (n123);
+	\draw [<-] (n123) -- (n23);
+	\draw [<-] (n23) -- (n3);
+	\draw [<-] (n3) -- (n-);
+	\draw [<-] (n12356) -- (n36);
+	\draw [<-] (n36) -- (n6);
+	\draw [<-] (n6) -- (n-);
+	\draw [<-] (n12356) -- (n56);
+	\draw [<-] (n56) -- (n6);
+
+	\draw [<-] (n12345678) -- (n1234);
+	\draw [<-] (n1234) -- (n234);
+	\draw [<-] (n234) -- (n34);
+	\draw [<-] (n34) -- (n4);
+	\draw [<-] (n4) -- (n-);
+	\draw [<-] (n34) -- (n3);
+	\draw [<-] (n234) -- (n23);
+	\draw [<-] (n1234) -- (n123);
+
+	\draw [<-] (n12345678) -- (n34678);
+	\draw [<-] (n34678) -- (n678);
+	\draw [<-] (n678) -- (n7);
+	\draw [<-] (n7) -- (n-);
+	\draw [<-] (n678) -- (n68);
+	\draw [<-] (n68) -- (n6);
+	\draw [<-] (n34678) -- (n34);
+
+	\draw [<-] (n12345678) -- (n5678);
+	\draw [<-] (n5678) -- (n678);
+	\draw [<-] (n5678) -- (n568);
+	\draw [<-] (n568) -- (n56);
+
+	\end{tikzpicture}
+
+	\caption{\rus{Решётка формальных понятий контекста $K$}}
+	\label{fig:fig01}
+\end{center}\end{figure}
+
+% section task_4 (end)
+
+\end{document}

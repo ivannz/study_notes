@@ -1,0 +1,244 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+\title{Questions 60-68}
+\author{Nazarov Ivan}
+\begin{document}
+\maketitle
+
+% \section*{58. Anomalous cluster algorithm} % (fold)
+% \label{sec:question_58}
+% 
+% % section question_58 (end)
+% 
+% \section*{59. Initialization at the intelligent K-Means} % (fold)
+% \label{sec:question_59}
+% 
+% % section question_59 (end)
+
+\section*{60. Reformulation of K-Means criterion in terms of entity-to-entity similarity index} % (fold)
+\label{sec:question_60}
+%% Mirkin book pages~232-233
+The goal of clustering is to assign objects to groups, which are homogeneous within and heterogeneous between each other. K-means clustering is the most popular tool, as it is implemented in almost any statistical package.
+
+% Abstract setting: Let the data come from some space $\brac{\mathcal{X}, d}$, where $d$ is a dissimilarity measure on $\mathcal{X}$ (typically a metric). If $X\subseteq \mathcal{X}$ is a finite set of available data points, then for a fixed $K$ the idea of k-means clustering is to find such a partition\footnote{$S_i\cap S_j=\emptyset$ and $\bigcup_{k=1}^K S_k=X$} $\brac{S_k}_{k=1}^K$ of $X$ and a set of cluster representatives $\brac{c_k}_{k=1}^K \in \mathcal{X}$ that the following total within-cluster homogeneity criterion is minimized: \[\sum_{k=1}^K \sum_{x\in S_k} d\brac{x, c_k}\]
+K-means is performed by iteratively switching between the ``cluster update'' and the ``representative update'' steps until some convergence criterion is met.
+
+If the data is a finite subset $X$ of $\Real^d$, then the square of the usual Euclidean metric is used in K-means: $d(x,y)\defn \nrm{x-y}^2 = \brkt{x-y,x-y}$, where $\brkt{\cdot,\cdot}$ is the inner product. Under these conditions the cluster representative are the centroids: for a given partition\footnote{$\brac{I_j}_{j\in J}$ is a partition of an arbitrary set $I$ if $\cup_{j\in J} I_j = I$ and $I_k\cap I_j=\emptyset$ for all $k\neq j$.} $\brac{S_k}_{k=1}^K$ of $X$ it is true that $c_k\defn \abs{S_k}^{-1}\sum_{x\in S_k} x$ minimizes the sum $W\brac{S,c} \defn \sum_{k=1}^k \sum_{x\in S_k} \nrm{x-c_k}^2$. % Indeed for each $k=1\ldots,K$ and some $\brac{a_k}_{k=1}^K\in \Real^d$ \begin{align*} \sum_{x\in S_k} \nrm{x-a_k}^2 &= \sum_{x\in S_k} \nrm{x-c_k}^2 + \nrm{c_k-a_k}^2 + 2\brkt{x-c_k,c_k-a_k}\\&= \sum_{x\in S_k} \nrm{x-c_k}^2 + \sum_{x\in S_k} \nrm{c_k-a_k}^2 \geq \sum_{x\in S_k} \nrm{x-c_k}^2 \end{align*} because $\sum_{x\in S_k} \brac{ x - c_k } = \sum_{x\in S_k} x - c_k \abs{S_k} 0$.
+
+The basic properties of squared Euclidean norm imply that $\nrm{x}^2 = \nrm{c_k}^2 + \nrm{x-c_k}^2 + 2\brkt{x-c_k,c_k}$ whence $\sum_{x\in S_k} \nrm{x}^2 = \abs{S_k} \nrm{c_k}^2 + \sum_{x\in S_k} \nrm{x-c_k}^2$. Therefore the following balance is always true no matter what the partition is and the cluster representative are: \[ \sum_{x\in X} \nrm{x}^2 = \sum_{k=1}^K \abs{S_k} \nrm{c_k}^2 + \sum_{k=1}^K \sum_{x\in S_k} \nrm{x-c_k}^2 = B\brac{S,c} + W\brac{S,c}\]
+
+Yet another application of the same fundamental property of the squared Euclidean norm is the reformulation of the k-means criterion in terms of entity-to-entity similarity: \begin{align*}
+	W\brac{S,c} &= \frac{1}{2} \sum_{k=1}^K 2 \sum_{x\in S_k} \nrm{x-c_k}^2 = \frac{1}{2}\sum_{k=1}^K \brac{ \sum_{x\in S_k} \nrm{x-c_k}^2 + \sum_{y\in S_k} \nrm{y-c_k}^2} \\&= \frac{1}{2}\sum_{k=1}^K \sum_{x,y\in S_k} \brac{ \nrm{x-c_k}^2 + \nrm{y-c_k}^2} = \frac{1}{2}\sum_{k=1}^K \sum_{x,y\in S_k} \nrm{x-y}^2
+\end{align*}
+because $\nrm{x-c_k}^2 + \nrm{y-c_k}^2 = \nrm{x-y}^2 + 2\brkt{x-c_k,y-c_k}$ and \[\sum_{x,y\in S_k} \brkt{x-c_k,y-c_k} = \sum_{y\in S_k} \brkt{\sum_{x\in S_k} x-c_k, y-c_k} = 0\]
+
+
+% section question_60 (end)
+
+\section*{Questions 61-63} % (fold)
+\label{sec:questions_61_63}
+
+\subsection*{61. One-cluster semi-average criterion, its meaning} % (fold)
+\label{sub:question_61}
+%% pages~105-114
+\noindent Consider a finite set of data points $I$ and a symmetric matrix $a:I\times I \to \Real^+$, the values $a_{ij} = a(i,j)$ of which shows the degree of similarity between for $i,j\in I$.
+
+The semi-average similarity criterion is \[b(S) \defn \frac{\sum_{\substack{i,j\in S\\i\neq j}} a_{ij}}{\abs{S}} = \frac{\sum_{i,j\in S} a_{ij} - \sum_{i\in S} a_{ii} }{\abs{S}}\] It penalizes clusters of small sizes and low within-cluster similarity because essentially $b(S)$ is the average similarity of non-diagonal entities of $S$ inflated by $\abs{S}-1$. Note that for any $k\notin S$ \[\brac{\abs{S}+1} b\brac{S\cup\obj{k}} = \abs{S} b(S) + 2 \sum_{i\in S} a_{ik}\]
+
+For any $k\notin S$ define $\Delta_{+k}(S)\defn b\brac{S\cup\obj{k}}-b(S)$ which is equal to \[\Delta_{+k}(S) = \frac{ 2 \sum_{i\in S} a_{ik} - b(S) }{\abs{S}+1}\] and for any $k\in S$ let $\Delta_{-k}(S) \defn -\Delta_{+k}\brac{S\setminus\obj{k}}$ which equals \[\Delta_{-k}(S) = \frac{b(S)- 2 \sum_{i\in S} a_{ik} + 2 a_{kk}}{\abs{S}-1}\] Mirkin drops diagonal elements by assuming that $a_{ii}=0$ for all $i\in I$.
+
+\noindent\textbf{Theorem}: If $S\subseteq I$ maximizes $b(S)$ then $\Delta_{+k}(S) \leq 0$ for all $k\notin S$ and $\Delta_{-k}(S) \leq 0$ for all $k\in S$.
+
+% subsection question_61 (end)
+
+\subsection*{68. Spectral form for the semi-average criterion and tightness properties} % (fold)
+\label{sub:question_68}
+Consider a finite set of data points $I$ and a symmetric matrix $a:I\times I \to \Real^+$, the values $a_{ij} = a(i,j)$ of which shows the degree of similarity between for $i,j\in I$. The semi-average similarity criterion (with diagonal elements) is \[b(S) \defn \frac{\sum_{i,j\in S} a_{ij}}{\abs{S}}\]
+
+If the vector $u\in\Real^I$ is defined as $u_i = 1$ if $i\in S$ and $u_i = 0$ if $i\notin S$, then since $\sum_{j\in I} a_{ij} u_j = \sum_{j\in S} a_{ij}$ for every $j\in I$ and $u'u = \abs{S}$ it is true that the product is equal to \[\frac{u'Au}{u'u} = \frac{(S,S)}{\abs{S}}\] The maximization of $b(S)$ is equivalent to maximizing $\frac{u'Au}{u'u}$, which in turn is equivalent to finding the eigenvector associated with the largest eigenvalue.
+
+% subsection question_68 (end)
+
+
+\subsection*{62. One cluster summary criterion; its modular and uniform versions} % (fold)
+\label{sub:question_62}
+%% pages~324-327
+Suppose $I$ is a finite set of data points and $a:I\times I \to \Real$ is a symmetric matrix with values $a_{ij} = a(i,j)$ showing the relative degree of similarity between for $i,j\in I$.
+
+For clusters $S,F\subseteq I$ the between-cluster summary similarity scores is \[a(S,F)\defn \sum_{i\in S}\sum_{j\in F} a_{ij}\] and $a(S,S)$ is the within-cluster similarity. In a slight abuse of notation $a(i,F)$ represents the total similarity of an entity $i\in I$ and the cluster $S$ and is defined as $a(i,S)\defn a\brac{\obj{i},S}$ and $a(S,j) \defn a\brac{S,\obj{j}}$. Finally let $a_{+j} \defn a(I,j)$, $a_{i+} \defn a(i,I)$ and $a_{++} \defn a(I,I)$.
+
+If the matrix $a$ is \emph{positive}, then unfortunately the maximum of $a(S,S)$ over $S\subseteq I$ is achieved at the universal cluster $S=I$. To emphasize the hidden structure in this case, one has to adjust each similarity $a_{ij}$ for a base level $k_{ij}$ of each particular pair $(i,j)$. Two ways of computing $k_{ij}$: \begin{description}
+	\item[Uniform:] $k_{ij} \defn \theta$, where $\theta$ is some chosen constant value
+	\item[Modular:] $k_{ij} \defn \frac{a_{i+}a_{+j}}{a_{++}}$.
+\end{description}
+The uniform and modular versions are it essence the same within-cluster similarity criterion, just applied to a differently pre-processed similarity matrix.
+
+\subsubsection*{Uniform version} % (fold)
+\label{ssub:uniform_version}
+
+The one-cluster summary criterion in the first approach is known as \emph{the uniform one-cluster summary criterion}: \[u(S,\theta) \defn \sum_{i,j\in S} \brac{a_{ij}-\theta} = \sum_{i,j\in S} a_{ij} - \abs{S}^2 \theta\] It is important to note that in his book Mirkin defines the criterion as a sum \textbf{with} diagonal elements $\brac{a_{ii}}_{i\in S}$ and later when developing optimality conditions \textbf{drops} the diagonal elements.\footnote{I think the reason he does this is that self-similarity $a_{ii}$ of any element $i\in I$ is useless for the purpose of clustering. In these notes diagonal elements are not omitted, but the effect of omission is mentioned.}
+
+% subsubsection uniform_version (end)
+
+\subsubsection*{Modular version} % (fold)
+\label{ssub:modular_version}
+
+The second method treats the matrix $a$ as an unnormalised density of some bivariate discrete random variable: $a_{ij}$ is thought of as likelihood score of $i$ and $j$ being together, and $a_{i+}$ as an estimate of the overall likelihood of $i$. The one-cluster summary criterion, in this case known as \emph{one-cluster modularity criterion} is defined as \[m(S) \defn \sum_{i,j\in S} \brac{a_{ij}-\frac{a_{i+}a_{+j}}{a_{++}}}\] This summary criterion is almost identical to the statistic used in the $\chi^2$ independence test: letting $p_{ij} \defn \sfrac{a_{ij}}{a_{++}}$ and $p_{i+} \defn \sfrac{a_{i+}}{a_{++}}$ yields \[m(S) = \sum_{i,j\in S} \brac{ a_{ij}-\frac{a_{i+}a_{+j}}{a_{++} } } = a_{++} \sum_{i,j\in S} \brac{ p_{ij} - p_{i+}p_{+j}}\]
+
+% subsubsection modular_version (end)
+
+% subsection question_62 (end)
+
+\subsection*{63. Optimization of a one-cluster criterion by adding/removing one entity at a time} % (fold)
+\label{sub:question_63}
+%% pages~328-329
+Suppose $I$ is a finite set of data points and $a:I\times I \to \Real$ is a preprocessed\footnote{see question 62.} symmetric matrix with values $a_{ij} = a(i,j)$ showing the relative degree of similarity between for $i,j\in I$.
+
+Consider the one-cluster summary criterion \[f(S)\defn a(S,S) = \sum_{i\in S}\sum_{j\in S} a_{ij}\] The effect of adding some $k\notin S$ to $S$ is equal to \[\Delta_{+k}(S) \defn f\brac{S\cup\obj{k}} - f(S) = f\brac{S\cup\obj{k}} - \sum_{i,j\in S} a_{ij} = 2 \sum_{i\in S} a_{ik} + a_{kk}\] because $a$ is symmetric and for any $k\notin S$ \[ f\brac{S\cup\obj{k}} = \sum_{i,j\in S} a_{ij} + \sum_{i\in S} a_{ik} + \sum_{j\in S} a_{kj} + a_{kk}\] Furthermore, since $S = S\setminus\obj{k} \cup \obj{k}$ whenever $k\in S$, the effect of removing some $k\in S$ from $S$ is \[\Delta_{-k}\brac{S} \defn -\Delta_{+k}\brac{S\setminus\obj{k}} = f\brac{S\setminus\obj{k}} - f(S) = - 2 \sum_{i\in S} a_{ik} + a_{kk}\] If self-similarity is ignored, then $\Delta_{+k}(S) = 2 \sum_{i\in S} a_{ik} = 2\abs{S}\bar{a}(k,S)$, where $\bar{a}(k,S) \defn \abs{S}^{-1} \sum_{i\in S} a_{ik}$ is the \emph{attraction} of $k\notin S$ to $S$.
+
+\noindent\textbf{Theorem}: If $S\subseteq I$ maximizes $f(S)$ then $\Delta_{+k}(S) \leq 0$ for all $k\notin S$ and $\Delta_{-k}\brac{S} \leq 0$ for all $k\in S$. In particular without the diagonal similarities the optimality conditions are reduced to $\bar{a}(k,S)\leq 0$ for all $k\notin S$ and $\bar{a}\brac{k,S\setminus\obj{k}}\geq 0$ for all $k\in S$.
+
+This theorem suggests a greedy algorithm for constructing a suboptimal cluster. The algorithm is known as ``Summmary Criterion Add-and-Remove''. On input it expects a pre-processed symmetric matrix $a$ of relative similarity scores, and some seed entity $k\in I$, from which to grow a suboptimal cluster.
+\begin{description}
+	\item[Initialization:] Set $S = \obj{k}$. 
+	\item[General step:] for each $w\in I$ compute $\delta_w \defn \Delta_{+w}(S)$ if $w\in S$ and $\delta_w \defn \Delta_{-w}(S)$ otherwise. Then find $w'$ which maximizes $\delta_w$.
+	\item[Test:] if $\delta_{w'} > 0$ then exclude $w'$ from $S$ if $w'\in S$ or include $w'$ in $S$ if $w'\notin S$ and continue to ``General step'' with the new cluster $S$. Otherwise goto ``Return''.
+	\item[Output:] Return $S$ and $f(S)$
+\end{description}
+
+% subsection question_63 (end)
+
+% section questions_61_63 (end)
+
+\section*{Questions 64-67} % (fold)
+\label{sec:questions_64_67}
+
+\subsection*{64-1. Two-cluster summary criteria; relation to min cut} % (fold)
+\label{sub:queston_64_1}
+%% pages~332-334
+Suppose $I$ is a finite set of data points and  $a:I\times I \to \Real$ is a symmetric matrix with values $a_{ij} = a(i,j)$ showing the relative degree of similarity between for $i,j\in I$. For clusters $S,F\subseteq I$ the between-cluster summary similarity scores is \[a(S,F)\defn \sum_{i\in S}\sum_{j\in F} a_{ij}\]
+
+Th goal is to find a partition of $I$ into subsets $S_1$ and $S_2$, such that the similarity between them is minimal while within them is maximal. Due to additivity of the summary similarity score \[a(I,I) = a(S_1,S_1) + 2 a(S_1,S_2) + a(S_2,S_2)\] where the within-cluster similarity is $a(S_1,S_1)$ and the similarity between $S_1$ and $S_2$ is $a(S_1,S_2)$, also known as the \emph{cut}. Thus it seems quite natural to minimize the between-cluster similarity. Due to the similarity balance equation above, \emph{minimization of the cut is equivalent to maximization of the total within-cluster similarity}. However, for a non-negative similarity matrix $a$ the minimal cut produces extremely unbalanced clusters: a cluster consisting of a single entity and the cluster comprising everything else.
+
+% subsection queston_64_1 (end)
+
+\subsection*{65. Normalized min-cut and normalized within-cluster criterion} % (fold)
+\label{sub:question_65}
+%% pages~338-340
+Suppose $I$ is a finite set of data points and $a:I\times I \to \Real$ is a symmetric matrix with values $a_{ij} = a(i,j)$ showing the relative degree of similarity between for $i,j\in I$. For clusters $S,F\subseteq I$ the between-cluster summary similarity scores is \[a(S,F)\defn \sum_{i\in S}\sum_{j\in F} a_{ij}\] Put $a_{i+}(S)\defn \sum_{j\in S} a_{ij}$ and $a_{i+} \defn a_{i+}(I)$. Finally let $a(S) \defn \sum_{i\in S} a_{i+}$.
+
+Th goal is to find a partition of $I$ into subsets $S_1$ and $S_2$, such that the similarity between them is minimal while within them is maximal. The normalised cut criterion is \[\text{nc}\defn \frac{a(S_1,S_2)}{a(S_1)} + \frac{a(S_2,S_1)}{a(S_2)}\] whereas the normalised within-cluster similarity criterion, also known as normalised \emph{tightness} is \[\text{nt}\defn \frac{a(S_1,S_1)}{a(S_1)} + \frac{a(S_2,S_2)}{a(S_2)}\] Since $a(S_1) = a(S_1,S_1) + a(S_1,S_2)$ it can easily be shown that \[\text{nc} + \text{nt} = \frac{a(S_1,S_1) + a(S_1,S_2)}{a(S_1)} + \frac{a(S_2,S_2) + a(S_2,S_1)}{a(S_2)} = 2\] Therefore maximization of the normalised tightness is equivalent to minimization of the normalized cut.
+
+% subsection question_65 (end)
+
+\subsection*{66. Laplace transformation of similarity data} % (fold)
+\label{sub:question_66}
+%% pages~334, 338-340,
+Suppose $I$ is a finite set of data points and $a:I\times I \to \Real^+$ is a symmetric matrix with values $a_{ij} = a(i,j)$ showing the relative degree of similarity between for $i,j\in I$. For clusters $S,F\subseteq I$ the between-cluster summary similarity scores is \[a(S,F)\defn \sum_{i\in S}\sum_{j\in F} a_{ij}\] Put $a_{i+}(S)\defn \sum_{j\in S} a_{ij}$ and $a_{i+} \defn a_{i+}(I)$. Finally let $a(S) \defn \sum_{i\in S} a_{i+}$.
+
+Let $D\defn \text{diag}\brac{\brac{a_{i+}}_{i\in I}}$ be a diagonal matrix of ``similarity'' scores and $E\defn \text{diag}\brac{\brac{1}_{i\in I}}$ -- a unit $I\times I$ matrix. The Laplace transform of the matrix $A\defn \brac{a_{ij}}_{i,j\in I}$ is given by $L \defn E - D^{-\frac{1}{2}} A D^{-\frac{1}{2}}$ with elements $i,j\in I$ equal to \[L_{ij} \defn \delta_{ij} - \frac{a_{ij}}{\sqrt{ a_{i+} a_{j+} }}\] where $\delta_{ij}\defn 1$ if $i=j$ and $0$ otherwise.
+
+The vector $h \defn D^{\frac{1}{2}} 1$, where $1$ is the vector of ones $\brac{1}_{i\in I}$, is an eigenvector of $L$. Indeed $A 1 = D 1$, because $A 1 = \brac{a_{i+}}_{i\in I}$, whence \[L h = D^\frac{1}{2} 1 - D^{-\frac{1}{2}} A D^{-\frac{1}{2}}D^\frac{1}{2} 1 = D^\frac{1}{2} 1 - D^{-\frac{1}{2}} A 1 = D^\frac{1}{2} 1 - D^{-\frac{1}{2}} D 1 = 0\] The transformed matrix has an eigenvector $h$ with a zero eigenvalue.
+
+Furthermore, since $ab = \tfrac{1}{2}\brac{a^2 + b^2 - \brac{a-b}^2}$ for any $u\in \Real^I$ it is true that \begin{align*}
+	u'Lu &= \sum_{i\in I} \sum_{j\in I} u_i \delta_{ij} u_j - \sum_{i\in I} \sum_{j\in I} \frac{u_i}{\sqrt{a_{i+}}} a_{ij} \frac{u_j}{\sqrt{a_{j+}}} \\ &= \sum_{i\in I} u_i^2 - \frac{1}{2} \sum_{i\in I} \sum_{j\in I} a_{ij} \brac{ \frac{u_i^2}{a_{i+}} + \frac{u_j^2}{a_{j+}} - \brac{\frac{u_i}{\sqrt{a_{i+}}} - \frac{u_j}{\sqrt{a_{j+}}} }^2 }\\ &= \frac{1}{2} \sum_{i\in I} \sum_{j\in I} a_{ij} \brac{\frac{u_i}{\sqrt{a_{i+}}} - \frac{u_j}{\sqrt{a_{j+}}} }^2 
+\end{align*}
+because it is true that \[\sum_{i\in I} \sum_{j\in I} a_{ij} \frac{u_i^2}{a_{i+}} = \sum_{i\in I} \frac{u_i^2}{a_{i+}} \sum_{j\in I} a_{ij} = \sum_{i\in I} \frac{u_i^2}{a_{i+}} a_{i+} = \sum_{i\in I} u_i^2\] Therefore $L$ is positive semi-definite if $A$ is non-negative.
+
+%% Should clustering be covered here? see p.~340
+
+% subsection question_66 (end)
+
+\subsection*{67. Spectral form for the normalized min-cut; spectral clustering} % (fold)
+\label{sub:question_67}
+Suppose $I$ is a finite set of data points and $a:I\times I \to \Real$ is a symmetric matrix with values $a_{ij} = a(i,j)$ showing the relative degree of similarity between for $i,j\in I$. For clusters $S,F\subseteq I$ the between-cluster summary similarity scores is \[a(S,F)\defn \sum_{i\in S}\sum_{j\in F} a_{ij}\]
+
+If the vector $u\in\Real^I$ is defined as $u_i = +1$ if $i\in S_1$ and $u_i = -1$ if $i\in S_2$, then since for every $j\in I$ \[\sum_{j\in I} a_{ij} u_j = \sum_{j\in S_1} a_{ij} u_j + \sum_{j\in S_2} a_{ij} u_j = \sum_{j\in S_1} a_{ij} - \sum_{j\in S_2} a_{ij}\] it is true that the product is equal to\begin{align*}
+	u'Au &= a(S_1,S_1) - 2 a(S_1,S_2) + a(S_2,S_2) \\ &= 2\brac{ a(S_1,S_1) + a(S_2,S_2)} - a(I,I)
+\end{align*}
+Therefore min cut (see question 63) is equivalent to maximizing the Rayleigh quotient $\mathcal{R}(u)$ on $u\in\obj{-1,1}^I$ where \[\mathcal{R}(u)\defn \frac{u'Au}{u'u}\] This equivalence leads to the idea of spectral clustering.
+
+Since $u'Au$ is maximized at the eigenvector corresponding the the largest eigenvalue (proven in basic linear algebra), in order to perform spectral clustering it is necessary to find this eigenvector $v$ and define the spectral cluster as $S\defn \obj{\induc{i\in I}\,v_i > 0}$.
+
+% subsection question_67 (end)
+
+% section questions_64_67 (end)
+
+\section*{64-2. Hierarchical clustering} % (fold)
+\label{sec:question_64_2}
+%% pages~285, 289-291, 293-294, 299-302
+Suppose $I\subseteq \mathcal{X}$ is a finite set of data points and $a:\mathcal{X}\times \mathcal{X} \to \Real^+$ is a symmetric map\footnote{$a(i,j)=a(j,i)$; can also be a matrix} with values $a_{ij} = a(i,j)$, showing the dissimilarity between for $i,j\in \mathcal{X}$.
+
+A partition of $I$ is a collection $\pi$ of non-empty subsets of $I$, so that $I = \cup_{S \in \pi} S$ and $S\cap F = \emptyset$ for all $S,F\in \pi$ with $S\neq F$. Then set of all partitions of $I$ is \[\Pi(I) \defn \obj{ \induc{ \pi \subseteq \Pwr(I)}\, \pi\text{ -- partition of } I}\] As in other clustering techniques, let $c:\Pwr\brac{I}\setminus \obj{\emptyset}\to \mathcal{X}$ be a function which selects a representative $c(S)$ from any given cluster $S\subseteq I$.
+
+Hierarchical clustering (HCA) is a method of cluster analysis which seeks to build a taxonomy of clusters. In essence hierarchical clusters produces a sequence of partitions of the dataset $I$ optimal with respect to dissimilarity between clusters.\footnotemark There are two opposite approaches:\begin{description}
+	\item[Agglomerative:] \hfill \\
+		An inductive, or ``bottom-up'', approach with partitions built from the finest to the coarsest
+	\item[Divisive:] \hfill \\
+		A deductive, or ``top-to-bottom'', approach which builds the hierarchy from the most general cluster to the most specific by recursively splitting clusters
+\end{description}
+
+\footnotetext{The partition refinement operation $\pi_1\sqcap\pi_2$ defined as $\obj{ \induc{A\cap B}\, A\in\pi_1,\,B\in \pi_2,\, A\cap B\neq \emptyset }$ is an \emph{infimum} operator on $\Pi(I)$. Thus $\brac{\Pi(I),\sqcap}$ is a join semi-lattice and hierarchical clustering just selects a \textbf{path} in it according to a greedy optimization of some overall similarity scoring measure. A partial order on $\Pi(I)$ is defined as $\pi_1\sqsubseteq \pi_2$ if and only if $\pi_1\sqcap\pi_2 = \pi_1$.}
+
+\subsubsection*{Linkage criteria} % (fold)
+\label{ssub:linkage_criteria}
+
+Before proceeding with HCA, it is necessary to properly \textbf{define} the dissimilarity measure $a$ on non-empty subsets of $I$ so that $a\brac{\obj{i}, \obj{j}} = a(i,j)$ on $i,j\in I$. This extension is called the linkage criterion. It determines the distance between sets of observations as a function of the pairwise distances between observations. For example the following linkage criteria are common: let $S_1, S_2\subseteq I$ \begin{description}
+	\item[Single linkage:] % \hfill\\
+		$a(S_1, S_2) \defn \inf\obj{\induc{ a_{ij} }\, i\in S_1,\,j\in S_2}$ -- the minimal dissimilarity between entities in $S_1$ and $S_2$.
+	\item[Complete linkage:] % \hfill\\
+		$a(S_1, S_2) \defn \sup\obj{\induc{ a_{ij} }\, i\in S_1,\,j\in S_2}$ -- the largest dissimilarity between entities in $S_1$ and $S_2$
+	\item[Mean linkage:] % \hfill\\
+	$a(S_1, S_2) \defn \frac{1}{\abs{S_1}\abs{S_2}} \sum_{i\in S_1}\sum_{j\in S_2} a_{ij}$ -- the average dissimilarity between entities in $S_1$ and $S_2$
+	\item[Centroid linkage:] \hfill\\
+	If the data is $m$-dimensional vectors, $\mathcal{X} = \Real^m$, then $a(S_1,S_2)\defn \nrm{ c(S_1) - c(S_2) }^2$
+	\item[Ward linkage:] % \hfill\\
+	The Ward distance between $S_1$ and $S_2$, defined below.
+\end{description}
+The resulting sequence of partitions is usually presented by means of a dendrogram with junctions placed at the level of the linkage criterion, at which clusters were joined or split.
+
+% subsubsection linkage_criteria (end)
+
+\subsubsection*{Ward criterion} % (fold)
+\label{ssub:ward_criterion}
+
+Suppose $\mathcal{X} = \Real^m$, $a_{ij} = \nrm{ i - j }^2$, and $c(S) = \frac{\sum_{x\in S}}{\abs{S}}$. The partition optimality criterion is thus the squared error criterion of k-means: for a partition $\pi\in \Pi(I)$ \[W(\pi)\defn \sum_{S\in \pi} \sum_{x\in S} \nrm{x - c(S)}^2\] Note that for any clusters $S,F\subseteq I$ the definition of $c(\cdot)$ and the basic properties of $\nrm{\cdot}$ imply\[ \sum_{x\in S} \nrm{ x - c(F)}^2 - \sum_{x\in S} \nrm{ x - c(S)}^2 = \abs{S} \nrm{ c(S) - c(F)}^2\] Furthermore if $S\cap F =\emptyset$ then \[c\brac{S\cup F} = \frac{\abs{S} c(S) + \abs{F} c(F)}{\abs{S}+\abs{F}}\]
+
+Suppose $S_1,S_2\in \pi$ and $S_1\neq S_2$. Let $\pi' \defn \obj{S_1\cup S_2}\cup \pi\setminus\obj{S_1,S_2}$ be a coarser partition with clusters $S_1$ and $S_2$ merged into one $S\defn S_1\cup S_2$. The change $\delta(\pi',\pi) \defn W(\pi') - W(\pi)$ is given by \begin{align*}
+	\delta(\pi',\pi) &= \sum_{x\in S} \nrm{ x - c(S)}^2 - \sum_{x\in S_1} \nrm{ x - c(S_1)}^2 - \sum_{x\in S_2} \nrm{ x - c(S_2)}^2\\&= \abs{S_1} \nrm{ c(S_1) - c\brac{S_1\cup S_2}}^2 + \abs{S_2} \nrm{ c(S_2) - c\brac{S_1\cup S_2}}^2 \\ &= \brac{\frac{\abs{S_1}\abs{S_2}^2}{\brac{\abs{S_1} + \abs{S_2}}^2}+\frac{\abs{S_1}^2\abs{S_2}}{\brac{\abs{S_1} + \abs{S_2}}^2}} \nrm{ c(S_1) - c(S_2) }^2 \\ &= \frac{\abs{S_1}\abs{S_2}}{\abs{S_1} + \abs{S_2}} \nrm{ c(S_1) - c(S_2) }^2
+\end{align*}
+Similarly to the Euclidean k-means case\footnote{see question 60} the distance $\delta(\pi',\pi)$ can be represented as a sum of squared norms of cluster centroids\footnotemark: \[\delta(\pi',\pi) = \abs{S_1}\nrm{c(S_1)}^2 + \abs{S_2}\nrm{c(S_2)}^2 - \brac{\abs{S_1}+\abs{S_2}}\nrm{c\brac{S_1\cup S_2}}^2\]
+
+\footnotetext{You-know-who is disgustingly sloppy in his book on purpose. I quote the top of p.~300 in my notation ``Since $c\brac{S_1\cup S_2}$ is not involved in $\delta(\pi',\pi)$, it is in fact irrelevant to it, we may take it to be 0''. lol, fucking, wut?! You can't bloody do that and get published! NO!}
+
+Since $\delta(\pi',\pi)$ does not depend on any cluster other than $S_1$ and $S_2$, the value $d(S_1,S_2)\defn \delta(\pi',\pi)$ is also known as the \textbf{Ward} distance between $S_1$ and $S_2$. In \textbf{agglomerative} clustering, the Ward distance between cluster to be merged must be as small as possible. On the other hand in \textbf{divisive} clustering the parts, into which the cluster is split, must have as large Ward distance as possible.
+
+% subsubsection ward_criterion (end)
+
+% section question_64_2 (end)
+
+\end{document}

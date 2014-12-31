@@ -1,0 +1,154 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{fullpage}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+\newcommand{\obj}[1]{\left\{ #1 \right \}}
+\newcommand{\clo}[1]{\left [ #1 \right ]}
+\newcommand{\clop}[1]{\left [ #1 \right )}
+\newcommand{\ploc}[1]{\left ( #1 \right ]}
+
+\newcommand{\brac}[1]{\left ( #1 \right )}
+\newcommand{\crab}[1]{\left ] #1 \right [}
+\newcommand{\induc}[1]{\left . #1 \right \vert}
+\newcommand{\abs}[1]{\left | #1 \right |}
+\newcommand{\nrm}[1]{\left\| #1 \right \|}
+\newcommand{\brkt}[1]{\left\langle #1 \right\rangle}
+
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+
+\newcommand{\Rbar}{{\bar{\mathbb{R}}}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Zinf}{\clo{ 0, +\infty }}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Tcal}{\mathcal{T}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\Scal}{\mathcal{S}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Ecal}{\mathcal{E}}
+\newcommand{\Fcal}{\mathcal{F}}
+\newcommand{\borel}[1]{\mathcal{B}\brac{#1}}
+\newcommand{\Ex}[1]{\mathbb{E}\brac{#1}}
+\newcommand{\Var}[1]{\text{Var}\brac{#1}}
+
+\newcommand{\pwr}[1]{\mathcal{P}\brac{#1}}
+\newcommand{\Dyns}[1]{\mathfrak{D}\brac{#1}}
+\newcommand{\Ring}[1]{\mathcal{R}\brac{#1}}
+\newcommand{\Supp}[1]{\operatorname{supp}\nolimits\brac{#1}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+\newcommand{\lpto}{\mathop{\overset{L^p}{\to}}\nolimits}
+
+\newcommand{\re}{\operatorname{Re}\nolimits}
+\newcommand{\im}{\operatorname{Im}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+\selectlanguage{english}
+
+\title{Assignment \#03}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}}
+
+\usepackage{Sweave}
+\begin{document}
+\selectlanguage{english}
+\maketitle
+\noindent Assigmnent \#3 for the course ``Probability Theory and Mathematical Statistics'' led by Geoffrey G. Decrouez, 2014.
+
+\section{Problem 1} % (fold)
+\label{sec:problem_1}
+
+Let $\brac{U_k}_{k\geq1}$ and $\brac{V_k}_{k\geq1}$ are random variables independent of each other and uniformly distributed on $\clo{0,1}$. For any $n\geq1$ let $X_k\defn 1_{\obj{ U_k^2+V_k^2 \leq 1 }}$ put \[Z_n\defn \frac{4}{n} \sum_{k=1}^n X_k\]
+
+Independence of $\brac{U_k}_{k\geq1}$ and $\brac{V_k}_{k\geq1}$ within and between each other implies that $\brac{U_k}_{k\geq1}$ are independent of each other too. Furthermore the fact that every $U_k$ and $V_k$ is identically distributed implies that $\brac{X_k}_{k\geq1}$ are identically distributed as well. Therefore, since a binary random variable cannot be distributed other than according to the Bernoulli distribution, $X_k\sim \text{iid}\,\text{B}\brac{p}$ for some $p\in \clo{0,1}$ which satisfies $\Pr\brac{X_k=1}=p$.
+
+For ease and clarity of derivation of $\Pr\brac{X_k=1}$ let's omit all subscripts for the duration of this paragraph, unless explicitly mentioned. Suppose $U,V\sim U\clo{0,1}$ are independent. Then $\Pr\brac{U^2+V^2\leq 1}$ can be computed as the following conditional expectation: \[\Pr\brac{U^2+V^2\leq 1} = \Ex{ \Pr\brac{\induc{U^2+V^2\leq 1}\,V} }\] Since $U$ and $V$ are independent and uniformly distributed of the unit interval $f_{U,V}\brac{u,v} = f_U\brac{u}f_V\brac{v}=1$, whence \begin{align*}
+	\Pr\brac{\induc{U^2+V^2\leq 1}\,V=v} &= \Pr\brac{\induc{U\leq \sqrt{1-V^2}}\,V=v} \\ &= \int\limits_{\clo{0,1}} 1_{\obj{ u\leq \sqrt{1-v^2} }} f_{\induc{U}\,V}\brac{\induc{u}\,v} du \\ &= \int\limits_{0}^{\sqrt{1-v^2}} du = \sqrt{1-v^2}
+\end{align*} Therefore $\Pr\brac{U^2+V^2\leq 1} = \Ex{ \sqrt{1-V^2} }$ which is equal to \begin{align*}
+	\int\limits_{\clo{0,1}} \sqrt{1-v^2} f_V\brac{v} dv &= \int\limits_{\clo{0,1}} \sqrt{1-v^2} dv\\ &= \int_0^{\frac{\pi}{2}} \sqrt{ 1- \sin^2\theta } \cos\theta d\theta\\ &= \int_0^{\frac{\pi}{2}} \cos^2\theta d\theta\\ &= \frac{1}{2}\int_0^{\frac{\pi}{2}} \cos2\theta + 1 d\theta\\ &= \frac{\pi}{4}+\frac{1}{2}\int_0^{\frac{\pi}{2}} \cos2\theta d\theta\\ &= \frac{\pi}{4}+\frac{1}{4}\int_0^\pi \cos\phi d\phi \\ &= \frac{\pi}{4}+\frac{1}{4} \induc{\brac{\sin\phi}}_0^\pi =\frac{\pi}{4}
+\end{align*} where substitution $v=\sin\theta$ and the fact that $\abs{\cos\theta}=\cos\theta$ on $\clo{0,\frac{\pi}{2}}$ were employed. In conclusion $\Pr\brac{X_k=1} = \Pr\brac{U_k^2+V_k^2\leq 1}=\frac{\pi}{4}$ for every $k\geq1$, which means that $\brac{X_k}_{k\geq1}\sim \text{B}\brac{\frac{\pi}{4}}$.
+
+Thus $\Ex{X_k} = \frac{\pi}{4}$ and $\Var{X_k} = \frac{\pi\brac{4-\pi}}{4^2}$ for all $k\geq1$, whence the expectation and variance of $Z_n$ are given by \begin{align*}
+	\Ex{Z_n} &= \frac{4}{n} n \frac{\pi}{4} = \pi\\
+	\Var{Z_n} &= \frac{16}{n^2} n \frac{\pi\brac{4-\pi}}{4^2} = \frac{\pi\brac{4-\pi}}{n}\\
+\end{align*}
+
+The law of large numbers states, that whenever $\brac{Y_n}_{n\geq1}$ is a sequence of independent identically distributed random variables with mean $\mu$ and variance $\sigma^2<\infty$, then for any $\delta>0$ \[\lim_{n\to \infty} \Pr\brac{\abs{\frac{1}{n}\sum_{k=1}^n Y_k-\mu}\geq \delta}=0\] Therefore, $\frac{1}{4}Z_n\overset{P}{\to} \frac{\pi}{4}$.
+
+Note, that the constant $\pi$ can be regarded as degenerate random variable, which almost surely assumes the value $\pi$. In general, convergence in probability implies convergence in distribution (does it need proof?), which means that $Z_n$ converges in distribution to a degenerate random variable $\pi$: $Z_n\overset{\mathcal{D}}{\to}\pi$.
+
+Chebyshev inequality states that for any $\epsilon>0$\[\Pr\brac{\abs{Y-\Ex{Y}} > \epsilon}\leq \frac{\Var{Y}}{\epsilon^2}\] whenever $Y$ is a real valued random variable with $\Ex{Y^2}<+\infty$.
+
+Let $\alpha\in\brac{0,1}$ and $\epsilon>0$. Since $\Ex{Z_n}=\pi$ and $\Var{Z_n}=\frac{\pi\brac{4-\pi}}{n}$, Chebyshev inequality implies \[\Pr\brac{\abs{Z_n-\pi} > \epsilon}\leq \frac{\pi\brac{4-\pi}}{n \epsilon^2}\] If $n_0\defn 1+\floor{ \frac{\pi\brac{4-\pi}}{\alpha \epsilon^2} }$, then for all $n\geq n_0$ \[\frac{\pi\brac{4-\pi}}{n \epsilon^2} \leq \frac{\pi\brac{4-\pi}}{n_0 \epsilon^2}<\frac{\pi\brac{4-\pi}}{ \frac{\pi\brac{4-\pi}}{\alpha \epsilon^2} \epsilon^2} = \alpha\] Therefore for any $\alpha\in\brac{0,1}$ and $\epsilon>0$ there exists $n_0\geq1$ with \[\Pr\brac{\abs{Z_n-\pi} > \epsilon}\leq \alpha\] For instance, when $\alpha=0.05$ and $\epsilon=10^{-4}$, then $n_0$ is given by \[n_0=1+\floor{ \frac{\pi\brac{4-\pi}}{\alpha \epsilon^2} } = 1+10^{10} \frac{\pi\brac{4-\pi}}{5} = 5393532428 \approx 5.4\,\text{bln.}\]
+
+The Central Limit theorems states that if $\brac{X_k}_{k\geq1}$ is a sequence of independent identically distributed random variables with $\Ex{X_n}=\mu$ and $\Var{X_n} = \sigma^2>0$, then \[\frac{\sum_{k=1}^n X_k - \Ex{\sum_{k=1}^n X_k}}{\sqrt{\Var{\sum_{k=1}^n X_k}}} = \frac{ \sum_{k=1}^n X_k - n \mu}{\sqrt{n\sigma^2}} \overset{\mathcal{D}}{\to} \mathcal{N}\brac{0,1}\] Since $\sum_{k=1}^n X_k = \frac{n}{4} Z_n$ it must be true that \[\frac{ \frac{n}{4} Z_n - \frac{\pi}{4} n }{ \sqrt{ n \frac{\pi\brac{4-\pi}}{16} } } = \frac{Z_n - \pi}{ \sqrt{\frac{\pi\brac{4-\pi}}{n}} } \overset{\mathcal{D}}{\to} \mathcal{N}\brac{0,1} \] which means that for sufficiently large $n\geq1$ \[\Pr\brac{Z_n\leq z}\approx \Phi\brac{ \frac{\brac{z-\pi}\sqrt{n}}{ \sqrt{\pi\brac{4-\pi}} } }\] where $\Phi\brac{z} = \Pr\brac{Y\leq z}$ for $Y\sim\mathcal{N}\brac{0,1}$. Therefore for any $\epsilon>0$ using symmetries of the Standard Normal CDF \begin{align*}
+	\Pr\brac{\abs{Z_n-\pi}>\epsilon} &=\Pr\brac{Z_n<\pi-\epsilon}+\Pr\brac{Z_n>\pi+\epsilon}\\ &\approx \Phi\brac{ \frac{-\epsilon \sqrt{n}}{\sqrt{\pi\brac{4-\pi}}}} + 1-\Phi\brac{ \frac{\epsilon \sqrt{n}}{\sqrt{\pi\brac{4-\pi}}}}\\&\approx 2\brac{ 1 - \Phi\brac{ \epsilon\sqrt{\frac{n}{\pi\brac{4-\pi}}} }}
+\end{align*}
+
+This approximation permits the computation of the least number $n\geq1$ for which $Z_n$ diverges from $\pi$ for a distance larger than $\epsilon>0$ is limited by $\alpha$. Indeed, the lower bound for $n$ is given by \[\frac{\pi \brac{4-\pi}}{\epsilon^2} z_{1-\sfrac{\alpha}{2}}^2 \leq n\] where $z_p$ denotes the inverse function of the standard normal CDF. This expression evaluates to $10^8 \pi\brac{4-\pi} z_{0.975}^2 \approx 1035951636$ or $1.1 \text{bln.}$ for short. Therefore it is possible to conclude that in this case the CLT, rather than Chebyshev inequality, provides us with a better estimate of the precision of approximating $\pi$ with $\brac{Z_n}_{n\geq1}$.
+
+% section problem_1 (end)
+
+\section{Problem 2} % (fold)
+\label{sec:problem_2}
+
+Let $M=380$ be the number of seats on an flight and $N$ -- the number of purchased tickets (bookings). Suppose customers cancel their bookings independently of each other with probability $1-p=0.1$ where $p\in \clo{0,1}$. Then the number of customers $X_N$, who did not cancel their booking, by the time of flight follows the Binomial distribution with parameters $p$ and $N$. Indeed, $X_N$ may be represented as a sum of $N$ independent Bernoulli trials with probability of success $p$. Since $X_N\sim \text{Bi}\brac{p, N}$, the CLT implies that \[\frac{X_N- N p}{\sqrt{N p\brac{1-p}}}\overset{\mathcal{D}}{\to} \mathcal{N}\brac{0,1}\] Therefore $\Pr\brac{X_N\geq m} \approx 1-\Phi\brac{\frac{m-Np}{\sqrt{N p\brac{1-p}}}}$ for all sufficiently large $n$, where $\Phi\brac{z}$ is the Standard Normal CDF.
+
+A customer, who has booked a seat on a flight, is refused service if there is no more room on the plane, which means that the number of bookings $N$ the company can accept without refusing more than $\alpha=0.05$ claims is determined by the equation $\Pr\brac{X_N\geq M} \leq \alpha $ which is approximated by \[1-\alpha\leq \Phi\brac{\frac{M-Np}{\sqrt{N p\brac{1-p}}}}\]
+Let $z_p$ denote the inverse function of the standard Normal CDF (a quantile function). Thus the largest number of bookings the company can accept is determined by \[ z_{1-\alpha} \sqrt{N p\brac{1-p}} + N p \leq M \] Solving this quadratic equation with respect to $\sqrt{N}$ yields the following approximate upper bound  \[N \leq \brac{\frac{ -\sqrt{ p\brac{1-p} } z_{1-\alpha} + \sqrt{ z_{1-\alpha}^2 p\brac{1-p} - 4 \cdot p M } }{ 2 p }}^2 \] Plugging in the values for $p=0.9$, $z_{1-\alpha} = z_{0.95} = 1.64485$ and $M=380$ gives $N \approx 411$ as the upper bound on the largest number of bookings. Therefore having sold no more than 411 tickets the airline operator ensures that no more that 5\% of passengers would have to be refused service, provided cancellations are independent and have probability 10\%. If the company actually accepts 411 bookings, then the probability that at least 35 seats are left unoccupied at the plane it given by \[\Pr\brac{X\leq 345}=\Phi\brac{ \frac{345-N p}{\sqrt{N p\brac{1-p}}} } = \frac{1.98558}{10^6}\]
+
+% section problem_2 (end)
+
+\section{Problem 3} % (fold)
+\label{sec:problem_3}
+
+Let $\brac{X_k}_{k=1}^n\sim \text{Exp}\brac{\lambda}$, for $\lambda>0$. Therefore each $X_k$ has the following probability density: $f_X\brac{x} = \lambda e^{-\lambda x} 1_{\clop{0,\infty}}$.
+
+The likelihood function of the random sample under these parametric assumptions is \[L\brac{\brac{X_k}_{k=1}^n;\,\lambda} = \prod_{k=1} \lambda e^{-\lambda X_k} = \lambda^n e^{-n \lambda \bar{X}_n}\] where $\bar{X}_n\defn \frac{1}{n}\sum_{k=1}^n X_k$. The log-likelihood is $l\brac{\lambda} = n\log\lambda - n\lambda \bar{X}_n$ and the first and second order conditions for a maximum of $l$ are \begin{align*}\frac{n}{\lambda} - n \bar{X}_n &= 0\\-\frac{n}{\lambda^2}&\leq 0\end{align*} Thus the maximum likelihood estimator of $\lambda$ as a function of random sample is given by \[\hat{\lambda}_n \defn \frac{1}{\bar{X}_n} = \frac{n}{\sum_{k=1}^n X_k}\]
+
+In order to investigate the properties of this estimator, it is necessary to find the distribution of the sample mean of $\brac{X_k}_{k=1}^n\sim \text{Exp}\brac{\lambda}$. Let $M_Y\brac{t}$ denote the moment generating function of a random variable $Y$, $M_Y\brac{t} = \Ex{e^{t \cdot Y}}$.
+
+Let's compute the moment generating function of the sample mean $\bar{X}_n = \frac{S_n}{n}$, $S_n\defn \sum_{k=1}^n X_k$. First, by the scaling property of MGF's $M_{\bar{X}_n}\brac{t} = M_{S_n}\brac{\sfrac{t}{n}}$. Next, the fact that $S_n$ is actually a sum of independent random variables implies $M_{\bar{X}_n}\brac{t} = \prod_{k=1}^n M_{X_k}\brac{\sfrac{t}{n}}$. Since $X_k$ are identically distributed, we finally have $M_{\bar{X}_n}\brac{t} = \brac{M_X\brac{\sfrac{t}{n}}}^n$, where $X\sim\text{Exp}\brac{\lambda}$. For an exponentially distributed random variable $X$ the moment generating function is given by \[M_X\brac{t} = \Ex{e^{tX}} = \int_0^\infty e^{tx} \lambda e^{-\lambda x} dx = \int_0^\infty e^{\brac{\sfrac{t}{\lambda}-1} x} dx \] Since $\int e^{\brac{\sfrac{t}{\lambda}-1} x} dx$ is $\frac{\lambda}{t-\lambda} e^{ \brac{\sfrac{t}{\lambda}-1} x}$ when $t\neq \lambda$ and $x$ otherwise, the MGF of the $\text{Exp}\brac{\lambda}$ is given by \[M_X\brac{t}=\begin{cases} \brac{1-\frac{t}{\lambda}}^{-1}, &\text{if}\, t<\lambda\\ +\infty,&\text{otherwise}\end{cases}\] Therefore \[M_{\bar{X}_n}\brac{t} = \brac{M_X\brac{\sfrac{t}{n}}}^n = \brac{1-\frac{t}{n\lambda}}^{-n}\]
+
+A gamma-distributed random variable $G$, $G\sim \Gamma\brac{k,\beta}$, has density $f_G\brac{x} = c\cdot x^k e^{-\beta x}$ for all $x\in \Real^+$, where $c=\frac{\beta^{k+1}}{\Gamma\brac{k+1}}$. It's moment generating function $M_G\brac{t}$ is given by \[ M_G\brac{t} = \Ex{e^{tG}} = c \int_0^\infty e^{tx} x^k e^{-\beta x} dx = c \int_0^\infty x^k e^{-\brac{\beta-t}x} dx\] If $t=\beta$ then $M_G\brac{t} = c \int_0^\infty x^k dx = c \induc{\frac{x^{k+1}}{k+1}}_0^\infty = +\infty$, whereas when $t>\beta$ \[M_G\brac{t} = c \int_0^\infty x^k e^{\brac{t-\beta}x} dg = \brac{t-\beta}^{-\brac{k+1}} c \int_0^\infty y^k e^y dy\] Straightforward recursive integration shows that \[\int x^k e^x dx = x^k e^x \brac{ 1+\sum_{m=1}^k \brac{-1}^m \frac{k!}{\brac{k-m}!} x^{-m}}\] which implies that $M_G\brac{t}=+\infty$ whenever $t\geq \beta$. 
+Luckily the case $t<\beta$ is more interesting: \begin{align*}M_G\brac{t} &= c \int_0^\infty x^k e^{-\brac{\beta-t}x} dx \\ &= c\cdot \brac{\beta-t}^{-\brac{k+1}} \int_0^\infty y^k e^{-y} dy \\ &= \frac{\beta^{k+1}}{\Gamma\brac{k+1}} \brac{\beta-t}^{-\brac{k+1}} \Gamma\brac{k+1} \\ &= \brac{ \frac{\beta}{\beta-t} }^{k+1} \end{align*} Therefore the MGF of $\Gamma\brac{k,\beta}$ is given for all $t<\beta$ by \[M_G\brac{t} = \brac{1-\frac{t}{\beta}}^{-\brac{k+1}}\]Serendipitously, the MGF of the sample mean of exponentially distributed random variables is just a reparametrization of the MGF of a Gamma-distributed RV. Indeed, $M_{\bar{X}_n}\brac{t}$ is recovered from $M_G\brac{t}$ by setting $k=n-1$ and $\beta = n\lambda$. Therefore $\bar{X}_n\sim \Gamma\brac{n-1,n\lambda}$ whenever $\brac{X_k}_{k=1}^n$ is a random sample from $\text{Exp}\brac{\lambda}$. 
+
+Note that the expectation of $G^m$ for $G\sim \Gamma\brac{k,\beta}$, $m \geq -k$, is equal to \begin{align*} \Ex{G^m} &= \frac{\beta^{k+1}}{\Gamma\brac{k+1}} \int_0^\infty x^m x^k e^{-\beta x} dx \\ &= \frac{1}{\beta^m \Gamma\brac{k+1}} \int_0^\infty \brac{\beta x}^{k+m} e^{-\beta x} \beta dx \\ &= \frac{1}{\beta^m \Gamma\brac{k+1}} \int_0^\infty t^{k+m} e^{-t} dt \\ &= \frac{\Gamma\brac{k+m+1}}{\beta^m \Gamma\brac{k+1}}\end{align*} Hence the mean and variance of $\frac{1}{G}$ are given by\begin{align*}
+\Ex{G^{-1}} &= \frac{\beta}{k} \\ \Var{G^{-1}} &= \frac{\beta^2}{k\brac{k-1}}-\frac{\beta^2}{k^2} = \frac{\beta^2}{k^2\brac{k-1}}\\\end{align*}
+
+Now let's get back to the estimators of $\lambda$. The paragraph above implies that the expected value and variance of the MLE of $\lambda$, $\hat{\lambda}_n = \frac{1}{\bar{X}_n}$, are equal to\begin{align*}
+\Ex{\frac{1}{\bar{X}_n}} &= \frac{n}{n-1}\lambda \\ \Var{\frac{1}{\bar{X}_n}} &= \frac{n^2}{\brac{n-1}^2\brac{n-2}} \lambda^2 \end{align*} Hence its bias is \[b\brac{\hat{\lambda}_n} = \frac{n}{n-1}\lambda - \lambda = \frac{\lambda}{n-1}\neq0\] which means that ML estimator of $\lambda$ is biased.
+
+Consider the following parametric family of estimators of $\lambda$ over the sample $\brac{X_k}_{k=1}^n$: \[\hat{\lambda}_n^c = \frac{c}{\sum_{k=1}^n X_k} = \frac{c}{n} \frac{1}{\bar{X}_n}\] for $c>0$. The bias and variance of a generic estimator from this family is \begin{align*}
+b\brac{\hat{\lambda}_n^c} &= \frac{c}{n} \Ex{\frac{1}{\bar{X}_n}}-\lambda = \brac{\frac{c}{n-1}-1}\lambda \\ \Var{\hat{\lambda}_n^c} &= \frac{c^2}{n^2}\Var{\frac{1}{\bar{X}_n}} = \frac{c^2}{\brac{n-1}^2\brac{n-2}} \lambda^2\end{align*}
+
+The unbiased estimator of $\lambda$ in the specified family is determined by the equation $b\brac{\hat{\lambda}_n^c}=0$, which resolves to $c=n-1$. Hence the unbiased estimator is given by \[\hat{\lambda}_n^* = \frac{n-1}{n}\frac{1}{\bar{X}_n}\] The values of $c>0$ which give estimators optimal with respect to mean square error (MSE) correspond to solutions of the following optimization problem:\[\text{MSE}\brac{ \hat{\lambda}_n^c } = \Ex{\brac{ \hat{\lambda}_n^c - \lambda }^2} =  \Var{\hat{\lambda}_n^c} + b\brac{\hat{\lambda}_n^c}^2 \to \min_{c>0}\] After plugging in the expressions for bias and variance and minor simplification, the parameter $c>0$ should be selected so that it minimizes: \[\frac{\lambda^2}{\brac{n-1}^2} \brac{\frac{c^2}{\brac{n-2} } + \brac{c-n+1}^2}\] Straightforward calculations produce the following first order conditions $c$: \[\frac{c}{n-2} + c -\brac{n-1} = 0 \] which defines the optimal $c$ as $n-2$. Hence the most MSE-efficient estimator in the family is \[\hat{\lambda}_n^o = \frac{n-2}{n} \frac{1}{\bar{X}_n}\]
+
+The Fisher information $I\brac{\lambda}$ for any estimator of $\lambda$ under these assumptions is given by \[\Ex{-\frac{d^2}{d\lambda^2} \log L} = \Ex{ - \frac{d}{d\lambda}\brac{ \frac{n}{\lambda} - n\lambda \bar{X}_n }}  = \Ex{ -\brac{ -\frac{n}{\lambda^2} }} = \frac{n}{\lambda^2}\] Alternatively, the fact $\bar{X}_n\sim \Gamma\brac{n-1, n\lambda}$ implies that it is possible to compute $I$ directly. Indeed, $\Ex{\bar{X}_n} = \frac{n-1+1}{n\lambda}$, $\Ex{\bar{X}_n^2} = \frac{\brac{n-1+1}\brac{n-1+2}}{n^2 \lambda^2}$ and \begin{align*}
+\Ex{\brac{\frac{d}{d\lambda} \log L}^2} &= \frac{n^2}{\lambda^2} \Ex{ \brac{1 - \lambda \bar{X}_n }^2 } \\ &= \frac{n^2}{\lambda^2} \Ex{1-2\lambda \bar{X}_n + \lambda^2 \bar{X}_n^2 } \\ &= \frac{n^2}{\lambda^2} \brac{1-2\lambda \frac{1}{\lambda} + \lambda^2 \frac{n+1}{n}\frac{1}{\lambda^2} }\\ &= \frac{n^2}{\lambda^2} \frac{1}{n} = \frac{n}{\lambda^2}\end{align*} 
+
+The Cramer-Rao lower bound for the variance of a biased estimator of $\lambda$ is given by \[ \text{CR}_{\hat{\lambda}_n^c} = \frac{\brac{1+b'\brac{\hat{\lambda}_n^c}}^2}{I\brac{\lambda}}\] where $b'({\hat{\lambda}_n^c})= \frac{d}{d\lambda} \brac{b({\hat{\lambda}_n^c})}$. Therefore under the current assumptions the lower bound for variance of any estimator of $\lambda$ from the family $\hat{\lambda}_n^c$ is \[\text{CR}_{\hat{\lambda}_n^c} = \frac{c^2\brac{n-1}^{-2}}{n\lambda^{-2}} = \frac{c^2 \lambda^2}{n\brac{n-1}^2}\] The following table summarizes the bias and efficiency of the estimators of $\lambda$ from this parametric family:
+\begin{center}\begin{tabular}{| c | c | c | c | c |}
+\hline
+	Est. & Formula & Bias & Variance & CR lower bound \\ \hline\hline
+	$\hat{\lambda}_n$ & $\frac{n}{n}\frac{1}{\bar{X}_n}$ & $\frac{\lambda}{n-1}$ & $\frac{n^2\lambda^2}{\brac{n-1}^2\brac{n-2}}$ & $\frac{n \lambda^2}{\brac{n-1}^2}$ \\ \hline
+
+	$\hat{\lambda}_n^*$ & $\frac{n-1}{n} \frac{1}{\bar{X}_n}$ & 0 & $\frac{\lambda^2}{n-2}$ & $\frac{\lambda^2}{n}$ \\ \hline
+
+	$\hat{\lambda}_n^o$ & $\frac{n-2}{n} \frac{1}{\bar{X}_n}$ & $-\frac{\lambda}{n-1}$ & $\frac{\brac{n-2}\lambda^2}{\brac{n-1}^2}$ & $\frac{\brac{n-2}^2 \lambda^2}{n \brac{n-1}^2}$ \\ \hline\hline
+
+	$\hat{\lambda}_n^c$ & $\frac{c}{n} \frac{1}{\bar{X}_n}$ & $\frac{\brac{c-n+1}\lambda}{n-1}$ & $\frac{c^2\lambda^2}{\brac{n-1}^2\brac{n-2}}$ & $\frac{c^2 \lambda^2}{n \brac{n-1}^2}$ \\ \hline
+\end{tabular}\end{center}
+This table clearly shows that the estimator $\hat{\lambda}_n^*$ is superior to the MLE $\hat{\lambda}_n^*$ both in terms of bias and efficiency. The MSE-optimal estimator $\hat{\lambda}_n^o$ has the least variance, though possesses bias similar to the MLE as shown in the table. Hence instead of the ML estimator $\hat{\lambda}_n$, it is better to use the unbiased estimator $\hat{\lambda}_n^*$.
+
+% section problem_3 (end)
+
+\end{document}
+
