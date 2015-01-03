@@ -66,6 +66,105 @@
 \end{align*}
 Непосредственно проверяется тот факт, что операторы, заданные таким образом, определяют решётку на частично упорядоченном множестве формальных понятий контекста.
 
+
+\selectlanguage{english}
+\section{Galois connections} % (fold)
+\label{sec:galois_connections}
+
+Let $(P,\leq)$ and $(Q,\preceq)$ be two posets. The pair of maps $\phi:P\to Q$ and $\psi:Q\to P$ is a Galois connection if \begin{description}
+\item[(AMON)] $p_1\leq p_2$ in $P$ implies that $\phi(p_2)\leq \phi(p_1)$ in $Q$ and $q_1\leq q_2$ in $Q$ implies that $\psi(q_2)\leq \psi(q_1)$ in $P$
+\item[(CLOS)] $q\leq \phi\brac{\psi(q)}$ in $Q$ for any $q\in Q$ and $p\leq \psi\brac{\phi(p)}$ in $P$ for any $p\in P$
+\end{description}
+The maps $\phi$ and $\psi$ are \emph{dually adjoint} to each other.
+
+\noindent\textbf{Theorem}\hfill \\ A pair of maps is a Galois connection if and only if for every $p\in P$ and $q\in Q$\begin{description}
+	\item[(GALOIS)] $p\leq \psi(q)$ in $P$ is equivalent to $q\leq \phi(p)$ in $Q$
+\end{description}
+
+$\Rightarrow$ Indeed, for any $p\in P$ by reflexivity it is true that $\phi(p)\leq \phi(p)$, whence $p\leq \psi\brac{\phi(p)}$ by \textbf{(GALOIS)}. Similarly for $Q$. Furthermore if $p_1\leq p_2$ in $P$, then $p_1\leq p_2\leq \psi\brac{\phi(p_2)}$, which implies that $\phi(p_2)\leq \phi(p_1)$.
+
+$\Leftarrow$ Conversely, if $p\leq \psi(q)$ then by \textbf{(AMON)} $\phi\brac{\psi(q)}\leq \phi(p)$, whence by \textbf{(CLOS)} $q\leq \phi(p)$. Similarly, if $q\leq \phi(p)$ then by \textbf{(AMON)} $\psi\brac{\phi(p)}\leq \psi(q)$ which means that $p\leq \psi(q)$ by \textbf{(CLOS)}.
+
+\noindent\textbf{Theorem}\hfill \\If $(\phi,\psi)$ is a Galois connection, then $\phi = \phi\circ \phi\circ \phi$ and $\phi = \phi\circ \phi\circ \phi$.
+
+Indeed, for any $p\in P$ \textbf{(CLOSURE)} implies that $p\leq \psi\brac{\phi(p)}$, whence by \textbf{(AMON)} $\phi{\psi\brac{\phi(p)}}\leq \phi(p)$.
+However, \textbf{(CLOUSRE)} also implies that $\phi(p)\leq \phi\brac{\psi\brac{\phi(p)}}$. Similarly, for the second equality.
+
+\noindent\textbf{Theorem}\hfill \\ A map $\phi:(P,\leq)\to (Q,\leq)$ between complete lattices has a dual adjoint if and only if for any $X\subseteq P$ it is true that \[\phi\brac{\sup X} = \inf \phi(X)\]
+
+Suppose $\psi$ is dually adjoint to $\phi$. Since $y\leq \sup X$ for all $y\in X$ in $P$ be completeness of $P$, it must be true that $\phi\brac{\sup X}\leq \phi(y)$ by \textbf{(AMON)}, whence $\phi\brac{\sup X}\leq \inf_{y\in X} \phi(y) = \inf \phi(X)$. However, $\inf \phi(X)\leq \phi(y)$ for all $y\in X$ by completeness of $Q$, which implies by \textbf{(GALOIS)} that $y\leq \psi\brac{\inf \phi(X)}$ for all $y\in X$, whence $\sup X\leq \psi\brac{\inf \phi(X)}$. Therefore $\inf\phi(X)\leq \phi\brac{\sup X}$ by \textbf{(GALOIS)}.
+
+
+
+
+
+% section galois_connections (end)
+
+\selectlanguage{english}
+\section{Concept lattices} % (fold)
+\label{sec:concept_lattices}
+
+A context is a triple $(G,M,I)$ where $G$ and $M$ are sets and $I$ is a relation between $G$ and $M$. For a set of objects $A\subseteq G$ define \[A'\defn \obj{\induc{m\in M}\,\forall g\in A\,(g,m)\in I}\] the set of attributes common to all objects in $A$. For a set of attributes $B\subseteq M$ put \[B'\defn \obj{\induc{g\in G}\,\forall m\in M\,(g,m)\in I}\] So $B'$ is the set of all object sharing all the attributes in $B$. The maps ${(\cdot)}'$ are \emph{the derivation operators} of the context $(G,M,I)$.
+
+A \emph{concept} of the context $(G,M,I)$ is a pair $(A,B)$ with $A\subseteq G$ and $B\subseteq M$ such that $A'=B$ and $B'=A$. The sets $A$ and $B$ are the extent and the intent respectively, and $A$ is the extent of some concept if $A''=A$ (similarly for the intent).
+
+\noindent\textbf{Theorem} \hfill \\ The derivation operators ${(\cdot)}'$ are a Galois connection.
+
+Indeed, let $A\subseteq G$ and $B\subseteq M$ and suppose $A\subseteq B'$. If $m\in B$, then $(g,m)\in I$ for any $g\in B'$. In particular for any $g\in A$ it is true that $(g,m)\in I$, whence $m\in A'$. So $B\subseteq A'$. Reverse implication is proven identically.
+
+If $(A_1, B_1)$ and $(A_2, B_2)$ are concepts then $A_1\subseteq A_2$ if and only if $B_2\subseteq B_1$ by \textbf{(AMON)}. Thus it is possible to define a partial order relation $\leq$ on concepts as set inclusion of extents (or reverse set inclusion of intents).
+
+\noindent\textbf{Theorem}\hfill\\ For any $\brac{A_j}_{j\in J}\subseteq G$ it is true that \[\brac{\bigcup_{j\in J}A_j}' = \bigcap_{j\in J} A_j'\]
+
+$\Rightarrow$ If $m\notin \bigcap_{j\in J} A_j'$ then there is $j\in J$ with $m\notin A_j'$, whence there is $g\in A_j$ such that $(g,m)\notin I$. Therefore $(g,m)\notin I$ for some $g\in \bigcup_{j\in J}A_j$, whence $m\notin \brac{\bigcup_{j\in J}A_j}'$.
+
+$\Leftarrow$ If $m\in \bigcap_{j\in J} A_j'$ then $m\in A_j'$ for each $j\in J$, whence $(g,m)\in I$ for every $g\in A_j$ and $j\in J$. Therefore $(g,m)\in I$ for all $\bigcup_{j\in J}A_j$ and $m\in \brac{\bigcup_{j\in J} A_j}'$.
+
+If $A_j=A_j''$ for all $j\in J$, then \[\brac{\bigcap_{j\in J}A_j}'' = \brac{\bigcap_{j\in J}A_j''}'' = \brac{\bigcup_{j\in J}A_j'}''' = \brac{\bigcup_{j\in J}A_j'}' = \bigcap_{j\in J}A_j'' = \bigcap_{j\in J}A_j\]
+
+\subsubsection{The main theorem of FCA} % (fold)
+\label{ssub:the_main_theorem_of_fca}
+
+\noindent\textbf{Theorem}\hfill \\ The set of all formal concepts of a context $(G,M,I)$ is a complete lattice $\cltc(G,M,I)$ with join and meet operations given by \[\bigvee_{j\in J} (A_j,B_j) = \brac{ \brac{\bigcup_{j\in J} A_j}'', \bigcap_{j\in J} B_j}\] and \[\bigwdge_{j\in J} (A_j,B_j) = \brac{\bigcap_{j\in J} A_j, \brac{\bigcup_{j\in J} B_j}''}\]
+
+Indeed, for any family $\brac{A_j,B_j}_{j\in J}$ of formal concepts of $(G,M,I)$ by a previous result \[\bigcap_{j\in J} B_j &= \bigcap_{j\in J} A_j' = \brac{\bigcup_{j\in J} A_j}'\] whence \[\bigvee_{j\in J} (A_j,B_j) = \brac{ \brac{\bigcup_{j\in J} A_j}'', \bigcap_{j\in J} B_j} = \brac{ \brac{\bigcup_{j\in J} A_j}'', \brac{\bigcup_{j\in J} A_j}'}\] which is clearly a concept.
+
+Furthermore, $A_j\subseteq \bigcup_{j\in J} A_j$ for all $j\in J$ means that $\bigvee_{j\in J} (A_j,B_j)$ is an upper bound on $\brac{A_j,B_j}_{j\in J}$. If $(A,B)$ is another upper bound, then $\bigcup_{j\in J} A_j\subseteq A$ for all $j\in J$, whence \[\brac{\bigcup_{j\in J} A_j}'' \subseteq A'' = A\] by monotonicity of ${(\cdot)}''$, which implies that the proposed definition indeed yields the least upper bound.
+
+\noindent\textbf{Theorem}\hfill \\ For any context $(G,M,I)$ there exist maps $\gamma:G\to\cltc(G,M,I)$ and $\mu:M\to\cltc(G,M,I)$ such that $\gamma(G)$ and $\mu(M)$ are join- and meet-dense subsets of $\cltc(G,M,I)$. Furthermore, $(g,m)\in I$ if and only if $\gamma(g)\leq \mu(m)$ in $\cltc(G,M,I)$.
+
+Define a map $\gamma:G\to \cltc(G,M,I)$ for every $g\in G$ by \[\gamma(g) \defn \brac{\obj{g}'', \obj{g}'}\] The map $\gamma$ is well-defined since $A'''=A'$ for any $A\subseteq G$. Similarly a map $\mu:M\to \cltc(G,M,I)$ defined by \[\mu(m)\defn \brac{\obj{m}',\obj{m}''}\] is correct.
+
+Let $(A,B)$ be a concept. Then \[B = A' = \brac{\bigcup_{a\in A}\obj{a}}' = \bigcap_{a\in A} a'\] and \[A = B' = \brac{\bigcap_{a\in A} a'}' = \brac{\bigcap_{a\in A} a'''}' = \brac{\bigcup_{a\in A} a''}''\] Thus \[(A,B) = \brac{\brac{\bigcup_{a\in A} a''}'', \brac{\bigcap_{a\in A} a'}} = \bigvee_{a\in A} (a'',a') = \bigvee_{a\in A} \gamma(a) = \bigvee \gamma(A)\]
+
+Similarly, $\mu(M)$ is meet-dense subset of $\cltc(G,M,I)$. As \[A = B' = \brac{\bigcup_{b\in B}\obj{b}}' = \bigcap_{b\in B} b'\] and \[B = A' = \brac{\bigcap_{b\in B} b'}' = \brac{\bigcap_{b\in B} b'''}' = \brac{\bigcup_{b\in B} b''}''\]
+Therefore \[(A,B) = \brac{\bigcap_{b\in B} b', \brac{\bigcup_{b\in B} b''}''} = \bigwedge_{b\in B} (b', b'') = \bigwedge_{b\in B} \mu(b)=\bigwedge \mu(B)\]
+
+Suppose $(g,m)\in I$, then $m\in g' = g'''$ and $g''\subseteq m'$ implying that $\gamma(g)\leq \mu(m)$. Conversely, if $\gamma(g)\leq \mu(m)$, then $m''\subseteq g'$, whence $g\in m''' = m'$ and $(g,m)\in I$.
+
+\noindent\textbf{Theorem} \hfill\\ Suppose $L$ is a complete lattice and there exist maps $\gamma:G\to L$ and $\mu:M\to L$ for some sets $G$ and $M$ such that $\gamma(G)$ and $\mu(M)$ are join-dense and meet-dense in $L$ respectively. For any $g\in G$ and $m\in M$ let $I\subseteq G\times M$ be such that $(g,m)\in I$ if and only if $\gamma(g)\leq \mu(m)$ in $L$. Then $L$ is isomorphic to $\cltc(G,M,I)$.
+
+Since the lattice $L$ is complete, a map $\phi:\cltc\to L$ could be correctly defined for any $(A,B)\in \cltc$ as $\phi(A,B)\defn \bigvee \gamma(A)$. If $(A_1,B_1),(A_2,B_2)\in \cltc$ are such that $(A_1,B_1)\leq(A_2,B_2)$ then $A_1\subseteq A_2$ and $\gamma(A_1)\subseteq \gamma(A_2)$, which implies that $\vee \gamma(A_1)\leq \vee \gamma(A_2)$ in $L$. Therefore $\phi(A_1,B_1)\leq \phi(A_2,B_2)$ in $L$,  and $\phi$ is order-preserving.
+
+For any $x\in L$ define \begin{align*}
+	A_x&\defn \obj{\induc{g\in G}\,\gamma(g)\leq x}\\
+	B_x&\defn \obj{\induc{m\in M}\,x\leq \mu(m)}
+\end{align*} Since $\gamma(G)$ is join-dense in $L$ by definition of $A_x$ it must be true that $x = \bigvee_{g\in A_x} \gamma(g)$ and similarly $x = \bigwedge_{m\in B_x} \mu(m)$ by the meet-density of $\mu(M)$.
+
+For any $x\in L$ consider $A_x$ and $B_x$ in the context $\cltc(G,M,I)$. If $m\in A_x'$ then $(g,m)\in I$ for any $g\in A_x$, whence $\gamma(g)\leq \mu(m)$ for $g\in A_x$. Thus $\bigvee_{g\in A_x}\gamma(g)\leq\mu(m)$. Thus $x\leq \mu(m)$ and $m\in B_x$.
+
+Conversely, if $m\in B_x$ then $\gamma(g)\leq\mu(m)$ for all $g\in A_x$, since $\bigvee_{g\in A_x}\gamma(g) = x$. Hence, $(g,m)\in I$ for all $g\in A_x$, whence $m\in A_x'$. The equality $B_x'=A_x$ follows from the meet-density of $\mu(M)$ in $L$ and is shown similarly. Therefore the pair $(A_x,B_x)\in \cltc(G,M,I)$ for any $x\in L$.
+
+The map $\psi:L\to\cltc(G,M,I)$ defined as $\psi(x)\defn (A_x,B_x)$ is a correctly defined order-preserving map. Indeed, if $x\leq y$ in $L$, then $\gamma(g)\leq x\leq y$ for any $g\in A_x$, whence $A_x\subseteq A_y$, which implies that $(A_x,B_x)\leq (A_y,B_y)$ in $\cltc$.
+
+Now, $\psi$ looks very much like an inverse of $\phi$. Indeed, $\phi\brac{\psi(x)} = \bigvee_{g\in A_x}\gamma(g) = x$ by join-density of $\gamma(G)$. Pick any $(A,B)\in \cltc(G,M,I)$ and let $x\defn \bigvee_{g\in A} \gamma(g)$. For any $g\in A$ it is true that $\gamma(g)\leq x$, whence $g\in A_x$ by definition. On the other hand, if $m\in B$ then $m\in A'$ and $\gamma(g)\leq \mu(m)$ for all $g\in A$, whence $x\leq \mu(m)$ as $x$ is the \emph{least upper bound} for $\gamma(A)$. Hence $m\in B_x$ and $A\subseteq A_x$ and $B\subseteq B_x$. However $(A,B),(A_x, B_x)\in \cltc(G,M,I)$, whence, in particular, $A'=B$ and $A_x'=B_x$. Thus by \textbf{(AMON)} of ${(\cdot)}'$ the inclusion $A\subseteq A_x$ is equivalent to $A = B_x' \subseteq B' = A$, which means that $A = A_x$ and $B=B_x$. Therefore $\psi\brac{\phi(A,B)}=(A,B)$.
+
+% subsubsection the_main_theorem_of_fca (end)
+
+% section concept_lattices (end)
+
+p.~33
+
 % part first_module (end)
 
 
@@ -80,7 +179,7 @@
 Let $\Ctx = \brac{G,M,I}$ be a binary context and ${(\cdot)}'$ be its derivation rule (Galois connection operator). For any $A,B\subseteq M$ an implication $A\to B$ is valid in $\Ctx$ if $A'\subseteq B'$. Implication $A\to B$ means that for each $g\in G$ with $A\subseteq g'$ it is true that $B\subseteq g'$. Finally $A\to B$ if and only if $B\subseteq A''$.
 
 % Suppose $\mathcal{L}$ is a collection of implications of $ $
-
+Импликации и решетка понятий: Если A → B, то инфимум всех признаковых понятий признаков из A в диаграмме решетки понятий лежит ниже инфимума всех признаковых понятий признаков из B.
 
 % Инфимум признаковых понятий
 

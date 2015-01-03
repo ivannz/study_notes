@@ -24,7 +24,7 @@ if delta == 0
 %% why is std( diff ) better than min( abs( diff ) )
     delta = std( diff( x ) );
 end
-%% Define lists of consequitive hitting times and 
+%% Define lists of consequitive hitting times and levels
 hit_point = cell( length( levels ), 1 );
 hit_time = cell( length( levels ), 1 );
 
