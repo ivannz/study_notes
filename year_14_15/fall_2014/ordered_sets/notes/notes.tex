@@ -4,6 +4,7 @@
 \usepackage{graphicx, url}
 
 \usepackage{amsmath, amsfonts, xfrac}
+\usepackage{amsthm}
 \usepackage{mathtools}
 
 \newcommand{\obj}[1]{{\left\{ #1 \right \}}}
@@ -27,7 +28,9 @@
 \newcommand{\Pat}{\mathbb{P}}
 \newcommand{\supp}{\text{supp}}
 \newcommand{\conf}{\text{conf}}
+\newcommand{\cltc}{\mathfrak{ B}}
 
+\newtheorem{prop}{Proposition}
 
 \newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
 
@@ -66,73 +69,151 @@
 \end{align*}
 Непосредственно проверяется тот факт, что операторы, заданные таким образом, определяют решётку на частично упорядоченном множестве формальных понятий контекста.
 
+\selectlanguage{english}
+\section{Lattices and complete lattices} % (fold)
+\label{sec:lattices_and_complete_lattices}
+
+A lattice $L$ is complete if $\sup S$ and $\inf S$ exist for any $S\subseteq L$.
+
+% \noindent \textbf{Theorem} \hfill \\
+\begin{prop} Let $(P,\leq)$ be a poset. The ordered set $\mathcal{O}(P)$ of ideals is a complete lattice with $\cap$ and $\cup$ operators.
+\end{prop}
+
+% \noindent \textbf{Theorem} \hfill \\
+\begin{prop} By induction on the number of elements in $X\subseteq L$, it can be show that every non-empty finite lattice is complete.
+\end{prop}
+
+% \noindent \textbf{Theorem} \hfill \\
+\begin{prop} A poset $(P,\leq)$ such that $\inf X$ exists for every $X\subseteq P$ is a complete lattice.
+\end{prop}
 
 \selectlanguage{english}
-\section{Galois connections} % (fold)
-\label{sec:galois_connections}
+\subsection{Irreducible elements} % (fold)
+\label{sub:irreducible_elements}
+Let $L$ be a complete lattice. For every $x\in L$ put \begin{align*}
+	x_* &\defn \sup\obj{\induc{v\in L}\,v < x}\\
+	x^* &\defn \inf\obj{\induc{v\in L}\,x < v}
+\end{align*} An element $x\in L$ is sup-irreducible if $x\neq x_*$, similarly an element $x\in L$ is inf-irreducible if $x\neq x^*$
+
+% \noindent \textbf{Theorem} \hfill \\
+\begin{prop} An element $x\in L$ of a complete lattice $L$ is sup-reducible if and only if there exists $X\subseteq L$ with $x\notin X$ such that $x=\sup X$.
+\end{prop}
+
+\begin{proof}
+$\Rightarrow$ Define $A_x\defn \obj{\induc{x\in L}\,v<x}$ for any $x\in L$. If $x\in L$ is sup-reducible, then by definition $x = \sup A_X$, whence $x\notin X$ and $x=\sup X$ for $X \defn A_x$.
+
+$\Leftarrow$ Suppose $x\in L$ is such that there exists $X\subseteq L$ with $x\notin X$ and $x = \sup X$. If $y\in X\setminus A_x$ then $y\neq x$ and $y\leq x$, whence $y<x$ and $y\in A_x$, which is a contradiction. Thus $X\subseteq A_x$ which means that $x=\sup X \leq \sup A_x \leq x$, since $y<x$ for every $y\in A_x$. Thus $x$ must be sup-reducible. Infimum-reducibility is delat with analogously.
+\end{proof}
+
+% subsection irreducible_elements (end)
+
+\selectlanguage{english}
+\subsection{Dense subsets} % (fold)
+\label{sub:dense_subsets}
+
+Let $L$ be a complete lattice. A subset $X\subseteq L$ is meet-dense if for every $x\in L$ there exists $\Gamma \subseteq X$ with $x = \inf \Gamma$. A subset $X\subseteq L$ is join-dense if for every $x\in L$ there exists $\Gamma \subseteq X$ with $x = \sup \Gamma$.
+
+% \noindent \textbf{Theorem} \hfill \\
+\begin{prop} If a subset $X$ of a complete lattice $L$ is join-dense in $L$ then for any $x\in L$ it is true that \[x = \sup\obj{\induc{v\in X}\,v\leq x}\] If $X$ is meet-dense in $L$ then $x = \inf\obj{\induc{v\in X}\,x\leq v}$ for any $x\in L$.
+\end{prop}
+
+\begin{proof}
+Indeed, put $A_x\defn \obj{\induc{v\in X}\,v\leq x}$ and note that by the basic property of the least upper bound $\sup A_x\leq x$. Since $X$ is join-dense, there is $\Gamma\subseteq X$ such that $a = \sup \Gamma$. If $\sup A_x < x$ then there must exist $y\in \Gamma$ such that $\sup A_x < y \leq x$. Thus $\sup A_x < y$ implies that $y\notin A_x$, while $y\leq x$ gives $y\in A_x$. Therefore $x\leq \sup A_x$.
+\end{proof}
+
+% subsection dense_subsets (end)
+
+\selectlanguage{english}
+\subsection{Galois connections} % (fold)
+\label{sub:galois_connections}
 
 Let $(P,\leq)$ and $(Q,\preceq)$ be two posets. The pair of maps $\phi:P\to Q$ and $\psi:Q\to P$ is a Galois connection if \begin{description}
-\item[(AMON)] $p_1\leq p_2$ in $P$ implies that $\phi(p_2)\leq \phi(p_1)$ in $Q$ and $q_1\leq q_2$ in $Q$ implies that $\psi(q_2)\leq \psi(q_1)$ in $P$
-\item[(CLOS)] $q\leq \phi\brac{\psi(q)}$ in $Q$ for any $q\in Q$ and $p\leq \psi\brac{\phi(p)}$ in $P$ for any $p\in P$
-\end{description}
-The maps $\phi$ and $\psi$ are \emph{dually adjoint} to each other.
+	\item[(AMON)] $p_1\leq p_2$ in $P$ implies that $\phi(p_2)\leq \phi(p_1)$ in $Q$ and $q_1\leq q_2$ in $Q$ implies that $\psi(q_2)\leq \psi(q_1)$ in $P$
+	\item[(CLOS)] $q\leq \phi\brac{\psi(q)}$ in $Q$ for any $q\in Q$ and $p\leq \psi\brac{\phi(p)}$ in $P$ for any $p\in P$
+\end{description} The maps $\phi$ and $\psi$ are \emph{dually adjoint} to each other.
 
-\noindent\textbf{Theorem}\hfill \\ A pair of maps is a Galois connection if and only if for every $p\in P$ and $q\in Q$\begin{description}
+% \noindent \textbf{Theorem} \hfill \\
+\begin{prop} A pair of maps is a Galois connection if and only if for every $p\in P$ and $q\in Q$\begin{description}
 	\item[(GALOIS)] $p\leq \psi(q)$ in $P$ is equivalent to $q\leq \phi(p)$ in $Q$
 \end{description}
+\end{prop}
 
+\begin{proof}
 $\Rightarrow$ Indeed, for any $p\in P$ by reflexivity it is true that $\phi(p)\leq \phi(p)$, whence $p\leq \psi\brac{\phi(p)}$ by \textbf{(GALOIS)}. Similarly for $Q$. Furthermore if $p_1\leq p_2$ in $P$, then $p_1\leq p_2\leq \psi\brac{\phi(p_2)}$, which implies that $\phi(p_2)\leq \phi(p_1)$.
 
 $\Leftarrow$ Conversely, if $p\leq \psi(q)$ then by \textbf{(AMON)} $\phi\brac{\psi(q)}\leq \phi(p)$, whence by \textbf{(CLOS)} $q\leq \phi(p)$. Similarly, if $q\leq \phi(p)$ then by \textbf{(AMON)} $\psi\brac{\phi(p)}\leq \psi(q)$ which means that $p\leq \psi(q)$ by \textbf{(CLOS)}.
+\end{proof}
 
-\noindent\textbf{Theorem}\hfill \\If $(\phi,\psi)$ is a Galois connection, then $\phi = \phi\circ \phi\circ \phi$ and $\phi = \phi\circ \phi\circ \phi$.
+% \noindent \textbf{Theorem} \hfill \\
+\begin{prop} If $(\phi,\psi)$ is a Galois connection, then $\phi = \phi\circ \phi\circ \phi$ and $\phi = \phi\circ \phi\circ \phi$.
+\end{prop}
 
-Indeed, for any $p\in P$ \textbf{(CLOSURE)} implies that $p\leq \psi\brac{\phi(p)}$, whence by \textbf{(AMON)} $\phi{\psi\brac{\phi(p)}}\leq \phi(p)$.
-However, \textbf{(CLOUSRE)} also implies that $\phi(p)\leq \phi\brac{\psi\brac{\phi(p)}}$. Similarly, for the second equality.
+\begin{proof}
+Indeed, for any $p\in P$ \textbf{(CLOSURE)} implies that $p\leq \psi\brac{\phi(p)}$, whence by \textbf{(AMON)} $\phi{\psi\brac{\phi(p)}}\leq \phi(p)$. However, \textbf{(CLOUSRE)} also implies that $\phi(p)\leq \phi\brac{\psi\brac{\phi(p)}}$. The second equality is show analogously.
+\end{proof}
 
-\noindent\textbf{Theorem}\hfill \\ A map $\phi:(P,\leq)\to (Q,\leq)$ between complete lattices has a dual adjoint if and only if for any $X\subseteq P$ it is true that \[\phi\brac{\sup X} = \inf \phi(X)\]
+% \noindent \textbf{Theorem} \hfill \\
+\begin{prop} A map $\phi:(P,\leq)\to (Q,\leq)$ between complete lattices has a dual adjoint if and only if for any $X\subseteq P$ it is true that \[\phi\brac{\sup X} = \inf \phi(X)\]
+\end{prop}
 
-Suppose $\psi$ is dually adjoint to $\phi$. Since $y\leq \sup X$ for all $y\in X$ in $P$ be completeness of $P$, it must be true that $\phi\brac{\sup X}\leq \phi(y)$ by \textbf{(AMON)}, whence $\phi\brac{\sup X}\leq \inf_{y\in X} \phi(y) = \inf \phi(X)$. However, $\inf \phi(X)\leq \phi(y)$ for all $y\in X$ by completeness of $Q$, which implies by \textbf{(GALOIS)} that $y\leq \psi\brac{\inf \phi(X)}$ for all $y\in X$, whence $\sup X\leq \psi\brac{\inf \phi(X)}$. Therefore $\inf\phi(X)\leq \phi\brac{\sup X}$ by \textbf{(GALOIS)}.
+\begin{proof}
+$\Rightarrow$ Suppose $\psi$ is dually adjoint to $\phi$. Since $y\leq \sup X$ for all $y\in X$ in $P$ be completeness of $P$, it must be true that $\phi\brac{\sup X}\leq \phi(y)$ by \textbf{(AMON)}, whence $\phi\brac{\sup X}\leq \inf_{y\in X} \phi(y) = \inf \phi(X)$. However, $\inf \phi(X)\leq \phi(y)$ for all $y\in X$ by completeness of $Q$, which implies by \textbf{(GALOIS)} that $y\leq \psi\brac{\inf \phi(X)}$ for all $y\in X$, whence $\sup X\leq \psi\brac{\inf \phi(X)}$. Therefore $\inf\phi(X)\leq \phi\brac{\sup X}$ by \textbf{(GALOIS)}.
 
+$\Leftarrow$ Suppose that $\phi\brac{\sup X} = \inf \phi(X)$. Then in particular for $p_1,p_2\in P$ with $p_1\leq p_2$ it is true that $\sup\obj{p_1,p_2} = p_2$ and \[\inf\obj{\phi(p_1),\phi(p_2)} = \phi\brac{\sup\obj{p_1,p_2}} = \phi(p_2)\] whence $\phi(p_2)\leq \phi(p_1)$.
 
+Let $\psi:Q\to P$ be defined as $\psi(q) \defn \sup\obj{\induc{p\in P}\,q\leq \phi(p)}$. Then for any $x\in P$ by the anti-monotonicity shown above for $\phi$ and the basic properties of upper bounds in $Q$ \[\psi\brac{\phi(x)} = \sup\obj{\induc{p\in P}\,\phi(x)\leq \phi(p)} \geq \sup\obj{\induc{p\in P}\,p\leq x} = x\] since $\sup\obj{\induc{p\in P}\,p\leq x}\leq x$ and $x\leq x$. On the other hand, by cinstruction of $\psi$ and the ``continuity'' property of $\phi$ and the properties of the greatest lower bound in $Q$ \[\phi\brac{\psi(q)} = \inf\obj{\induc{\phi(p)}\,p\in P,\,q\leq \phi(p)} \geq q\] Therefore maps $\phi$ and $\psi$ form a dually adjoint pair.
+\end{proof}
 
-
-
-% section galois_connections (end)
+% subsection galois_connections (end)
 
 \selectlanguage{english}
-\section{Concept lattices} % (fold)
-\label{sec:concept_lattices}
+\subsection{Concept lattices} % (fold)
+\label{sub:concept_lattices}
 
 A context is a triple $(G,M,I)$ where $G$ and $M$ are sets and $I$ is a relation between $G$ and $M$. For a set of objects $A\subseteq G$ define \[A'\defn \obj{\induc{m\in M}\,\forall g\in A\,(g,m)\in I}\] the set of attributes common to all objects in $A$. For a set of attributes $B\subseteq M$ put \[B'\defn \obj{\induc{g\in G}\,\forall m\in M\,(g,m)\in I}\] So $B'$ is the set of all object sharing all the attributes in $B$. The maps ${(\cdot)}'$ are \emph{the derivation operators} of the context $(G,M,I)$.
 
 A \emph{concept} of the context $(G,M,I)$ is a pair $(A,B)$ with $A\subseteq G$ and $B\subseteq M$ such that $A'=B$ and $B'=A$. The sets $A$ and $B$ are the extent and the intent respectively, and $A$ is the extent of some concept if $A''=A$ (similarly for the intent).
 
-\noindent\textbf{Theorem} \hfill \\ The derivation operators ${(\cdot)}'$ are a Galois connection.
+% \noindent \textbf{Theorem} \hfill \\
+\begin{prop} The derivation operators ${(\cdot)}'$ are a Galois connection.
+\end{prop}
 
+\begin{proof}
 Indeed, let $A\subseteq G$ and $B\subseteq M$ and suppose $A\subseteq B'$. If $m\in B$, then $(g,m)\in I$ for any $g\in B'$. In particular for any $g\in A$ it is true that $(g,m)\in I$, whence $m\in A'$. So $B\subseteq A'$. Reverse implication is proven identically.
+\end{proof}
 
 If $(A_1, B_1)$ and $(A_2, B_2)$ are concepts then $A_1\subseteq A_2$ if and only if $B_2\subseteq B_1$ by \textbf{(AMON)}. Thus it is possible to define a partial order relation $\leq$ on concepts as set inclusion of extents (or reverse set inclusion of intents).
 
-\noindent\textbf{Theorem}\hfill\\ For any $\brac{A_j}_{j\in J}\subseteq G$ it is true that \[\brac{\bigcup_{j\in J}A_j}' = \bigcap_{j\in J} A_j'\]
+% \noindent \textbf{Theorem} \hfill \\
+\begin{prop} For any $\brac{A_j}_{j\in J}\subseteq G$ it is true that \[\brac{\bigcup_{j\in J}A_j}' = \bigcap_{j\in J} A_j'\]
+\end{prop}
 
+\begin{proof}
 $\Rightarrow$ If $m\notin \bigcap_{j\in J} A_j'$ then there is $j\in J$ with $m\notin A_j'$, whence there is $g\in A_j$ such that $(g,m)\notin I$. Therefore $(g,m)\notin I$ for some $g\in \bigcup_{j\in J}A_j$, whence $m\notin \brac{\bigcup_{j\in J}A_j}'$.
 
 $\Leftarrow$ If $m\in \bigcap_{j\in J} A_j'$ then $m\in A_j'$ for each $j\in J$, whence $(g,m)\in I$ for every $g\in A_j$ and $j\in J$. Therefore $(g,m)\in I$ for all $\bigcup_{j\in J}A_j$ and $m\in \brac{\bigcup_{j\in J} A_j}'$.
 
-If $A_j=A_j''$ for all $j\in J$, then \[\brac{\bigcap_{j\in J}A_j}'' = \brac{\bigcap_{j\in J}A_j''}'' = \brac{\bigcup_{j\in J}A_j'}''' = \brac{\bigcup_{j\in J}A_j'}' = \bigcap_{j\in J}A_j'' = \bigcap_{j\in J}A_j\]
+If $A_j=A_j''$ for all $j\in J$, then \[\brac{\bigcap_{j\in J}A_j}'' = \brac{\bigcap_{j\in J}A_j''}'' = \brac{\bigcup_{j\in J}A_j'}''' = \brac{\bigcup_{j\in J}A_j'}' = \bigcap_{j\in J}A_j'' = \bigcap_{j\in J}A_j \qedhere\]
+\end{proof}
 
 \subsubsection{The main theorem of FCA} % (fold)
 \label{ssub:the_main_theorem_of_fca}
 
-\noindent\textbf{Theorem}\hfill \\ The set of all formal concepts of a context $(G,M,I)$ is a complete lattice $\cltc(G,M,I)$ with join and meet operations given by \[\bigvee_{j\in J} (A_j,B_j) = \brac{ \brac{\bigcup_{j\in J} A_j}'', \bigcap_{j\in J} B_j}\] and \[\bigwdge_{j\in J} (A_j,B_j) = \brac{\bigcap_{j\in J} A_j, \brac{\bigcup_{j\in J} B_j}''}\]
+% \noindent \textbf{Theorem} \hfill \\
+\begin{prop} The set of all formal concepts of a context $(G,M,I)$ is a complete lattice $\cltc(G,M,I)$ with join and meet operations given by \[\bigvee_{j\in J} (A_j,B_j) = \brac{ \brac{\bigcup_{j\in J} A_j}'', \bigcap_{j\in J} B_j}\] and \[\bigwedge_{j\in J} (A_j,B_j) = \brac{\bigcap_{j\in J} A_j, \brac{\bigcup_{j\in J} B_j}''}\]
+\end{prop}
 
-Indeed, for any family $\brac{A_j,B_j}_{j\in J}$ of formal concepts of $(G,M,I)$ by a previous result \[\bigcap_{j\in J} B_j &= \bigcap_{j\in J} A_j' = \brac{\bigcup_{j\in J} A_j}'\] whence \[\bigvee_{j\in J} (A_j,B_j) = \brac{ \brac{\bigcup_{j\in J} A_j}'', \bigcap_{j\in J} B_j} = \brac{ \brac{\bigcup_{j\in J} A_j}'', \brac{\bigcup_{j\in J} A_j}'}\] which is clearly a concept.
+\begin{proof}
+Indeed, for any family $\brac{A_j,B_j}_{j\in J}$ of formal concepts of $(G,M,I)$ by a previous result \[\bigcap_{j\in J} B_j = \bigcap_{j\in J} A_j' = \brac{\bigcup_{j\in J} A_j}'\] whence \[\bigvee_{j\in J} (A_j,B_j) = \brac{ \brac{\bigcup_{j\in J} A_j}'', \bigcap_{j\in J} B_j} = \brac{ \brac{\bigcup_{j\in J} A_j}'', \brac{\bigcup_{j\in J} A_j}'}\] which is clearly a concept.
 
 Furthermore, $A_j\subseteq \bigcup_{j\in J} A_j$ for all $j\in J$ means that $\bigvee_{j\in J} (A_j,B_j)$ is an upper bound on $\brac{A_j,B_j}_{j\in J}$. If $(A,B)$ is another upper bound, then $\bigcup_{j\in J} A_j\subseteq A$ for all $j\in J$, whence \[\brac{\bigcup_{j\in J} A_j}'' \subseteq A'' = A\] by monotonicity of ${(\cdot)}''$, which implies that the proposed definition indeed yields the least upper bound.
+\end{proof}
 
-\noindent\textbf{Theorem}\hfill \\ For any context $(G,M,I)$ there exist maps $\gamma:G\to\cltc(G,M,I)$ and $\mu:M\to\cltc(G,M,I)$ such that $\gamma(G)$ and $\mu(M)$ are join- and meet-dense subsets of $\cltc(G,M,I)$. Furthermore, $(g,m)\in I$ if and only if $\gamma(g)\leq \mu(m)$ in $\cltc(G,M,I)$.
+% \noindent \textbf{Theorem} \hfill \\
+\begin{prop} For any context $(G,M,I)$ there exist maps $\gamma:G\to\cltc(G,M,I)$ and $\mu:M\to\cltc(G,M,I)$ such that $\gamma(G)$ and $\mu(M)$ are join- and meet-dense subsets of $\cltc(G,M,I)$. Furthermore, $(g,m)\in I$ if and only if $\gamma(g)\leq \mu(m)$ in $\cltc(G,M,I)$.
+\end{prop}
 
+\begin{proof}
 Define a map $\gamma:G\to \cltc(G,M,I)$ for every $g\in G$ by \[\gamma(g) \defn \brac{\obj{g}'', \obj{g}'}\] The map $\gamma$ is well-defined since $A'''=A'$ for any $A\subseteq G$. Similarly a map $\mu:M\to \cltc(G,M,I)$ defined by \[\mu(m)\defn \brac{\obj{m}',\obj{m}''}\] is correct.
 
 Let $(A,B)$ be a concept. Then \[B = A' = \brac{\bigcup_{a\in A}\obj{a}}' = \bigcap_{a\in A} a'\] and \[A = B' = \brac{\bigcap_{a\in A} a'}' = \brac{\bigcap_{a\in A} a'''}' = \brac{\bigcup_{a\in A} a''}''\] Thus \[(A,B) = \brac{\brac{\bigcup_{a\in A} a''}'', \brac{\bigcap_{a\in A} a'}} = \bigvee_{a\in A} (a'',a') = \bigvee_{a\in A} \gamma(a) = \bigvee \gamma(A)\]
@@ -141,9 +222,13 @@ Similarly, $\mu(M)$ is meet-dense subset of $\cltc(G,M,I)$. As \[A = B' = \brac{
 Therefore \[(A,B) = \brac{\bigcap_{b\in B} b', \brac{\bigcup_{b\in B} b''}''} = \bigwedge_{b\in B} (b', b'') = \bigwedge_{b\in B} \mu(b)=\bigwedge \mu(B)\]
 
 Suppose $(g,m)\in I$, then $m\in g' = g'''$ and $g''\subseteq m'$ implying that $\gamma(g)\leq \mu(m)$. Conversely, if $\gamma(g)\leq \mu(m)$, then $m''\subseteq g'$, whence $g\in m''' = m'$ and $(g,m)\in I$.
+\end{proof}
 
-\noindent\textbf{Theorem} \hfill\\ Suppose $L$ is a complete lattice and there exist maps $\gamma:G\to L$ and $\mu:M\to L$ for some sets $G$ and $M$ such that $\gamma(G)$ and $\mu(M)$ are join-dense and meet-dense in $L$ respectively. For any $g\in G$ and $m\in M$ let $I\subseteq G\times M$ be such that $(g,m)\in I$ if and only if $\gamma(g)\leq \mu(m)$ in $L$. Then $L$ is isomorphic to $\cltc(G,M,I)$.
+% \noindent \textbf{Theorem} \hfill \\
+\begin{prop} Suppose $L$ is a complete lattice and there exist maps $\gamma:G\to L$ and $\mu:M\to L$ for some sets $G$ and $M$ such that $\gamma(G)$ and $\mu(M)$ are join-dense and meet-dense in $L$ respectively. For any $g\in G$ and $m\in M$ let $I\subseteq G\times M$ be such that $(g,m)\in I$ if and only if $\gamma(g)\leq \mu(m)$ in $L$. Then $L$ is isomorphic to $\cltc(G,M,I)$.
+\end{prop}
 
+\begin{proof}
 Since the lattice $L$ is complete, a map $\phi:\cltc\to L$ could be correctly defined for any $(A,B)\in \cltc$ as $\phi(A,B)\defn \bigvee \gamma(A)$. If $(A_1,B_1),(A_2,B_2)\in \cltc$ are such that $(A_1,B_1)\leq(A_2,B_2)$ then $A_1\subseteq A_2$ and $\gamma(A_1)\subseteq \gamma(A_2)$, which implies that $\vee \gamma(A_1)\leq \vee \gamma(A_2)$ in $L$. Therefore $\phi(A_1,B_1)\leq \phi(A_2,B_2)$ in $L$,  and $\phi$ is order-preserving.
 
 For any $x\in L$ define \begin{align*}
@@ -158,12 +243,16 @@ Conversely, if $m\in B_x$ then $\gamma(g)\leq\mu(m)$ for all $g\in A_x$, since $
 The map $\psi:L\to\cltc(G,M,I)$ defined as $\psi(x)\defn (A_x,B_x)$ is a correctly defined order-preserving map. Indeed, if $x\leq y$ in $L$, then $\gamma(g)\leq x\leq y$ for any $g\in A_x$, whence $A_x\subseteq A_y$, which implies that $(A_x,B_x)\leq (A_y,B_y)$ in $\cltc$.
 
 Now, $\psi$ looks very much like an inverse of $\phi$. Indeed, $\phi\brac{\psi(x)} = \bigvee_{g\in A_x}\gamma(g) = x$ by join-density of $\gamma(G)$. Pick any $(A,B)\in \cltc(G,M,I)$ and let $x\defn \bigvee_{g\in A} \gamma(g)$. For any $g\in A$ it is true that $\gamma(g)\leq x$, whence $g\in A_x$ by definition. On the other hand, if $m\in B$ then $m\in A'$ and $\gamma(g)\leq \mu(m)$ for all $g\in A$, whence $x\leq \mu(m)$ as $x$ is the \emph{least upper bound} for $\gamma(A)$. Hence $m\in B_x$ and $A\subseteq A_x$ and $B\subseteq B_x$. However $(A,B),(A_x, B_x)\in \cltc(G,M,I)$, whence, in particular, $A'=B$ and $A_x'=B_x$. Thus by \textbf{(AMON)} of ${(\cdot)}'$ the inclusion $A\subseteq A_x$ is equivalent to $A = B_x' \subseteq B' = A$, which means that $A = A_x$ and $B=B_x$. Therefore $\psi\brac{\phi(A,B)}=(A,B)$.
+\end{proof}
+
 
 % subsubsection the_main_theorem_of_fca (end)
 
-% section concept_lattices (end)
+% subsection concept_lattices (end)
 
 p.~33
+
+% section lattices_and_complete_lattices (end)
 
 % part first_module (end)
 
@@ -179,7 +268,9 @@ p.~33
 Let $\Ctx = \brac{G,M,I}$ be a binary context and ${(\cdot)}'$ be its derivation rule (Galois connection operator). For any $A,B\subseteq M$ an implication $A\to B$ is valid in $\Ctx$ if $A'\subseteq B'$. Implication $A\to B$ means that for each $g\in G$ with $A\subseteq g'$ it is true that $B\subseteq g'$. Finally $A\to B$ if and only if $B\subseteq A''$.
 
 % Suppose $\mathcal{L}$ is a collection of implications of $ $
+\selectlanguage{russian}
 Импликации и решетка понятий: Если A → B, то инфимум всех признаковых понятий признаков из A в диаграмме решетки понятий лежит ниже инфимума всех признаковых понятий признаков из B.
+\selectlanguage{english}
 
 % Инфимум признаковых понятий
 
@@ -223,11 +314,11 @@ Consider a context $\Ctx=\brac{G,M,I}$. A subset $P\subseteq M$ is a pseudo-inte
 Duquenne–Guigues basis, or the stem base, of attribute implications is defined as \[\text{DQbas}(\Ctx)\defn \obj{\induc{ P\to \brac{P''\setminus P} }\, P \text{-- pseudo-intent} }\]
 
 Seminars covered a brute force algorithm for constructing all pseudo-intents which is a carbon copy of the recursive definition given in this section. Let $P\subseteq M$ be the subset which is currently being considered: \begin{description}
-	\item[Start] \hfill\\ If $\emptyset\neq \emptyset''$ then the smallest pseudo-intent is $\emptyset$. Then it is pointless to consider subsets of $M$ not including elements from $\emptyset''$ (see rule \#2).
-	\item[General step] \hfill\\ Consider subsets of $M$ in order of their cardinality. If $P$ is a pseudo-intent then compute the implication $P\to P''\setminus P$.
-	\item[Rule \#1]\hfill\\ If $P$ is equal to the closure of a strictly smaller $Q$, obtained at some previous step, then $P=P''$ and is not a pseudo-intent.
-	\item[Rule \#2]\hfill\\ If $P$ contains a pseudo-intent $Q$, but not $Q''\setminus Q$, then $P$ is not a pseudo-intent.
-	% \item[Rule \#3]\hfill\\ There definitely was a third rule here...
+	\item[Start] \hfill \\ If $\emptyset\neq \emptyset''$ then the smallest pseudo-intent is $\emptyset$. Then it is pointless to consider subsets of $M$ not including elements from $\emptyset''$ (see rule \#2).
+	\item[General step] \hfill \\ Consider subsets of $M$ in order of their cardinality. If $P$ is a pseudo-intent then compute the implication $P\to P''\setminus P$.
+	\item[Rule \#1]\hfill \\ If $P$ is equal to the closure of a strictly smaller $Q$, obtained at some previous step, then $P=P''$ and is not a pseudo-intent.
+	\item[Rule \#2]\hfill \\ If $P$ contains a pseudo-intent $Q$, but not $Q''\setminus Q$, then $P$ is not a pseudo-intent.
+	% \item[Rule \#3]\hfill \\ There definitely was a third rule here...
 \end{description}
 % subsection duquenne_guigues_basis (end)
 
@@ -363,6 +454,7 @@ Let $M$ be a set of structured attributes, and $w\notin M$ as a designated targe
 % Ami book: p.~43-46,58-59,68-73
 % Ami book: p.~60-66
 
+\selectlanguage{russian}
 определение гипотез, формализующее идею “достаточное условие принадлежности объекта к классу выражается максимальным общим подобъектом некоторых объектов данного класса (“сходством” этих объектов), таким, что он не является подобъектом какого-либо объекта другого класса”.
 
 $H_+\subseteq g^\tau$
@@ -376,6 +468,7 @@ $H_+\subseteq g^\tau$
 нении этого условия считается, что порождение гипотез по обучающему
 контексту не корректно, и множество исходных примеров нуждается в по-
 полнении.
+\selectlanguage{english}
 
 % subsection dsm_on_a_binary_context (end)
 
@@ -435,7 +528,7 @@ For example, $(D,\Box) = \brac{\Pwr(M), \cup}$ -- a join semi-lattice of subsets
 \subsubsection*{String descriptions} % (fold)
 \label{ssub:string_descriptions}
 
-Strings (sequences) serve as another example of a description semi-lattice. Indeed $\brac{S,\sqcap}$ with $\sqcap:S\times S\to S$ denoting the largest common prefix is a meet semi-lattice. The natural partial order $\alpha\sqsubseteq\omega$ on $S$, ``\alpha is a prefix of \omega'', in the context of descriptions, can be translated to $\alpha$ being less specific, restrictive, than $\omega$. In turn, the operation $\alpha\sqcap\omega$ produces a description, which is more general than both $\alpha$ and $\omega$. The empty string, $\epsilon$, is thus the most general description.
+Strings (sequences) serve as another example of a description semi-lattice. Indeed $\brac{S,\sqcap}$ with $\sqcap:S\times S\to S$ denoting the largest common prefix is a meet semi-lattice. The natural partial order $\alpha\sqsubseteq\omega$ on $S$, ``$\alpha$ is a prefix of $\omega$'', in the context of descriptions, can be translated to $\alpha$ being less specific, restrictive, than $\omega$. In turn, the operation $\alpha\sqcap\omega$ produces a description, which is more general than both $\alpha$ and $\omega$. The empty string, $\epsilon$, is thus the most general description.
 
 % subsubsection string_descriptions (end)
 
@@ -474,9 +567,9 @@ The void description. The universal description
 
 
 In view of simplifying algebraic derivations in the pattern structures, it might be necessary to define a description projection map $\pi:D\to D$, with the following properties:\footnote{See lecture 7 ``Pattern Structures on Graphs'', slide~28} \begin{description}
-	\item[Monotonicity] \hfill\\ The projection operation does not increase specificity of a description: $x\sqsubseteq y$ implies $\pi(x)\subseteq \pi(y)$ for any $x,y\in D$;
-	\item[Generalisation] \hfill\\ The projection of any description must be less specific that the original: $\pi(x)\sqsubseteq x$ for any $x\in D$;
-	\item[Idempotence] \hfill\\ Projection of a projected description yields the same projection: $\pi\brac{\pi(x)} = \pi(x)$ for all $x\in D$.
+	\item[Monotonicity] \hfill \\ The projection operation does not increase specificity of a description: $x\sqsubseteq y$ implies $\pi(x)\subseteq \pi(y)$ for any $x,y\in D$;
+	\item[Generalisation] \hfill \\ The projection of any description must be less specific that the original: $\pi(x)\sqsubseteq x$ for any $x\in D$;
+	\item[Idempotence] \hfill \\ Projection of a projected description yields the same projection: $\pi\brac{\pi(x)} = \pi(x)$ for all $x\in D$.
 \end{description}
 In effect a projection is just a modification of the object-description mapping $\delta$: $\delta \Rightarrow \pi \circ \delta$. Monotonicity of $\pi$ and associativity of $\sqcup$ imply that $\pi\brac{x\sqcup y}\sqsubseteq \pi(x)\sqcup\pi(y)$, and generalisation and idempotence of $\pi$ with associativity of $\sqcup$ imply that \[\brac{\pi(x)\sqcup\pi(y)}\sqcup (x\sqcup y) = \brac{\pi(x)\sqcup x}\sqcup \brac{\pi(y)\sqcup y} = \pi(x)\sqcup \pi(y)\] whence $\pi(x)\sqcup\pi(y)\sqsubseteq x\sqcup y$. Therefore $\pi\brac{x\sqcup y} = \pi(x)\sqcup\pi(y)$.
 
