@@ -131,13 +131,22 @@ Conversely, if $\phi(x) < \phi(y)$ then there exist $\brac{w_k}_{k=0}^m\in Q$ su
 \subsection{Order ideals and filters} % (fold)
 \label{sub:order_ideals_and_filters}
 
-Let $(P,\leq)$ and $Q\subseteq P$. The set $Q$ is an \textbf{order ideal} (or a \emph{downset}) if for every $y\in Q$ and $x\in P$ the relation $x\leq y$ implies $x\in Q$. \textbf{Order filters} (\emph{upsets}) are dual to order ideals. The set of all order ideals of $P$, $\Ocal(P)$, is itself a poset with respect to set inclusion partial order.
+Let $(P,\leq)$ and $Q\subseteq P$. The set $Q$ is an \textbf{order ideal} (or a \emph{downset}) if for every $y\in Q$ and $x\in P$ the relation $x\leq y$ implies $x\in Q$. \textbf{Order filters} (\emph{upsets}) are dual to order ideals. The set of all order ideals of $P$, $\Ocal(P)$, is itself a poset with respect to set inclusion partial order (it inherits its order properties from the set of subsets of $P$).
 
 For an arbitrary subset $Q\subseteq P$ put \begin{align*}
 	Q^\downarrow &\defn \obj{ \induc{ y\in P }\,\exists x\in Q,\, y\leq x }\\
 	Q^\uparrow &\defn \obj{ \induc{ y\in P }\,\exists x\in Q,\, x\leq y }
 \end{align*}
 which are called the ``down'' and ``up'' of $Q$.
+
+\begin{prop} A subset $Q$ of a poset $(P,\leq)$ is a downset if and only if $y^\downarrow\subseteq Q$ for all $y\in Q$.
+\end{prop}
+
+\begin{proof}
+$\Rightarrow$ Indeed, if $Q$ is a downset of $P$ and $y\in Q$, then for any $w\in y^\downarrow$ it is true that $w\in P$ and $w\leq y$, whence by definition $w\in Q$. Therefore, $y^\downarrow\subseteq Q$ for every $y\in Q$.
+
+$\Leftarrow$ Conversely, if $y\in Q$ and $x\in P$ are such that $x\leq y$ then $x\in y^\downarrow\subseteq Q$.
+\end{proof}
 
 Clearly, $Q^\downarrow$ is a downset of $P$. Indeed, if $y\in Q^\downarrow$ and $x\in P$ are such that $x\leq y$, then by definition there exists $w\in Q$ with $y\leq w$. Then by transitivity $x\leq w$ for some $w\in Q$, whence $x\in Q^\downarrow$.
 
@@ -162,6 +171,15 @@ $3 \Rightarrow 1$ Suppose $x,y\in P$ are such that $y\in Q$ implies $x\in Q$ for
 $1 \Rightarrow 3$ If $x\leq y$ and $Q\in \Ocal(P)$ is such that $y\in Q$, then $x\in Q$ by definition of a downset.
 \end{proof}
 
+\begin{prop} Let $(P,\leq)$ be a poset. The set of all order ideals of $P$ is closed under set union and intersection.
+\end{prop}
+
+\begin{proof}
+Indeed, suppose $M,N\in \Ocal(P)$ are two order ideals of $P$. If $x\in N\cap M$ then $x^\downarrow \subseteq N,M$, whence $x^\downarrow\subseteq N\cap M$. Therefore, $N\cap M$ is a downset of $P$.
+
+Similarly, if $x\in N\cap M$, then $x^\downarrow\subseteq N$ or $x^\downarrow\subseteq M$ since both $N$ and $M$ are order ideals. Thus, $x^\downarrow\subseteq N\cap M$ and $N\cap M \in \Ocal(P)$. 
+\end{proof}
+
 % subsection order_ideals_and_filters (end)
 
 \subsection{Poset products} % (fold)
@@ -177,15 +195,33 @@ Let $\brac{P_i, \leq_i}_{i\in I}$ be a family of posets. The direct product of p
 \section{Lattices and complete lattices} % (fold)
 \label{sec:lattices_and_complete_lattices}
 
+Consider a partially ordered set $(P, \leq)$. A supremum, or the least upper bound, of $S\subseteq P$ is such $a\in P$ that $x\leq a$ for all $x\in S$ and for every $b\in P$ with $x\leq b$ for all $x\in S$ it is true that $a\leq b$. An infimum, or the greatest lower bound, is defined similarly: an infimum of $S\subseteq P$ is such $a\in P$ that $a\leq x$ for all $x\in S$ and for any $b\in P$ with $b\leq x$ for all $x\in S$ it is true that $b\leq a$. The definition of a supremum (an infimum), if one exists, implies that it is unique, which means that it can be unambiguously denoted by $\sup S\in P$.
+
 \selectlanguage{english}
 \subsection{Semi-lattices} % (fold)
 \label{sub:semi_lattices}
 
-Algebraically a semi-lattice is pair $(L, \diamond)$ such that $\diamond: L\times L \to L$ is idempotent, commutative and associative. Algebraic properties of $\diamond$ induce a partial order relation $\trianglelefteq$ on the semi-lattice.\footnote{Also known as the natural lattice partial order.} This order, however depends on the semantics of the operation $\diamond$: in a meet semi-lattice for all $x,y\in L$ \[x \trianglelefteq y\text{ if and only if } x = x\diamond y\] while in a semi-lattice with join semantics for all $x,y\in L$ \[x \trianglelefteq y\text{ if and only if } x\diamond y = y\] Straightforward application of the basic properties of $\diamond$ imply that $\trianglelefteq$ is reflexive, anti-symmetric and transitive.
+Algebraically a semi-lattice is pair $(L, \diamond)$ such that $\diamond: L\times L \to L$ is idempotent, commutative and associative. From the order-theoretic approach, a join semi-lattice is a poset $(P, \leq)$ such that the supremum $\sup\obj{x, y}$ exists for every pair of $x, y \in P$. Similarly, a meet semi-lattice is a poset with a well-defined pairwise infimum operation.
 
-Consider a partially ordered set $(P, \leq)$. A supremum of $S\subseteq P$ is such $a\in P$ that $x\leq a$ for all $x\in S$ and for every $b\in P$ with $x\leq b$ for all $x\in S$ it is true that $a\leq b$. The definition of a supremum, if one exist, implies that it is unique, which means that it can be unambiguously denoted by $\sup S\in P$.
+\begin{prop} Algebraic and order-theoretic definitions are equivalent.
+\end{prop}
 
-From the order set-theoretic approach, a join semi-lattice is a poset $(P, \leq)$ such that the supremum $\sup\obj{x, y}$ exists for every pair of $x, y \in P$. Direct analysis of the definition of the supremum and basic properties of the partial order $\leq$, naturally define an idempotent, associative and commutative operator $\sqcup$ on $P$ as $x\sqcup y \defn \sup\obj{x,y}$. Therefore algebraic and order set-theoretic definitions are in fact equivalent. A meet semi-lattice is defined similarly, but with an infimum operation: an infimum of $S\subseteq P$ is such $a\in P$ that $a\leq x$ for all $x\in S$ and for any $b\in P$ with $b\leq x$ for all $x\in S$ it is true that $b\leq a$.
+\begin{proof}
+$\Rightarrow$ Suppose $(P,\leq)$ is a poset with a pairwise supremum operation $\sup$.
+
+Let $x,y,z\in P$ and define a natural binary operation $\diamond$ on $P$ as $x\diamond y \defn \sup\obj{x,y}$. Since $x$ cannot be anything but the least upper bound of itself, $x\diamond x=\sup\obj{x,x}=x$. Furthermore, $\diamond$ is commutative, because $\sup$ is by definition symmetric.
+
+Associativity of $\diamond$ results from the following set of observations: by definition of an upper bound $x,y\leq x\diamond y$ and $x\diamond y,z \leq \brac{x\diamond y}\diamond z$, whence $x,y,z \leq \brac{x\diamond y}\diamond z$. Since $y\diamond z$ is the \emph{least} upper bound of $y$ and $z$, it must be true that $x, (y\diamond z) \leq \brac{x\diamond y}\diamond z$, which implies $x\diamond\brac{y\diamond z} \leq \brac{x\diamond y}\diamond z$. Similarly $\brac{x\diamond y}\diamond z\leq x\diamond\brac{y\diamond z}$.
+
+Thus $\diamond$ is idempotent, associative and commutative, whence $(P,\diamond)$ is an algebraic semi-lattice. The particular semantics of the semi-lattice is determined by how the partial order $\leq$ is aligned with the defined operation $\diamond$. In the case of a supremum, the semi-lattice has join semantics.
+
+$\Leftarrow$ Let $(L,\diamond)$ be an algebraic semi-lattice with join semantics. Properties of $\diamond$ induce a partial order relation $\trianglelefteq$ on the semi-lattice, also known as the \emph{natural partial order}. This order, however depends on the semantics of the operation $\diamond$: in a semi-lattice with join semantics for all $x,y\in L$ \[x \trianglelefteq y\text{ if and only if } x\diamond y = y\] while in a meet semi-lattice for all $x,y\in L$ \[x \trianglelefteq y\text{ if and only if } x = x\diamond y\]
+	
+Straightforward application of the basic properties of $\diamond$ imply that $\trianglelefteq$ is reflexive (idempotence), anti-symmetric (commutativity) and transitive (associativity).
+
+Furthermore, if $x,y\in L$, then $x,y\trianglelefteq x\diamond y$ by definition of the partial order $\trianglelefteq$. If $a\in L$ is any other element such that $x,y\trianglelefteq a$, then by definition \[x = x \diamond a\,\text{ and }\, y = y\diamond a\] By commutativity and associativity of $\diamond$, it must be true that \[(a\diamond x) \diamond y = x\diamond y = x\diamond (a\diamond y)\] whence $x\diamond y\trianglelefteq a$. Thus $(L,\trianglelefteq)$ is a poset with a well-defined pairwise supremum operation.
+
+\end{proof}
 
 % subsection semi_lattices (end)
 
@@ -195,22 +231,33 @@ From the order set-theoretic approach, a join semi-lattice is a poset $(P, \leq)
 
 A join semi-lattice $(P,\leq)$ is \emph{complete} if $\sup S$ exists for any subset $S\subseteq P$. Furthermore if $A\subseteq B\subseteq P$, then $x\leq \sup B$ for all $x\in A$ whence $\sup A\leq\sup B$. Thus an element $\perp \defn \sup \emptyset$ of $P$ must be the least element in $(P,\leq)$.
 
-A lattice $L$ is complete if $\sup S$ and $\inf S$ exist for any $S\subseteq L$.
+A triple $(L,\vee,\wedge)$ is a lattice, if $(L,\vee)$ and $(L,\wedge)$ are semi-lattices with join and meet semantics respectively, obeying the operation consistency constraint: for any $x,y\in L$ \[x = x\vee(x\wedge y) = x \wedge (x\vee y)\] A lattice $L$ is complete if $\sup S$ and $\inf S$ exist for any $S\subseteq L$.
 
 % \noindent \textbf{Theorem} \hfill \\
 \begin{prop} Let $(P,\leq)$ be a poset. The ordered set $\Ocal(P)$ of ideals is a complete lattice with $\cap$ and $\cup$ operators.
 \end{prop}
 
-\begin{proof}
-PROOF NEEDED!
+\begin{proof} Consider the poset $\brac{\Ocal(P), \subseteq}$. Set operations $\cap$ and $\cup$ inherit their idempotence, commutativity and associativity from the power set of $P$.
+
+Let $X,Y\in \Ocal(P)$ be some order ideals of $P$. The consistency constraint is satisfied, because $X\subseteq X\cup Y$ and $X\cap Y\subseteq X$, whence \[X = X\cap(X\cup Y) = X\cup(X\cap Y)\]
+
+Completeness follows from the fact that $\Ocal(P)$ is closed under intersection and union.
 \end{proof}
 
 % \noindent \textbf{Theorem} \hfill \\
-\begin{prop} By induction on the number of elements in $X\subseteq L$, it can be show that every non-empty finite lattice is complete.
+\begin{prop} By induction on the number of elements in $X\subseteq L$, it can be shown that every non-empty finite lattice $(L,\leq)$ is complete.
 \end{prop}
 
 \begin{proof}
-PROOF NEEDED!
+Since every $x\in L$ is the least upper and the greatest lower bound of itself, the statement is true for subsets $X\subseteq L$ with $\abs{X}=1$.
+
+Consider a set $X\subseteq L$ with $\abs{X}=2$. Then, since $L$ is a lattice, both $\bigvee X$ and $\bigwedge X$ exist in $L$. Suppose for any $X\subseteq L$ with $\abs{X}<n$ both $\bigvee X, \bigwedge X \in L$.
+
+If $X$ is partitioned into $S$ and $T$, then $x\leq \bigvee (S\cup T)$ for all $x\in S\cup T$, whence $\bigvee S,\bigvee T\leq \bigvee (S\cup T)$, provided \emph{everything exists}. Furthermore, $(\bigvee S)\vee (\bigvee T)\leq \bigvee (S\cup T)$. Conversely, \[\bigvee S,\bigvee T \leq (\bigvee S)\vee (\bigvee T)\] whence $x\leq (\bigvee S)\vee (\bigvee T)$ for all $x\in S\cap T$. Thus $\bigvee (S \cap T)\leq (\bigvee S)\vee (\bigvee T)$.
+
+So, $X=S\cap T$, $S\cap T = \emptyset$ and $\emptyset\neq S,T\subset X$. Thus $\bigvee S$ and $\bigvee T$ exist in $L$ since $\abs{S},\abs{T}<\abs{X}$ due to finiteness of $L$ itself. Hence \[\bigvee X = (\bigvee S)\vee (\bigvee T)\] which implies that $L$ is join-complete. Completeness with respect to the meet operation if shown similarly.
+
+Since the set of upper bound of $\emptyset$ is $L$ itself, the least upper bound of $\emptyset$ must therefore be the greatest lower bound of the whole set $L$. Similarly, $\bigwedge \emptyset = \bigvee L$.
 \end{proof}
 
 % \noindent \textbf{Theorem} \hfill \\
@@ -218,7 +265,12 @@ PROOF NEEDED!
 \end{prop}
 
 \begin{proof}
-PROOF NEEDED!
+Let $X\subseteq P$ and consider $S\defn \obj{\induc{s\in P}\,\forall x\in X\, x\leq s}$ -- the set of all upper bounds of $X$.
+
+By assumption, $\inf S$ exists in $P$. If there is $y\in X$ with $\inf S < y$, then $y$ cannot be a lower bound of $S$, whence there must exist $z\in S$ with $\inf S\leq z<y$. Since $x\leq z$ for all $x\in X$, by transitivity of $\leq$ it must be true that $x<y$ for all $x\in X$. In particular, $y<y$ which implies $y\neq y$. Therefore, $x\leq \inf S$ for all $x\in X$.
+
+Suppose, there is some $w\in P$ with $x\leq w$ for all $x\in X$. Then $w\in S$, whence $\inf S \leq w$. Hence, $\inf S$ is the least upper bound of $X$.
+
 \end{proof}
 
 % subsection complete_lattices (end)
@@ -381,14 +433,18 @@ The map $\psi:L\to\cltc(G,M,I)$ defined as $\psi(x)\defn (A_x,B_x)$ is a correct
 Now, $\psi$ looks very much like an inverse of $\phi$. Indeed, $\phi\brac{\psi(x)} = \bigvee_{g\in A_x}\gamma(g) = x$ by join-density of $\gamma(G)$. Pick any $(A,B)\in \cltc(G,M,I)$ and let $x\defn \bigvee_{g\in A} \gamma(g)$. For any $g\in A$ it is true that $\gamma(g)\leq x$, whence $g\in A_x$ by definition. On the other hand, if $m\in B$ then $m\in A'$ and $\gamma(g)\leq \mu(m)$ for all $g\in A$, whence $x\leq \mu(m)$ as $x$ is the \emph{least upper bound} for $\gamma(A)$. Hence $m\in B_x$ and $A\subseteq A_x$ and $B\subseteq B_x$. However $(A,B),(A_x, B_x)\in \cltc(G,M,I)$, whence, in particular, $A'=B$ and $A_x'=B_x$. Thus by \textbf{(AMON)} of ${(\cdot)}'$ the inclusion $A\subseteq A_x$ is equivalent to $A = B_x' \subseteq B' = A$, which means that $A = A_x$ and $B=B_x$. Therefore $\psi\brac{\phi(A,B)}=(A,B)$.
 \end{proof}
 
-
 % subsubsection the_main_theorem_of_fca (end)
 
 % subsection concept_lattices (end)
 
+% section lattices_and_complete_lattices (end)
+
+\section{Clarifying and reducing the context} % (fold)
+\label{sec:clarifying_and_reducing_the_context}
 % p.~33
 
-% section lattices_and_complete_lattices (end)
+
+% section clarifying_and_reducing_the_context (end)
 
 % part first_module (end)
 
