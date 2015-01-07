@@ -28,7 +28,7 @@
 \newcommand{\Pat}{\mathbb{P}}
 \newcommand{\supp}{\text{supp}}
 \newcommand{\conf}{\text{conf}}
-\newcommand{\cltc}{\mathfrak{ B}}
+\newcommand{\cltc}{\mathfrak{B}}
 
 \newtheorem{prop}{Proposition}
 
@@ -61,17 +61,107 @@
 
 Формальным понятием контекста $\Ctx$ является пара $(A,B)$ подмножеств $\mathbb{G}$ и $\mathbb{M}$ соответственно, для которых справедливо, что $A=f^*\brac{B}$ и $B=f_*\brac{A}$. На самом деле можно показать, что в силу корректности определения отображения Галуа и благодаря свойствам оператора замыкания, пара является формальным понятием тогда и только тогда когда $\text{cl}_{\mathbb{G}}\brac{A} = A$ (и соответственно $\text{cl}_{\mathbb{M}}\brac{B} = B$).
 
-Для формальных понятий $(A_1,B_1)$ и $(A_1,B_1)$ из базовых свойств отображений $f^*$ и $f_*$ вытекает, $A_1\subseteq A_2$ тогда и только тогда, когда $B_2\subseteq B_1$. На основании этого наблюдения на множестве формальных понятий естественно ввести частичный $\preceq$ на основе вложения подмножества, причём неважно на объектной или аттрибутивной части понятия. 
+Для формальных понятий $(A_1,B_1)$ и $(A_2,B_2)$ из базовых свойств отображений $f^*$ и $f_*$ вытекает, $A_1\subseteq A_2$ тогда и только тогда, когда $B_2\subseteq B_1$. На основании этого наблюдения на множестве формальных понятий естественно ввести частичный $\preceq$ на основе вложения подмножества, причём неважно на объектной или аттрибутивной части понятия. 
 
-Пусть $(A_1,B_1)$ и $(A_1,B_1)$ формальные понятия. Тогда из свойств оператора замыкания $\text{cl}_{\mathbb{G}}$ на множестве объектов вытекает $A_1\cap A_2\subseteq \text{cl}_{\mathbb{G}}\brac{A_1\cap A_2}$, и что $\text{cl}_{\mathbb{G}}\brac{A_1\cap A_2}\subseteq \text{cl}_{\mathbb{G}}\brac{A_1}, \text{cl}_{\mathbb{G}}\brac{A_2}$, откуда из того, что $A_1$ и $A_2$ замкнуты, вытекает $\text{cl}_{\mathbb{G}}\brac{A_1\cap A_2}\subseteq A_1\cap A_2$. Аналогичное свойство выполняется для атрибутов формальных понятий: \[B_1\cap B_2 \subseteq \text{cl}_{\mathbb{M}}\brac{B_1\cap B_2} \subseteq B_1\cap B_2\] Это наблюдение, в совокупности со свойствами оператора пересечения множеств, позволяет определить на частично упорядоченном множестве формальных понятий операторы инфимума и супремума следующим образом: \begin{align*}
+Пусть $(A_1,B_1)$ и $(A_2,B_2)$ формальные понятия. Тогда из свойств оператора замыкания $\text{cl}_{\mathbb{G}}$ на множестве объектов вытекает $A_1\cap A_2\subseteq \text{cl}_{\mathbb{G}}\brac{A_1\cap A_2}$, и что $\text{cl}_{\mathbb{G}}\brac{A_1\cap A_2}\subseteq \text{cl}_{\mathbb{G}}\brac{A_1}, \text{cl}_{\mathbb{G}}\brac{A_2}$, откуда из того, что $A_1$ и $A_2$ замкнуты, вытекает $\text{cl}_{\mathbb{G}}\brac{A_1\cap A_2}\subseteq A_1\cap A_2$. Аналогичное свойство выполняется для атрибутов формальных понятий: \[B_1\cap B_2 \subseteq \text{cl}_{\mathbb{M}}\brac{B_1\cap B_2} \subseteq B_1\cap B_2\] Это наблюдение, в совокупности со свойствами оператора пересечения множеств, позволяет определить на частично упорядоченном множестве формальных понятий операторы инфимума и супремума следующим образом: \begin{align*}
 	\brac{A_1, B_1}\vee \brac{A_2, B_2} &\defn \brac{f^*\brac{B_1\cap B_2}, B_1\cap B_2}\\
 	\brac{A_1, B_1}\wedge \brac{A_2, B_2} &\defn \brac{A_1\cap A_2, f_*\brac{A_1\cap A_2}}\\
 \end{align*}
 Непосредственно проверяется тот факт, что операторы, заданные таким образом, определяют решётку на частично упорядоченном множестве формальных понятий контекста.
 
 \selectlanguage{english}
+\section{Ordered sets} % (fold)
+\label{sec:ordered_sets}
+
+A poset is a pair $(P,\leq)$, where $P$ is a non-empty set and $\leq$ is a partial order on $P$ -- a reflexive, anti-symmetric and transitive binary relation.
+
+\subsection{The convering relation} % (fold)
+\label{sub:the_convering_relation}
+
+Let $(P,\leq)$ be a poset and $x, y\in P$. We say that $x$ is \textbf{covered by} $y$, $x\prec y$ if $x\leq y$, $x\neq y$ and there is not $z\in P$ with $z\neq x, y$ such that $x \leq z \leq y$.
+
+% \noindent\textbf{Theorem} \hfill \\
+\begin{prop} If $P$ is finite then $x<y$ is equivalent to $\exists \brac{z_k}_{k=0}^m\in P$ with $x = z_0\prec z_1\prec \ldots \prec z_m = y$.
+\end{prop}
+
+\begin{proof}
+PROOF NEEDED!
+\end{proof}
+
+% subsection the_convering_relation (end)
+
+\subsection{Order isomorphism} % (fold)
+\label{sub:order_isomorphism}
+
+\begin{prop} Let $(P,\leq)$ and $(Q,\leq)$ be posets and $\phi:P\to Q$ be a bijective map. Then the following are equivalent: \begin{enumerate}
+	\item $\phi$ is an order isomorphism
+	\item $x<y$ if and only if $\phi(x)<\phi(y)$ in $Q$
+	\item $x\prec y$ if and only if $\phi(x)\prec \phi(y)$ in $Q$
+\end{enumerate}
+\end{prop}
+
+\begin{proof}
+PROOF NEEDED!
+\end{proof}
+
+% subsection order_isomorphism (end)
+
+\subsection{Order ideals and filters} % (fold)
+\label{sub:order_ideals_and_filters}
+
+Let $(P,\leq)$ and $Q\subseteq P$
+\begin{description}
+	\item[Order Ideal] whenever $x\in Q$ and $y\in P$ with $y\leq x$, we have $y\in Q$
+	\item[Order Filter] whenever $x\in Q$ and $y\in P$ with $x\leq y$, we have $y\in Q$
+\end{description}
+ideals (and filters) are ordered by set inclusion $\subseteq$. Let $\mathcal{O}(P)$ be the set of all order ideals of $P$.
+
+\[Q^\downarrow \defn  \obj{ \induc{ y\in P }\,\exists x\in Q,\, x\leq y }\]
+\[Q^\uparrow \defn  \obj{ \induc{ y\in P }\,\exists x\in Q,\, y\leq x }\]
+
+\begin{prop} If $(P,\leq)$ is  a poset and $x,y\in P$ then the following are equivalent: \begin{enumerate}
+	\item $\leq y$
+	\item $x^\downarrow\subseteq y^\downarrow$
+	\item for all $Q\in \mathcal{O}(P)$ if $y\in Q$ then $x\in Q$
+\end{enumerate}
+\end{prop}
+
+\begin{proof}
+PROOF NEEDED!
+\end{proof}
+
+% subsection order_ideals_and_filters (end)
+
+\subsection{Poset products} % (fold)
+\label{sub:poset_products}
+
+Let $\brac{P_i, \leq_i}_{i\in I}$ be a family of posets. The direct product of posets $(P,\leq) = \bigotimes_{i\in I} (P_i,\leq_i)$ is defined as $P\defn \prod_{i\in I} P_i$ with coordinate-wise order defined for any $x,y\in P$ as $x\leq y$ if and only if $x_i\leq_i y_i$ for all $i\in I$.
+
+% subsection poset_products (end)
+
+% section ordered_sets (end)
+
+\selectlanguage{english}
 \section{Lattices and complete lattices} % (fold)
 \label{sec:lattices_and_complete_lattices}
+
+\selectlanguage{english}
+\subsection{Semi-lattices} % (fold)
+\label{sub:semi_lattices}
+
+Algebraically a semi-lattice is pair $(L, \diamond)$ such that $\diamond: L\times L \to L$ is idempotent, commutative and associative. Algebraic properties of $\diamond$ induce a partial order relation $\trianglelefteq$ on the semi-lattice.\footnote{Also known as the natural lattice partial order.} This order, however depends on the semantics of the operation $\diamond$: in a meet semi-lattice for all $x,y\in L$ \[x \trianglelefteq y\text{ if and only if } x = x\diamond y\] while in a semi-lattice with join semantics for all $x,y\in L$ \[x \trianglelefteq y\text{ if and only if } x\diamond y = y\] Straightforward application of the basic properties of $\diamond$ imply that $\trianglelefteq$ is reflexive, anti-symmetric and transitive.
+
+Consider a partially ordered set $(P, \leq)$. A supremum of $S\subseteq P$ is such $a\in P$ that $x\leq a$ for all $x\in S$ and for every $b\in P$ with $x\leq b$ for all $x\in S$ it is true that $a\leq b$. The definition of a supremum, if one exist, implies that it is unique, which means that it can be unambiguously denoted by $\sup S\in P$.
+
+From the order set-theoretic approach, a join semi-lattice is a poset $(P, \leq)$ such that the supremum $\sup\obj{x, y}$ exists for every pair of $x, y \in P$. Direct analysis of the definition of the supremum and basic properties of the partial order $\leq$, naturally define an idempotent, associative and commutative operator $\sqcup$ on $P$ as $x\sqcup y \defn \sup\obj{x,y}$. Therefore algebraic and order set-theoretic definitions are in fact equivalent. A meet semi-lattice is defined similarly, but with an infimum operation: an infimum of $S\subseteq P$ is such $a\in P$ that $a\leq x$ for all $x\in S$ and for any $b\in P$ with $b\leq x$ for all $x\in S$ it is true that $b\leq a$.
+
+% subsection semi_lattices (end)
+
+\selectlanguage{english}
+\subsection{Complete lattices} % (fold)
+\label{sub:complete_lattices}
+
+A join semi-lattice $(P,\leq)$ is \emph{complete} if $\sup S$ exists for any subset $S\subseteq P$. Furthermore if $A\subseteq B\subseteq P$, then $x\leq \sup B$ for all $x\in A$ whence $\sup A\leq\sup B$. Thus an element $\perp \defn \sup \emptyset$ of $P$ must be the least element in $(P,\leq)$.
 
 A lattice $L$ is complete if $\sup S$ and $\inf S$ exist for any $S\subseteq L$.
 
@@ -79,13 +169,27 @@ A lattice $L$ is complete if $\sup S$ and $\inf S$ exist for any $S\subseteq L$.
 \begin{prop} Let $(P,\leq)$ be a poset. The ordered set $\mathcal{O}(P)$ of ideals is a complete lattice with $\cap$ and $\cup$ operators.
 \end{prop}
 
+\begin{proof}
+PROOF NEEDED!
+\end{proof}
+
 % \noindent \textbf{Theorem} \hfill \\
 \begin{prop} By induction on the number of elements in $X\subseteq L$, it can be show that every non-empty finite lattice is complete.
 \end{prop}
 
+\begin{proof}
+PROOF NEEDED!
+\end{proof}
+
 % \noindent \textbf{Theorem} \hfill \\
 \begin{prop} A poset $(P,\leq)$ such that $\inf X$ exists for every $X\subseteq P$ is a complete lattice.
 \end{prop}
+
+\begin{proof}
+PROOF NEEDED!
+\end{proof}
+
+% subsection complete_lattices (end)
 
 \selectlanguage{english}
 \subsection{Irreducible elements} % (fold)
@@ -172,7 +276,7 @@ Let $\psi:Q\to P$ be defined as $\psi(q) \defn \sup\obj{\induc{p\in P}\,q\leq \p
 
 A context is a triple $(G,M,I)$ where $G$ and $M$ are sets and $I$ is a relation between $G$ and $M$. For a set of objects $A\subseteq G$ define \[A'\defn \obj{\induc{m\in M}\,\forall g\in A\,(g,m)\in I}\] the set of attributes common to all objects in $A$. For a set of attributes $B\subseteq M$ put \[B'\defn \obj{\induc{g\in G}\,\forall m\in M\,(g,m)\in I}\] So $B'$ is the set of all object sharing all the attributes in $B$. The maps ${(\cdot)}'$ are \emph{the derivation operators} of the context $(G,M,I)$.
 
-A \emph{concept} of the context $(G,M,I)$ is a pair $(A,B)$ with $A\subseteq G$ and $B\subseteq M$ such that $A'=B$ and $B'=A$. The sets $A$ and $B$ are the extent and the intent respectively, and $A$ is the extent of some concept if $A''=A$ (similarly for the intent).
+A \emph{concept} of the context $(G,M,I)$ is a pair $(A,B)$ with $A\subseteq G$ and $B\subseteq M$ such that $A'=B$ and $B'=A$. The sets $A$ and $B$ are the extent and the intent respectively, and $A$ is the extent of some concept if $A''=A$ (similarly for intents).
 
 % \noindent \textbf{Theorem} \hfill \\
 \begin{prop} The derivation operators ${(\cdot)}'$ are a Galois connection.
@@ -250,12 +354,37 @@ Now, $\psi$ looks very much like an inverse of $\phi$. Indeed, $\phi\brac{\psi(x
 
 % subsection concept_lattices (end)
 
-p.~33
+% p.~33
 
 % section lattices_and_complete_lattices (end)
 
 % part first_module (end)
 
+%%% План
+%%% формальный контекст
+%%% соответствие Галуа
+%%% оператор замыкания
+%%% формальное понятие контекста с (формальным) объемом и (формальным) содержанием
+%%% Основная теорема Анализа Формальных Понятий
+
+% Импликации на подмножествах признаков
+% Псевдосодержание
+
+% многозначные контексты
+% Импликации и зависимости в реляционных базах данных
+% шкалирование
+
+% принцип достаточного основания принятия гипотез 45
+% Гипотезы и родственные понятия из анализа данных
+% Пространство версий между минимальными гипотезами и минимальными посылками 61-65
+
+% Гипотезы, решетки понятий и деревья решений
+% ДСМ-гипотезы для множественных свойств 67-69
+
+% Узорные структуры: определение и связь с формальными контекстами
+% контекстом представления
+% Проекции узорных структур 74-80
+% Порождение гипотез в проекциях
 
 \selectlanguage{english}
 \part{Second module} % (fold)
@@ -326,7 +455,7 @@ Seminars covered a brute force algorithm for constructing all pseudo-intents whi
 \label{sub:lazy_classification}
 % 1.4. Ленивая классификация
 
-Lazy classification has its roots in democratic voting. It can be used if one doesn't want to compute an complete implication base.
+Lazy classification has its roots in democratic voting. It can be used if one doesn't want to compute a complete implication base.
 
 Consider a binary context $(\Gamma, M, \Ical)$. This is the universal formal context, which contains descriptions of every objects. Let $G$ be a strict subset of $\Gamma$ know as the learning sample of objects. The restriction $I$ of the binary relation $\Ical$ to $G$ (technically to $G\times M$) is defined as $(g,m)\in I$ if and only if $(g,m)\in \Ical$ and $g\in G$. This produces a learning context $\Ctx = (G,M,I)$ with the usual derivation operator ${(\cdot)}'$ (the pair of Galois operators).
 
@@ -501,19 +630,6 @@ $H_+\subseteq g^\tau$
 \section{Pattern structures} % (fold)
 \label{sec:pattern_structures}
 % pp.~74-76,77, lecture 7
-
-\subsection{Intro on semi-lattices} % (fold)
-\label{sub:intro_on_semi_lattices}
-
-Algebraically a semi-lattice is pair $(L, \diamond)$ such that $\diamond: L\times L \to L$ is idempotent, commutative and associative. Algebraic properties of $\diamond$ induce a partial order relation $\trianglelefteq$ on the semi-lattice.\footnote{ALso known as the natural lattice partial order.} This order, however depends on the semantics of the operation $\diamond$: in a meet semi-lattice for all $x,y\in L$ \[x \trianglelefteq y\text{ if and only if } x = x\diamond y\] while in a semi-lattice with join semantics for all $x,y\in L$ \[x \trianglelefteq y\text{ if and only if } x\diamond y = y\] Straightforward application of the basic properties of $\diamond$ imply that $\trianglelefteq$ is reflexive, anti-symmetric and transitive.
-
-Consider a partially ordered set $(P, \leq)$. A supremum of $S\subseteq P$ is such $a\in P$ that $x\leq a$ for all $x\in S$ and for every $b\in P$ with $x\leq b$ for all $x\in S$ it is true that $a\leq b$. The definition of a supremum, if one exist, implies that it is unique, which means that it can be unambiguously denoted by $\sup S\in P$.
-
-From the order set-theoretic approach, a join semi-lattice is a poset $(P, \leq)$ such that the supremum $\sup\obj{x, y}$ exists for every pair of $x, y \in P$. Direct analysis of the definition of the supremum and basic properties of the partial order $\leq$, naturally define an idempotent, associative and commutative operator $\sqcup$ on $P$ as $x\sqcup y \defn \sup\obj{x,y}$. Therefore algebraic and order set-theoretic definitions are in fact equivalent. A meet semi-lattice is defined similarly, but with an infimum operation: an infimum of $S\subseteq P$ is such $a\in P$ that $a\leq x$ for all $x\in S$ and for any $b\in P$ with $b\leq x$ for all $x\in S$ it is true that $b\leq a$.
-
-A join semi-lattice $(P,\leq)$ is \emph{complete} if $\sup S$ exists for any subset $S\subseteq P$. Furthermore if $A\subseteq B\subseteq P$, then $x\leq \sup B$ for all $x\in A$ whence $\sup A\leq\sup B$. Thus an element $\perp \defn \sup \emptyset$ of $P$ must be the least element in $(P,\leq)$.
-
-% subsection intro_on_semi_lattices (end)
 
 \subsection{Semi-lattices of descriptions} % (fold)
 \label{sub:semi_lattices_of_descriptions}
