@@ -23,6 +23,7 @@
 \newcommand{\Cplx}{\mathbb{C}}
 \newcommand{\Pwr}{\mathcal{P}}
 \newcommand{\Ical}{\mathcal{I}}
+\newcommand{\Ocal}{\mathcal{O}}
 
 \newcommand{\Ctx}{\mathbb{K}}
 \newcommand{\Pat}{\mathbb{P}}
@@ -122,7 +123,7 @@ On the other hand, if $x,y\in P$ are such that $\phi(x)\prec \phi(y)$, then $\ph
 
 $2 \Leftarrow 3$ Suppose $x<y$. Since $P$ is finite, by a theorem on covering relations, there must exist $\brac{x_k}_{k=0}^n\in P$ with $x=x_0 \prec x_1 \prec \ldots \prec x_n=y$. By transitivity of $\leq$ and the definition of $\prec$ it must be true that \[\phi(x) = \phi(x_0) \prec \phi(x_1) \prec \ldots \prec \phi(x_n) = \phi(y)\]
 
-Conversely, if $\phi(x) < \phi(y)$ then there exist $\brac{w_k}_{k=0}^m\in Q$ such that \[\phi(x) = w_0 \prec w_1 \prec \ldots \prec w_m = \phi(y)\] Since $\phi$ is bijective there exist $\brac{x_k}_{k=0}^m\in P$ with $w_k=\phi(x_k)$. Thus $w_k = \phi(x_k)\prec \phi(x_{k+1})=w_{k+1}$ implies $x_k\prec x_{k+1}$ for all $k=0,\ldots,\{m-1}$. Thus by transitivity of $\leq$ it must be true that $x_0<x_1<\ldots<x_m$, whence $x<y$.
+Conversely, if $\phi(x) < \phi(y)$ then there exist $\brac{w_k}_{k=0}^m\in Q$ such that \[\phi(x) = w_0 \prec w_1 \prec \ldots \prec w_m = \phi(y)\] Since $\phi$ is bijective there exist $\brac{x_k}_{k=0}^m\in P$ with $w_k=\phi(x_k)$. Thus $w_k = \phi(x_k)\prec \phi(x_{k+1})=w_{k+1}$ implies $x_k\prec x_{k+1}$ for all $k=0,\ldots,{m-1}$. Thus by transitivity of $\leq$ it must be true that $x_0<x_1<\ldots<x_m$, whence $x<y$.
 \end{proof}
 
 % subsection order_isomorphism (end)
@@ -130,25 +131,35 @@ Conversely, if $\phi(x) < \phi(y)$ then there exist $\brac{w_k}_{k=0}^m\in Q$ su
 \subsection{Order ideals and filters} % (fold)
 \label{sub:order_ideals_and_filters}
 
-Let $(P,\leq)$ and $Q\subseteq P$
-\begin{description}
-	\item[Order Ideal] whenever $x\in Q$ and $y\in P$ with $y\leq x$, we have $y\in Q$
-	\item[Order Filter] whenever $x\in Q$ and $y\in P$ with $x\leq y$, we have $y\in Q$
-\end{description}
-ideals (and filters) are ordered by set inclusion $\subseteq$. Let $\mathcal{O}(P)$ be the set of all order ideals of $P$.
+Let $(P,\leq)$ and $Q\subseteq P$. The set $Q$ is an \textbf{order ideal} (or a \emph{downset}) if for every $y\in Q$ and $x\in P$ the relation $x\leq y$ implies $x\in Q$. \textbf{Order filters} (\emph{upsets}) are dual to order ideals. The set of all order ideals of $P$, $\Ocal(P)$, is itself a poset with respect to set inclusion partial order.
 
-\[Q^\downarrow \defn  \obj{ \induc{ y\in P }\,\exists x\in Q,\, x\leq y }\]
-\[Q^\uparrow \defn  \obj{ \induc{ y\in P }\,\exists x\in Q,\, y\leq x }\]
+For an arbitrary subset $Q\subseteq P$ put \begin{align*}
+	Q^\downarrow &\defn \obj{ \induc{ y\in P }\,\exists x\in Q,\, y\leq x }\\
+	Q^\uparrow &\defn \obj{ \induc{ y\in P }\,\exists x\in Q,\, x\leq y }
+\end{align*}
+which are called the ``down'' and ``up'' of $Q$.
 
-\begin{prop} If $(P,\leq)$ is a poset and $x,y\in P$ then the following are equivalent: \begin{enumerate}
-	\item $\leq y$
+Clearly, $Q^\downarrow$ is a downset of $P$. Indeed, if $y\in Q^\downarrow$ and $x\in P$ are such that $x\leq y$, then by definition there exists $w\in Q$ with $y\leq w$. Then by transitivity $x\leq w$ for some $w\in Q$, whence $x\in Q^\downarrow$.
+
+Suppose $D\subseteq P$ is a downset of $P$ with $Q\subseteq D$. If $x\in Q^\downarrow$ then $x\in P$ and there is $w\in Q$ with $x\leq w$. Since $w\in Q\subseteq D$ and $D$ is a downset, by definition it must be true that $x\in D$, whence $Q^\downarrow\subseteq D$. Therefore $Q^\downarrow$ is the smallest downset containing $Q$.
+
+\begin{prop} Let $(P,\leq)$ be a poset and $x,y\in P$. The following are equivalent: \begin{enumerate}
+	\item $x\leq y$
 	\item $x^\downarrow\subseteq y^\downarrow$
-	\item for all $Q\in \mathcal{O}(P)$ if $y\in Q$ then $x\in Q$
+	\item for all $Q\in \Ocal(P)$ if $y\in Q$ then $x\in Q$
 \end{enumerate}
 \end{prop}
 
 \begin{proof}
-PROOF NEEDED!
+$1 \Rightarrow 2$ Suppose $x\leq y$. For every $w\in x^\downarrow$ it must be true that $w\leq x$ whence by transitivity $w\leq y$. Thus $w\in y^\downarrow$.
+
+$1 \Leftarrow 2$ If $x^\downarrow\subseteq y^\downarrow$ then $w\leq y$ for all $w\in x^\downarrow$. In particular, $x\leq y$ as $x\in x^\downarrow$ by definition.
+
+$2 \Rightarrow 3$ Suppose $x,y\in P$ are such that $x^\downarrow\subseteq y^\downarrow$. If $Q\in \Ocal(P)$ with $y\in Q$, then $y^\downarrow\subseteq Q$ since $y^\downarrow$ is the smallest downset containing $y$. Thus $x\in x^\downarrow\subseteq Q$.
+
+$3 \Rightarrow 1$ Suppose $x,y\in P$ are such that $y\in Q$ implies $x\in Q$ for all $Q\in \Ocal(P)$. In particular, $y^\downarrow$ is a down set of $P$ with $y\in y^\downarrow$. Thus $x\in y^\downarrow$, whence $x\leq y$.
+
+$1 \Rightarrow 3$ If $x\leq y$ and $Q\in \Ocal(P)$ is such that $y\in Q$, then $x\in Q$ by definition of a downset.
 \end{proof}
 
 % subsection order_ideals_and_filters (end)
@@ -187,7 +198,7 @@ A join semi-lattice $(P,\leq)$ is \emph{complete} if $\sup S$ exists for any sub
 A lattice $L$ is complete if $\sup S$ and $\inf S$ exist for any $S\subseteq L$.
 
 % \noindent \textbf{Theorem} \hfill \\
-\begin{prop} Let $(P,\leq)$ be a poset. The ordered set $\mathcal{O}(P)$ of ideals is a complete lattice with $\cap$ and $\cup$ operators.
+\begin{prop} Let $(P,\leq)$ be a poset. The ordered set $\Ocal(P)$ of ideals is a complete lattice with $\cap$ and $\cup$ operators.
 \end{prop}
 
 \begin{proof}
