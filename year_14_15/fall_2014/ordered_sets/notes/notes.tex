@@ -85,7 +85,14 @@ Let $(P,\leq)$ be a poset and $x, y\in P$. We say that $x$ is \textbf{covered by
 \end{prop}
 
 \begin{proof}
-PROOF NEEDED!
+$\Rightarrow$ Suppose $x,y\in P$ are such that $x<y$. Define the set \[S_{xy}\defn \obj{\induc{z\in P}\,x \leq z \leq y\,z\neq x,y}\] This proposition is proven by induction on the size of the set $S_{xy}$.
+
+Since $P$ is finite, the set $S_{xy}$ must necessarily by finite as well. If $\abs{S_{xy}} = 0$ then $\not\exists z\in P$ with $x<z<y$, whence $x_0 = x\prec y = x_1$.
+
+Consider the case $\abs{S_{xy}}>0$ and pick any $z\in S_{xy}$. Then due to transitivity of $\leq$ on $P$ it is true that \[S_{xy} = S_{xz}\uplus \obj{z}\uplus S_{zy}\] which implies that $\abs{S_{xz}},\abs{S_{zy}}<\abs{S_{xy}}$. Thus by inductive hypothesis, there exists $\brac{x_k}_{k=0}^{n+m}\in P$ such that \[x = x_0 \prec x_1 \prec \ldots \prec x_n = z = x_n \prec x_{n+1} \prec \ldots \prec x_{n+m} = y\]
+
+$\Leftarrow$ If $x,y\ni P$ are such that $x = x_0 \prec x_1 \prec \ldots \prec x_n = y$ for some $\brac{x_k}_{k=1}^n\in P$, then by definition of the covering relation $x_k<x_{k+1}$ for all $k=0,\ldots {n-1}$. Thus by transitivity of $\leq$ it must be true that $x<y$.
+
 \end{proof}
 
 % subsection the_convering_relation (end)
@@ -93,7 +100,11 @@ PROOF NEEDED!
 \subsection{Order isomorphism} % (fold)
 \label{sub:order_isomorphism}
 
-\begin{prop} Let $(P,\leq)$ and $(Q,\leq)$ be posets and $\phi:P\to Q$ be a bijective map. Then the following are equivalent: \begin{enumerate}
+A map $\phi:(P,\leq)\to (Q,\leq)$ is \textbf{order-preserving} if $\phi(x)\leq \phi(y)$ in $Q$ for all $x,y$ with $x\leq y$ in $P$. If for all $x,y\in P$ the relation $\phi(x)\leq \phi(y)$ in $Q$ implies $x\leq y$ in $P$, then $\phi$ is called an \textbf{order-embedding}. A surjective map $\phi$ is an \textbf{order-isomorphism} is it is and order-preserving order-embedding.
+
+What about injectivity? Well, every order-embedding is necessarily injective. If $x,y\in P$ are such that $\phi(x)=\phi(y)$ then $x\leq y$ and $y\leq x$, whence by anti-symmetry of $\leq$ on $P$ it must be true that $x=y$. Thus every order-isomorphism has a \emph{well defined order-preserving inverse}.
+
+\begin{prop} Let $(P,\leq)$ and $(Q,\leq)$ be finite posets and $\phi:P\to Q$ be a bijective map. Then the following are equivalent: \begin{enumerate}
 	\item $\phi$ is an order isomorphism
 	\item $x<y$ if and only if $\phi(x)<\phi(y)$ in $Q$
 	\item $x\prec y$ if and only if $\phi(x)\prec \phi(y)$ in $Q$
@@ -101,7 +112,17 @@ PROOF NEEDED!
 \end{prop}
 
 \begin{proof}
-PROOF NEEDED!
+$1 \Rightarrow 2$ If $\phi$ is an order-isomorphism, then $x<y$ implies $\phi(x)\leq \phi(y)$ by order-preservation and $\phi(x)\neq \phi(y)$ by being an order-embedding. Conversely, if $\phi(x) < \phi(y)$, then $x\neq y$ and $x\leq y$ due to $\phi$ being an order-embedding.
+
+$1 \Leftarrow 2$ A bijective map is necessarily surjective, and $x\leq y$ is equivalent to $\phi(x)\leq \phi(y)$ by the property in question and injectivity. Thus $\phi$ is a surjective order-preserving order-embedding.
+
+$2 \Rightarrow 3$ (This does not require finiteness of $P$ and $Q$).Suppose $x\prec y$ in $P$ and consider $\phi(x),\phi(y)\in Q$. By definition $x<y$, which by the property implies $\phi(x)<\phi(y)$. If $\exists z\in Q$ such that $\phi(x)<z<\phi(y)$ in $Q$, then by surjectivity there must exist $v\in P$ with $z=\phi(v)$. But then $\phi(v)<\phi(y)$ and $\phi(x)<\phi(v)$ imply $v<y$ and $x<v$. Thus $v\in P$ is such that $x<v<y$, whence $x\not\prec y$ which contradicts $x\prec y$. Therefore $x\prec y$ in $P$ implies $\phi(x)\prec \phi(y)$ in $Q$.
+
+On the other hand, if $x,y\in P$ are such that $\phi(x)\prec \phi(y)$, then $\phi(x)< \phi(y)$ implies $x<y$. Similarly, if $\exists z\in P$ with $x<z<y$, then $\phi(x)<\phi(z)<\phi(y)$ by the property, whence $\phi(x)\not\prec \phi(y)$ -- a contradiction.
+
+$2 \Leftarrow 3$ Suppose $x<y$. Since $P$ is finite, by a theorem on covering relations, there must exist $\brac{x_k}_{k=0}^n\in P$ with $x=x_0 \prec x_1 \prec \ldots \prec x_n=y$. By transitivity of $\leq$ and the definition of $\prec$ it must be true that \[\phi(x) = \phi(x_0) \prec \phi(x_1) \prec \ldots \prec \phi(x_n) = \phi(y)\]
+
+Conversely, if $\phi(x) < \phi(y)$ then there exist $\brac{w_k}_{k=0}^m\in Q$ such that \[\phi(x) = w_0 \prec w_1 \prec \ldots \prec w_m = \phi(y)\] Since $\phi$ is bijective there exist $\brac{x_k}_{k=0}^m\in P$ with $w_k=\phi(x_k)$. Thus $w_k = \phi(x_k)\prec \phi(x_{k+1})=w_{k+1}$ implies $x_k\prec x_{k+1}$ for all $k=0,\ldots,\{m-1}$. Thus by transitivity of $\leq$ it must be true that $x_0<x_1<\ldots<x_m$, whence $x<y$.
 \end{proof}
 
 % subsection order_isomorphism (end)
@@ -119,7 +140,7 @@ ideals (and filters) are ordered by set inclusion $\subseteq$. Let $\mathcal{O}(
 \[Q^\downarrow \defn  \obj{ \induc{ y\in P }\,\exists x\in Q,\, x\leq y }\]
 \[Q^\uparrow \defn  \obj{ \induc{ y\in P }\,\exists x\in Q,\, y\leq x }\]
 
-\begin{prop} If $(P,\leq)$ is  a poset and $x,y\in P$ then the following are equivalent: \begin{enumerate}
+\begin{prop} If $(P,\leq)$ is a poset and $x,y\in P$ then the following are equivalent: \begin{enumerate}
 	\item $\leq y$
 	\item $x^\downarrow\subseteq y^\downarrow$
 	\item for all $Q\in \mathcal{O}(P)$ if $y\in Q$ then $x\in Q$
@@ -265,7 +286,7 @@ $\Rightarrow$ Suppose $\psi$ is dually adjoint to $\phi$. Since $y\leq \sup X$ f
 
 $\Leftarrow$ Suppose that $\phi\brac{\sup X} = \inf \phi(X)$. Then in particular for $p_1,p_2\in P$ with $p_1\leq p_2$ it is true that $\sup\obj{p_1,p_2} = p_2$ and \[\inf\obj{\phi(p_1),\phi(p_2)} = \phi\brac{\sup\obj{p_1,p_2}} = \phi(p_2)\] whence $\phi(p_2)\leq \phi(p_1)$.
 
-Let $\psi:Q\to P$ be defined as $\psi(q) \defn \sup\obj{\induc{p\in P}\,q\leq \phi(p)}$. Then for any $x\in P$ by the anti-monotonicity shown above for $\phi$ and the basic properties of upper bounds in $Q$ \[\psi\brac{\phi(x)} = \sup\obj{\induc{p\in P}\,\phi(x)\leq \phi(p)} \geq \sup\obj{\induc{p\in P}\,p\leq x} = x\] since $\sup\obj{\induc{p\in P}\,p\leq x}\leq x$ and $x\leq x$. On the other hand, by cinstruction of $\psi$ and the ``continuity'' property of $\phi$ and the properties of the greatest lower bound in $Q$ \[\phi\brac{\psi(q)} = \inf\obj{\induc{\phi(p)}\,p\in P,\,q\leq \phi(p)} \geq q\] Therefore maps $\phi$ and $\psi$ form a dually adjoint pair.
+Let $\psi:Q\to P$ be defined as $\psi(q) \defn \sup\obj{\induc{p\in P}\,q\leq \phi(p)}$. Then for any $x\in P$ by the anti-monotonicity shown above for $\phi$ and the basic properties of upper bounds in $Q$ \[\psi\brac{\phi(x)} = \sup\obj{\induc{p\in P}\,\phi(x)\leq \phi(p)} \geq \sup\obj{\induc{p\in P}\,p\leq x} = x\] since $\sup\obj{\induc{p\in P}\,p\leq x}\leq x$ and $x\leq x$. On the other hand, by construction of $\psi$ and the ``continuity'' property of $\phi$ and the properties of the greatest lower bound in $Q$ \[\phi\brac{\psi(q)} = \inf\obj{\induc{\phi(p)}\,p\in P,\,q\leq \phi(p)} \geq q\] Therefore maps $\phi$ and $\psi$ form a dually adjoint pair.
 \end{proof}
 
 % subsection galois_connections (end)
