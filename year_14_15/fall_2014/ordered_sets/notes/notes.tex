@@ -403,9 +403,8 @@ There is a very useful, yet almost obvious result: \begin{prop} For any $X\subse
 \begin{proof}
 Indeed, 
 \begin{align*}
-	(X',X'') = \brac{\brac{ \bigcup_{x\in X} \obj{x} }',\brac{ \bigcup_{x\in X} \obj{x} }''} \\
-	& = \brac{\bigcap_{x\in X} x', \brac{\bigcap_{x\in X} x'}'} = \brac{\bigcap_{x\in X} x', \brac{\bigcap_{x\in X} x'''}'} \\
-	& = \brac{\bigcap_{x\in X} x', \brac{\bigcup_{x\in X} x''}''} = \bigwedge_{x\in X} (x', x'') \qedhere
+	(X',X'') &= \brac{\brac{ \bigcup_{x\in X} \obj{x} }',\brac{ \bigcup_{x\in X} \obj{x} }''} = \brac{\bigcap_{x\in X} x', \brac{\bigcap_{x\in X} x'}'} \\
+	& = \brac{\bigcap_{x\in X} x', \brac{\bigcap_{x\in X} x'''}'} = \brac{\bigcap_{x\in X} x', \brac{\bigcup_{x\in X} x''}''} \\ &= \bigwedge_{x\in X} (x', x'') \qedhere
 \end{align*}
 \end{proof}
 
@@ -493,6 +492,18 @@ $\Rightarrow$ Indeed, by a previously shown equivalence, there must exist $X\sub
 $\Leftarrow$ If $\mu(m)$ is inf-reducible in $\cltc(G,M,I)$, then for some $\Gamma\subseteq \cltc(G,M,I)$ with $\mu(m)\notin \Gamma$ it is true that $\mu(m)=\wedge \Gamma$. Since $\mu(M)$ is meet-dense in $\cltc(G,M,I)$, for every $x\in \Gamma$ there exists $J_x\subseteq M$ with $x = \bigwedge_{n\in J_x} \mu(n)$. Therefore \[\mu(m) = \bigwedge_{x\in \Gamma} \bigwedge_{n\in J_x} \mu(n) = \bigwedge_{n\in \cup_{x\in \Gamma} J_x} \mu(n)\]
 
 Suppose $m\in J_x$ for some $x\in \Gamma$. Then $ x = \bigwedge_{n\in J_x} \mu(n) \leq \mu(m)$ while $\mu(m) = \bigwedge_{z\in \Gamma} z x$. Thus $x = \bigwedge_{n\in J_x} \mu(n) = \mu(m)$, whence $\mu(m)\in \Gamma$, which is a contradiction. Therefore $m\notin \bigcup_{x\in \Gamma} J_x$, and $m$ is a reducible attribute.
+\end{proof}
+
+\begin{prop} let $(G,M,I)$ be a context. An attribute $m\in M$ is reducible if and only if \[m' = \bigcap \obj{\induc{n'}\,n\in M,\,m'\subset n'}\]
+\end{prop}
+
+\begin{proof}
+$\Leftarrow$ Indeed, if $m$ is reducible, then there exists $X\subseteq M$ with $m\notin X$ and $m'=X'$. Since \[m' = X' = \brac{\bigcup_{n\in X} \obj{n}}' = \bigcap_{n\in X} n'\] it is true that $m'\subseteq n'$ for every $n\in X$. Furthermore, since $m\notin X$ and the context is clarified, it is true that $m'\neq n'$, whence $m\subset n'$ for all $n\in X$.
+
+Consider, $J\defn \obj{\induc{n\in M}\,m'\subset n'}$. Since $m'\subseteq m'$ for all $n\in J$ it must be true that \[m'\subseteq \bigcap_{n\in J} n'\] Furthermore, by the above it is true that $X\subseteq J$, whence \[m' = \bigcap_{n\in J} n' \subseteq \bigcap_{n\in X} n' = m'\]
+
+$\Rightarrow$ If $m\in M$ is such that $m'=\bigcap_{n\in J} n'$ for $J\defn \obj{\induc{n\in M}\, m'\subset n'}$, then obviously $m\notin J$ and $J\subseteq M$. Thus \[m' = \bigcap_{n\in J} n' = \brac{\bigcup_{n\in J} \obj{n}}' = J' \qedhere\]
+
 \end{proof}
 
 % section clarifying_and_reducing_the_context (end)
