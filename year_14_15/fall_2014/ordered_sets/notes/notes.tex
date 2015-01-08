@@ -113,9 +113,9 @@ What about injectivity? Well, every order-embedding is necessarily injective. If
 \end{prop}
 
 \begin{proof}
-$1 \Rightarrow 2$ If $\phi$ is an order-isomorphism, then $x<y$ implies $\phi(x)\leq \phi(y)$ by order-preservation and $\phi(x)\neq \phi(y)$ by being an order-embedding. Conversely, if $\phi(x) < \phi(y)$, then $x\neq y$ and $x\leq y$ due to $\phi$ being an order-embedding.
+$1 \Rightarrow 2$ (This does not require finiteness of $P$ and $Q$). If $\phi$ is an order-isomorphism, then $x<y$ implies $\phi(x)\leq \phi(y)$ by order-preservation and $\phi(x)\neq \phi(y)$ by being an order-embedding. Conversely, if $\phi(x) < \phi(y)$, then $x\neq y$ and $x\leq y$ due to $\phi$ being an order-embedding.
 
-$1 \Leftarrow 2$ A bijective map is necessarily surjective, and $x\leq y$ is equivalent to $\phi(x)\leq \phi(y)$ by the property in question and injectivity. Thus $\phi$ is a surjective order-preserving order-embedding.
+$1 \Leftarrow 2$ (This does not require finiteness of $P$ and $Q$). A bijective map is necessarily surjective, and $x\leq y$ is equivalent to $\phi(x)\leq \phi(y)$ by the property in question and injectivity. Thus $\phi$ is a surjective order-preserving order-embedding.
 
 $2 \Rightarrow 3$ (This does not require finiteness of $P$ and $Q$).Suppose $x\prec y$ in $P$ and consider $\phi(x),\phi(y)\in Q$. By definition $x<y$, which by the property implies $\phi(x)<\phi(y)$. If $\exists z\in Q$ such that $\phi(x)<z<\phi(y)$ in $Q$, then by surjectivity there must exist $v\in P$ with $z=\phi(v)$. But then $\phi(v)<\phi(y)$ and $\phi(x)<\phi(v)$ imply $v<y$ and $x<v$. Thus $v\in P$ is such that $x<v<y$, whence $x\not\prec y$ which contradicts $x\prec y$. Therefore $x\prec y$ in $P$ implies $\phi(x)\prec \phi(y)$ in $Q$.
 
@@ -397,6 +397,18 @@ Indeed, for any family $\brac{A_j,B_j}_{j\in J}$ of formal concepts of $(G,M,I)$
 Furthermore, $A_j\subseteq \bigcup_{j\in J} A_j$ for all $j\in J$ means that $\bigvee_{j\in J} (A_j,B_j)$ is an upper bound on $\brac{A_j,B_j}_{j\in J}$. If $(A,B)$ is another upper bound, then $\bigcup_{j\in J} A_j\subseteq A$ for all $j\in J$, whence \[\brac{\bigcup_{j\in J} A_j}'' \subseteq A'' = A\] by monotonicity of ${(\cdot)}''$, which implies that the proposed definition indeed yields the least upper bound.
 \end{proof}
 
+There is a very useful, yet almost obvious result: \begin{prop} For any $X\subseteq M$ it is true that \[(X',X'') = \bigwedge_{x\in X} (x',x'')\]
+\end{prop}
+
+\begin{proof}
+Indeed, 
+\begin{align*}
+	(X',X'') = \brac{\brac{ \bigcup_{x\in X} \obj{x} }',\brac{ \bigcup_{x\in X} \obj{x} }''} \\
+	& = \brac{\bigcap_{x\in X} x', \brac{\bigcap_{x\in X} x'}'} = \brac{\bigcap_{x\in X} x', \brac{\bigcap_{x\in X} x'''}'} \\
+	& = \brac{\bigcap_{x\in X} x', \brac{\bigcup_{x\in X} x''}''} = \bigwedge_{x\in X} (x', x'') \qedhere
+\end{align*}
+\end{proof}
+
 % \noindent \textbf{Theorem} \hfill \\
 \begin{prop} For any context $(G,M,I)$ there exist maps $\gamma:G\to\cltc(G,M,I)$ and $\mu:M\to\cltc(G,M,I)$ such that $\gamma(G)$ and $\mu(M)$ are join- and meet-dense subsets of $\cltc(G,M,I)$. Furthermore, $(g,m)\in I$ if and only if $\gamma(g)\leq \mu(m)$ in $\cltc(G,M,I)$.
 \end{prop}
@@ -441,8 +453,47 @@ Now, $\psi$ looks very much like an inverse of $\phi$. Indeed, $\phi\brac{\psi(x
 
 \section{Clarifying and reducing the context} % (fold)
 \label{sec:clarifying_and_reducing_the_context}
-% p.~33
 
+A context $(G,M,I)$ is \textbf{clarified} if $g'=h'$ implies $g=h$ for all objects $g,h\in G$, and $m'=n'$ implies $n=m$ for every $n,m\in M$. A context is clarified by clumping objects with identical intents into a single object and replacing attributes with the same extents by a single composite attribute.
+
+An attribute $m\in M$ is called \textbf{reducible} if there exits $X\subseteq M$ with $m\notin X$ for which $m' = X'$. A reducible object is defined similarly.
+
+For example, if $g\in G$ is such that $g'=M$ then $g$ must be reducible since $\emptyset'=M$.
+
+Removing reducible attributes or objects does not incur a loss of information, since $m'=X'$ implies that an object has all attributes form $X$ if and only if it possesses $m$.
+
+\begin{prop} Consider a context $(G,M,I)$. An attribute $m\in M$ is reducible if and only if there exists $X\subseteq M$ with $m\notin X$ such that the attribute concept $\mu(m)$ is the infimum of $\mu(X)$.
+\end{prop}
+
+\begin{proof}
+$\Rightarrow$ Assume $m\in M$ is reducible. Then there exists $X\subseteq M$ with $m\notin X$ such that $X'=m'$. Then since $X = \bigcup_{x\in X} \obj{x}$ it must be true that
+\[\mu(m) = (m', m'') = (X',X'') = \bigwedge_{x\in X} (x',x'') = \bigwedge_{x\in X} \mu(x)\]
+
+$\Leftarrow$ Suppose there is $X\subseteq M$ with $m\notin X$ such that $\mu(m)=\bigvee_{x\in X} \mu(X)$. Then \[m' = \bigcap_{x\in X} x' = \brac{\bigcup_{x\in X} \obj{x}}'\] whence $m$ must be reducible.
+\end{proof}
+
+\begin{prop} Let $m$ be a reducible attribute of $(G,M,I)$. Then \[
+\cltc(G,M,I) \cong \cltc\brac{G,M\setminus \obj{m},I\cap ( G\times M\setminus \obj{m})}\]
+\end{prop}
+
+\begin{proof}
+Since for $m$ there exists $X\subseteq M$ with $m\notin X$ and $\mu(m) = \bigwedge \mu(X)$, the set $\mu\brac{M\setminus\obj{m}}$ must be infimum dense in $\cltc(G,M,I)$. Indeed, let $(A,B)\in \cltc(G,M,I)$.Since $\mu(m)$ is inf-dense in $\cltc$ there must exist $O\subseteq M$ such that \[(A,B) = \bigwedge_{x\in O} (x', x'')\] If $m\notin O$, then $O\subseteq M\setminus \obj{m}$, whereas if $m\in O$, it must be true that
+\begin{align*}
+(A,B) &= \brac{\bigwedge_{x\in O\setminus \obj{m}} (x', x'')} \wedge (m', m'') \\ &= \brac{\bigwedge_{x\in O\setminus \obj{m}} (x', x'')} \wedge (X', X'') \\ &= \bigwedge_{x\in \brac{X\cup O\setminus \obj{m}}} (x', x'')
+\end{align*}
+Since $m\notin X$, it must be true that $X\cup O\setminus \obj{m}\subseteq M\setminus \obj{m}$. Therefore, $\mu\brac{M\setminus\obj{m}}$ is meet dense in $\cltc(G,M,I)$. Thus by the main theorem of FCA, $\cltc(G,M,I)$ is isomorphic to $\cltc\brac{G,M\setminus \obj{m},I\cap ( G\times M\setminus \obj{m})}$.
+\end{proof}
+
+\begin{prop} Let $(G,M,I)$ be a clarified context. An attribute $m$ is reducible if and only if $\mu(m)$ is an inf-reducible concept of $\cltc(G,M,I)$.
+\end{prop}
+
+\begin{proof}
+$\Rightarrow$ Indeed, by a previously shown equivalence, there must exist $X\subseteq M$ with $m\notin X$ and $\mu(m) = \wedge \mu(X)$. Since $(G,M,I)$ is clarified, $m'\neq x'$ for all $x\in X$. Hence, $\mu(m)\neq \mu(x)$ for all $x\in X$, whence $\Gamma \defn \mu(X)$, is such that $\mu(m)\notin \Gamma$ and $\mu(m)=\bigwedge \Gamma$. Therefore the concept $\mu(m)$ is inf-reducible in $\cltc(G,M,I)$.
+
+$\Leftarrow$ If $\mu(m)$ is inf-reducible in $\cltc(G,M,I)$, then for some $\Gamma\subseteq \cltc(G,M,I)$ with $\mu(m)\notin \Gamma$ it is true that $\mu(m)=\wedge \Gamma$. Since $\mu(M)$ is meet-dense in $\cltc(G,M,I)$, for every $x\in \Gamma$ there exists $J_x\subseteq M$ with $x = \bigwedge_{n\in J_x} \mu(n)$. Therefore \[\mu(m) = \bigwedge_{x\in \Gamma} \bigwedge_{n\in J_x} \mu(n) = \bigwedge_{n\in \cup_{x\in \Gamma} J_x} \mu(n)\]
+
+Suppose $m\in J_x$ for some $x\in \Gamma$. Then $ x = \bigwedge_{n\in J_x} \mu(n) \leq \mu(m)$ while $\mu(m) = \bigwedge_{z\in \Gamma} z x$. Thus $x = \bigwedge_{n\in J_x} \mu(n) = \mu(m)$, whence $\mu(m)\in \Gamma$, which is a contradiction. Therefore $m\notin \bigcup_{x\in \Gamma} J_x$, and $m$ is a reducible attribute.
+\end{proof}
 
 % section clarifying_and_reducing_the_context (end)
 
