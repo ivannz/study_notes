@@ -24,12 +24,17 @@
 \newcommand{\Pwr}{\mathcal{P}}
 \newcommand{\Ical}{\mathcal{I}}
 \newcommand{\Ocal}{\mathcal{O}}
+\newcommand{\Lcal}{\mathcal{L}}
+\newcommand{\Tcal}{\mathcal{T}}
 
 \newcommand{\Ctx}{\mathbb{K}}
 \newcommand{\Pat}{\mathbb{P}}
 \newcommand{\supp}{\text{supp}}
 \newcommand{\conf}{\text{conf}}
 \newcommand{\cltc}{\mathfrak{B}}
+
+\newcommand{\notexists}{\mathop{\not\!\exists}\nolimits}
+
 
 \newtheorem{prop}{Proposition}
 
@@ -88,7 +93,7 @@ Let $(P,\leq)$ be a poset and $x, y\in P$. We say that $x$ is \textbf{covered by
 \begin{proof}
 $\Rightarrow$ Suppose $x,y\in P$ are such that $x<y$. Define the set \[S_{xy}\defn \obj{\induc{z\in P}\,x \leq z \leq y\,z\neq x,y}\] This proposition is proven by induction on the size of the set $S_{xy}$.
 
-Since $P$ is finite, the set $S_{xy}$ must necessarily by finite as well. If $\abs{S_{xy}} = 0$ then $\not\exists z\in P$ with $x<z<y$, whence $x_0 = x\prec y = x_1$.
+Since $P$ is finite, the set $S_{xy}$ must necessarily by finite as well. If $\abs{S_{xy}} = 0$ then $\notexists z\in P$ with $x<z<y$, whence $x_0 = x\prec y = x_1$.
 
 Consider the case $\abs{S_{xy}}>0$ and pick any $z\in S_{xy}$. Then due to transitivity of $\leq$ on $P$ it is true that \[S_{xy} = S_{xz}\uplus \obj{z}\uplus S_{zy}\] which implies that $\abs{S_{xz}},\abs{S_{zy}}<\abs{S_{xy}}$. Thus by inductive hypothesis, there exists $\brac{x_k}_{k=0}^{n+m}\in P$ such that \[x = x_0 \prec x_1 \prec \ldots \prec x_n = z = x_n \prec x_{n+1} \prec \ldots \prec x_{n+m} = y\]
 
@@ -415,6 +420,8 @@ Indeed,
 \begin{proof}
 Define a map $\gamma:G\to \cltc(G,M,I)$ for every $g\in G$ by \[\gamma(g) \defn \brac{\obj{g}'', \obj{g}'}\] The map $\gamma$ is well-defined since $A'''=A'$ for any $A\subseteq G$. Similarly a map $\mu:M\to \cltc(G,M,I)$ defined by \[\mu(m)\defn \brac{\obj{m}',\obj{m}''}\] is correct.
 
+For any $m\in M$ the pair $\mu(m) = (m', m'')$ is called an \emph{attribute concept}, whereas the value of $\gamma(g) = (g'', g')$ is the \emph{object concept} for every $g\in G$.
+
 Let $(A,B)$ be a concept. Then \[B = A' = \brac{\bigcup_{a\in A}\obj{a}}' = \bigcap_{a\in A} a'\] and \[A = B' = \brac{\bigcap_{a\in A} a'}' = \brac{\bigcap_{a\in A} a'''}' = \brac{\bigcup_{a\in A} a''}''\] Thus \[(A,B) = \brac{\brac{\bigcup_{a\in A} a''}'', \brac{\bigcap_{a\in A} a'}} = \bigvee_{a\in A} (a'',a') = \bigvee_{a\in A} \gamma(a) = \bigvee \gamma(A)\]
 
 Similarly, $\mu(M)$ is meet-dense subset of $\cltc(G,M,I)$. As \[A = B' = \brac{\bigcup_{b\in B}\obj{b}}' = \bigcap_{b\in B} b'\] and \[B = A' = \brac{\bigcap_{b\in B} b'}' = \brac{\bigcap_{b\in B} b'''}' = \brac{\bigcup_{b\in B} b''}''\]
@@ -510,6 +517,7 @@ $\Rightarrow$ If $m\in M$ is such that $m'=\bigcap_{n\in J} n'$ for $J\defn \obj
 
 % part first_module (end)
 
+% p.~59
 %%% План
 %%% формальный контекст
 %%% соответствие Галуа
@@ -544,19 +552,84 @@ $\Rightarrow$ If $m\in M$ is such that $m'=\bigcap_{n\in J} n'$ for $J\defn \obj
 \label{sec:implications}
 % 1. Импликации
 
-Let $\Ctx = \brac{G,M,I}$ be a binary context and ${(\cdot)}'$ be its derivation rule (Galois connection operator). For any $A,B\subseteq M$ an implication $A\to B$ is valid in $\Ctx$ if $A'\subseteq B'$. Implication $A\to B$ means that for each $g\in G$ with $A\subseteq g'$ it is true that $B\subseteq g'$. Finally $A\to B$ if and only if $B\subseteq A''$.
+Let $\brac{G,M,I}$ be a binary context and ${(\cdot)}'$ be its derivation rule (Galois connection operator).
 
-% Suppose $\mathcal{L}$ is a collection of implications of $ $
-\selectlanguage{russian}
-Импликации и решетка понятий: Если A → B, то инфимум всех признаковых понятий признаков из A в диаграмме решетки понятий лежит ниже инфимума всех признаковых понятий признаков из B.
-\selectlanguage{english}
+An implication between attributes is an ordered pair of subsets of $M$, denoted by $A\to B$ for a given pair $(A,B)$.
 
-% Инфимум признаковых понятий
+A subset $T\subseteq M$ \textbf{respects an implication} $A\to B$ if $A\not\!\subseteq T$ or $B\subseteq T$ (analogous to truth-assignment in logic). Equivalently, $T$ respects $A\to B$ if it is \textbf{not} the case that $A\subseteq T$ yet $B\not\!\subseteq T$. Also, if $T$ respects $A\to B$ then $T$ is called a \textbf{model} of a statement $A\to B$.
+
+Let $\Lcal$ be a collection of implications. Then $T\subseteq M$ respects $\Lcal$ if $T$ respects each implication in $\Lcal$, and in this case $T$ is called a model of $\Lcal$. An implication $A\to B$ \textbf{holds} in a set $\Tcal$ if every $T\in \Tcal$ respects $A\to B$.
+
+An implication $A\to B$ \textbf{holds} in the context $(G,M,I)$ if it holds in the set of all object intents (intents of object concepts).
+
+\begin{prop} An implication $A\to B$ holds in $(G,M,I)$ if and only if $A'\subseteq B'$ (or, equivalently, $B\subseteq A''$).
+\end{prop}
+
+\begin{proof}
+$\Rightarrow$ Suppose $A\to B$ holds in $(G,M,I)$. By \textbf{(GALOIS)} it is true that $A\subseteq g'$ for any $g\in A'$. However every object intent respects $A\to B$, which implies that it must be true that $B\subseteq g'$ for all $g\in A'$. Therefore, $g\in B'$ and $A'\subseteq B'$.
+
+$\Leftarrow$ Suppose $ A'\subseteq B'$ and $g\in G$. If $g\notin A'$ then $A\not\!\subseteq g'$. Otherwise $g\in A'$ implies $g\in B'$, whence $B\subseteq g'$. Therefore, either $A\not\!\subseteq g'$ or $B\subseteq g'$ for all $g\in G$. Therefore, every object intent of $(G,M,I)$ respects the implication $A\to B$, whence $A\to B$ holds in $(G,M,I)$.
+
+Note that $A'\subseteq B'$ is equivalent to $B\subseteq A''$ by \textbf{(GALOIS)}.
+\end{proof}
+
+Thus we arrive at the familiar definition of an implication. For any $A,B\subseteq M$ an implication $A\to B$ in $(G,M,I)$ is a pair of subsets $A,B\subseteq M$ with $A'\subseteq B'$ (or $B\subseteq A''$). Implication $A\to B$ means that for each $g\in G$ with $A\subseteq g'$ it is true that $B\subseteq g'$.
+
+\begin{prop} A subset $T\subseteq M$ respects every implication $A\to B$ that holds in $(G,M,I)$ if and only if $T''=T$.
+\end{prop}
+
+\begin{proof}
+Suppose a set $T\subseteq M$ respects every implication of $(G,M,I)$. Then in particular it respects $T\to T''$, which implies that either $T\not\!\subseteq T$ or $T''\subseteq T$. Thus $T''=T$.
+
+Conversely, suppose $T''=T$ and $A\to B$ is an implication in $(G,M,I)$. If $A\not\!\subseteq T$ then $T$ respects $A\to B$. However, if $A\subseteq T$, then $A''\subseteq T''$, whence $B\subseteq T''$. Since $T''=T$, it is therefore true that $B\subseteq T$. Hence $T$ respects the implication $A\to B$.
+\end{proof}
+
+\begin{prop} The collection of subsets of $M$ respecting all implication of the context $(G,M,I)$ is closed under arbitrary intersection.
+\end{prop}
+
+\begin{proof}
+Indeed, suppose $\brac{X_j}_{j\in J}\subseteq M$ respect every implication of $(G,M,I)$. By a previous result $X_j = X_j''$ for all $j\in J$, whence \begin{align*}
+\bigcap_{j\in J} X_j & = \bigcap_{j\in J} X_j'' = \brac{\bigcup_{j\in J} X_j'}' \\ &= \brac{\bigcup_{j\in J} X_j'''}' = \brac{\bigcap_{j\in J} X_j''}'' = \brac{\bigcap_{j\in J} X_j}'' \qedhere
+\end{align*}
+\end{proof}
+
+\begin{prop} An implication $A\to B$ holds in $(G,M,I)$ if and only if $A\to m$ holds in $(G,M,I)$ for each $m\in B$.
+\end{prop}
+
+\begin{proof}
+$\Rightarrow$ If $A\to B$ holds in $(G,M,I)$, then $A'\subseteq m'$ for all $m\in B$, because $B' = \bigcap_{m\in B} m'$. Therefore $A\to m$ holds in $(G,M,I)$.
+
+$\Leftarrow$ If $A\to m$ holds in $(G,M,I)$ for all $m\in B$, then $\obj{m}\subseteq A''$ for each $m\in B$. Thus $B\subseteq A''$, whence $A\to B$ holds in $(G,M,I)$.
+\end{proof}
+
+\begin{prop} Implications are intents of formal concepts ordered with respect to concept order in the concept lattice.
+\end{prop}
+%% Импликации и решетка понятий: Если A → B, то инфимум всех признаковых понятий признаков из A в диаграмме решетки понятий лежит ниже инфимума всех признаковых понятий признаков из B.
+
+\begin{proof}
+Indeed, since $(A',A'')$ and $(B',B'')$ are concepts, $A\to B$ implies $A'\subseteq B'$ whence, $(A',A'')\leq (B',B'')$ in $\cltc(G,M,I)$. Therefore \[\bigwedge_{a\in A} (a', a'') = (A',A'') \leq (B', B'') = \bigwedge_{b\in B} (b', b'')\] On the other hand, if $(A',A'')\leq (B',B'')$ then $A'\subseteq B'$ and $A\to B$.
+\end{proof}
+
+\begin{prop} An implication $A\to m$ holds in $(G,M,I)$ if and only if $(A', A'')\leq (m', m'')$, or, equivalently, \[\bigwedge_{a\in A} (a', a'')\leq (m', m'')\]
+\end{prop}
+
+\begin{proof}
+Indeed, $A\to m$ is equivalent to $m\subseteq A''$ which is equivalent to $m''\subseteq A''$. Thus $A\to B$ is equivalent to $(A', A'')\leq (m', m'')$. Therefore $A\to B$ if and only if \[\bigwedge_{a\in A} (a', a'') = (A', A'')\leq (m', m'') \qedhere\]
+\end{proof}
 
 \subsection{Armstrong rules} % (fold)
 \label{sub:armstrong_rules}
 % 1.1. Правила Армстронга
-Armstrong rules are like axiomatic schemes in propositional calculus but in the context of formal concept analysis. These rules define the framework for \emph{attribute logic}
+
+Let $\Lcal$ be a collection of implications in $M$. Obviously, $M$ itself respects any implication $A\to B$ in $\Lcal$. Now, suppose a collection $\brac{X_j}_{j\in J}\subseteq M$ models $\Lcal$. Let $A\to B$ be an implication of $\Lcal$ and $X\defn \bigcap_{j\in J} X_j$. If there is $j\in J$ such that $A\not\!\subseteq X_j$ then $A\not\!\subseteq X$. However if $A_j\subseteq X_j$ for all $j\in J$, then $A\subseteq X$ and it must be true that $B\subseteq X_j$ for all $j\in J$, whence $B\subseteq X$. Therefore $X = \bigcap_{j\in J} X_j$ models an arbitrary implication $A\to B$ of $\Lcal$.
+
+An implication $A\to B$ \textbf{follows (semantically)} from a collection $\Lcal$ of implications if every model $T\subseteq M$ of $\Lcal$ is also a model of $A\to B$.
+
+A collection $\Lcal$ of implications is \textbf{closed} if every implication following from $\Lcal$ is contained within $\Lcal$.
+
+% in closed collections of implications
+
+Armstrong rules are like axiomatic schemes in propositional calculus but in the context of formal concept analysis. These rules define the framework for \emph{attribute logic}:
 \begin{enumerate}
 	\item $\models A\to A$ -- self-evident.
 	\item $A\to B\models A\cup X\to B$\hfill\[\brac{A\cup X}' = A'\cap X'\subseteq A'\subseteq B'\]
@@ -611,7 +684,7 @@ Consider a binary context $(\Gamma, M, \Ical)$. This is the universal formal con
 
 Suppose there is a non-trivial partition (a set of classes) of $\brac{G_c}_{c\in \mathcal{C}}$ of $G$ for some non-empty set of classes $\mathcal{C}$ with $\abs{\mathcal{C}}\geq 2$. For every $c\in \mathcal{C}$ define the following set of alternative objects $G_{-c} \defn G\setminus G_c$.
 
-Let $f\in \Gamma\setminus G$ be a new object which is yet to be classified, i.e. assigned some $c\in \mathcal{C}$. An object $g\in G_c$ votes for $c$ if there is no $h\in g_{-c}$ such that $g' \cap f'\subseteq h'$. The collection of votes for $c$ is defined as \[V_c(f) \defn\obj{ \induc{ g\in G_c }\, \not\exists h\in G_{-c}\text{ with } g' \cap f'\subseteq h' }\] The ``electoral support'' of $f$ for $c$ is then $S_c(f)\defn \frac{V_c(f)}{\abs{G_c}}$.
+Let $f\in \Gamma\setminus G$ be a new object which is yet to be classified, i.e. assigned some $c\in \mathcal{C}$. An object $g\in G_c$ votes for $c$ if there is no $h\in g_{-c}$ such that $g' \cap f'\subseteq h'$. The collection of votes for $c$ is defined as \[V_c(f) \defn\obj{ \induc{ g\in G_c }\, \notexists h\in G_{-c}\text{ with } g' \cap f'\subseteq h' }\] The ``electoral support'' of $f$ for $c$ is then $S_c(f)\defn \frac{V_c(f)}{\abs{G_c}}$.
 
 A simple collective decision to assign $f$ a class $c\in \mathcal{C}$ if done in the following way: $f$ is assigned to a class $c$ if $S_c(f) > S_k(f)$ for all $k\in \mathcal{C}$, $k\neq c$. It is very likely that the collective vote cannot assign a particular class to a new object. If the reason is that electoral support is overwhelming, $S_c(f)=1$, for all $c\in \mathcal{C}$, then $f$ is contradictory. Indecision for any other reason is means that $f$ is undetermined.
 
@@ -645,7 +718,7 @@ General strategy of finding such rules is described below:
 
 The definition is correct since $(A,B)$ is a formal concept of $\Ctx$ if and only if $A=A''$.
 
-The relation $\prec$ on a partial order $(P,\leq)$ is defined as: $a\prec b$ if and only if $a < b$ and there is no $x\in P$ with $a < x < b$.
+% The relation $\prec$ on a partial order $(P,\leq)$ is defined as: $a\prec b$ if and only if $a < b$ and there is no $x\in P$ with $a < x < b$.
 
 
 \subsection{Confidence, support} % (fold)
