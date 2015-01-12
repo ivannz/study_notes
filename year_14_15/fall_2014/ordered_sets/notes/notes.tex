@@ -3,8 +3,9 @@
 
 \usepackage{graphicx, url}
 
-\usepackage{amsmath, amsfonts, xfrac, amssymb}
-\usepackage{amsthm}
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{xfrac, mathptmx}
+
 % \usepackage{mathtools}
 
 \newcommand{\obj}[1]{{\left\{ #1 \right \}}}
@@ -35,6 +36,18 @@
 \newcommand{\supp}{\text{supp}}
 \newcommand{\conf}{\text{conf}}
 \newcommand{\cltc}{\mathfrak{B}}
+
+\makeatletter
+\providecommand{\bigsqcap}{%
+  \mathop{%
+    \mathpalette\@updown\bigsqcup
+  }%
+}
+\newcommand*{\@updown}[2]{%
+  \rotatebox[origin=c]{180}{$\m@th#1#2$}%
+}
+\makeatother
+
 
 \newcommand{\notexists}{\mathop{\not\!\exists}\nolimits}
 
@@ -852,9 +865,7 @@ Note that if $A\cap G_{-\epsilon} \neq \emptyset$ then \[A^\epsilon = \brac{ \bi
 
 For each $\epsilon\in \obj{-,+}$ a JSM $\epsilon$-\emph{hypothesis} is a formal intent $A\subseteq M$ of the $\epsilon$-context such that $A^\epsilon\neq \emptyset$ and $\nexists g\in G_{-\epsilon}$ with $A\subseteq g'$. This is equivalent to $\brac{A'\cap G_\epsilon}' = A$, $A'\cap G_\epsilon\neq \emptyset$ and $A'\cap G_{-\epsilon} = \emptyset$.
 
-% определение гипотез, формализующее идею “достаточное условие принадлежности объекта к классу выражается максимальным общим подобъектом некоторых объектов данного класса (“сходством” этих объектов), таким, что он не является подобъектом какого-либо объекта другого класса”.
-
-Thus an $\epsilon$-hypothesis is a set of ``structural attributes common to some $\epsilon$-type examples'' and not possessed by any $-\epsilon$-type examples. Indeed, if there exists $g\in G_{-\epsilon}$with $A'\subseteq g'$, then $g\in A'$, which means that this $\epsilon$-hypothesis has counter-examples and thus is falsified. Thus the main requirement is that hypotheses be non-contradictory.
+Thus an $\epsilon$-hypothesis is a set of ``structural attributes common to some $\epsilon$-type examples'' and not possessed by any $-\epsilon$-type examples. Indeed, if there exists $g\in G_{-\epsilon}$with $A'\subseteq g'$, then $g\in A'$, which means that this $\epsilon$-hypothesis has counter-examples and thus is falsified. Thus the main requirement is that hypotheses be non-contradictory, or ``counter-example forbidding hypothesis''.
 
 \begin{prop} A JSM $\epsilon$-hypothesis is necessarily an implication in the combined learning context $\brac{ G_\pm, M \cup \obj{-,+}, I_\pm }$, where $G_\pm \defn G_+\cup G_-G_+\cup G_-$ and \[I_\pm \defn I\cap G_\pm\times M \cup G_+\times\obj{+} \cup G_-\times\obj{-}\]
 \end{prop}
@@ -960,37 +971,59 @@ To allow descriptions like $\clo{a, +\infty}$ use $\bar{\Real}$ when necessary, 
 
 % subsubsection interval_descriptions (end)
 
+% subsection semi_lattices_of_descriptions (end)
+
 \subsection{Pattern Formal Concepts} % (fold)
 \label{sub:pattern_formal_concepts}
 % Ami book: p.~74-82
 
-A pattern structure is a triple $\Pat=\brac{G,(D,\Box), \delta}$, where $G$ is a set of objects, $(D,\sqcup)$ is a semi-lattice of descriptions and $\delta: G\to D$ is an object-description mapping. Let the induced partial order on $(D,\sqcup)$ be denoted by $\sqsubseteq$. For any $d_1, d_2\in D$ the relation $d_1\sqsubseteq d_2$ represents the fact that the description $d_2$ is more general, or less specific, than $d_1$. Depending on the semantics of the description semi-lattice, the exact definition of this partial order may vary.
+A pattern structure is a triple $\Pat = \brac{G,(D,\sqcap), \delta}$, where $G$ is a set of objects, $(D, \sqcap)$ is a semi-lattice with meet semantics and $\delta: G\to D$ is an object-description mapping with specific properties.
 
-The derivation operators on $\Pat$, ${(\cdot)}^\diamond$, are defined as follows: \begin{align*}
-	A^\diamond &\defn \bigsqcup_{g\in A} \delta(g)\\
-	d^\diamond &\defn \obj{\induc{g\in G}\,\delta(g) \sqsubseteq d}
+Intuitively, for an arbitrary set of specific ``descriptions'' $X$ the operator $\sqcap$ produces a ``description'' $\sqcap X$ common to those provided. In other words $\sqcap X$ is a description which every description $d\in X$ fits.
+
+The induced partial order on $(D,\sqcap)$ known as the ``subsumption'' relation is defined as $d_1\sqsubseteq d_2$ if and only if $d_1\sqcap d_2 = d_1$. Given the semantics of the semi-lattice of descriptions and the meaning ascribed to $\sqcap$, $d_1\sqsubseteq d_2$ is understood as ``$d_2$ is subsumed under a broader and less specific description $d_1$''.
+
+It should be noted, that the semantics of the description semi-lattice can be chosen arbitrarily as long as it is in concordance with the partial order.
+
+It was mentioned that the map $\delta$ was not arbitrary. As a matter of fact $\delta$ and the semi-lattice $(D,\sqcap)$ are required to share the following joint completeness property: \begin{description}
+	\item[(Joint-Completeness)] For every subset $X\subseteq \delta(G)$ the infimum $\sqcap X$ exists in $(D,\sqcap)$.
+\end{description}
+Thus, the set $\delta(G)$ generates an infimum-complete sub-semi-lattice $(D_\delta, \sqcap)$ of $(D,\sqcap)$ where \[D_\delta \defn \obj{\induc{ \sqcap X }\, X\subseteq \delta(G)}\] Since the semi-lattice $(D_\delta,\sqcap)$ inherits the subsumption partial order, $(D_\delta,\sqsubseteq)$ is a poset in which every subset has an infimum, whence $(D_\delta, \sqcap)$ is in fact a complete lattice.
+
+If $G$ is finite then Joint-Completeness property is automatically satisfied. Indeed, in this case $\delta(G)$ is finite, which means that $\bigsqcap_{d\in X} d$ can be correctly defined via induction for any subset $X\subseteq \delta(G)$, since $(D,\sqcap)$ is a semi-lattice.
+
+If $(D,\sqcap)$ is itself a complete semi-lattice, then $\sqcap X$ exists for any $X\subseteq D$.
+
+The derivation operators in $\Pat$, ${(\cdot)}^\diamond$, are defined as follows: \begin{align*}
+	A^\diamond &\defn \bigsqcap_{g\in A} \delta(g)\\
+	d^\diamond &\defn \obj{\induc{g\in G}\, d\sqsubseteq \delta(g)}
 \end{align*}
-The definition directly implies that ${(\cdot)}^\diamond$ is a Galois connection between posets $\brac{\Pwr(G),\subseteq}$ and $(D,\sqsubseteq)$.\footnote{See lecture 7 ``Pattern Structures on Graphs'', slide~20}
-%% A^\diamond requires completeness
+It should be noted that the definition of ${(\cdot)}^\diamond$ on $\Pwr(G)$ hinges on completeness of the $(D_\delta, \sqcap)$ semi-lattice.
 
+\begin{prop} The operator ${(\cdot)}^\diamond$ defines a Galois connection between posets $\brac{\Pwr(G),\subseteq}$ and $(D_\delta, \sqsubseteq)$.\footnote{See lecture 7 ``Pattern Structures on Graphs'', slide~20}
+\end{prop}
 
+\begin{proof}
+Indeed, let $A\subseteq G$ and $d\in D_\delta$. If $d\sqsubseteq A^\diamond$ then for all $g\in A$ it is true that $d\sqsubseteq \delta(g)$, whence $A\subseteq d^\diamond$ by definition. Conversely, if $A\subseteq d^\diamond$, then $d\sqsubseteq \delta(g)$ for every $g\in A$, which implies that $d\sqsubseteq \bigsqcap_{g\in A} \delta(g)$ by completeness and the definition of an infimum.
 
-It is natural to assume existence of some $\epsilon \in D$, which represents an empty description, such that $\epsilon \sqsubset d$ for all $d\in D$ such that $d\neq \epsilon$. Furthermore no object in existence can have an empty description $\delta(g)\neq \epsilon$ for all $g\in G$. Algebraically $\epsilon$ is $\sqcup$-identity, a neutral element with respect to the operation $\sqcup$. In the pathological case $\emptyset^\diamond=\epsilon$.
+Therefore the operator ${(\cdot)}^\diamond$ satisfies the \textbf{(GALOIS)} property and is thus a Galois connection.
+\end{proof}
 
-The void description. The universal description
+Since the semi-lattice $(D_\delta,\sqcap)$ is complete, it naturally has the least and the greatest elements, which are defined as \[
+\mathbf{0} \defn \bigsqcap D_\delta\,\text{ and } \mathbf{1} \defn \bigsqcap \emptyset\] respectively. The element $\mathbf{0}$, the ``null description'', is a description which subsumes every other description of the given set of objects: $\mathbf{0} \sqsubset d$ for all $d\in D_\delta$.
 
-% subsection pattern_formal_concepts (end)
+% The void description. The universal description
 
-
+% It is natural to assume existence of some $\epsilon \in D$, which represents an empty description, such that $\epsilon \sqsubset d$ for all $d\in D$ such that $d\neq \epsilon$. Furthermore no object in existence can have an empty description $\delta(g)\neq \epsilon$ for all $g\in G$. Algebraically $\epsilon$ is $\sqcap$-identity, a neutral element with respect to the operation $\sqcap$. In the pathological case $\emptyset^\diamond=\epsilon$.
 
 In view of simplifying algebraic derivations in the pattern structures, it might be necessary to define a description projection map $\pi:D\to D$, with the following properties:\footnote{See lecture 7 ``Pattern Structures on Graphs'', slide~28} \begin{description}
 	\item[Monotonicity] \hfill \\ The projection operation does not increase specificity of a description: $x\sqsubseteq y$ implies $\pi(x)\subseteq \pi(y)$ for any $x,y\in D$;
 	\item[Generalisation] \hfill \\ The projection of any description must be less specific that the original: $\pi(x)\sqsubseteq x$ for any $x\in D$;
 	\item[Idempotence] \hfill \\ Projection of a projected description yields the same projection: $\pi\brac{\pi(x)} = \pi(x)$ for all $x\in D$.
 \end{description}
-In effect a projection is just a modification of the object-description mapping $\delta$: $\delta \Rightarrow \pi \circ \delta$. Monotonicity of $\pi$ and associativity of $\sqcup$ imply that $\pi\brac{x\sqcup y}\sqsubseteq \pi(x)\sqcup\pi(y)$, and generalisation and idempotence of $\pi$ with associativity of $\sqcup$ imply that \[\brac{\pi(x)\sqcup\pi(y)}\sqcup (x\sqcup y) = \brac{\pi(x)\sqcup x}\sqcup \brac{\pi(y)\sqcup y} = \pi(x)\sqcup \pi(y)\] whence $\pi(x)\sqcup\pi(y)\sqsubseteq x\sqcup y$. Therefore $\pi\brac{x\sqcup y} = \pi(x)\sqcup\pi(y)$.
+In effect a projection is just a modification of the object-description mapping $\delta$: $\delta \Rightarrow \pi \circ \delta$. Monotonicity of $\pi$ and associativity of $\sqcap$ imply that $\pi\brac{x\sqcap y}\sqsubseteq \pi(x)\sqcap\pi(y)$, and generalisation and idempotence of $\pi$ with associativity of $\sqcap$ imply that \[\brac{\pi(x)\sqcap\pi(y)}\sqcap (x\sqcap y) = \brac{\pi(x)\sqcap x}\sqcap \brac{\pi(y)\sqcap y} = \pi(x)\sqcap \pi(y)\] whence $\pi(x)\sqcap\pi(y)\sqsubseteq x\sqcap y$. Therefore $\pi\brac{x\sqcap y} = \pi(x)\sqcup\pi(y)$.
 
-% subsection semi_lattices_of_descriptions (end)
+% subsection pattern_formal_concepts (end)
 
 % section pattern_structures (end)
 
