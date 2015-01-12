@@ -3,9 +3,9 @@
 
 \usepackage{graphicx, url}
 
-\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{amsmath, amsfonts, xfrac, amssymb}
 \usepackage{amsthm}
-\usepackage{mathtools}
+% \usepackage{mathtools}
 
 \newcommand{\obj}[1]{{\left\{ #1 \right \}}}
 \newcommand{\clo}[1]{{\left [ #1 \right ]}}
@@ -27,6 +27,8 @@
 \newcommand{\Lcal}{\mathcal{L}}
 \newcommand{\Tcal}{\mathcal{T}}
 \newcommand{\Kcal}{\mathcal{K}}
+\newcommand{\Mcal}{\mathcal{M}}
+\newcommand{\Gcal}{\mathcal{G}}
 
 \newcommand{\Ctx}{\mathbb{K}}
 \newcommand{\Pat}{\mathbb{P}}
@@ -93,7 +95,7 @@ Let $(P,\leq)$ be a poset and $x, y\in P$. We say that $x$ is \textbf{covered by
 \begin{proof}
 $\Rightarrow$ Suppose $x,y\in P$ are such that $x<y$. Define the set \[S_{xy}\defn \obj{\induc{z\in P}\,x \leq z \leq y\,z\neq x,y}\] This proposition is proven by induction on the size of the set $S_{xy}$.
 
-Since $P$ is finite, the set $S_{xy}$ must necessarily by finite as well. If $\abs{S_{xy}} = 0$ then $\notexists z\in P$ with $x<z<y$, whence $x_0 = x\prec y = x_1$.
+Since $P$ is finite, the set $S_{xy}$ must necessarily by finite as well. If $\abs{S_{xy}} = 0$ then $\nexists z\in P$ with $x<z<y$, whence $x_0 = x\prec y = x_1$.
 
 Consider the case $\abs{S_{xy}}>0$ and pick any $z\in S_{xy}$. Then due to transitivity of $\leq$ on $P$ it is true that \[S_{xy} = S_{xz}\uplus \obj{z}\uplus S_{zy}\] which implies that $\abs{S_{xz}},\abs{S_{zy}}<\abs{S_{xy}}$. Thus by inductive hypothesis, there exists $\brac{x_k}_{k=0}^{n+m}\in P$ such that \[x = x_0 \prec x_1 \prec \ldots \prec x_n = z = x_n \prec x_{n+1} \prec \ldots \prec x_{n+m} = y\]
 
@@ -693,27 +695,26 @@ A subset $\Kcal$ of a collection of implications $\Lcal$ is \textbf{complete} if
 
 A collection of implications $\Lcal$ is \textbf{redundant} if there is $A\to B\in \Lcal$ such that \[\Lcal\setminus\obj{A\to B}\models A\to B\]
 
-In order to find a complete and non-redundant subset of implications of some context first and foremost it is necessary to drop implications that hold in any context.
+A non-redundant and complete subset of implications of a formal context $(G,M,I)$ is called an \emph{implicational basis}.
+
+%% Rewrite the section below
+In order to find a complete subset of implications of some context first and foremost it is necessary to drop implications that hold in any context.
 
 For example $\emptyset\models A\to B$ whenever $B\subseteq A$. Indeed, for any $T\subseteq M$ either $A\not\subseteq T$ and $T$ respects $A\to B$, or $A\subseteq T$, whence $B\subseteq T$ and, again, $T$ respects $A\to B$.
 
 It is easy to see, that $A\to B\models A\to C$ whenever $C\subseteq B$.
 
-Consider a context $(G,M,I)$. Then 
-
-A non-redundant and complete subset of implications of a formal context $(G,M,I)$ is called an \emph{implicational basis}.
-
 \subsubsection{Generator basis} % (fold)
 \label{ssub:generator_basis}
 % 1.3. Генераторные базисы, базис Д-Г
 
-Let $A\subseteq M$ be some formal intent, i.e $A'' = A$. Any set $D\subseteq A$ with $D'' = A''$ is a \emph{generator} of $A$. The collection of all generators of $A$ is \[\text{gen}(A) \defn \obj{\induc{D\subseteq A}\, D'' = A'' }\]
+Consider a context $(G,M,I)$ and let $A\subseteq M$ be some formal intent, i.e $A'' = A$. Any set $D\subseteq A$ with $D'' = A''$ is a \emph{generator} of $A$. The collection of all generators of $A$ is \[\text{gen}(A) \defn \obj{\induc{D\subseteq A}\, D'' = A'' }\]
 
-Any $D\in \text{gen}(A)$ is a \emph{minimal generator} if $E'' \neq D''$ for any $E\subset D$. The collection of all minimal generators of $A$ is \[\text{mingen}(A) \defn \obj{ \induc{D\in \text{gen}(A)}\, \forall E\subset D\, E\notin \text{gen}(D'')}\]
+Any $D\in \text{gen}(A)$ is a \emph{minimal generator} if $E''\neq D''$ for any $E\subset D$. The collection of all minimal generators of $A$ is \[\text{mingen}(A) \defn \obj{ \induc{D\in \text{gen}(A)}\, \forall E\subset D\, E\notin \text{gen}(D'')}\]
 
 A generator $D\in\text{gen}(A)$ is non-trivial if $D\neq D''$. All non-trivial minimal generators of $A$ are gathered in the following collection \[\text{nmingen}(A) \defn \obj{\induc{D\in\text{mingen}(A)}\,D\neq D'' }\]
 
-A generator basis of implications of $\Ctx$ is defined as \[\text{GENbas}(\Ctx)\defn \obj{\induc{ X\to \brac{X''\setminus X} }\, X\subseteq M,\, X\in \text{nmingen}(X'')}\] Hence in order to construct the generator vasis of implications it is necessary to compute all closed subsets of $M$, which is equivalent to obtaining all formal concepts of $\Ctx$, and then for each \textbf{formal intent} $B\subseteq M$, find all non-trivial minimal generators $\text{mingen}(B)$.
+A generator basis of implications of $\Ctx$ is defined as \[\text{GENbas}(\Ctx)\defn \obj{\induc{ X\to \brac{X''\setminus X} }\, X\subseteq M,\, X\in \text{nmingen}(X'')}\] Hence in order to construct the generator basis of implications it is necessary to compute all closed subsets of $M$, which is equivalent to obtaining all formal concepts of $\Ctx$, and then for each \textbf{formal intent} $B\subseteq M$, find all non-trivial minimal generators $\text{mingen}(B)$.
 
 % subsubsection generator_basis (end)
 
@@ -722,28 +723,30 @@ A generator basis of implications of $\Ctx$ is defined as \[\text{GENbas}(\Ctx)\
 % 1.2. Псевдосодержания
 % 1.3. Генераторные базисы, базис Д-Г
 
-Consider a context $(G,M,I)$. A subset $P\subseteq M$ is a pseudo-intent if $P\neq P''$ and $Q''\subseteq P$ for every pseudo-intent $Q\subseteq P$ and $Q\neq P$. \textbf{Duquenne–Guigues basis}, or the \textbf{stem base}, of attribute implications is defined as \[\text{DQbas}(G,M,I)\defn \obj{\induc{ P\to \brac{P''\setminus P} }\, P \text{-- pseudo-intent} }\]
+Consider a context $(G,M,I)$ with finite attribute set $M$. A subset $P\subseteq M$ is a \textbf{pseudo-intent} if $P\neq P''$ and $Q''\subseteq P$ for every pseudo-intent $Q\subseteq P$ and $Q\neq P$.
 
-What was the rationale behind the notion of pseudo-intents?
-
-\begin{prop} The stem base is non-redundant and complete.
+\begin{prop} The set of implications \[\Lcal \defn \obj{\induc{ P\to P'' }\, P \text{-- pseudo-intent} }\] is non-redundant and complete.
 \end{prop}
 
 \begin{proof}\hfill
 \begin{description}
-\item[Inclusion] \hfill \\ For any $P\to P''\in \Kcal$ it is true that $P''\subseteq \brac{P}''$ whence $\Kcal$ holds in $(G,M,I)$.
+\item[Inclusion] \hfill \\ For any $P\to P''\in \Lcal$ it is true that $P''\subseteq \brac{P}''$ whence $\Lcal$ holds in $(G,M,I)$.
 
-\item[Completeness] \hfill \\ Suppose $T\subseteq M$ is such that $T\neq T''$. If $T$ is a pseudo-intent, then $T\to T''$ is an implication from $\Kcal$ which is not respected by $T$ because $T''\not\subseteq T$ violates the requirement that either $T\not\subseteq T$ or $T''\subseteq T$.
+\item[Completeness] \hfill \\ Suppose $T\subseteq M$ is such that $T\neq T''$. If $T$ is a pseudo-intent, then $T\to T''$ is an implication from $\Lcal$ which is not respected by $T$ because $T''\not\subseteq T$ violates the requirement that either $T\not\subseteq T$ or $T''\subseteq T$.
 
-If $T$ is not a pseudo-intent, then there exists a pseudo-intent $Q\subseteq T$ such that $Q''\not\subseteq T$, whence an implication $Q\to Q''$ from $\Kcal$ cannot be respected by $T$. Therefore every subset $T\subseteq M$ with $T\neq T''$ cannot be a model of $\Kcal$.
-% Suppose $T\subseteq M$ is a model of $\Kcal$, but $T\neq T''$. The set $T$ cannot be a pseudo-intent, because in that case the implication $T\to T''$ would be have to be respected by $T$, which would imply that $T''\subseteq T$ and further $T'' = T$.
-% If there is no pseudo-intent $P$ with $P\subset T$ then $T$ is itself a pseudo-intent. However, if $P\subset T$ for some pseudo-intent $P$, then $T$, being a model of $\Kcal$, must respect the implication $P\to P''$, whence $P''\subseteq T$, implying that $T$ is a pseudo-intent.
+If $T$ is not a pseudo-intent, then there exists a pseudo-intent $Q\subseteq T$ such that $Q''\not\subseteq T$, whence an implication $Q\to Q''$ from $\Lcal$ cannot be respected by $T$. Therefore every subset $T\subseteq M$ with $T\neq T''$ cannot be a model of $\Lcal$.
+% Suppose $T\subseteq M$ is a model of $\Lcal$, but $T\neq T''$. The set $T$ cannot be a pseudo-intent, because in that case the implication $T\to T''$ would be have to be respected by $T$, which would imply that $T''\subseteq T$ and further $T'' = T$.
+% If there is no pseudo-intent $P$ with $P\subset T$ then $T$ is itself a pseudo-intent. However, if $P\subset T$ for some pseudo-intent $P$, then $T$, being a model of $\Lcal$, must respect the implication $P\to P''$, whence $P''\subseteq T$, implying that $T$ is a pseudo-intent.
 
 \item[Non-redundancy] \hfill \\ Let $Q$ be some pseudo-intent. For any pseudo-intent $P\neq Q$ either $P\not\subseteq Q$ or $P\subseteq Q$ in which case $P''\subseteq Q$ since $Q$ is a pseudo-intent. Hence $Q$ respects any implication $P\to P''$ where $P\neq Q$ is a pseudo-intent.
 
-However, being a pseudo-intent, $Q$ cannot respect the implication $Q\to Q''$ because $Q''\neq Q$. Therefore \[\Kcal\setminus \obj{Q\to Q''}\not\models Q\to Q''\] Thus omitting any implication from $\Kcal$ results in an incomplete set of implications.
+However, being a pseudo-intent, $Q$ cannot respect the implication $Q\to Q''$ because $Q''\neq Q$. Therefore \[\Lcal\setminus \obj{Q\to Q''}\not\models Q\to Q''\] Thus omitting any implication from $\Lcal$ results in an incomplete set of implications.
 \end{description}
 \end{proof}
+
+This implicational basis is called the \textbf{Duquenne–Guigues basis}, or the \textbf{stem base}, of attribute implications, and is usually stated as \[\text{DQbas}(G,M,I)\defn \obj{\induc{ P\to \brac{P''\setminus P} }\, P \text{-- pseudo-intent} }\] since $P\to P''$ is equivalent to $P\to\brac{P''\setminus P}$.
+
+What was the rationale behind the notion of pseudo-intents?
 
 Seminars covered a brute force algorithm for constructing all pseudo-intents which is a carbon copy of the recursive definition given in this section. Let $P\subseteq M$ be the subset which is currently being considered: \begin{description}
 	\item[Start] \hfill \\ If $\emptyset\neq \emptyset''$ then the smallest pseudo-intent is $\emptyset$. Then it is pointless to consider subsets of $M$ not including elements from $\emptyset''$ (see rule \#2).
@@ -752,6 +755,14 @@ Seminars covered a brute force algorithm for constructing all pseudo-intents whi
 	\item[Rule \#2]\hfill \\ If $P$ contains a pseudo-intent $Q$, but not $Q''\setminus Q$, then $P$ is not a pseudo-intent.
 	% \item[Rule \#3]\hfill \\ There definitely was a third rule here...
 \end{description}
+
+% p.~80
+
+% 3.3.39 Let $\Kcal$ be some complete set of implications of $(G,M,I)$ and $P$ be a pseudo-intent. Then there exists $A\to B\in \Kcal$ such that $P$ does not respect $A\to B$ and $A''=P''$.
+
+% 3.3.40 There exists an injective map from the set of all pseudo-intent into any complete set of implications.
+
+% 3.3.41 The stem basis is the smallest complete and non-redundant.
 
 % subsubsection duquenne_guigues_basis (end)
 
@@ -808,19 +819,21 @@ The definition is correct since $(A,B)$ is a formal concept of $\Ctx$ if and onl
 \section{Classification} % (fold)
 \label{sec:classification}
 
+Consider a universal formal context $(\Gcal, M, \Ical)$, which contains descriptions of every object, and $G$ be some strict subset of $\Gcal$.
+
+The restriction $(G,M,I)$ of $(\Gcal,M,\Ical)$ is called \emph{the learning context} with $I$ defined as $(g,m)\in I$ if and only if $(g,m)\in \Ical$ and $g\in G$ ($I\defn \Ical \cap G\times M$). Let ${(\cdot)}'$ be the derivation operators of $(G,M,I)$.
+
+Suppose there is a non-trivial partition $\brac{G_c}_{c\in \mathcal{C}}$ of $G$ for some non-empty set of classes $\mathcal{C}$ with $\abs{\mathcal{C}}\geq 2$. For every $c\in \mathcal{C}$ define the set of \emph{alternative} objects $G_{-c} \defn G\setminus G_c$.
+
 \subsection{Lazy classification} % (fold)
 \label{sub:lazy_classification}
 % 1.4. Ленивая классификация
 
-Lazy classification has its roots in democratic voting. It can be used if one doesn't want to compute a complete implication base.
+Lazy classification has its roots in democratic voting. It can be used if one doesn't want to compute a complete implicational base.
 
-Consider a binary context $(\Gamma, M, \Ical)$. This is the universal formal context, which contains descriptions of every objects. Let $G$ be a strict subset of $\Gamma$ know as the learning sample of objects. The restriction $I$ of the binary relation $\Ical$ to $G$ (technically to $G\times M$) is defined as $(g,m)\in I$ if and only if $(g,m)\in \Ical$ and $g\in G$. This produces a learning context $\Ctx = (G,M,I)$ with the usual derivation operator ${(\cdot)}'$ (the pair of Galois operators).
+Let $f\notin G$ be a new object to be classified. An object $g\in G_c$ votes for $c$ if there is no $h\in G_{-c}$ such that $g' \cap f'\subseteq h'$. The collection of votes for $c$ is thus defined as \[V_c(f) \defn\obj{ \induc{ g\in G_c }\, \nexists h\in G_{-c}\,g'\cap f'\subseteq h'}\] Then the ``electoral support'' of $f$ for $c$ is \[S_c(f)\defn \frac{V_c(f)}{\abs{G_c}}\]
 
-Suppose there is a non-trivial partition (a set of classes) of $\brac{G_c}_{c\in \mathcal{C}}$ of $G$ for some non-empty set of classes $\mathcal{C}$ with $\abs{\mathcal{C}}\geq 2$. For every $c\in \mathcal{C}$ define the following set of alternative objects $G_{-c} \defn G\setminus G_c$.
-
-Let $f\in \Gamma\setminus G$ be a new object which is yet to be classified, i.e. assigned some $c\in \mathcal{C}$. An object $g\in G_c$ votes for $c$ if there is no $h\in g_{-c}$ such that $g' \cap f'\subseteq h'$. The collection of votes for $c$ is defined as \[V_c(f) \defn\obj{ \induc{ g\in G_c }\, \notexists h\in G_{-c}\text{ with } g' \cap f'\subseteq h' }\] The ``electoral support'' of $f$ for $c$ is then $S_c(f)\defn \frac{V_c(f)}{\abs{G_c}}$.
-
-A simple collective decision to assign $f$ a class $c\in \mathcal{C}$ if done in the following way: $f$ is assigned to a class $c$ if $S_c(f) > S_k(f)$ for all $k\in \mathcal{C}$, $k\neq c$. It is very likely that the collective vote cannot assign a particular class to a new object. If the reason is that electoral support is overwhelming, $S_c(f)=1$, for all $c\in \mathcal{C}$, then $f$ is contradictory. Indecision for any other reason is means that $f$ is undetermined.
+A simple collective decision to assign $f$ the class $c$ is done in the following way: $f$ is assigned to a class $c$ if $S_c(f) > S_k(f)$ for all classes $k\neq c$. It is very likely that the collective vote would not assign a particular class to a new object. If the reason is that electoral support is overwhelming, $S_c(f)=1$, for at least two classes $c\in \mathcal{C}$, then $f$ is contradictory. Indecision for any other reason is means that $f$ is indeterminate.
 
 % subsection lazy_classification (end)
 
@@ -828,61 +841,47 @@ A simple collective decision to assign $f$ a class $c\in \mathcal{C}$ if done in
 \label{sub:jsm_method}
 % 4. ДСМ-метод
 
-% JSM method is described here
-% For each $c\in \mathcal{C}$ define the sub-context $\Ctx_c$ of $\Ctx$ as a triple $(G_c,M,I_c)$, where $I_c\subseteq G_c\times M$ is a restriction of $I$ from $G\times M$ to $G_c\times M$. The derivation rules are ${(\cdot)}^c$ for each context $\Ctx_c$.
+JSM-method is a method of classification which utilizes attribute implications. Suppose $(G,M,I)$ is a binary context and $G_+,G_-\subseteq G$ are known positive and negative examples respectively, such that $G_+\cap G_- = \emptyset$. For convenience, let's introduce the following notation: for $\epsilon\in \obj{-,+}$ put $-\epsilon \defn -$ if $\epsilon=+$ and $-\epsilon \defn +$ otherwise.
+
+For each $\epsilon \in \obj{+,-}$ let $(G_\epsilon,M,I_\epsilon)$ be the $\epsilon$-context, where $I_\epsilon \defn I\cap (G_\epsilon\times M)$. The derivation operator in the original context ${(\cdot)}'$ and in an $\epsilon$-context it is ${(\cdot)}^\epsilon$. It it easy to demonstrate that in this setting the derivation operators of $\epsilon$-contexts can be expressed through ${(\cdot)}'$: indeed, for $A\subseteq M$ ad $X\subseteq G_\epsilon$ \begin{align*}
+	X^\epsilon &= \obj{\induc{ m\in M }\, \forall g\in X\,(g,m)\in I_\epsilon} \\ &= \obj{\induc{ m\in M }\, \forall g\in X\,g\in G_\epsilon,\,(g,m)\in I} = \brac{X\cap G_\epsilon}' = X'\\
+	A^\epsilon &= \obj{\induc{ g\in G_\epsilon }\, \forall m\in A\,(g,m)\in I_\epsilon} \\ &= \obj{\induc{ g\in G }\,g\in G_\epsilon,\, \forall m\in A\,(g,m)\in I} = A' \cap G_\epsilon
+\end{align*}
+
+Note that if $A\cap G_{-\epsilon} \neq \emptyset$ then \[A^\epsilon = \brac{ \bigcap_{g\in A\cap G_\epsilon} g^+ }\cap \brac{ \bigcap_{g\in A\cap G_{-\epsilon}} g^+ } = \brac{A\cap G_\epsilon}' \cap \emptyset\] since for all $m\in M$ and any $g\in A\cap G_{-\epsilon}$ it is true that $(g,m)\notin I_\epsilon$.
+
+For each $\epsilon\in \obj{-,+}$ a JSM $\epsilon$-\emph{hypothesis} is a formal intent $A\subseteq M$ of the $\epsilon$-context such that $A^\epsilon\neq \emptyset$ and $\nexists g\in G_{-\epsilon}$ with $A\subseteq g'$. This is equivalent to $\brac{A'\cap G_\epsilon}' = A$, $A'\cap G_\epsilon\neq \emptyset$ and $A'\cap G_{-\epsilon} = \emptyset$.
+
+% определение гипотез, формализующее идею “достаточное условие принадлежности объекта к классу выражается максимальным общим подобъектом некоторых объектов данного класса (“сходством” этих объектов), таким, что он не является подобъектом какого-либо объекта другого класса”.
+
+Thus an $\epsilon$-hypothesis is a set of ``structural attributes common to some $\epsilon$-type examples'' and not possessed by any $-\epsilon$-type examples. Indeed, if there exists $g\in G_{-\epsilon}$with $A'\subseteq g'$, then $g\in A'$, which means that this $\epsilon$-hypothesis has counter-examples and thus is falsified. Thus the main requirement is that hypotheses be non-contradictory.
+
+\begin{prop} A JSM $\epsilon$-hypothesis is necessarily an implication in the combined learning context $\brac{ G_\pm, M \cup \obj{-,+}, I_\pm }$, where $G_\pm \defn G_+\cup G_-G_+\cup G_-$ and \[I_\pm \defn I\cap G_\pm\times M \cup G_+\times\obj{+} \cup G_-\times\obj{-}\]
+\end{prop}
+
+\begin{proof}
+Indeed, if $A$ is an $\epsilon$-hypothesis, then $A\not\subseteq g'$ for all $g\in G_{-\epsilon}$ implies that $A'\cap G_{-\epsilon} = \emptyset$. Since $G_\pm = G_\epsilon \cup G_{-\epsilon}$, it is true that $A'\cap G_\epsilon = A'$, whence $A'\subseteq G_\epsilon$. However, by definition of $I_\pm$, $G_\epsilon = \epsilon'$, whence $A'\subseteq \epsilon'$. Therefore $A\to \epsilon$ is a n implication of the context $\brac{ G_\pm, M \cup \obj{-,+}, I_\pm}$.
+\end{proof}
+
+% Unfinished
+An $\epsilon$-hypothesis is sufficiently supported if \begin{description}
+	\item[consistent] for every $g\in G_\epsilon$ the object intent 
+\end{description}
+
+% принцип достаточного основания принятия гипотез, согласно которому порожденные гипотезы должны правильно классифицировать исходные положительные и отрицательные примеры, т.е. положительные - положительно, а отрицательные - отрицательно. При невыполнении этого условия считается, что порождение гипотез по обучающему контексту не корректно, и множество исходных примеров нуждается в пополнении.
 
 JSM method is based on the following principle: %% See the lecture
 
-Let $M$ be a set of structured attributes, and $w\notin M$ as a designated target feature with values $\obj{+,-,?}$. The set of objects $G$ is partitioned according to the value $w$: $G=G_+\uplus G_? \uplus G_-$, -- of positive, undefined and negative example sets respectively. This partition brings about three contexts positive $\Ctx_+ = \brac{G_+,M,I_+}$, negative $\Ctx_- = \brac{G_-,M,I_-}$ and undefined $\Ctx_? = \brac{G_?,M,I_?}$ which define structural specifics of each type of examples. The derivation rules (Galois operators) are ${(\cdot)}^+$, ${(\cdot)}^-$ and ${(\cdot)}^?$ respectively.
-
-\subsubsection{JSM on a binary context} % (fold)
-\label{ssub:dsm_on_a_binary_context}
-% 4.1 ДСМ на бинарном контексте
 % Ami book: p.~43-46,58-59,68-73
 % Ami book: p.~60-66
 
-\selectlanguage{russian}
-определение гипотез, формализующее идею “достаточное условие принадлежности объекта к классу выражается максимальным общим подобъектом некоторых объектов данного класса (“сходством” этих объектов), таким, что он не является подобъектом какого-либо объекта другого класса”.
-
-$H_+\subseteq g^\tau$
-
-принцип достаточного ос-
-нования принятия гипотез [49], согласно которому порожденные гипотезы
-должны правильно классифицировать исходные положительные и отрица-
-тельные примеры, т.е. положительные - положительно, а отрицательные -
-отрицательно (правила классификации при этом имеют точно такой же вид
-как и в случае классификации недоопределенных примеров). При невыпол-
-нении этого условия считается, что порождение гипотез по обучающему
-контексту не корректно, и множество исходных примеров нуждается в по-
-полнении.
-\selectlanguage{english}
-
-% subsubsection dsm_on_a_binary_context (end)
-
-\subsubsection{JSM on non-binary scale} % (fold)
-\label{ssub:dsm_on_non_binary_scale}
+% 4.1 ДСМ на бинарном контексте
 % 4.2 ДСМ на небинарном со шкалированием
-
-% subsubsection dsm_on_non_binary_scale (end)
-
-\subsubsection{JSM on patterns structures} % (fold)
-\label{ssub:dsm_on_patterns_structures}
-% 4.3 ДСМ на узорных структурах
-
-% subsubsection dsm_on_patterns_structures (end)
-
-\subsubsection{Application to graphs} % (fold)
-\label{ssub:application_to_graphs}
-% 4.4 пример на графах (вроде точно будет в контрольной - Кузнецов говорил!)
-
-% subsubsection application_to_graphs (end)
+% 4.3 ДСМ на узорных структурах: пример на графах
 
 % subsection jsm_method (end)
 
 % section classification (end)
-
-
-
 
 \section{Multi-valued contexts} % (fold)
 \label{sec:multi_valued_contexts}
