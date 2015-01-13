@@ -1,3 +1,0 @@
-setwd( "/users/user/Desktop/studies 2014-2015/Robust methods/assign01/" )
-Sweave(file="assign01.Stex")
-q()
