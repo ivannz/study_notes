@@ -1,0 +1,142 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{xfrac, mathptmx}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+
+\newcommand{\Fcal}{\mathcal{F}}
+\newcommand{\borel}{\mathcal{B}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+%% \usepackage[english, russian]{babel}
+%% \newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+%% \newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Probabilistic methods in modelling}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+\begin{document}
+%% \selectlanguage{english}
+\maketitle
+
+Theory of Stochastic processes
+Brownian motion
+Martingales
+Poisson point processes
+
+Generalizationo of the central limit theorem:
+-- normal distribution
+-- stable processes
+-- Fisher-Tipett-Gendenko thorem for maxima
+
+Based on the law of large numbers:
+-- Extreme value theory
+
+Additional chapters of probability
+
+Elementary probability: Kolmogorov axioms, Measure theoretic approach.
+Bernoulli law or large numbers.
+Stochastic processes require measure theoretic foundations for their definition on some abstract space.
+
+%% \selectlanguage{russian}
+\section{Lecutre \#1} % (fold)
+\label{sec:lecutre_1}
+
+
+Suppose $\brac{X_k}_{k=1}^n$ is a finite collection of random variables which are independent and identically distributed.
+
+What is the asymptotics of some function of $\brac{X_k}_{k=1}^n$. The probability distribution 
+
+Consider a measure space $(\Omega, \Fcal, P)$ and an RV $X(\omega)$ from $\Omega$ to $(\mathcal{X}, \Sigma)$ on it.
+This induces a measure in $\mathcal{X}$ -- the image space. see image~1.
+\[\mathbb{P}_X \defn X_\# \mathbb{P} = \mathbb{P}\brac{X\in A} = \int 1_{X^{-1}(A)}d\mathbb{P}\]
+
+For limiting theorems the image space is sufficient.
+
+Abstract spaces are needed in stochastic processes (and with filtration).
+
+Convergence in distribution is needed in limiting theorems.
+
+Consider $X\in \R$.
+How is the distribution of $X$ defined?
+It is defined using the semi-ring of half-closed intervals $\ploc{a,b}$.
+Or, the most popular method -- Cumulative Distribution function.
+
+An RV is not a measurable map, but a measure representing its probability.
+A map $F:\R\to \clo{0,+\infty}$ is a distribution function if \begin{enumerate}
+	\item $F$ is non decreasing;
+	\item $F(-\infty) = 0$ and $F(+\infty) = 1$.
+	\item $F$ is right-continuous and bounded;
+\end{enumerate}
+in short $F$ must be c\'adl\'ag. The crucial thing is $F(\R)=1$.
+
+Modern statistical physics was founded on Gibbs's idea.
+A physical system might be in different states, thus Gibbs and Bolzmann postulated that each state has some likelihood.
+
+What is the likelihood of picking an even number in $\mathbb{Z}$? Suppose there is some probability measure on $\mathbb{Z}$ given by $\brac{p_n}_{n\in \mathbb{Z}}$ 
+\[\sum_{n\text{ div } 2} p_n\]
+
+Let $A\subseteq \mathbb{Z}$ then the density of $A$ is \[\rho(A) \defn \lim_{n\to+\infty, m\to -\infty} \frac{\abs{\obj{\induc{k\in \mathbb{Z}}\,n\leq k\leq m }}}{n+m+1}\]
+However $\rho(\cdot)$ fails to be countably sub-additive.
+
+Classification of distribution functions on $\R$. \begin{description}
+	\item[Atomic:] \hfill \\
+		there is a countable and measurable subset $A\in \borel(\R)$ and a collection $\brac{p_k}_{k\in A}$ such that
+			\[F(x) = \sum_{k\in A} p_k 1_{\obj{k}}(x)\]
+	\item[Singular:] \hfill \\
+		all the rest. 
+	\item[Absolutely continuous:] \hfill \\
+		there exists a lebesgue-measurable map $p:\R\to\R$ with $F(x)=\int p(x) dx$
+\end{description}
+
+Lebesgue theorem: every distribution function can be represented as a weighted sum of three basic types of distributions.
+
+
+Classification of local behaviour of distributions in $\R$.
+
+Consider some $x_0\in \R$ and consider the difference $F(x_0+\Delta)-F(x_0-\Delta)$ for $\Delta > 0$.
+The function $F$ has the singularity order $\alpha$ if \[F(x_0+\Delta)-F(x_0-\Delta) = \Omega(\Delta^\alpha)\]
+
+\begin{description}
+	\item[Atomic:] $\alpha = 0$;
+	\item[Continuous:] $\alpha = 1$;
+\end{description}
+
+If $F(x)=\min\obj{\sqrt{x}, 1} 1_{\clop{0,+\infty}}(x)$ then $0$ has singularity order $\frac{1}{2}$.
+
+Cantor distribution has uncountably many points with $\alpha = 0$, and uncountably many points with $\alpha = \frac{\log 2}{\log 3}$.
+A good idea is to represent any $x\in \clo{0,1}$ in base-3 representation. The ``interesting'' points have either $0$ or $2$ in their base-3 form.
+
+
+
+Problem \#1
+	Given $U\sim \mathcal{U}\clo{0,1}$ and $Y=f(U)$. Find $f$ such that the density $p_Y$ in given by
+	\[\lambda e^{-\lambda y} 1_{\clop{0,+\infty}}\]
+	If $F(x)$ is absolutely continuous and $X\sim F$, then $F(X)\sim \mathcal{U}\clo{0,1}$. (Skorokhod)
+
+Problem \#2
+	Suppose $(X,Y)$ is uniformly distributed inside the unit circle. What is the distribution of $(x',y')$ with the radius given by $r = \sqrt{-\log \pho}$.
+	Using the Jacobian transformation, the distribution of the transformed pair is jointly gaussian.
+
+
+
+% section lecutre_1 (end)
+
+\end{document}
