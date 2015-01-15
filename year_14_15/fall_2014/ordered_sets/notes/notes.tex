@@ -854,7 +854,12 @@ A simple collective decision to assign $f$ the class $c$ is done in the followin
 \label{sub:jsm_method}
 % 4. ДСМ-метод
 
-JSM-method is a method of classification which utilizes attribute implications. Suppose $(G,M,I)$ is a binary context and $G_+,G_-\subseteq G$ are known positive and negative examples respectively, such that $G_+\cap G_- = \emptyset$. For convenience, let's introduce the following notation: for $\epsilon\in \obj{-,+}$ put $-\epsilon \defn -$ if $\epsilon=+$ and $-\epsilon \defn +$ otherwise.
+JSM-method is a method of classification which utilizes attribute implications. It is based on the following principle of agreement:
+\begin{quote}
+If two or more instances of the phenomenon under investigation have only one circumstance in common, the circumstance in which alone all the instances agree, is the cause (or effect) of the given phenomenon. \signed{John Stuart Mill, A System of Logic, Vol. 1. 1843. p. 454.}
+\end{quote}
+
+Suppose $(G,M,I)$ is a binary context and $G_+,G_-\subseteq G$ are known positive and negative examples respectively, such that $G_+\cap G_- = \emptyset$. For convenience, let's introduce the following notation: for $\epsilon\in \obj{-,+}$ put $-\epsilon \defn -$ if $\epsilon=+$ and $-\epsilon \defn +$ otherwise.
 
 For each $\epsilon \in \obj{+,-}$ let $(G_\epsilon,M,I_\epsilon)$ be the $\epsilon$-context, where $I_\epsilon \defn I\cap (G_\epsilon\times M)$. The derivation operator in the original context ${(\cdot)}'$ and in an $\epsilon$-context it is ${(\cdot)}^\epsilon$. It it easy to demonstrate that in this setting the derivation operators of $\epsilon$-contexts can be expressed through ${(\cdot)}'$: indeed, for $A\subseteq M$ ad $X\subseteq G_\epsilon$ \begin{align*}
 	X^\epsilon &= \obj{\induc{ m\in M }\, \forall g\in X\,(g,m)\in I_\epsilon} \\ &= \obj{\induc{ m\in M }\, \forall g\in X\,g\in G_\epsilon,\,(g,m)\in I} = \brac{X\cap G_\epsilon}' = X'\\
@@ -865,7 +870,7 @@ Note that if $A\cap G_{-\epsilon} \neq \emptyset$ then \[A^\epsilon = \brac{ \bi
 
 For each $\epsilon\in \obj{-,+}$ a JSM $\epsilon$-\emph{hypothesis} is a formal intent $A\subseteq M$ of the $\epsilon$-context such that $A^\epsilon\neq \emptyset$ and $\nexists g\in G_{-\epsilon}$ with $A\subseteq g'$. This is equivalent to $\brac{A'\cap G_\epsilon}' = A$, $A'\cap G_\epsilon\neq \emptyset$ and $A'\cap G_{-\epsilon} = \emptyset$.
 
-Thus an $\epsilon$-hypothesis is a set of ``structural attributes common to some $\epsilon$-type examples'' and not possessed by any $-\epsilon$-type examples. Indeed, if there exists $g\in G_{-\epsilon}$with $A'\subseteq g'$, then $g\in A'$, which means that this $\epsilon$-hypothesis has counter-examples and thus is falsified. Thus the main requirement is that hypotheses be non-contradictory, or ``counter-example forbidding hypothesis''.
+Thus an $\epsilon$-hypothesis is a set of ``structural attributes common to some $\epsilon$-type examples'' and not possessed by any $(-\epsilon)$-type examples. Indeed, if there exists $g\in G_{-\epsilon}$ with $A'\subseteq g'$, then $g\in A'$, which means that this $\epsilon$-hypothesis has counter-examples and thus is falsified. Thus the main requirement is that hypotheses be non-contradictory, or be a ``counterexample forbidding hypothesis''.
 
 \begin{prop} A JSM $\epsilon$-hypothesis is necessarily an implication in the combined learning context $\brac{ G_\pm, M \cup \obj{-,+}, I_\pm }$, where $G_\pm \defn G_+\cup G_-G_+\cup G_-$ and \[I_\pm \defn I\cap G_\pm\times M \cup G_+\times\obj{+} \cup G_-\times\obj{-}\]
 \end{prop}
@@ -874,14 +879,10 @@ Thus an $\epsilon$-hypothesis is a set of ``structural attributes common to some
 Indeed, if $A$ is an $\epsilon$-hypothesis, then $A\not\subseteq g'$ for all $g\in G_{-\epsilon}$ implies that $A'\cap G_{-\epsilon} = \emptyset$. Since $G_\pm = G_\epsilon \cup G_{-\epsilon}$, it is true that $A'\cap G_\epsilon = A'$, whence $A'\subseteq G_\epsilon$. However, by definition of $I_\pm$, $G_\epsilon = \epsilon'$, whence $A'\subseteq \epsilon'$. Therefore $A\to \epsilon$ is a n implication of the context $\brac{ G_\pm, M \cup \obj{-,+}, I_\pm}$.
 \end{proof}
 
-% Unfinished
-An $\epsilon$-hypothesis is sufficiently supported if \begin{description}
-	\item[consistent] for every $g\in G_\epsilon$ the object intent 
-\end{description}
-
 % принцип достаточного основания принятия гипотез, согласно которому порожденные гипотезы должны правильно классифицировать исходные положительные и отрицательные примеры, т.е. положительные - положительно, а отрицательные - отрицательно. При невыполнении этого условия считается, что порождение гипотез по обучающему контексту не корректно, и множество исходных примеров нуждается в пополнении.
 
-JSM method is based on the following principle: %% See the lecture
+The set of $\epsilon$-hypotheses $H_\epsilon$ is sufficiently supported if for every $g\in G_\epsilon$ there exists $h\in H_\epsilon$ with $h\subseteq g'$, i.e. the learning sample is correctly classified. The set $H_\epsilon$ has a minimal hypothesis $h_\epsilon$ if every $h\subset h_\epsilon$ is not an $\epsilon$-hypothesis.
+
 
 % Ami book: p.~43-46,58-59,68-73
 % Ami book: p.~60-66
@@ -903,6 +904,7 @@ Consider $\Ctx=\brac{G,M,W,I}$ -- a multi-valued contexts, with $I\subseteq G\ti
 \subsection{Functional dependence} % (fold)
 \label{sub:functional_dependence}
 % 5. Функциональные зависимости (в т.ч. через решетку разбиений)
+
 A set $Y\subseteq M$ is said to be \emph{functionally dependent} on $X\subseteq M$, $X\Rightarrow Y$, if for every $g,h\in G$ \[ \brac{ \forall m\in X,\,m(g)=m(h) } \implies \brac{ \forall n\in Y,\,n(g)=n(h) } \]
 Can there be function dependence of the form $\emptyset \Rightarrow Y$ for any $Y\subseteq M$? Formally $\emptyset \Rightarrow Y$ is legitimate, since the implication is true ad vacuo.
 
@@ -1010,7 +1012,7 @@ Therefore the operator ${(\cdot)}^\diamond$ satisfies the \textbf{(GALOIS)} prop
 \end{proof}
 
 Since the semi-lattice $(D_\delta,\sqcap)$ is complete, it naturally has the least and the greatest elements, which are defined as \[
-\mathbf{0} \defn \bigsqcap D_\delta\,\text{ and } \mathbf{1} \defn \bigsqcap \emptyset\] respectively. The element $\mathbf{0}$, the ``null description'', is a description which subsumes every other description of the given set of objects: $\mathbf{0} \sqsubset d$ for all $d\in D_\delta$.
+\mathbf{0} \defn \bigsqcap D_\delta\,\text{ and } \mathbf{1} \defn \bigsqcap \emptyset\] respectively. The element $\mathbf{0}$, the ``null description'', is a description which subsumes every other description of the given set of objects: $\mathbf{0} \sqsubseteq d$ for all $d\in D_\delta$.
 
 % The void description. The universal description
 
@@ -1030,6 +1032,8 @@ In effect a projection is just a modification of the object-description mapping 
 \section{Version space} % (fold)
 \label{sec:version_space}
 % 7. Пространство версий (последняя лекция)
+
+TODO!!!
 
 % section version_space (end)
 
