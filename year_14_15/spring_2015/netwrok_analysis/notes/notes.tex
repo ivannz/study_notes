@@ -1,0 +1,92 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{xfrac, mathptmx}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+% \usepackage[english, russian]{babel}
+% \newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+% \newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Structural analysis and visualization of networks}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+\begin{document}
+\selectlanguage{english}
+\maketitle
+
+email: lzhukov@hse.ru
+
+Programming: iPython notebooks
+Visualization: yEd, Gephi
+
+Linear algebra prerequisites:
+	Spares matrices
+	Eigenanalysis
+
+
+Graph $G=(V,E)$. The set $V$ is the set of vertices and $E$ is a subset of $V\times V$.
+An element $(u,v)\in E$ is an edge starting at $u$ and ending in $v$.
+The incidence matrix is defined as $a_{ij}=1_E\brac{(i,j)}$, so it denotes and edge $i\to j$.
+
+Random graphs are pure mathematics theory created by Erd\"os and Renyui.
+Statistical physics for analysis of complex networks.
+
+Network, social network, complex network just another name for a graph.
+
+Power law (scale free) few vertices with high degree, many nodes with few neighbours.
+
+Complex means that reduction of a system actually destroys the systems.
+Cannot predict the whole by the studying the parts.
+
+Facebook network -- many worlds network -- typical for a power law random graph.
+
+Complex networks usually have the following characteristics: \begin{enumerate}
+	\item Power law distribution of the vertex degree;
+	\item Small diameter and average path length;
+	\item High propensity to cluster: the number of triangles in the network.
+\end{enumerate}
+
+Let's introduce the following local features of the graph: the vertex degree.
+\begin{align*}
+	\delta^+(v) &\defn \#\obj{\induc{u\in V}\, (u,v)\in E }\\
+	\delta^-(v) &\defn \#\obj{\induc{u\in V}\, (v,u)\in E }
+\end{align*}
+
+``Any two people are on average separated no more than by six intermediate connections.''
+\begin{item}
+\item ``The small-world problem'', Stanley Milgram, 1967
+\item ``An experimental study of the small-world problem'', Travers j., Milgram S., 1969
+\end{item}
+
+Bethe lattice $(V,E)$ is an infinite cycle-free graph with ever node having the same number of neighbours $z > 1$.
+Given an edge $(v,u)\in E$ the end vertex $u$ is connected to $z-1$ other neighbours, which means that $N_k = N_{k-1}\cdot (z-1)$ with $N_1 = z$, since the centre vertex is connected to $z$ other vertices.
+Thus $N_k = z \brac{z-1}^{k-1}$.
+And the total number of nodes is \[S_n \defn 1+\sum_{k = 1}^n N_k = 1 + z \frac{\brac{z-1}^n-1}{(z-1)-1}\] (check this!)
+
+
+
+
+
+
+
+\end{document}
