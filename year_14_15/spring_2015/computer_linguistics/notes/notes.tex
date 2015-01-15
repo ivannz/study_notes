@@ -1,5 +1,38 @@
-\eng{Computer lingusitics}
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
 
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{xfrac, mathptmx}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+\usepackage[russian, english]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Computer lingusitics}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+\begin{document}
+\selectlanguage{english}
+\maketitle
 
 \selectlanguage{russian}
 \section{Lecture 1} % (fold)
@@ -28,9 +61,9 @@
 Семиотика -- теория знаковых систем.
 Треугольник Фреге
 \begin{description}
-	\item[Signifier] Смысловой символ
-	\item[Signified] Представление в сознании
-	\item[Referent] Целевой предмет или явление
+	\item[\eng{Signifier}] Смысловой символ
+	\item[\eng{Signified}] Представление в сознании
+	\item[\eng{Referent}] Целевой предмет или явление
 \end{description}
 
 Базовые единицы:
@@ -51,11 +84,10 @@
 
 Невозможность взаимо однозначного отображения лексемы в смысл
 \begin{description}
-	\item[Полисем\'ия] многозначность языковой единицы
+	\item[Полисемия] многозначность языковой единицы
 	\item[Синонимия] совпадение единиц по смыслу
-	\item[Омонимия] совпадение единиц по форме, существенной различие по смыслу
-	лексическая
-	морфологическая
+	\item[Омонимия] совпадение единиц по форме, существенное различие по смыслу.
+	Бывает лексическая и морфологическая.
 \end{description}
 
 \begin{itemize}
@@ -65,4 +97,7 @@
 \end{itemize}
 
 % section lecture_1 (end)
+
+
+\end{document}
 

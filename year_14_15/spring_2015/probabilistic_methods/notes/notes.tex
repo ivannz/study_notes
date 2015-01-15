@@ -26,14 +26,14 @@
 
 \newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
 
-%% \usepackage[english, russian]{babel}
-%% \newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
-%% \newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
 
 \title{Probabilistic methods in modelling}
 \author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
 \begin{document}
-%% \selectlanguage{english}
+\selectlanguage{english}
 \maketitle
 
 Theory of Stochastic processes
@@ -74,18 +74,18 @@ Abstract spaces are needed in stochastic processes (and with filtration).
 
 Convergence in distribution is needed in limiting theorems.
 
-Consider $X\in \R$.
+Consider $X\in \Real$.
 How is the distribution of $X$ defined?
 It is defined using the semi-ring of half-closed intervals $\ploc{a,b}$.
 Or, the most popular method -- Cumulative Distribution function.
 
 An RV is not a measurable map, but a measure representing its probability.
-A map $F:\R\to \clo{0,+\infty}$ is a distribution function if \begin{enumerate}
+A map $F:\Real\to \clo{0,+\infty}$ is a distribution function if \begin{enumerate}
 	\item $F$ is non decreasing;
 	\item $F(-\infty) = 0$ and $F(+\infty) = 1$.
 	\item $F$ is right-continuous and bounded;
 \end{enumerate}
-in short $F$ must be c\'adl\'ag. The crucial thing is $F(\R)=1$.
+in short $F$ must be c\'adl\'ag. The crucial thing is $F(\Real)=1$.
 
 Modern statistical physics was founded on Gibbs's idea.
 A physical system might be in different states, thus Gibbs and Bolzmann postulated that each state has some likelihood.
@@ -96,22 +96,22 @@ What is the likelihood of picking an even number in $\mathbb{Z}$? Suppose there 
 Let $A\subseteq \mathbb{Z}$ then the density of $A$ is \[\rho(A) \defn \lim_{n\to+\infty, m\to -\infty} \frac{\abs{\obj{\induc{k\in \mathbb{Z}}\,n\leq k\leq m }}}{n+m+1}\]
 However $\rho(\cdot)$ fails to be countably sub-additive.
 
-Classification of distribution functions on $\R$. \begin{description}
+Classification of distribution functions on $\Real$. \begin{description}
 	\item[Atomic:] \hfill \\
-		there is a countable and measurable subset $A\in \borel(\R)$ and a collection $\brac{p_k}_{k\in A}$ such that
+		there is a countable and measurable subset $A\in \borel(\Real)$ and a collection $\brac{p_k}_{k\in A}$ such that
 			\[F(x) = \sum_{k\in A} p_k 1_{\obj{k}}(x)\]
 	\item[Singular:] \hfill \\
 		all the rest. 
 	\item[Absolutely continuous:] \hfill \\
-		there exists a lebesgue-measurable map $p:\R\to\R$ with $F(x)=\int p(x) dx$
+		there exists a lebesgue-measurable map $p:\Real\to\Real$ with $F(x)=\int p(x) dx$
 \end{description}
 
 Lebesgue theorem: every distribution function can be represented as a weighted sum of three basic types of distributions.
 
 
-Classification of local behaviour of distributions in $\R$.
+Classification of local behaviour of distributions in $\Real$.
 
-Consider some $x_0\in \R$ and consider the difference $F(x_0+\Delta)-F(x_0-\Delta)$ for $\Delta > 0$.
+Consider some $x_0\in \Real$ and consider the difference $F(x_0+\Delta)-F(x_0-\Delta)$ for $\Delta > 0$.
 The function $F$ has the singularity order $\alpha$ if \[F(x_0+\Delta)-F(x_0-\Delta) = \Omega(\Delta^\alpha)\]
 
 \begin{description}
@@ -124,15 +124,13 @@ If $F(x)=\min\obj{\sqrt{x}, 1} 1_{\clop{0,+\infty}}(x)$ then $0$ has singularity
 Cantor distribution has uncountably many points with $\alpha = 0$, and uncountably many points with $\alpha = \frac{\log 2}{\log 3}$.
 A good idea is to represent any $x\in \clo{0,1}$ in base-3 representation. The ``interesting'' points have either $0$ or $2$ in their base-3 form.
 
-
-
-Problem \#1
+\noindent\textbf{Problem \#1}\hfill \\
 	Given $U\sim \mathcal{U}\clo{0,1}$ and $Y=f(U)$. Find $f$ such that the density $p_Y$ in given by
 	\[\lambda e^{-\lambda y} 1_{\clop{0,+\infty}}\]
 	If $F(x)$ is absolutely continuous and $X\sim F$, then $F(X)\sim \mathcal{U}\clo{0,1}$. (Skorokhod)
 
-Problem \#2
-	Suppose $(X,Y)$ is uniformly distributed inside the unit circle. What is the distribution of $(x',y')$ with the radius given by $r = \sqrt{-\log \pho}$.
+\noindent\textbf{Problem \#2}\hfill \\
+	Suppose $(X,Y)$ is uniformly distributed inside the unit circle. Let $\rho \defn \sqrt{X^2+Y^2}$. What is the distribution of $(x',y')$ with the radius given by $r = \sqrt{-\log \rho}$.
 	Using the Jacobian transformation, the distribution of the transformed pair is jointly gaussian.
 
 
