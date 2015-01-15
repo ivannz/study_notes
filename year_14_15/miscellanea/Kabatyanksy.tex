@@ -1,0 +1,156 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{xfrac, mathptmx}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Combinatorial search methods}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+\begin{document}
+\selectlanguage{english}
+\maketitle
+
+\selectlanguage{russian}
+
+Кабатянский ГА
+Комбинаторная тория поиска
+
+знаем как искать одну фальшивую монетку из 1кк
+аналог: угадать заагданное число из миллиона с помощью бинарных вопросов.
+-- бинарный поиск; $O(log N)$
+-- постоянное общение вопрос-ответ
+-- что если задть все вопросы сразу? те же двадцать вопросов
+
+-- задача Улама (\eng{Renyi-Ulham}): что если ответ на вопрос может и не быть правдивым?
+	детерминированное кол-во искажений
+	задавать одновременно или последовательно не играет роли
+
+дискретные комбинаторные задчи начали возникать в начале \eng{XX} века.
+
+смесь крови от роты солдат -- есть реакция, то есть заражённый -- искать в семси
+
+В $n$ мерном дискретном пр-ве $Q^n$ расставить ладьи так, чтобы покрывалось в $Q^n$.
+Ладья бьёт по простым направлениям.
+Количество ладей -- \[M \defn \frac{Q^n}{n (Q-1)+1}\]
+
+Полк $(F,\cdot,+)$, $(F,\cdot)$ и $(F,+)$ -- группы 
+
+Если $q = P^m$ то $\exists$ своершенная расстановка ладей $\Leftrigharrow$ $n=\frac{q^r-1}{q-1}$
+Если $q\neq P^m$, то расстановки нет
+
+Задача комбинаторного поиска:
+найти интересущий нас обёект среди остальных
+
+$M$ -- finte set, $X\subseteq M$ which must be located.
+Allowed questions $A\subseteq M$. Responses то $(A,X)$:\begin{itemize}
+	\item binary response whether $A\cap X = \emptyset$ or $\neq \emptyset$
+	\item the cardinality of $A\cap X$
+	\item $\abs{A\cap X}$ if $\abs{A\cap X}\leq T$, $\prep$ otherwise
+\end{itemize}
+
+\selectlanguage{english}
+
+Let $\chi_A = \brac{1_A(m)}_{m\in M}$. Then $\abs{A\cap X} = \brkt{\chi_A,\chi_X}$.
+
+A strange model:
+Response $\chi_A+\chi_X\mod{2}$ -- the core of coding theory.
+
+Consider question-response $(A,X)\to \abs{A\cap X}$
+-- the task of finding counterfieted coins on exact scales.
+
+Given a large $M$ find $X\subseteq M$ by suggexting (asking) $A\subseteq M$.
+How many questions are required?
+Is there a difference between sequential and simultaneous asking?
+
+(?) Using the information quantity:
+infromativeness of every answer is $\frac{\log n}{n+1}$
+
+the complexity of a boolean function
+construction a given function using AND, OR, NOT, NAND and XOR gates.
+works well on functions of small number of arguments
+
+boolean function of $n$ varaibles requires $K=\sfrac{2^n}{n}$ number of gates.
+suppose less, the the number of schemes is less than the number of boolean functions $2^{2^n}$.
+
+Given $(\chi_A,\chi_X)\to \brkt{\chi_A,\chi_X}$.
+know the ardinality if $X$: ask $A=M$.
+
+Hamming distance between vectors $u$ and $v$ from some space $\Sigma^M$.
+\[d_H\brac{u,v} = \abs{\induc{m\in M}\, u_m \neq v_m} \]
+
+know the cardinality of the simmetric difference $X\Delta A$:
+ask for the Hamming distance.
+\[d_H(\chi_A,\chi_X) = \abs{\chi_A}+\abs{\chi_X}-2\brkt{\chi_A,\chi_X}\]
+
+$2\frac{n}{\log_2 n}$
+
+Hamming space
+$H_q^n = \prod_{k=1}^n H_q$, where $H_q$ is some finite alphabet with a metric given by 
+\[S^n(c,t)\defn \obj{\induc{x\in H_q^n}\, d_H(x,c)=t}\]
+$\abs{S^n(c,t)} = C^t_n \brac{q-1}^t$
+
+\[B^n(c,t)\defn \obj{\induc{x\in H_q^n}\, d_H(x,c)\leq t}\]
+$\abs{B^n(c,t)} = \sum_{k=0}^t C^k_n \brac{q-1}^k$
+
+\[h_2(x) \defn x\log_2{\frac{1}{x}} + (1-x)\log_2{\frac{1}{1-x}}\]
+$\abs{B^n(c,t)}\leq 2^{n h\brac{\frac{t}{n}}}$ -- similar for $\frac{t}{n}\leq \frac{1}{2}$
+
+$h_2(x)$ looks like a parabola with the maximum at $\sfrac{1}{2}$, where it is equal to $1$.
+
+A code $C$ is a subset of $H_q^n$ 
+\[d(C) \defn \inf\obj{\induc{d(c,d)}\,c,d\in C\, c\neq d}\]
+The measure of the adherence within $C$ \rus{как скеливается $C$}.
+Code is a set of maximally ``independent'' points. is related to the problem of sphere packing.
+
+For some $t$ the collection $\brac{B^n(c,t)}_{c\in C}$ is pairwise disjoint. Thus $d(C)\leq 2t+1$.
+
+problem of tower placement is equivalent to the coding problem with $t=1$
+
+$\abs{C}\leq \frac{q^n}{\abs{B^n(c,t)}}$ because of the property of code $C$
+
+what is the lower bound on $\abs{C}$? The Hilbert bound (not that Hilbert)
+\[\frac{q^n}{\abs{B^n(c,t)}} \leq \abs{C}\]
+
+% Can all of this be formulated in an abstract metric space $(X,d)$?
+
+Any optimal code $C$ induces a $2t$-covering of $H_q^n$.
+
+If $\abs{C} = \frac{q^n}{\abs{B^n(c,t)}}$ and $C$ is an optimal code, then either $q=2$, $t=3$, $n=2,3$, or $q=3$, $t=2$, $n=10,11$
+
+If $t=O(1)$ or $t=O(n)$ then there are two asymptotic processes.
+It $t=O(1)$, then $\abs{B^n(c,t)} \approx 1+n (q-1)+\ldots + \frac{n!}{t!}\brac{q-1}^t\approx c n^t$
+In $q=2$ and $t=O(n)$, $C$ cannot be chosen better than at random. and the lower (Hilbert) bound is exact.
+
+An old geometric problem of cannon ball packing. in euclidean space the lower bound is known as Minkowski bound (that Minkowski).
+
+
+\end{document}
+
+
+
+
+
