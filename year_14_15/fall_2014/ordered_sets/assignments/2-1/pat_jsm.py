@@ -151,8 +151,7 @@ class Obj_Desc(object):
 	def __call__( self, point = [] ) :
 		if not point : return [D( )]
 		return [ self.map[ k ]
-			for k in self.map.keys( )
-				if k in point ]
+			for k in point if k in self.map ]
 	def domain( self ) :
 		return sorted( self.map.keys( ) )
 
