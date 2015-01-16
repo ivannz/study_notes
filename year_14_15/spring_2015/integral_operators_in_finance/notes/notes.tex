@@ -1,0 +1,250 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{xfrac, mathptmx}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Integral operators in finance}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+\begin{document}
+\selectlanguage{english}
+\maketitle
+
+
+Fundamentals of variational calculus
+
+time evolution of the the density functions, derived from the optimization problems.
+
+Applications of theory to managing financial portfolio.
+
+\rus{Владимир Рубенович, +7 (903) 155-27-97 к515 }
+
+emails:
+econ2014magistr@gmail.com
+hsefondy@gmail.com
+frin1315@gmail.com
+hse.datasci.2014@gmail.com
+apeconomics2014@gmail.com
+
+
+The main goal is Forecasting the time evolution probability densities.
+
+An example:
+Binary options: touch- and leave-options strike when stock price hits or leaves a specified set.
+	Terms one minute base time scale
+	$Q$ -- amount of money
+	If the rate crosses a given level within one minute, then we get a premium, otherwise loose everything
+
+the table of intervals-premia
+	 1 -- 60\% -- break even probability 62.5\% (why?)
+	 5 -- 68\%
+	15 -- 70\%
+	30 -- 75\%
+	60 -- 80\%
+
+The first quiestions are \begin{itemize}
+	\item Is it a deterministic process (use runs-test
+	\item what is the probability of up/down movements
+\end{itemize}
+
+$P_t\sim D_t$ and the current level is $Q_0$.
+The distribution $D_t$ could be quite asymmetric and multi-modal.
+The price process is never stable and is highly volatile.
+Loses are asymmetric and harmful.
+
+\begin{enumerate}
+	\item An empirical distribution constructed on some sliding window can be used for immediate forecasting.
+	\item Forecast the financial variable $Q_{t+dt}$ given $Q_0 = Q(t_0)$. This is complex.
+	What is being forecast? Prices of returns?
+\end{enumerate}
+
+Consider the following partial differential equation (Fokker-Planck equations)
+
+\[\frac{\partial}{\partial t} p(x,t) = -\frac{\partial}{\partial x} \brac{ \mu(x) p(x,t) } + \frac{\partial^2}{\partial x^2} \brac{ \sigma(x) p(x,t) } \]
+
+The analyst may never know what is more efficient: a stable in the short term distribution function or an evolving one?
+
+What is $x$ in the equation? Kolmogorov's equation is a decomposition of the change in $x$ and $t$ and the
+\[x+dx, t+dt \models \int w(x,dx) p(x, dx, dt )\ldots \]
+Like the truncated Taylor's expansion in the Ito's formula.
+
+This form of the Fokker-Planck equation is just a convention.
+Or use a random variable with all central moments equal to zero.
+Suppose $dx \sim \mathcal{N}$ then the odd moments are zero.
+
+
+Subjective perception of the density with shifting local centre.
+
+% We do finance here not mathematics!
+% Either forecast or lost.
+
+Independent identically normally distributed increments yes they give a second order equation, but not the normal variate itself.
+
+Euler-Lagrange equation. \[\frac{d }{dt}F_x - F_{\dot{x}} = 0\]
+
+First derivative in the variational problem.
+
+Derivation of the Fokker-Planck equation.
+
+How to make $p(x,t)$ evolve in time? \begin{description}
+	\item[Differential] Use differential operators. This approach requires the knowledge of parameterts governing the instantaneous diffusion.\hfill\\
+	the solution of the Fokker-Planck equation is determined by two functions $\mu(x)$ and $\sigma(x)$
+
+	The instantaneous drift term ($\frac{d}{dt} x = \mu(x)$).
+	If $\mu(x) = m (k-x)$ -- mean reverting process, stabilizes over the long run (Ornstein-Uhlenbeck process)
+	The instantaneous volatility $\sigma(x) = \sigma_0^2$ -- constant. Given the Gaussian distribution.
+
+	But the default $\mu(x)$ and $\sigma(x)$ are not good enough. And in addition we don't know them.
+
+	How to obtain the best approximations of $\mu$ and $\sigma$? How to chose the one 
+	\begin{enumerate}
+		\item Use the basics of stochastic filed theory
+		\item Construct the function of instantaneous diffusion as eigenvalues of some Fredholm integral operator.
+	\end{enumerate}
+
+	Non parametric estimation of $\mu$ and $\sigma$	(c.f. Florensen (?) )
+	% Diffusion DIFFUSION!!!!!
+
+	\item[Integral] Act as if the $\mu$ and $\sigma$ are unknown (the drift and the spread). \hfill \\
+	Do not equation explicit expressions of the drift and spread.
+
+	Will attempt to construct the source-wise representation (\rus{исотокобразное представление}).
+	Fredholm's equation.
+	
+\end{description}
+
+How are the densities obtained?
+
+The operator equation in some function space.
+\[L_x^\brkt{2}\clo{p} = T_t^\brkt{1}\clo{P}\]
+$L_x^\brkt{n}$ -- differential operator of order $n$ with respect to the variable $x$.
+
+\[p(x,t) = \sum_{n\geq 1} c_n u_n(x) e^{-\lambda_n t}\]
+
+
+Basis of functions $\brac{u_i(\cdot)}_{i\geq 1}$ is orthonormal is it is complete and
+\[\int\limits_a^b u_j(x) u_j(x) w(x)dx = \delta_{ij}\]
+Like in linear algebra but with functions!!!
+
+For some $f(x)$  it is true that $f(x) = \sum_i c_i u_i(x)$ (if $u_j$ is complete) \[
+c_i = \int_a^b f(x)u_i(x)w(x)dx
+\]
+Orthonormality allows some bound on approximation error for truncated series.
+
+Use the $L^2$ norm in our functional space.
+
+\[\nrm{f-g}_2 \defn \brac{\int \abs{f-g}^2 w(x) dx}^\frac{1}{2}\]
+
+% If you don't kick the hedgehog, it won't fly.
+% Construct the evolution of the exchange rate consensus forecasts available in Bloomberg.
+% Central bank - interbank liquidity relations determines the exchange rate: REPO deals closure
+
+% Use MathCAD!!!
+
+Literature:
+\begin{itemize}
+	\item Quantitative Finance
+	\begin{enumerate}
+		\item 
+	\end{enumerate}
+\end{itemize}
+
+Choose the process and simulate
+Choose a financial task
+Complete two laboratory tasks.
+
+$\sigma(x)$ -- variance not standard deviation!!!
+
+\begin{align*}
+	\omega(x) &= N e^{\int \frac{ - \mu(x) + \frac{d}{dx} \sigma(x)}{\sigma(x)}}\\
+\end{align*}
+
+$\omega(x)$ -- the source density function. Construct an operator, which would make $\omega$ evolve in time.
+Basis functions $u_j(x)$ are also the solutions of the second order equation: eigenfunctions. 
+
+\[
+  \sigma(x) \frac{d^2}{dx^2} \omega \\
++ \brac{ 2\frac{d}{dx}\sigma(x) - \mu(x) } \frac{d}{dx} \omega \\
++ \brac{ \frac{d^2}{dx^2}\sigma(x) - \frac{d}{dx}\mu(x) } \omega \\
+= 0
+\]
+
+The basis functions are the solutions of this equation -- eigenfunctions.
+And this basis is complete (for functions on the same domain).
+
+A simplified Fokker-Planck equation with $ \frac{\partial}{\partial t} p(x,t) \equiv 0$
+
+
+Strum-Liuville equation:
+\[L_x^\brkt{2}\clo{f} = 0\]
+
+Cauchy problem: eigenfunctions of the operator. The spectral decomposition determine the effects of the operator.
+\[L_x^\brkt{2}\clo{u_i(x)} = \lambda u_i(x)\]
+
+In simple cases the spectral values and eigenfunctions can be obtained by separation of variables or Rodrigues.
+
+Polynomial basis.
+The functions $\mu(x)$ and $\sigma(x)$ are not arbitrary when Rodrigues' method is applied.
+
+Bochner's theorem generalizes the Rodrigues's method
+
+
+%% Home work
+The Fokker-Planck equation is
+\[\frac{\partial}{\partial t} p(x,t) = - \frac{\partial}{\partial x} \brac{ \mu(x,t) p(x,t) } + \frac{\partial^2}{\partial x^2} \brac{ \sigma(x,t) p(x,t) }\]
+
+Another form of the same equation is
+\begin{align*}
+	\frac{\partial}{\partial t} p(x,t) &= \sigma(x,t) \frac{\partial^2}{\partial^2 x} p(x,t) \\
+	&+ \brac{ 2 \frac{\partial}{\partial x} \sigma(x,t) - \mu(x,t) } \frac{\partial}{\partial x} p(x,t) \\
+	&+ \brac{ \frac{\partial^2}{\partial x^2} \sigma(x,t) - \frac{\partial}{\partial x} \mu(x,t) } p(x,t) 
+\end{align*}
+
+Assume $\mu$ and $\sigma$ are stationary (time-independent), i.e. \[\mu(x,t) = \mu(x) \text{ and }\sigma(x,t) = \sigma(x)\]
+and consider $p(x,t)$ of the form $X(x) \cdot T(t)$ -- with variables separated -- where the functions $X$ and $T$ are non-zero.
+We are working in the Hilbert space of square integrable twice differentiable real functions on some interval of $\Real$ with the $L^2$ norm.
+Then \begin{align*}
+	X(x) \frac{\partial}{\partial t} T(t) &= T(t) \sigma(x) \frac{\partial^2}{\partial^2 x} X(x)\\
+	&+ T(t) \brac{ 2 \frac{\partial}{\partial x} \sigma(x) - \mu(x) } \frac{\partial}{\partial x} X(x)\\
+	&+ T(t) \brac{ \frac{\partial^2}{\partial x^2} \sigma(x) - \frac{\partial}{\partial x} \mu(x) } X(x)
+\end{align*}
+After minor simplification we get \begin{align*}
+	\frac{1}{T(t)} \frac{\partial}{\partial t} T(t) &= \frac{1}{X(x)}\left \{ \sigma(x) \frac{\partial^2}{\partial^2 x} X(x) + \brac{ 2 \frac{\partial}{\partial x} \sigma(x) - \mu(x) } \frac{\partial}{\partial x} X(x) \right.\\
+	&\left . + \brac{ \frac{\partial^2}{\partial x^2} \sigma(x) - \frac{\partial}{\partial x} \mu(x) } X(x) \right \}
+\end{align*}
+
+Since the left hand side depends on $t$ alone whilst the right-hand side only on $x$,
+it must therefore be true that both sides are constant, say $\lambda\in \Real$. Thus
+\[ T(t) = C_1 e^{\lambda t} \] and $X(\cdot)$ satisfies
+\[\lambda X(x) = \sigma(x) \frac{\partial^2}{\partial^2 x} X(x) + \brac{ 2 \frac{\partial}{\partial x} \sigma(x) - \mu(x) } \frac{\partial}{\partial x} X(x) + \brac{ \frac{\partial^2}{\partial x^2} \sigma(x) - \frac{\partial}{\partial x} \mu(x) }\]
+which means that $X$ is the eigenfunction of the following second order differential operator
+\[L^\brkt{2}_x \defn \sigma(x) \frac{\partial^2}{\partial^2 x} + \brac{ 2 \frac{\partial}{\partial x} \sigma(x) - \mu(x) } \frac{\partial}{\partial x} + \brac{ \frac{\partial^2}{\partial x^2} \sigma(x) - \frac{\partial}{\partial x} \mu(x) } \]
+whereas $T$ is the eigenfunction of $L^\brkt{1}_t \defn \frac{\partial}{\partial t}$ with the same eigenvalue.
+
+
+
+\end{document}
