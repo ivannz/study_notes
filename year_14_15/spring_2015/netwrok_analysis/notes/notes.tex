@@ -20,6 +20,7 @@
 
 \newcommand{\Real}{\mathbb{R}}
 \newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Ntrl}{\mathbb{N}}
 \newcommand{\Pwr}{\mathcal{P}}
 
 \newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
@@ -66,7 +67,7 @@ Complex networks usually have the following characteristics: \begin{enumerate}
 	\item High propensity to cluster: the number of triangles in the network.
 \end{enumerate}
 
-Let's introduce the following local features of the graph: the vertex degree.
+Let's introduce the following local features of the graph: the vertex degree $\delta^+,\delta^-:V\to \Ntrl$
 \begin{align*}
 	\delta^+(v) &\defn \#\obj{\induc{u\in V}\, (u,v)\in E }\\
 	\delta^-(v) &\defn \#\obj{\induc{u\in V}\, (v,u)\in E }
