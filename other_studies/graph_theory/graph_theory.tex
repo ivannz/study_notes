@@ -66,6 +66,26 @@ Summary of book~\cite{diestel2006}.
 \section{Chapter 1} % (fold)
 \label{sec:chapter_1}
 
+\subsection{Introduction to graphs} % (fold)
+\label{sub:introduction_to_graphs}
+
+A graph is an ordered pair $G=(V,E)$ with $E\subseteq V\times V$.
+The number of vertices in $G$, $\abs{V}$, is known as the \textbf{order} of $G$ and is also denoted by $\abs{G}$.
+At the same time $\abs{E}$ the number of edges in $G$ is the \textbf{size} of $G$, denoted by $\nrm{G}$.
+
+A vertex $v\in V$ is \textbf{incident} to an edge $e\in E$, written as $v\in e$, if $e=(u,v)$ or $(v,u)$ for some $u\in V$.
+Vertices $x,y\in V$ are \textbf{adjacent}, or neighbours in $G$, if $(x,y)$ or $(y,x)\in E$. Otherwise, vertices $x$ and $y$ are \textbf{independent}.
+Edges $e,f\in V$, $e\neq f$, are \textbf{adjacent} if there exists $v\in V$ such that $v\in e,f$.
+A graph $(V,E)$ is \textbf{complete} if every $e_1, e_2\in E$ are adjacent.
+
+A collection of nodes $S\subseteq V$ or edges $S\subseteq E$ is \textbf{stable}(\rus{внутренне устойчиво}), if every $x,y\in S$ are non-adjacent in $G$.
+
+
+
+
+
+% subsection introduction_to_graphs (end)
+
 
 % section chapter_1 (end)
 
