@@ -25,14 +25,16 @@
 
 \newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
 
-% \usepackage[english, russian]{babel}
-% \newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
-% \newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
 
 \title{Structural analysis and visualization of networks}
 \author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
 \begin{document}
+
 \selectlanguage{english}
+
 \maketitle
 
 \begin{description}
@@ -80,10 +82,10 @@ Let's introduce the following local features of the graph: the vertex degree $\d
 \end{align*}
 
 ``Any two people are on average separated no more than by six intermediate connections.''
-\begin{item}
+\begin{itemize}
 \item ``The small-world problem'', Stanley Milgram, 1967
 \item ``An experimental study of the small-world problem'', Travers J., Milgram S., 1969
-\end{item}
+\end{itemize}
 
 Bethe lattice $(V,E)$ is an infinite cycle-free graph with every node having the same number of neighbours $z > 1$.
 Given an edge $(v,u)\in E$ the end vertex $u$ is connected to $z-1$ other neighbours, which means that $N_k = N_{k-1}\cdot (z-1)$ with $N_1 = z$, since the centre vertex is connected to $z$ other vertices.
@@ -96,6 +98,82 @@ For any network $G=(V,E)$ its \textbf{order} is $\abs{V}$ and size is $\abs{E}$.
 
 % Homework: complete the notebook.!!! -- Completed on 2014-12-17
 
+\section{Lecture \# 2} % (fold)
+\label{sec:lecture_2}
+
+THe power law distribution is very natural in the study of networks:
+\[p(x) \defn \frac{C}{x^\beta} 1_{\clop{x_0,+\infty}}(x)\]
+where $\beta > 0$ is the power.
+
+The indefinite integral of $p(x)$ is equal to
+\[\int p(x) dx = \begin{cases}
+    C \frac{x^{1-\beta}}{1-\beta},& \text{if } \beta\neq 1\\
+    C \ln x, & \text{if } \beta = 1
+\end{cases}\]
+
+If $\beta > 1$ then $p(x)$ is a density function and the normalisation constant is determined by
+\[\induc{C \frac{x^{1-\beta}}{1-\beta}}^\infty_{x_0} = C \brac{ - \frac{x_0^{1-\beta}}{1-\beta}} = 1\]
+whence $C\defn (\beta - 1) x_0^{\beta-1}$. In its final form the density looks like:
+\[p(x) \defn \frac{\beta - 1}{x_0} \brac{\frac{x}{x_0}}^{-\beta} 1_{\clop{x_0,+\infty}}(x)\]
+
+The \textbf{survival} function $H(x) = 1 - F(x)$ is useful in network analysis. For the power law the survival function is \[H(x) \defn \brac{\frac{x_0}{x}}^{\beta-1}\]
+
+Median is more suitable for estimating the power law distribution parameters. The quantile function is given by:
+\[q_\alpha \defn \brac{1-\alpha}^{-\frac{1}{\beta - 1}} x_0 \]
+
+Power law is scale invariant. Indeed 
+\[H(s x) = \brac{\frac{x_0}{s x}}^{\beta - 1} = \brac{s}^{1-\beta} H(x)\]
+
+Consider the node degree distribution of an undirected network.
+There will be a majority of nodes with low degree,
+and there will be very few vertices with extremely high degree.
+
+Node degree -- the number of nearest neighbours
+Degree distribution \[P(k) \defn \frac{n_k}{\sum_{k}n_k}\]
+the model is $P(k) = C k^{-\gamma}$.
+Normalization -- the Riemann Zeta function.
+\[C \sum_{k\geq 1} k^{-\gamma} = 1 \Leftrightarrow C \defn \frac{1}{\zeta(\gamma)}\]
+
+In maximum likelihood vary $x_0$ to get the idea of how $\alpha$ depends on it.
+
+Use Kolmogorov-Smirnov test against the exponential distribution to find the ``best'' values of $x_0$.
+Look for the minimal value of the K-S statistic and choose $x_0$.
+
+
+read the references
+
+\subsubsection{The maximum likelihood estimation} % (fold)
+\label{ssub:the_mle}
+
+Suppose $\brac{x_i}_{i=1}^n$ is an iid sample from some random variable distributed according to the power law.
+The log-likelihood is given by \[\log\mathcal{L} = \sum_{k=1}^n \beta \log\frac{x_0}{x_k} + n \log\frac{\beta - 1}{x_0}\]
+where $x_0\leq \min_{k=1\ldots n}x_k$, since otherwise the log-likelihood would be $-\infty$.
+The first-order conditions are given by \begin{align*}
+	- \sum_{k=1}^n \log\frac{x_k}{x_0} + \frac{n}{\beta - 1} = 0\\
+	n \brac{ \beta - 1 } \frac{1}{x_0} > 0
+\end{align*}
+
+Therefore $\hat{x}_0 \defn \min_{k=1\ldots n}x_k$ and the ML-optimal estimator of $\beta$ is
+\[\hat{\beta} \defn 1 + \frac{n}{\sum_{k=1}^n ( \log x_k - \log x_0 )}\]
+
+% subsubsection the_mle (end)
+
+\subsubsection{The OLS estimation} % (fold)
+\label{ssub:the_ols_estimation}
+
+Another possibility is to estimate the parameters of the power law by means of a regression of the frequencies of binned sample on the ``typical'' values of the bins.
+
+Suppose $\brac{f_i}_{i=1}^B$ and $\brac{b_i}_{i=1}^B$ are bin frequencies and centres respectively, constructed on data $\brac{x_k}_{k=1}^n$ which supposedly came from a power law distribution.
+
+Then it is possible to fit the following regression model to the histogram data to get the parameters of the law:
+\[\log f_i \sim \brac{\log{(\beta-1)} + (\beta-1) \log x_0} + (-\beta) \log b_i\]
+It is a fast but a rather crude way of estimating.
+
+% subsubsection the_ols_estimation (end)
+
+
+
+% section lecture_2 (end)
 
 
 \end{document}
