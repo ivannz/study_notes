@@ -3,8 +3,8 @@ clear all;
 % Data
 N=2^18; % sample size
 t=[0:N-1]./(N-1); % Time scale
-MC=10; % # of monte carlo realizations
-H=0.5; %0.5 for Brownian motion
+MC=100; % # of monte carlo realizations
+H=0.75; %0.5 for Brownian motion
 
 PSYNTH='[data,fgn] =synthfbmcircul(N+1,H) ; data=data(2:end);'; 
 eval(PSYNTH); 
