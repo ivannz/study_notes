@@ -1,0 +1,13 @@
+x<-iris
+x
+x$pet
+x$petal
+x$Sepal.L
+x$Sepal
+x$Sepal.L
+rm(list=ls(all.names = TRUE)) ; invisible( gc() )
+setwd("~/study_notes/year_14_15/spring_2015/modern_decision_making/")
+list.files()
+list.files()
+setwd("~/study_notes/year_14_15/spring_2015/modern_decision_making/assignments/")
+q()

@@ -1,0 +1,78 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{xfrac, mathptmx}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Document title}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+\begin{document}
+\selectlanguage{english}
+\maketitle
+
+
+\section{Lecture \# 2} % (fold)
+\label{sec:lecture_2}
+
+Shrinkage methods
+
+In the orginal linear squares method we minimized the following fitness function:
+\[\text{min} \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij}}\]
+
+Ridge regression
+Minimize the following penalized Residual Sum of Squares as:
+\[\text{RSS}\defn \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij}} + \lambda \sum_{j=1}^k \beta_j^2\]
+the $\lambda>0$ is called the tuning parameter.
+It controls the amount of shrinkage:
+if $\lambda = 0$ then there is absolutely no shrinkage, and the optimal beta coincide with the OLS.
+But if $\lambda\to \infty$ then the optimal coefficient vector tends to zero. 
+
+However with shrinkage, the scale of each predictor $\brac{x_j}_{j=0}^k\in \Real^n$ matter!
+
+Thus the first step is to standardize the variables before fitting the Ridge regression.
+
+Next observation: the intercept $\beta_0$ is indeed excluded from the shrinkage term.
+
+Suppose the $t$ and $X$ are standardized (mean and centre), which means that $\beta_0 \equiv 0$
+Then in the matrix form the following is minimized:
+\[\brac{t-X\beta}'\brac{t- X\beta} + \lamba \beta'\beta \to \text{min}\]
+
+The first order conditions are:
+\begin{align*}
+	\frac{\partial \text{RSS}}{\partial \beta } &= -2 X\brac{t-X\beta}+2\lamba \beta\\
+	% \frac{\partial \text{RSS}}{\partial \lambda } = \beta'\beta = 0
+\end{align*}
+
+The optimal coefficients are given by
+\[\hat{\beta}_\text{ridge}\defn \brac{X'X + \lambda I}^{-1}X't\]
+
+% revise matrix derivatives.
+
+% section lecture_2 (end)
+
+
+\end{document}
