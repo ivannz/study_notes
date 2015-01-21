@@ -24,6 +24,8 @@
 \newcommand{\Fcal}{\mathcal{F}}
 \newcommand{\borel}{\mathcal{B}}
 
+\newcommand{\Ex}{\mathbb{E}}
+
 \newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
 
 \usepackage[english, russian]{babel}
@@ -133,8 +135,76 @@ A good idea is to represent any $x\in \clo{0,1}$ in base-3 representation. The `
 	Suppose $(X,Y)$ is uniformly distributed inside the unit circle. Let $\rho \defn \sqrt{X^2+Y^2}$. What is the distribution of $(x',y')$ with the radius given by $r = \sqrt{-\log \rho}$.
 	Using the Jacobian transformation, the distribution of the transformed pair is jointly gaussian.
 
-
-
 % section lecutre_1 (end)
+
+\section{Lecture \# 2} % (fold)
+\label{sec:lecture_2}
+
+A shorter lecture, no definition of expectation, but full of functions:
+\begin{itemize}
+	\item Probability generating functions;
+	\item Moment generating functions;
+	\item Characteristic functions.
+\end{itemize}
+
+Suppose $X$ is a real-valued random variable with law $F_X$. If $F_X$ is absolutely continuous with respect to $dx$, then $F_X(x) = \int_{-\intfty}^x f dx$.
+
+The expectation of $X$ is defined as \[\Ex(X) \defn \int X d{F_X}\] and in the case of absolutely continuous distribution it is true that \[\int X d{F_X} = \int X f(x) dx\]
+
+Riemann-Stieltjes integrals are used (but those who know, can use a better Lebesgue-Stieltjes integral).
+\[\int d dF = \lim_{\Delta\to 0} \sum_i g(x_i) \brac{F(\xi_{i+1}) - F(\xi_i)}\]
+Lebesgue integral is pedagogically more difficult, though more abstract, flexible and overall better.
+% Geometric measure theory.
+
+Cauchy distribution does not allow $\Ex X$, however it has the mean in terms of the \textbf{main value} (integration over a symmetric interval $\clo{-M,+M}$).
+% \rus{Уравнение Власова}
+
+The expectation of a function $g$ of $X$ is $\Ex\brac{g(X)} = \int g(X) dF_X$.
+
+The $k$-th moment of an RV is $\Ex X^k$ and the $k$-th central moment is $\Ex\brac{ X - \Ex X}^2$.
+The second central moment of $X$ is the variance of $X$ : $\mathbb{D}(X) \defn \Ex\brac{ X - \Ex X}^2$.
+
+Jensen's inequality. For any convex function $g$ of $X$ it is true that 
+\[g\brac{\Ex X}\leq \Ex g(X) \]
+
+Fatou's lemma \[\int \liminf X_n d\mu \leq \liminf \int X_n d\mu\]
+
+Holder's inequality for nonnegative measurable $f$ and $g$ \[\int fg d\mu \leq \brac{\int f^p d\mu}^\frac{1}{p}\brac{\int g^q d\mu}^\frac{1}{q}\] whenever $\sfrac{1}{p}+\sfrac{1}{q}=1$.
+
+Minkowski inequality \[\brac{\int {(f+g)}^p d\mu}^\frac{1}{p}\leq \brac{\int f^p d\mu}^\frac{1}{p} + \brac{\int g^p d\mu}^\frac{1}{p}\]
+
+The probability generating function is defined for any $z\in \Cplx$ with $\abs{z}\leq 1$ as \[G_X(z) \defn \Ex z^X\]
+If $X$ has discrete distribution, then $G_X(z) = \sum_{n\geq 0} z^n \Pr(X=n)$.
+Since the series is analytical in a finite disc, it is differentiable.
+Thus \[G_X^{(k)}(z) = \sum_{n\geq 0} \frac{n!}{(n-k)!} z^{n-k} \Pr(X=n) \]
+whence $G_X^{(k)}(0) = \Ex \brac{X(X-1)\ldots (X-k+1)}$
+
+Factorial exponent: $x^{\underline{k}} = \prod_{s=1}^k (X-s+1)$.
+\[x^{\underline{k}} - \brac{x-1}^{\underline{k}} = k \cdot \brac{x-1}^{\underline{k-1}} \]
+
+The moment generating function of $X$ is given by \[S_X(t) \defn G(e^t) = \Ex(e^{tX})\]
+Differentiation of the MGF and evaluation at $t=0$ yields moments of $X$.
+Indeed, if the integral converges uniformly, then $S_X^{(k)}(t) = \induc{\Ex X^k e^{tX}}_{t=0} = \Ex X^k$.
+
+\emph{A gentle reminder}\hfill \\ For any pair of independent random variables the expectation of their product equals the product of their expectations.
+
+Thus the mgf of a sum of independent $X,Y$ results in \[S_{X+Y}(t) = \Ex e^{t(X+Y)} = \Ex e^{tX} e^{tY} = \Ex e^{tX} \Ex e^{tY} = S_X(t) S_Y(t)\]
+
+The cumulants of $X$ (or semiinvariants) are defined as the coefficients in the following formal series expansion of $\log S_X(t)$ as
+\[\log S_X(t) \defn \sum_{n\geq 0} \frac{t^n}{n!} \kappa_n^X\]
+
+Using the formal differentiation of the series with respect to $t$ yields
+$\kappa_n^X = \induc{\frac{d^n}{dt^n} \log S_X(t)}_{t=0}$.
+
+Since $S_X(t)$ is additive with respect to $X$ if the summands are independent,
+Kurtosis, \rus{эксцесс} -- measures how far the probability is shifted to the tails.
+
+\textbf{Martsinkevich's theorem}\hfill\\
+$\log S_X(t)$ is a polynomial if and only if $X\sim\mathcal{N}(\mu,\sigma)$.
+
+
+Solve exercises 1.8, 1.11, 1.12 and 1.13 on pp.~42-43.
+
+% section lecture_2 (end)
 
 \end{document}
