@@ -73,12 +73,51 @@ A graph is an ordered pair $G=(V,E)$ with $E\subseteq V\times V$.
 The number of vertices in $G$, $\abs{V}$, is known as the \textbf{order} of $G$ and is also denoted by $\abs{G}$.
 At the same time $\abs{E}$ the number of edges in $G$ is the \textbf{size} of $G$, denoted by $\nrm{G}$.
 
+If the orientation of a graph is irrelevant and looped edges are not prohibited,
+then by a slight abuse of notation the product $V\times V$ can be treated as the set of all two-element subsets of $V$.
+
 A vertex $v\in V$ is \textbf{incident} to an edge $e\in E$, written as $v\in e$, if $e=(u,v)$ or $(v,u)$ for some $u\in V$.
 Vertices $x,y\in V$ are \textbf{adjacent}, or neighbours in $G$, if $(x,y)$ or $(y,x)\in E$. Otherwise, vertices $x$ and $y$ are \textbf{independent}.
 Edges $e,f\in V$, $e\neq f$, are \textbf{adjacent} if there exists $v\in V$ such that $v\in e,f$.
 A graph $(V,E)$ is \textbf{complete} if every $e_1, e_2\in E$ are adjacent.
 
 A collection of nodes $S\subseteq V$ or edges $S\subseteq E$ is \textbf{stable}(\rus{внутренне устойчиво}), if every $x,y\in S$ are non-adjacent in $G$.
+
+A graph $G_1 = (V_1,E_1)$ is isomorphic to $G_2=(V_2,E_2)$ if there exists an bijection $\phi:V_1\to V_2$ such that $(x,y)\in E_1$ if and only if $(\phi(x),\phi(y))\in E_2$.
+Isomorphic graphs are identified.
+
+A graph invariant is a map $\psi:\Gamma\to\Omega$ is called a graph invariant if it takes the same value in $\Omega$ for every isomorphic graph.
+
+A graph $G'$ is a subgraph of $G$ if $V'\subseteq V$ and $E'\subseteq E$.
+If $G'\subseteq G$ and $(u,v)\in E'$ for any $(u,v)\in E$ with $u,v\in V'$, then $G'$ is an induced subgraph of $G$.
+A subgraph $G'$ of $G$ is \emph{spanning} if $V'=V$.
+
+Minimality or maximality of any graph with some property refers to subgraph ordering.
+
+Consider a graph (undirected) $G=(V,E)$ with no more that one edge per a pair of vertices.
+For any $v\in V$ the set of neighbours of $v$ is defined as
+\[N_G(v) \defn \obj{\induc{w\in V}\, (w,v)\in E}\]
+
+For any $v\in V$ the \textbf{degree} of $v$, $d(v)$, is defined as
+\[d(v) \defn \abs{\obj{\induc{ e\in E }\, v\in e }}\]
+The minimum degree is $\delta(G)\defn \min_{v\in V} d(v)$ and the maximum -- $\Delta(G) \defn \max_{v\in V} d(v)$.
+The \textbf{average} degree of $G$ is defined as \[d(G) \defn \frac{1}{\abs{V}} \sum_{v\in V d(v)}\] and obviously $\delta(G)\leq d(G)\leq \Delta(G)$.
+
+The value $d(G)$ average degree measures globally what the vertex degree quantifies locally.
+The ratio $\epsilon(G) \defn \sfrac{\abs{E}}{\abs{V}}$ is the average number of edges per vertex.
+By definition there must be the following relation: $\epsilon(G) = \frac{1}{2} d(G)$.
+
+The sum of all vertex degrees in a graph is equal to twice the number of edges.
+Indeed, each vertex degree $d(v)$ accounts for all edges $(v,u)$ with $u\in N_G(v)$,
+but then the degree of each vertex $w\in N_G(v)$ also counts every edge $(w,v)\in E$.
+Therefore each edge is counted twice in the following sum
+\[\sum_{v\in V} d(v)\]
+
+The number of edges of odd degree is even in any graph.
+Indeed, the set of all vertices can be split into two subsets:
+nodes with odd degree $V'$ and all others -- with even degree.
+Therefore \[\sum_{v\in V}d(v) = \sum_{v\in V'}d(v) + \sum_{v\notin V'} d(v) = 2 \abs{E}\]
+implies that $\sum_{v\in V'} d(v)$, a sum of odd numbers, must be an even number, whence $\abs{V'}$ has to be even.
 
 
 
