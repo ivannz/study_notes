@@ -22,8 +22,8 @@ function [w, subx, hit_point, hit_time] = f_get_w( x, t, levels, delta, deleteFi
 lx = length( x );   
 if delta == 0
 %% why is std( diff ) better than min( abs( diff ) )
-    delta = std( diff( x ) );
-    % delta = min( abs( diff ) );
+    % delta = std( diff( x ) );
+    delta = min( abs( diff ) ) * 2 ;
 end
 %% Define lists of consequitive hitting times and levels
 hit_point = cell( length( levels ), 1 );
