@@ -1,9 +1,9 @@
 clear all; 
 
 % Data
-N = 2 ^ 18 ; % sample size
+N = 2 ^ 24 ; % sample size
 t = [ 0 : N - 1 ] ./ ( N - 1 ) ; % Time scale
-MC = 100 ; % # of monte carlo realizations
+MC = 1000 ; % # of monte carlo realizations
 H = 0.95 ; %0.5 for Brownian motion
 
 PSYNTH = '[ data, fgn ] = synthfbmcircul( N + 1, H ) ; data = data( 2 : end ) ;'; 
