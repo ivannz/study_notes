@@ -1,0 +1,158 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{xfrac, mathptmx}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Mathematics of Big Data}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+\begin{document}
+\selectlanguage{english}
+\maketitle
+
+% \selectlanguage{russian}
+the 22nd of January, 2015.
+
+% Bayesian methods research group
+
+Machine learning is the task of find regularities in the data.
+
+Data is a set of objects.
+Each object is characterized by a set of observed features $X$ (easy to observe)
+and a set of latent variables $T$ (hard to observe).
+Predicting the latent variables given the training set data, where some latent variables are known.
+
+Overfitting -- the algorithm learned and absorbed the training set, though the performance on the new data is extremely poor.
+
+A simple example.
+Given $X = \brac{x_i}_{i=1}^n\in \Real^2$ -- observables and $\brac{t_i}_{i=1}^n$ -- latent. The weights $W$ define the separating hyperplane:
+\[\hat{t}(x) = \text{sign}\brac{W'x} + w_0\]
+-- the two class discrimination.
+
+Areas of application:
+\begin{itemize}
+	\item Computer vision
+	\item Bioinformatics
+	\item Credit scoring
+	\item et c.	
+\end{itemize}
+
+
+1990 -- the creation of SVM: linear methods for significantly nonlinear decision rules.
+% Bravermann, Aizermann -- kernel function and the potential function
+
+1990~-~2000 -- Bayesian framework could incorporate some prior knowledge, bayesian nets, probabilistic graphical models.
+
+% Boosting
+
+2000~-~2010 -- Third reincarnation of the neural networks.
+A conglomerate of layers upon layers of perceptrons.
+
+Deep revolution \rus{глубинная революция}:
+Deep learning -- A new paradigm of NN construction.
+
+Massive amounts of available data and computational resources.
+
+Current NNs demonstrate their ability to comprehend the input data.
+
+\section{the Age of Big Data} % (fold)
+\label{sec:the_age_of_big_data}
+
+Data volume and computational power grow, but there is a great disparity in their rates.
+Well known classical methods do not scale well enough with the data.
+
+\begin{itemize}
+	\item Latent variable modelling (Bishop06)
+	\item Deep learning (Bengio14)
+	\item Tensor calculus and Decomposition Techniques
+	\item Stochastic optimization
+\end{itemize}
+
+Bayesian interpretation of uncertainty is that it reflects what is unknown. The Bayes law:
+\[\text{posterior} = \frac{\text{Likelihood}}{\text{Evidence}} \text{prior}\]
+or in conditional probabilities:
+\[p(\theta|X) = \frac{p(X|\theta)}{\int p(X|\theta) p(\theta) d\theta }p(\theta)\]
+
+\[p(U|O) = \frac{\int p(O,L,U) dL }{\iint p(O,L,U) dLdU}\]
+
+learning sample $\brac{X_{tr}, T_{tr}}$
+\[p(W|X_{tr}, T_{tr}) = \frac{p(X_{tr}|T_{tr},W) p(W)}{\int p(X_{tr}|T_{tr},W) p(W) dW}\]
+
+The term $p(W)$ can be regarded as a certain regularization of $W$ -- to suppress the overfitting.
+
+Bayesian approach allows for the update-and-forget data analysis.
+
+Choosing a prior is hard and bad priors could lead to suboptimality due to concentration.
+
+Hidden features must be assumed interdependent.
+\[p(T|X,W) \neq \prod_{i=1}^n p(t_i|X,W)\]
+Graphical models allow smart density decomposition.
+
+Learning on incomplete data: given a large sample with incomplete knowledge of $T_{tr}$
+is it possible to learn as efficiently as knowing $T_{tr}$.
+
+labelling every $X_{tr}$ with $T_{tr}$ requires manual work.
+
+Weak annotation: not a pixel-by-pixel classification, but a cruder and less accurate labelling.
+
+EM Alogrithm
+
+SVM with incomplete data
+
+Deep learning. Convolution networks. Pre-training for a better optimum. Efficient GPU implementation.
+
+Stochastic optimization: an unbiased gradient estimation. 
+Stochastic Hessian (Sohl-Dickstein14)
+
+Tensor perspective (tensor is a multidimensional array)
+
+Tensor decompositions provide special format for keeping its elements in a compact form.
+
+A tensor train (Oseledets11).
+\[A\clo{i_1,i_2,\ldots,i_n} \sim G_1\clo{i_1}\ldots G_n\clo{i_n}\]
+where $G_k\in \Real^{r_{k-1}\times r_k}$ are TT-kernels (cores).
+Much like the singular decomposition of matrices.
+
+Tensors show up everywhere: a vector with 1024 components is a 2-element 10-tensor (?).
+% Tensors RULE! see that fMRI paper.
+
+Tensor nets.
+
+Solution of NP-hard problems in graphical models (Novikov14)
+
+Word2vec (Mikolov13).
+
+
+Machine learning suffers from lack of interpretation.
+
+Hard to interpret the learned state of a neural network: what has the network learned if anything at all?
+
+
+% section the_age_of_big_data (end)
+
+
+\end{document}
