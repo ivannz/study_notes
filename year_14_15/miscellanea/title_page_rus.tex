@@ -1,0 +1,75 @@
+% This file is written in Windows-1251 (CP-1251) encoding. 
+% If the russian letters show as abrcadabra, either tell your editor 
+% to show the file in correct encoding, either convert the file into 
+% the encoding you are using.
+% Do not forget to insert the corresponging \usepackage[..]{inputenc}
+% into the main LaTeX file (ex. \usepackage[cp1251]{inputenc})
+%
+% ШАБЛОН ТИТУЛЬНОГО ЛИСТА ДЛЯ ДИПЛОМНЫХ РАБОТ СТУДЕНТОВ ВШОПФ
+% Использование:
+% 1. Замените ниже все параметры (название работы и т.п.) на ваши
+% 2. Вставьте в основной LaTeX'овский файл команду \input{title.tex}
+% 3. Не забудьте в основной LaTeX-файл вставить \usepackage{array} и \usepackage[russian]{babel}
+%
+\thispagestyle{empty}
+\vbox to \textheight{\renewcommand{\baselinestretch}{1}\selectfont%чтобы не было 1.5 интервала в заголовке
+\begin{center}
+{\sc
+ФЕДЕРАЛЬНОЕ АГЕНТСТВО ПО ОБРАЗОВАНИЮ\\[0.5cm]
+
+Государственное образовательное учреждение\\
+высшего профессионального образования\\
+"<Нижегородский государственный университет им. Н.""И. Лобачевского">\\
+(ННГУ)\\[0.5cm]
+
+\large Высшая школа общей и прикладной физики\\[1.5cm]
+}%sc
+
+\vfill
+
+{\Large\bf
+Электромагнитно-индуцированная прозрачность\\
+в сжатом вакууме
+
+}
+\end{center}
+
+\vspace{1.5cm}
+\vfill
+
+% для бакалаврской работы заменить текст ниже на
+%      Дипломная работа\par
+%      студента IV курса\par
+%      Андреева Ивана Сергеевича\par
+%      на соискание степени бакалавра\par
+
+\begin{flushright}
+Дипломная работа\par
+студента 2 курса магистратуры\par
+Андреева Ивана Сергеевича\par
+на соискание степени магистра\par
+\end{flushright}
+\vspace{0.5cm}
+
+% строки вида "&\hfill доктор физико-математических наук\\" можно добавлять и удалять
+\noindent\begin{tabular}{@{}p{0.5\textwidth}@{}>{\hfill}p{0.5\textwidth}@{}}
+\underline{Научный руководитель}&\hfill ведущий научный сотрудник ИПФ РАН\\
+&\hfill кандидат физ-мат. наук\\[0.3cm]
+&\underline{\hspace{3cm}} В.""А. Миронов\\[1.2cm]
+
+\underline{Рецензент}&\hfill старший научный сотрудник ИПФ РАН\\
+&\hfill кандидат физико-математических наук\\[0.3cm]
+&\underline{\hspace{3cm}} Е.Н.Радионычев\\[1.2cm]
+
+\underline{Декан ВШОПФ}&доктор физико-математических наук\\
+&профессор\\[0.3cm]
+&\underline{\hspace{3cm}} М.""Д. Токман
+\end{tabular}
+
+\vfill
+\begin{center}
+Нижний Новгород\\
+2009
+\end{center}
+}%конец группы для страницы и \vbox
+\eject
