@@ -16,7 +16,8 @@ ToDo (2014-12-20) :
 -		• MSU 2014 -- On the uses of the crossing tree for the construction and analysis of multifracta processes, 2014 [DeCrouez et al.]
 
 ToDo
-	- Check: conjectures about the offspring distribution and its relation to the Hurst exponent. Do simulations for the HSSI (Hermite and Weierstrass processes):
+	- Check: conjectures about the offspring distribution and its relation to the Hurst exponent. Do simulations for the HSSSI (Hermite and Weierstrass processes):
+	--  Check the independence assumptions
 	--	P(z=2i) is geometric with p = 2^(1-1/H)
 	--	P(du|+) = P(ud|-) = 1/sqrt(\mu)
 
