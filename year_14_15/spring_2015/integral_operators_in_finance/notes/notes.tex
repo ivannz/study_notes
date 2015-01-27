@@ -34,6 +34,8 @@
 \selectlanguage{english}
 \maketitle
 
+\section{Lecture \# 1} % (fold)
+\label{sec:lecture_1}
 
 Fundamentals of variational calculus
 
@@ -245,6 +247,96 @@ which means that $X$ is the eigenfunction of the following second order differen
 \[L^\brkt{2}_x \defn \sigma(x) \frac{\partial^2}{\partial^2 x} + \brac{ 2 \frac{\partial}{\partial x} \sigma(x) - \mu(x) } \frac{\partial}{\partial x} + \brac{ \frac{\partial^2}{\partial x^2} \sigma(x) - \frac{\partial}{\partial x} \mu(x) } \]
 whereas $T$ is the eigenfunction of $L^\brkt{1}_t \defn \frac{\partial}{\partial t}$ with the same eigenvalue.
 
+% section lecture_1 (end)
 
+\section{Lecture \# 2} % (fold)
+\label{sec:lecture_2}
+
+By constructing evolution of the density function, we attempt to forecast the movements of some market variable.
+
+We can try to fit the learning sample as best as possible (asides of the overfitting), but the structure is ever changing.
+An analyst cannot expect the studied process to stabilize around some deterministic trends, and must not wait until the average behaviour.
+The Job is to forecast and re-evaluate almost continuously. we must be vulgar: rethink, refit and reestimate.
+The estimated structure is fleeting as the market is.  
+
+If the market is far away from the EMH equilibrium, then returns are in principle forecastable.
+Thus is makes sense to describe and estimate the time-evolution of the density.
+
+% Fokker, Planck and Fourier.
+We are trying to obtain the complete basis functions $\brac{u_n(x)}_{n\geq 1}$ for the following for of a solution.
+\[p(x,t) = \sum_{n\geq 1} c_n u_n(x) e^{-\lambda_n t}\]
+Bochner's theorem: not every parametrization yields a complete polynomial basis.
+The discrete spectrum is dictated by the form of the sought solution.
+It is also possible to seek the solution with a continuous spectrum.
+
+% Study the Rodrigues method (see the respective file)
+% Risken, H.: The Fokker-Planck Equation. Methods of Solution and Applications, 2nd ed. (Springer-Verlag, Berlin, 1989) – p 26
+% Зайцев В. Ф., Полянин А. Д.: Метод разделения переменных в математической физике (Книжный Дом, 2009) – стр. 13
+
+% Check the lecture on differential equations.
+The Wronsky determinant \[w_{ij} = \frac{d^{j-1}}{dx^{j-1}} \phi_i(x)\]
+
+% Если f_1(x), \ldots , f_n(x) — линейно зависимы на I, то W(x)=0,\forall x\in I.
+% Если определитель Вронского на интервале не равен нулю хотя бы в одной точке,
+%   то функции f_1(x), \ldots , f_n(x) являются линейно независимыми. Обратное
+%   вообще говоря неверно, но для случая, когда функции являются решениями
+%   дифференциального уравнения будут верны более сильные следствия.
+
+% See the equation 12.39 in Mathematical physic book
+
+
+The variational problem:
+\[\Phi(u(\cdot), v, x) =  p(x) v^2 + \brac{ q(x) - \beta w(x) } u^2\]
+$v$ is the first derivative of $u$ with respect to $x$.
+\[\frac{d}{dx}\Phi_u - \phi_v = 0\]
+
+The solution yields the same Sturm-Liuville equation as in the separation of variables.
+
+How many basis functions must there be in the decomposition?
+Just estimate the error of the finite sum approximation of the initial density $f(x)$: since $p(x,0) \apporx f(x)$.
+
+% Intraday data for 50 assets spanned across pre dot-com crisis,
+%  intercrises period, the Global financial crisis and its aftermath.
+
+Cannot calibrate the speed of time-evolution, since the Bochner-compatible parametrization -- $\sigma \in P^2\clo{x}$
+and $\mu \in P^1\clo{x}$ -- yields constant eigenvalues of the Sturm-Liuville equation.
+
+It would be nice if the spectrum depended on the learning sample.
+
+A brief excursion:
+let $S$ be the asset price, and \[dS = \mu(S) dt + \sqrt{\sigma(S)} \sqrt{dt} \epsilon\]
+where the randomness is $\epsilon\sim \mathcal{N}(0,1)$.
+$\mu(S) = m S$ and $\sigma(S) = s^2 S^2$ -- the immediate drift and volatility terms. Then
+\[\frac{dS}{S} = m dt + s \sqrt{dt} \epsilon\]
+-- the Langewin equation.
+
+\[\frac{\partial}{\partial t} p(x,t) = \frac{\partial^2}{\partial x^2} \brac{\sigma(x) p(x,t)} - \frac{\partial}{\partial x} \brac{\mu(x) p(x,t)}\]
+
+\[\tilde{p}(x) = p(x,0)\]
+
+Financial derivatives stichastic differential equation:
+\[\frac{\partial}{\partial t} \Fcal(x,t) + \sigma(x) \frac{\partial^2}{\partial x^2} \Fcal(x,t) + \mu(x) \frac{\partial}{\partial x} \Fcal(x,t) = r \Fcal(x,t)\]
+Solution \[\Fcal(x,t) e^{r(t-t)} = \Ex_{x,t} \Phi(x)\]
+
+Either the terminal boundary condition (like a payoff function for an option) or the initial boundary condition.
+
+How these approaches are connected? Since both use the same parametrization of the asset price dynamics.
+
+Options as probabilities -- the market estimate of the probability of some abstract terminal payoff.
+
+Hermite conjugate differential operators
+
+The second method of derivation of the complete basis.
+
+The weights of the decomposition are determined by the dot product in the $L^2$ space of the initial density.
+
+\[c_n \defn \int p(x) u_n(x) w(x) dx\]
+
+Either use infinitely large basis, or manage to approximate the evolved density with another solution.
+
+
+
+
+% section lecture_2 (end)
 
 \end{document}
