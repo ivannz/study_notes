@@ -207,4 +207,31 @@ Solve exercises 1.8, 1.11, 1.12 and 1.13 on pp.~42-43.
 
 % section lecture_2 (end)
 
+% Task 1.8
+Suppose $X$ takes $k$ distinct values at random. 
+
+
+
+The number of partitions of a set of $n$ elements into $k$ classes is given by the Stirling Number of the second kind.
+The $n$-th element can either form an isolated class in $P(n-1,k-1)$different ways,
+or be a member of one of the existing $k$ classes in $P(n-1,k)$ number of ways.
+Therefore \[P(n,k) = P(n-1,k-1) + k P(n-1,k)\]
+
+
+% Task 1.13 -- wrong!!!!
+Suppose each node spawns an $m$-tree and that each edge in any tree in impassable with probability $p$.
+What is the probability $\pi_n$ of a tree with $n$ layers such that there is no paths from the root to leaves.
+
+Since the tree is recursive and independent the following is valid:
+\[\pi_{n+1} = (1 - p^m) \pi_n\]
+
+The exact moment when the main gates closed created a root in the tree structure of chambers.
+
+
+\section{Lecture \# 3} % (fold)
+\label{sec:lecture_3}
+
+
+% section lecture_3 (end)
+
 \end{document}

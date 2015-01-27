@@ -1,0 +1,121 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{fullpage}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+\let\originalleft\left
+\let\originalright\right
+\renewcommand{\left}{\mathopen{}\mathclose\bgroup\originalleft}
+\renewcommand{\right}{\aftergroup\egroup\originalright}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\crab}[1]{{\left ] #1 \right [}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Rbar}{{\bar{\mathbb{R}}}}
+\newcommand{\Real}{{\mathbb{R}}}
+\newcommand{\Zinf}{{\clo{ 0, +\infty }}}
+\newcommand{\Cplx}{{\mathbb{C}}}
+\newcommand{\Tcal}{{\mathcal{T}}}
+\newcommand{\Dcal}{{\mathcal{D}}}
+\newcommand{\Hcal}{{\mathcal{H}}}
+\newcommand{\Ccal}{{\mathcal{C}}}
+\newcommand{\Scal}{{\mathcal{S}}}
+\newcommand{\Ncal}{{\mathcal{N}}}
+\newcommand{\Ecal}{{\mathcal{E}}}
+\newcommand{\Fcal}{{\mathcal{F}}}
+\newcommand{\borel}[1]{{\mathcal{B}\brac{#1}}}
+\newcommand{\Ex}[0]{{\mathbb{E}}}
+\newcommand{\pr}[0]{{\mathbb{P}}}
+\newcommand{\Var}[1]{{\text{Var}\brac{#1}}}
+
+\newcommand{\pwr}[1]{{\mathcal{P}\brac{#1}}}
+\newcommand{\Dyns}[1]{{\mathfrak{D}\brac{#1}}}
+\newcommand{\Ring}[1]{{\mathcal{R}\brac{#1}}}
+\newcommand{\Supp}[1]{{\operatorname{supp}\nolimits\brac{#1}}}
+
+\newcommand{\defn}{{\mathop{\overset{\Delta}{=}}\nolimits}}
+\newcommand{\lpto}{{\mathop{\overset{L^p}{\to}}\nolimits}}
+
+\newcommand{\re}{\operatorname{Re}\nolimits}
+\newcommand{\im}{\operatorname{Im}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{\rus{Домашняя работа по курсу \\ ``Теоретико-вероятностные методы в статистике''}}
+\author{\rus{Назаров Иван,} \rus{101мНОД(ИССА)}}
+
+\begin{document}
+\selectlanguage{russian}
+\maketitle
+
+\section{У1.8 -- Задача о сборщике купонов} % (fold)
+\label{sec:task_1_8}
+
+Предположим, пачки овсянки пронумерованы в порядке их покупки или согласно
+серийному номеру самой упаковки (в дальнейшем от мы откажемся от этого упрощения).
+
+Пусть $\Omega$ -- множество всозможных цветов купонов, $\abs{\Omega} = k \geq 2$.
+Каждый набор купонов на $n$ купленных пачек овсянки можно сопоставить набору
+$\brac{a_i}_{i=1}^n \in \Omega^n$, где $a_i\in \Omega$ -- цвет купона на пачке $i$.
+
+Подсчитаем количество ``плохих'' конфигураций в $\Omega^n$ -- тех в которых
+отсутсвуют купоны хотя бы один цвет купона $c\in\Omega$.
+Введём обозначение множества конфигуаций, в которых нет цвета $c\in \Omega$ :
+\[A_c \defn \obj{\induc{w\in \Omega^n}\, w_i \neq c \forall i = 1\ldots n }\]
+Тогда искомые конфигурации есть ни что иное как объединение $A \defn \bigcup_{c\in \Omega} A_с$.
+
+Воспользуемся формулой включений-исключений, которая в случае данной постановки
+задачи имеет вид:
+\[\abs{ \bigcup_{c\in \Omega} A_c } = \sum_{\emptyset \neq C\subseteq \Omega}
+\brac{-1}^{\abs{C} - 1} \abs{\cup_{c\in C} A_c} \]
+Для любого непустого $C\subseteq \Omega$ мощность множества $\cup_{c\in C} A_c$
+равна $\brac{\abs{\Omega} - \abs{C}}^n$.
+
+Таким образом \begin{align*}
+	\abs{ \bigcup_{c\in \Omega} A_c } &= \sum_{\emptyset \neq C\subseteq \Omega}
+		\brac{-1}^{\abs{C} - 1} \brac{\abs{\Omega} - \abs{C}}^n \\
+		&= \sum_{m=1}^k C^m_k {(-1)}^{m-1} {(k - m)}^n
+\end{align*}
+где $C^m_k = \frac{k!}{m!(k-m)!}$ -- число неупорядоченных перестановок из $n$ по $k$ элементов.
+При этом количество всевозможных конфигураций цветов купонов на $n$ различимых
+пачках составляет $\abs{\Omega}^n$ штук.
+
+Количество конфигураций $n$ различимых упаковок, в которых присутствуют все $k$ цветов,
+равно разности числа всех конфигураций и числа конфигураций, хотя бы без одного цвета.
+Итак
+\begin{align*}
+	Q_n & = \abs{\Omega}^n - \abs{ \bigcup_{c\in \Omega} A_c } \\
+	& = k^n - \sum_{m=1}^k C^m_k {(-1)}^{m-1} {(k - m)}^n \\
+	& = \sum_{m=0}^k C^m_k {(-1)}^m {(k - m)}^n \\
+	& = k! \left\{\begin{matrix} n \\ k \end{matrix}\right\}
+\end{align*}
+где $\left\{\begin{matrix} n \\ k \end{matrix}\right\}$ -- число Стирлинга второго рода,
+отражающее количество разбиений $n$ элементного множетсва на $k$ непустых групп.
+
+
+
+% k = 4 ; n = 4
+% res <- replicate( sample( k, n, replace = TRUE ), n = 10000, simplify = FALSE )
+% b <- sapply( sapply( res, unique ), length )
+% sum( b == k ) / length( b )
+
+% section task_1_8 (end)
+
+\begin{document}
