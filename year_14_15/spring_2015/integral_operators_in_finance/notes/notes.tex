@@ -21,6 +21,8 @@
 \newcommand{\Real}{\mathbb{R}}
 \newcommand{\Cplx}{\mathbb{C}}
 \newcommand{\Pwr}{\mathcal{P}}
+\newcommand{\Fcal}{\mathcal{F}}
+\newcommand{\Ex}{\mathbb{E}}
 
 \newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
 
@@ -182,7 +184,7 @@ Complete two laboratory tasks.
 $\sigma(x)$ -- variance not standard deviation!!!
 
 \begin{align*}
-	\omega(x) &= N e^{\int \frac{ - \mu(x) + \frac{d}{dx} \sigma(x)}{\sigma(x)}}\\
+	\ln \omega(x) &= \ln N + \int \frac{ - \mu(x) + \frac{d}{dx} \sigma(x)}{\sigma(x)} dx
 \end{align*}
 
 $\omega(x)$ -- the source density function. Construct an operator, which would make $\omega$ evolve in time.
@@ -293,7 +295,7 @@ $v$ is the first derivative of $u$ with respect to $x$.
 The solution yields the same Sturm-Liuville equation as in the separation of variables.
 
 How many basis functions must there be in the decomposition?
-Just estimate the error of the finite sum approximation of the initial density $f(x)$: since $p(x,0) \apporx f(x)$.
+Just estimate the error of the finite sum approximation of the initial density $f(x)$: since $p(x,0) \approx f(x)$.
 
 % Intraday data for 50 assets spanned across pre dot-com crisis,
 %  intercrises period, the Global financial crisis and its aftermath.
