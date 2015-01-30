@@ -42,11 +42,11 @@
 Shrinkage methods
 
 In the orginal linear squares method we minimized the following fitness function:
-\[\text{min} \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij}}\]
+\[\text{min} \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij}}^2\]
 
 Ridge regression
 Minimize the following penalized Residual Sum of Squares as:
-\[\text{RSS}\defn \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij}} + \lambda \sum_{j=1}^k \beta_j^2\]
+\[\text{RSS}\defn \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij}}^2 + \lambda \sum_{j=1}^k \beta_j^2\]
 the $\lambda>0$ is called the tuning parameter.
 It controls the amount of shrinkage:
 if $\lambda = 0$ then there is absolutely no shrinkage, and the optimal beta coincide with the OLS.
@@ -60,11 +60,11 @@ Next observation: the intercept $\beta_0$ is indeed excluded from the shrinkage 
 
 Suppose the $t$ and $X$ are standardized (mean and centre), which means that $\beta_0 \equiv 0$
 Then in the matrix form the following is minimized:
-\[\brac{t-X\beta}'\brac{t- X\beta} + \lamba \beta'\beta \to \text{min}\]
+\[\brac{t-X\beta}'\brac{t- X\beta} + \lambda \beta'\beta \to \text{min}\]
 
 The first order conditions are:
 \begin{align*}
-	\frac{\partial \text{RSS}}{\partial \beta } &= -2 X\brac{t-X\beta}+2\lamba \beta\\
+	\frac{\partial \text{RSS}}{\partial \beta } &= -2 X\brac{t-X\beta}+2\lambda \beta\\
 	% \frac{\partial \text{RSS}}{\partial \lambda } = \beta'\beta = 0
 \end{align*}
 
@@ -75,5 +75,176 @@ The optimal coefficients are given by
 
 % section lecture_2 (end)
 
+\section{Lecture \# 3} % (fold)
+\label{sec:lecture_3}
+
+Limiting the size of the coefficients. Modified RSS with a tuning parameter $\lambda$.
+\[\text{RSS}\defn \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij}}^2 + \lambda \sum_{j=1}^k \beta_j^2\]
+important: \begin{itemize}
+	\item Consider dimensionless inputs (standardized by standard deviation) -- comparable $\beta_j$.
+	\[x_{ij}\]
+	\item If the input vectors are centred, then the estimation is separable.
+\end{itemize}
+Consider \begin{align*}
+	\text{RSS} &= \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j \brac{x_{ij}-\bar{x}_j} - \sum_{j=1}^k \beta_j \bar{x}_j}  + \lambda \sum_{j=1}^k \beta_j^2 \\
+	\text{RSS}' &= \sum_{i=1}^n \brac{t_i - \beta_0^c - \sum_{j=1}^k \beta_j^c \brac{x_{ij}-\bar{x}_j}}  + \lambda \sum_{j=1}^k {\beta_j^c}^2
+\end{align*}
+Notice that $\beta_j^c = \beta_j$ for all $j=1,\ldots,n$ and $\text{RSS}=\text{RSS}'$.
+\begin{align*}
+	\text{RSS}' &= \lambda \sum_{j=1}^k {\beta_j^c}^2 + \sum_{i=1}^n \brac{t_i - \beta_0^c}^2 \\
+	& + \sum_{i=1}^n \brac{\sum_{j=1}^k \beta_j^c \brac{x_{ij}-\bar{x}_j}}^2 \\
+	& - 2 \sum_{i=1}^n \brac{t_i - \beta_0^c} \sum_{j=1}^k \beta_j^c \brac{x_{ij}-\bar{x}_j}
+\end{align*}
+Notice that the last term is zero. Indeed \begin{align*}
+	\sum_{i=1}^n \brac{t_i - \beta_0^c} \brac{\sum_{j=1}^k \beta_j^c \brac{x_{ij}-\bar{x}_j}}
+	& = \sum_{j=1}^k \beta_j^c \sum_{i=1}^n \brac{t_i - \beta_0^c} \brac{x_{ij}-\bar{x}_j}
+\end{align*}
+The problem of ridge regression in the matrix form, where $X$ the $n\times k$
+is matrix of centred standardized independent variables with no intercept:
+\[\text{RSS} = \brac{t-X\beta}'\brac{t-X\beta} + \lambda \beta'\beta\]
+
+The solution is
+\[\hat{\beta}_{\text{ridge}}\defn \brac{X'X + \lambda I}^{-1} X'T\]
+
+An equivalent optimization problem:
+\begin{align*}
+	\hat{\beta}_{\text{ridge}} = \text{argmin}_{\beta} \sum_{i=1}^n \brac{t_i - \sum_{j=1}^k \beta_j x_{ij}^c}
+	\text{subject to } \sum_{j=1}^k \beta_j^2 \leq \eta
+\end{align*}
+$\eta$ -- the budget, $\lambda$ -- the complementary slackness coefficient.
+
+There is a certain universality of the statement of the regression problem in this form:
+it is possible to plug in different constraints ($L^1$ constraints -- LASSO).
+LASSO is automatically performing feature selection due to $L^1$ norm.
+
+% How to tune $\lambda$? Wait until model selection and cross-validation.
+
+How does the shrinkage work?
+Consider two cases of columns of $X$ \begin{itemize}
+	\item orthogonal
+	\item correlated
+\end{itemize}
+
+\subsubsection{Orthogonal columns} % (fold)
+\label{ssub:orthogonal_columns}
+
+Suppose $X$ are orthogonal, in which case $X'X = I$. Therefore
+the OLS solution is $\hat{\beta}_{\text{OLS}} = {X'X}^{-1}X'T = X'T$.
+The ridge regression solution is given by 
+\[\hat{\beta}_{\text{ridge}} = \brac{X'X + \lambda I}^{-1} X'T = \frac{1}{1+\lambda} \hat{\beta}_{\text{OLS}}\]
+Hence the shrinkage!
+
+The lasso solution:
+\[\text{argmin}_\beta \brac{T - X\beta}'\brac{T - X\beta} + \lambda \sum_{j=1}^k \abs{\beta_j}\]
+\begin{align*}
+	\brac{T - X\beta}'\brac{T - X\beta} + \lambda \sum_{j=1}^k \abs{\beta_j}
+	& = T'T - 2 \beta'X'T + \beta'X'X\beta + \lambda \sum_{j=1}^k \abs{\beta_j}\\
+	& = T'T - 2 \beta'\hat{\beta}_{\text{OLS}} + \beta'X'X\beta + \lambda \sum_{j=1}^k \abs{\beta_j}
+\end{align*}
+The minimization problem is equivalent to the following (in this orthogonal case):
+\[\text{argmin}_\beta \sum_{i=1}^k -2 \beta_i \beta_{\text{OLS}\,i}+ \beta)i^2 + \lambda \abs{\beta_i}\]
+The problem is additively separable. Thus \begin{align*}
+	\text{argmin}_{\beta_i\geq 0} -2 \beta_i \beta_{\text{OLS}\,i}+ \beta)i^2 + \lambda \abs{\beta_i}\\
+	\text{argmin}_{\beta_i\geq 0} -2 \beta_i \beta_{\text{OLS}\,i}+ \beta)i^2 + \lambda \abs{\beta_i}
+\end{align*}
+The FOC for the first problem is given by:
+\[\frac{\partial}{\partial \beta_i} = - \beta_{\text{OLS}\,i} + \beta_i + \frac{\lambda}{2}\]
+whence the optimal value is given by:
+\[\hat{\beta}_{\text{LASSO}\,i} \defn \brac{ \beta_{\text{OLS}\,i} - \frac{\lambda}{2} }^+\]
+
+Due to soft thresholding in the case of the LASSO there is feature selection.
+
+% subsubsection orthogonal_columns (end)
+
+\subsubsection{The best subset selection} % (fold)
+\label{ssub:the_best_subset_selection}
+Suppose we have a set of $p$ predictors. Chose the subset with the least
+residual sum of squares.
+
+For each $k = 1,\ldots, p$ pick the model with the lowest RSS.
+\begin{align*}
+\min_{\beta} \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij}}^2 \\
+\text{subject to} \sum_{j=1}^p 1_\obj{\beta_j\neq 0} \leq k
+\end{align*}
+
+This is equivalent to the following problem:
+\[\min_{\beta} \sum_{i=1}^n \brac{ - 2 \beta_j \hat{\beta}_{\text{OLS}\,j} + \beta_j^2 }\]
+subject to keeping at most $k$ coefficients nonzero.
+\[\hat{\beta}_{\text{BSS}\,i} \defn \beta_{\text{OLS}\,i} 1_{\clop{\hat{\beta}, \infty}}\brac{ \abs{\beta_{\text{OLS}\,i}} }\]
+where $\hat{\beta}$ is the $n-k$ th order statistic. This given hard thresholding.
+
+Gramm-Schmidt orthogonalization is equivalent to the QR decomposition.
+
+The best idea is to use SVD decomposition of $X = U\Lambda V'$, with $U$ and $V$ orthogonal matrices.
+
+% subsubsection the_best_subset_selection (end)
+
+\subsubsection{SVD} % (fold)
+\label{ssub:svd}
+
+Suppose there is a martux $X$ with dimensions $n\times p$ with rank $r$.
+SVD decomposition claims that there exist square orthogonal matrices $U_{n\times n}$ and $V_{p\times p}$
+and a diagonal matrix $\Lambda_{n\times p}$ of rank $r$, such that $X = U \Lambda V'$.
+Orthogonality of $U$: $U'U = I_{n\times n}$.
+
+Orthogonality greatly simplifies the projectors onto the column space of $X$: $\hat{T} = U U' T$.
+
+% subsubsection svd (end)
+
+\subsubsection{Ridge regression and the SVD} % (fold)
+\label{ssub:ridge_regression_and_the_svd}
+
+Begin with the expression of the solution:
+\[\hat{\beta}_{\text{ridge}} \defn \brac{X'X + \lambda I}^{-1} X'T\]
+
+Since $X'X = V\Lambda U' U \Lambda V' = V\Lambda^2 V'$, it is true that 
+\begin{align*}
+	\hat{\beta}_{\text{ridge}} & = \brac{X'X + \lambda I}^{-1} X'T\\
+	& = \brac{V\Lambda^2 V' + \lambda VV'}^{-1} X'T\\
+	& = V \brac{\Lambda^2 + \lambda I}^{-1} V' V\Lambda U' T \\
+	& = V \brac{\Lambda^2 + \lambda I}^{-1} \Lambda U' T
+\end{align*}
+
+Therefore the ridge regression shrinks the coefficients over the tiniest principal directions.
+
+The sample correlation matrix
+\[\frac{1}{n} X'X = \frac{1}{n} V'\Lambda^2 V\]
+The principal components are in $V$
+the eigenvalue-eigenvector pair for the sample correlation is given by the $\brac{\frac{\lambda_i^2}{n}, V_\clo{i}}$.
+
+The $i$ th principal component is given by $Z_i = X V_\clo{i}$ and $\text{var}(z_i) = \lambda_i^2$
+
+The ridge regression shrinks the coefficients corresponding to the principal directions in the column space of $X$ having the smallest variance.
+
+% subsubsection ridge_regression_and_the_svd (end)
+
+\subsubsection{The effective degree of freedom} % (fold)
+\label{ssub:the_effective_degree_of_freedom}
+
+It is a function of the tuning parameter $\lambda$ which governs the complexity of the model.
+
+Complexity id the trace of the hat matrix (the projector) of the ridge regression:
+\[\text{df}(\lambda) \defn \text{tr}\brac{X\brac{X'X + \lambda I}^{-1}X'}\]
+Using the SVD of $X$ gives us:
+\[\text{tr}\brac{X\brac{X'X + \lambda I}^{-1}X'} = \sum_{j=1}^p \frac{\lambda_i^2}{\lambda_i^2 + \lambda^2}\]
+
+If $\lambda = 0$ then $\text{df}(\lambda) = p$, and $\lambda\to +\infty$, then $\text{df}(\lambda) \to 0$.
+
+Correlation between this and this (?)
+\begin{align*}
+	\text{Var}(T) = \sigma^2 I
+\end{align*}
+Covariance of $\hat{T}$ and $T$.
+% \[\ex(T, \hat{T}) = T' T\] 
+
+% subsubsection the_effective_degree_of_freedom (end)
+
+Take a matrix of predictors $X$, its standardized version \[X^\sigma \defn \frac{X}{\sigma}\]
+and \[X^c \defn \frac{X-m}{\sigma}\]
+
+
+
+
+% section lecture_3 (end)
 
 \end{document}
