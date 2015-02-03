@@ -162,6 +162,12 @@ def ks_dist_d( data, threshold ) :
 	d, pv = kstest( [ v for v in data if v >= threshold ], cdf )
 	return (d, pv), (alpha, sd)
 
+
+# In my opinion, mentioning the KS test itself, not just it's statistic, is fraught with danger of misuse. Indeed, in some young minds it might plant an idea that it is the possibile to use the P-value produced to test the hypothesis of goodness-of-fit. The distribution of the KS statistic under the null hypothesis rests heavily on the assumption of absolute continuity of the hypothesised distribution. 
+# by test when comparing between the models with different thresholds. This is 
+# The  KS test and  seems a little
+# The main issue with 
+
 #####################################################################
 ## These helper functions invert an array and count the number of
 ##  occurrences of distinct values in an array
@@ -183,6 +189,19 @@ def counts( data ) :
 ##  a single occurrence otherwise increment its counter.
 		counts[ x ] = counts.get( x, 0 ) + 1
 	return counts.items( )
+
+def mean_excess( data ) :
+	data = np.array( sorted( data, reverse = True ) )
+## Compute the last positions in the sorted array of each repeated observation
+	ranks = rankdata( data, method = 'max' )
+## Since the array is sorted, the number of observation exceeding the current
+##  is givne by difference between the length of the array and the max-rank.
+	excesses = np.array( np.unique( len( data ) - ranks ), dtype = np.int )
+## Get the thresholds
+	thresholds = data[ excesses ]
+## Get the sum of all values greater than the current threshold 
+	mean_excess = np.cumsum( data )[ excesses ] / ( excesses + 0.0 ) - thresholds
+	return np.array( thresholds, mean_excess )
 
 #####################################################################
 ## + 0. Read the graph
