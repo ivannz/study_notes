@@ -22,6 +22,8 @@
 \newcommand{\Cplx}{\mathbb{C}}
 \newcommand{\Ntrl}{\mathbb{N}}
 \newcommand{\Pwr}{\mathcal{P}}
+\newcommand{\pr}{\mathbb{P}}
+\newcommand{\Ex}{\mathbb{E}}
 
 \newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
 
@@ -165,7 +167,7 @@ Another possibility is to estimate the parameters of the power law by means of a
 Suppose $\brac{f_i}_{i=1}^B$ and $\brac{b_i}_{i=1}^B$ are bin frequencies and centres respectively, constructed on data $\brac{x_k}_{k=1}^n$ which supposedly came from a power law distribution.
 
 Then it is possible to fit the following regression model to the histogram data to get the parameters of the law:
-since $f_x \sim p(x) \Dleta x$
+since $f_x \sim p(x) \Delta x$
 \[\log f_i \sim \brac{\log{(\beta-1)} + (\beta-1) \log x_0} + (-\beta) \log b_i\]
 It is a fast but a rather crude way of estimating.
 
@@ -173,5 +175,102 @@ It is a fast but a rather crude way of estimating.
 
 % section lecture_2 (end)
 
+\section{Lecture \# 3} % (fold)
+\label{sec:lecture_3}
+
+Grpah models
+
+Erd\"os-Rnyi model
+
+A random graph is a element of the set $\prod_{\omega\in \Pwr_2(V)} \obj{0,1}$.
+A large collection of Bernulli random variables, indicating whether an edge is present or not.
+
+$G_{n,m}$ model -- a graph is randomly selected form a set  $C_N^m$ graphs, with $N\defn \frac{n(n-1)}{2}$ of with $n$ nodes and $m$ edges.
+
+$G_{n,p}$ -- the model of a random graph in which an edge between
+any two vertices is established with probability $p$. The total
+number of edges is again $N$. The size of the graph is a thus a
+random number.
+
+The models are asymptotically equivalent.
+
+The mean node degree is given by
+\[\epsilon(G) = \frac{2 \Ex(m)}{n} = p\frac{2 n(n-1)}{2 n} \approx p n\]
+The graph density is the \[\rho \defn 2\frac{\Ex(m)}{n(n-1)}\]
+
+The degree distribution of a random graph.
+
+The chance that a given node $v$ has $k$ neighbours is given by:
+\[\pr\brac{\delta(v) = k} = C^k_{n-1} p^k \brac{1-p}^{n-k-1}\]
+
+Since the binomial distribution is asymptotically poisson if $p n = \lambda$ and $n\to \infty$:
+\[C^k_{n-1} p^k \brac{1-p}^{n-k-1} \to \]
+
+Use these models as a benchmark (in the null hypothesis) to compare against the phenomena in the real life.
+
+Treating the model parametrically to witness phase transitions.
+\begin{description}
+	\item[$p=0$] \hfill \\ the graph is a set of isolated vertices;
+	\item[$p=p_c$] \hfill \\ the graph obtains a spanning tree;
+	\item[$p=1$] \hfill \\ the graph is totally connected.
+\end{description}
+
+Suppose $p$ changes with $n$. 
+
+
+The chance that a node does not belong the the Giant Connected Component,
+in the case of Poisson node degree distribution is given by
+\[ u = \sum_{k\geq 0} \pr(k) u^k = \sum_{k\geq 0} e^{-\lambda}\frac{\lambda^k}{k!}u^k = e^{\lambda (u-1)}\]
+the necessary condition for a nonzero $u$ is that $\lambda>1$
+(ensures that the graph of the exponent intersects the $45\,^{\circ}$ line at a nonzero point).
+
+\begin{description}
+	\item[$p\to p_c-$] \hfill \\ no components larger than $O(\log n)$;
+	\item[$p=p_c$] \hfill \\ the largest component has $O(n^\frac{2}{3})$;
+	\item[$p\to p_c+$] \hfill \\ the gigantic connected component is of the order $O(n)$.
+\end{description}
+The critical values is $p_c n = 1$.
+
+Threshold values at which interesting phenomena appear -- subgraphs of order $g$:
+\begin{description}
+	\item[$p\sim n^\frac{-g}{g-1}$] there almost surely exists a tree of order $g$;
+	\item[$p\sim n^{-1}$] there is a cyclce of order $g$;
+	\item[$p\sim n^\frac{-2}{g-1}$] a clique of order $g$ (a complete subgraph).
+\end{description}
+
+
+The clustering coefficient: ratio of closed triangles to all possible triangles
+\[C(k) = \frac{p k(k-1) 2 }{ k( k-1 ) 2} = p\]
+The sparser the graph the more negligible is the clustering coefficient.
+
+The average number of nodes $s$ hops away from the current node is $\lambda^s$.
+In the critical regime of the edge probability, all nodes belong to the the GCC with high probability.
+Thus $d \sim \frac{\log n}{\log \lambda}$.
+
+Fixing the issues with degree distribution.
+The configuration model.
+Take $V$ vertices and a finite sequence of node degrees $\brac{d_v}_{v\in V}$ with $\sum_{v\in V} d_v$ -- even.
+
+% Slide~17.
+The constructed graph might be a lopped multigraph.
+Solution: use special graphical degree sequences.
+The probability that $v,u\in V$ are connected is given by
+\[p_{uv}\frac{d_u d_v}{2 m - 1}\]
+
+Does not allow for an asymptotically non-zero clustering coefficient.
+
+Very different from the Erd\"os-Renyi model!
+
+A random graphs does not have communities.
+
+Non-zero clustering coefficient hint at non-random processes underlying the edge formation.
+
+% section lecture_3 (end)
+
+\section{Lecture \# 4} % (fold)
+\label{sec:lecture_4}
+
+
+% section lecture_4 (end)
 
 \end{document}
