@@ -1,0 +1,139 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{xfrac, mathptmx}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+\newcommand{\pr}{\mathbb{P}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Machine Learning}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+\begin{document}
+\selectlanguage{english}
+\maketitle
+
+\section{Lecture \# 4} % (fold)
+\label{sec:lecture_4}
+
+\rus{Дмитрий Игоревич Игнатов}
+
+Descision tree as classification tools.
+
+Is a tree with nodes, labelled by features, conditions or rules. The leaves are the classes.
+
+The learning sample may be unbalanced.
+
+There is no point in identical conditions within the same branch: at nodes $u,v$ in the tree-order.
+
+Main definitions.
+The connection of decision tree with boolean functions.
+
+Can a tree be represented in a disjunctive normal form?
+
+Conjuncts are identified with the root-leaf paths, with a \emph{True} leaf.
+
+Decision tree construction.
+\begin{itemize}
+	\item Pick a feature $Q$.
+	\item For each value $i$ of $Q$.
+	\begin{itemize}
+		\item recursively construct the decision tree base of the learning sub-sample with $Q=i$.
+	\end{itemize}
+\end{itemize}
+
+The question is how the next attribute should be chosen.
+
+Suppose the we need to define a measure $\nu$ of uncertainty of events:\begin{itemize}
+	\item If $A$ is certain to occur ($\pr(A)=1$), then $\nu(A)=0$;
+	\item If $A$ is more likely than $B$, then is reasonable to expect the uncertainty of $B$ be higher than that of $A$. Thus $\nu$ should be anti-monotonous;
+	\item if $A\perp B$, then the uncertainty of one event is unaffected by the uncertainty of the other. Thus it is reasonable to expect that their simultaneous uncertainty must be pooled: $\nu(A\cap B)= \nu(A)+\nu(B)$.
+\end{itemize}
+
+It is convenient to define $\nu$ as a composition of some $h$ with $\pr$: $\nu = h\circ \pr$.
+
+Thus we arrive at a concept of entropy: if $Q<<\mu$ and $Q=\int q d\mu$, then $H = \int \log \frac{1}{q} q d\mu = - \int \log q dQ$.
+
+In the discrete case the integral degenerates into $H = \sum_k \frac{1}{p_k} p_k$.
+
+For a binary variable:
+\[H(\theta) = - \theta \log \theta - (1-\theta) \log (1-\theta)\]
+The entropy as a function of $\theta$ resembles a bell with zeros at $0,1$. Use l'H\^opital's rule.
+
+\txetbf{Idea}: Select the successive feature $Q$ to be as informative as possible.
+
+
+Suppose $A$ elemnts with a property $S$ are classified by a feature $Q$ with $q$ distinct values then the \txetbf{information gain} is
+\[\text{Gain} = H(A,S) = \sum_{k=1}^q \frac{\abs{A_k}}{\abs{A}} H(A_k,S)\]
+where $A_k$ is the partition by $Q$: $A_k = \obj{\induc{\omega \in A} Q(\omega)=k }$.
+
+The impurity of a class might be defined as
+\[\dot{p} = \frac{p_+}{p_++p_-} = \frac{N_+}{N_+ + N_-}\]
+in the learning sample with $+$ and $-$ examples.
+
+the impurity measure is expected to be symmetric with respect to the classes $+$ and $-$.
+
+Consider using $p_+(1-p_-)$ and $p_-(1-p_+)$ pooled together for symmetry.
+
+Ross Queenlain ID3 algorithm (C4.5).
+\begin{itemize}
+	\item Create a root;
+	\item If $S$ hold for all $A$, then set the node to $1$ and leave;
+	\item If $S$ fails to hold for all $A$, then set the node to $0$ and leave;
+	\item If $\mathcal{Q} = \emptyset$ then \begin{itemize}
+		\item if $S$ it true for a half or more examples in $A$, then set the root to $1$ and leave;
+		\item if $S$ it true for a half or more examples in $A$, then set the root to $1$ and leave;
+	\end{itemize}
+	\item IF $\mathcal{Q}\neq\emptyset$ then choose feature $Q\in \mathcal{Q}$ with the highest information gain $\text{Gain}(A, Q)$.
+	\item ... MISSING LOC;
+\end{itemize}
+
+Gini inequality coefficient.
+Gini index
+
+A feature with distinct value for each example has the greatest information gain. Indeed, the entropy of a set consisting of an individual example with respect to the target variable is zero since $0\log 0 = 1 \log 1 = 0$.
+\[\text{SplitInfo}(A,S) = H(A,S)\]
+
+Branch trimming:
+\[\text{GainRatio}(A,S) = \frac{\text{Gain}(A,S)}{\text{SplitInfo}(A,S)}\]
+
+
+% Если зенит просто как случайная величина выигрывает/проигрывает с вероятностью $p$ то можно и построить такой ```случайный классификатор''.
+
+One-node (one-rule) degenerate decision trees are called \eng{decision stumps}.
+
+\begin{align*}
+	\text{Gini}(D,T) &= 1 - \sum_{k=1}^T \brac{\frac{D_k}{D}}^2 \\
+	H(D,T) &= - \sum_{k=1}^T \frac{D_k}{D} \log \frac{D_k}{D} \\
+	\text{Gain}(D,T,A) &= H(D,T) - \sum_{k=1}^T \frac{D_k}{D} H(D_k,T)
+\end{align*}
+
+
+
+% section lecture_4 (end)
+
+
+
+\end{document}
