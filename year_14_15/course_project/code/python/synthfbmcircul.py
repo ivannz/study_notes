@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import numpy as np
 import numpy.random as rnd
 from numpy.fft import fft
@@ -25,7 +26,7 @@ def synthgausscircul( N, H, variance = 1.0, seed = None ) :
 ##  models long range (epochal) dependence.
 ## Generate the first row of the 2Mx2M Toeplitz matrix, where 2M = N + N-2
 	n = np.arange( N, dtype = np.float64 )
-	L = variance * ( np.abs( n - 1 ) ** (2 * H) + np.abs( n + 1 ) ** (2 * H) - 2 * np.abs( n ) ** (2 * H) ) / 2 ;
+	L = variance * ( np.abs( n - 1 ) ** (2.0 * H) + np.abs( n + 1 ) ** (2.0 * H) - 2 * np.abs( n ) ** (2.0 * H) ) / 2 ;
 ## Compute the convolution of the circulant row (of autocorrelations) with
 ##  some gaussian white noise
 	# L = np.sqrt( np.real( fft( np.append( L, L[1:-1][::-1] ) ) ) / ( 2 * N - 2 ) )
@@ -48,26 +49,17 @@ def synthgausscircul( N, H, variance = 1.0, seed = None ) :
 def synthfbmcircul( N, H, sigma2 = 1.0, tmax = 1.0, seed = None ) :
 	dt = tmax / N
 ## for fBM use sigma2 = S dt^{2H}, with dt = (t_1-t_0)/N
-	u, v = synthgausscircul( N, H, variance = sigma2 * ( dt * dt )**H, seed = seed )
+	u, v = synthgausscircul( N, H, variance = sigma2 * ( dt * dt ) ** H, seed = seed )
 ## Return the integrated paths
 # % Processus increment normalise
 	return ( np.append( 0, np.cumsum( u[ :N-1 ] ) ), np.append( 0, np.cumsum( v[ :N-1 ] ) ) )
 
-import matplotlib.pyplot as plt
-u, v = synthfbmcircul( 2**20 + 1, .85 )
-plt.plot(u, "r-", linewidth = 2 )
-plt.plot(v, "b-", linewidth = 2 )
-plt.show( )
+## Example
+##  >  > >>  Take N = 2^k + 1  << <  <for better performance
+# import matplotlib.pyplot as plt
+# u, v = synthfbmcircul( 2**20 + 1, .65 )
+# plt.plot(u, "r-", linewidth = 2 )
+# plt.plot(v, "b-", linewidth = 2 )
+# plt.show( )
 
 
-## Example :
-##  >  > >>  Take N = 2^k + 1  << <  <
-##-----------
-## N = 2^10+1 ;   % N=1025
-## H = 1/3 ;
-## [B,x,w] = synthfbmcircul(N,H) ;
-
-## u = synthfbmcircul( 2**10 + 1, .3 )
-## plt.plot(u[0], "b-", linewidth = 2 )
-## plt.show()
-## 
