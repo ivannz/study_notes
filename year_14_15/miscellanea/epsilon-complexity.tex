@@ -1,0 +1,121 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{xfrac, mathptmx}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+\newcommand{\Fcal}{\mathcal{F}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{$\epsilon$-complexity of continuous functions and its applications}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+\begin{document}
+\selectlanguage{english}
+\maketitle
+
+Authors: \rus{Борис Дарховский, Институт Системного анализа}; Alexandra Piryatinska (San Francisco)
+translated a book on ``Nonlinear analysis''.
+
+\section{Presentation} % (fold)
+\label{sec:presentation}
+
+How to quantitatively measure the complexity of anything? And what is complexity?
+
+Kolmogorov wanted to quantify complexity in probability theory.
+What sequence of symbols might be considered random? what about deterministic chaos?
+The his efforts resulted in the Kolmogorov complexity.
+
+Kolmogorov complexity deals with the complexity of infinite countable sequences.
+
+How to gauge the complexity of a function? Is it possible at all?
+
+Studying complexity of EEG data to uncover phenomena in the inner workings of brains.
+
+What is complexity after all?
+
+
+$\epsilon$-complexity is an intrinsic property of data array, independent of its generation mechanism.
+
+% All H\"older function are 
+
+\Nonlinear \extbf{Model free methodology}\hfill\\
+
+This can be used to solve applied problems in data segmentation, classification (deterministic, stochastic and mixed).
+
+If you have some dataset (take a time series), and you want to extract some valuable information from it.
+
+It the data generation mechanism, then the law of large numbers might fail to endow the data with the necessary statistical properties.
+
+To extract useful info, the time series has to be split into homogeneous regions, suitable for statistical analysis.
+
+%% Slide p.~3-4
+The need for change-point detection arises, which is called ``segmentation''. In russian theis problem is known as \rus{задача о разладке}: \begin{dscription}
+	\item[Sequential] how to detect the structural change as soon as possible, and as accurately as needed, when the data arrive successively;
+	\item[Non-sequential] how to detect the segments in the already obtained complete sample -- the problem of segmentation.
+\end{dscription}
+
+Not every process is stochastic (it might very well be chaotic) -- take EEG for instance.
+Statistical methods are used since there is ``no phenomenological model of the data generation mechanism''.
+
+If probabilistic properties of a stochastic process are unknown a priori, then detecting change points is extremely difficult.
+
+Well may be there is some intrinsic property of the data itself, which is devoid of effect of its generation mechanism? IT would be also great if it could be useful in segmentation problems.
+
+The main claim is that $\epsilon$-complexity of continuous function is the mechanism-invariant (model-free) characteristic
+
+Suppose time series is a projection of some continuous function onto a discrete (uniform of non-uniform) grid.
+
+Kolmogorov's genral idea:
+``A complex object requires a lot more information than a simple one.''
+The complexity is measured by the minimum length of description of an object.
+
+Let $x()$ be a continuous function on the unit cube $\clo{0,1}^k$.
+Suppose, there is a uniform grid $\mathbb{Z}_n$ inside the cube and the function $x$ is know only at the grid knots.
+
+
+%% 4 mathematically dense slides
+
+Choosing different description language $\Fcal$, yields different approximation errors.
+
+Small perturbations of a function may shift the function from being $\epsilon$-trivial to being non-trivial.
+
+
+Discrete argument functions.
+Consider the projection of a continuous functions onto some grid with uniform spacing.
+
+$N^k$ is the number of values of the function.
+
+Choose $S\in \brac{0,1}$ and discard $(1-S)N^k$ points...
+
+
+
+
+Construct a completely model-free methodology.
+
+Suppose we have some time series $X = \brac{x(t)}_{t=1}^N$ with unknown MMGM .
+
+% section presentation (end)
+
+\end{document}
