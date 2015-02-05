@@ -1,6 +1,7 @@
 import numpy as np
 import numpy.random as rnd
 from numpy.fft import fft
+from numpy.fft import rfft
 
 ## Genration of the fractional Gaussian noise with theh circulant matrix method
 ##  of Dietrich, Newsam 1997.
@@ -27,14 +28,19 @@ def synthgausscircul( N, H, variance = 1.0, seed = None ) :
 	L = variance * ( np.abs( n - 1 ) ** (2 * H) + np.abs( n + 1 ) ** (2 * H) - 2 * np.abs( n ) ** (2 * H) ) / 2 ;
 ## Compute the convolution of the circulant row (of autocorrelations) with
 ##  some gaussian white noise
-	L = np.real( fft( np.append( L, L[1:-1][::-1] ) ) )
+	# L = np.sqrt( np.real( fft( np.append( L, L[1:-1][::-1] ) ) ) / ( 2 * N - 2 ) )
+	Z = np.sqrt( np.real( rfft( np.append( L, L[::-1][1:-1] ) ) ) / ( 2 * N - 2 ) )
+## Collect the frequencies of the specialized FFT so that it mathces
+##  the output of the complex FFT. real FFT returns (2*N-2)/2+1 = N
+##  coefficients, thereby suggesting the concatenation F, F[1:-1][::-1] * w[N:]
+	Z = np.append( Z, Z[::-1][1:-1] )
 # %% ATTENTION: ne pas utiliser ifft, qui utilise une normalisation differente
 ## F \times {(\tfrac{1}{2M}\Lambda)}^\tfrac{1}{2} \times w (see p.~1091)
-	z = fft( np.sqrt( L / ( 2 * N - 2 ) ) * w )
+	Z = fft( Z * w )
 ## Dietrich, Newsam 1997: In our case the real and imaginary parts of any N
 ##  consequtive entries yield two independent realizations of \mathcal{N}_N(0,R)
 ##  where $R$ is the autocorrelation structure of an fBM
-	return ( np.real( z[ :N ] ), np.imag( z[ :N ] ) )
+	return ( np.real( Z[ :N ] ), np.imag( Z[ :N ] ) )
 
 ## Fractional Brownian motion synthesis
 ## B(t) is synthetized for t in [0,tmax] and variance (of white gaussian noise) 
@@ -48,7 +54,6 @@ def synthfbmcircul( N, H, sigma2 = 1.0, tmax = 1.0, seed = None ) :
 	return ( np.append( 0, np.cumsum( u[ :N-1 ] ) ), np.append( 0, np.cumsum( v[ :N-1 ] ) ) )
 
 import matplotlib.pyplot as plt
-u, v = synthgausscircul( 2**20 + 1, .85 )
 u, v = synthfbmcircul( 2**20 + 1, .85 )
 plt.plot(u, "r-", linewidth = 2 )
 plt.plot(v, "b-", linewidth = 2 )
