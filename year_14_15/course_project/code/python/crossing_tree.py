@@ -85,7 +85,7 @@ def xtree_super_crossing( T, P, band_width ) :
 	while next_hit < len( P ) :
 ## Find the first time, when the crossing left the ±2 band. This logic
 ##  critically depends on the assumption that the grid levels are
-##  crossed in succession.
+##  crossed in succession. # Caching the last hit does not help.
 		if abs( P[ last_hit ] - P[ next_hit ] ) >= band_width :
 ## The series of hits between "last_hit" and "next_hit" are
 ##  the crossings to be aggregated into a super-crossing.
