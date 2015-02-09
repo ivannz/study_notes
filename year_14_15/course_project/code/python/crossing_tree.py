@@ -75,7 +75,7 @@ def xtree_integer_crossings( T, X ) :
 	return ( np.array( lht, np.float ), np.array( lhp, np.int ), np.array( [ ], np.int ) )
 
 ## Using the crossing data construct the associated super-crossings
-def xtree_super_crossing( T, P, band_width, keep_incomplete = False ) :
+def xtree_super_crossing( T, P, band_width ) :
 ## By construction, the first crossing is always the zero-th.
 	last_hit = 0 ; next_hit = 1
 	lht = list( ) ; lhp = list( ) ; subx = list( )
@@ -87,23 +87,17 @@ def xtree_super_crossing( T, P, band_width, keep_incomplete = False ) :
 ##  critically depends on the assumption that the grid levels are
 ##  crossed in succession.
 		if abs( P[ last_hit ] - P[ next_hit ] ) >= band_width :
-## If we encountered a super-crossing while within the array,
-##  commit it to our queue.
-			if next_hit < len( P ) :
 ## The series of hits between "last_hit" and "next_hit" are
 ##  the crossings to be aggregated into a super-crossing.
-				lhp.append( P[ next_hit ] )
-				lht.append( T[ next_hit ] )
-			else :
-## Meanwhile count the number of excursions (children in the
-##  crossing tree). Remember, that we might loose a subcrossing
+## If we encountered a super-crossing while within the array,
+##  commit it to our queue. Note that we do not loose a "crossing"
 ##  if we just leave this loop on overshooting the length of
-##  the array. However the last crossing is almost certainly
-##  going to be an incomplete one.
-				next_hit = len( P )
-				if not keep_incomplete :
-					break
-## Add the number of crossings of this super-crossing.
+##  the array. This is because in this case the last crossing
+##  is an incomplete one, and a complete one, with the last within
+##  the array, will have been caught.
+			lhp.append( P[ next_hit ] )
+			lht.append( T[ next_hit ] )
+## Count the number of excursions (children in the crossing tree).
 			subx.append( next_hit - last_hit )
 ## Start a new super-crossing
 			last_hit = next_hit
@@ -125,17 +119,16 @@ def xtree_build( T, X, delta = None, max_height = float( 'inf' ) ) :
 	Z = ( X - X[ 0 ] ) / delta
 ## First compute the crossing times and points of the finest
 ##  integer grid
-	# print "Computing base grid crossings\n"
-	height = 1 ; lht, lhp, lhx = xtree_integer_crossings( T, Z )
+	lht, lhp, lhx = xtree_integer_crossings( T, Z )
 ## Add the times and property translated point to the master queue
 	hp.append( lhp * delta + X[ 0 ] )
 	ht.append( lht )
 	hx.append( lhx )
 ## If the height restriction permits and the crossings did occur
 ##  iteratively construct crossings of increasingly coarser grids.
+	height = 1
 	while len( lhp ) > 1 and height < 2**max_height:
 		height *= 2
-		# print "Computing %d super-crossings\n" % height
 		lht, lhp, lhx = xtree_super_crossing( lht, lhp, height )
 		hp.append( lhp * delta + X[ 0 ] )
 		ht.append( lht )
