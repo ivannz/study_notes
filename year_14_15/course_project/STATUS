@@ -7,7 +7,7 @@ ToDo (2014-12-01) :
 -		• Estimation of the multifractal spectrum using the crossing tree, 2013 [Decrouez, Amblard, Jones]
 
 ToDo (2014-12-20) :
--	1. Study the matlab code provided by Geoffrey
++	1. Study the matlab code provided by Geoffrey
 -	2. Enhance knowledge in SSSI processes
 -	3. Study thorem 1 in Jones, Rolls (2011)
 -	4. Papers to read and summarize :
@@ -19,11 +19,16 @@ ToDo
 	- Check: conjectures about the offspring distribution and its relation to the Hurst exponent. Do simulations for the HSSSI (Hermite and Weierstrass processes):
 	--  Check the independence assumptions
 	--	P(z=2i) is geometric with p = 2^(1-1/H)
-	--	P(du|+) = P(ud|-) = 1/sqrt(\mu)
+	--	P(-+|u) = P(+-|d) = 1/sqrt(\mu), where \mu is the expectation of the geometric rv
 
 
-Letar:
+Later:
 	- Orginal Owen's: redo the testing in the paper the using bootstrap statistics for one signal. Build trees using shifted lattices.
 
 	- Pool all the Zs and check whether or not their distribution equals the conjectured
 
+ToDo for (2015-02-12):
+	-- Finalize the code and do a final check;
+	--	P(z=2i) is geometric with p = 2^(1-1/H)
+	--	P(-+|u) = P(+-|d) = 1/sqrt(\mu), where \mu is the expectation of the geometric rv
+	-- Since we try to estimate the the marginal offspring distribution, don't wast too much time in trying to test serial independence.

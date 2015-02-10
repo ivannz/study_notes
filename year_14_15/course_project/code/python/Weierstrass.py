@@ -25,7 +25,7 @@ def synthweier( N, H, nu0, nue, deterministic = False, seed = None ) :
 	if not deterministic :
 		if seed is not None : rnd.seed( seed )
 		phi = 2 * np.pi * rnd.uniform( size = 2 * nmax + 1 )
-## Construc the Weierstrass process
+## Construct the Weierstrass process
 	for i in xrange( - nmax, nmax + 1 ) :
 		x += nu0 ** ( - i * H ) * ( np.cos( phi[ i + nmax ] ) -
 			np.cos( phi[ i + nmax ] + 2 * np.pi * ( nu0 ** i ) * t ) )

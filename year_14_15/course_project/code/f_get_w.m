@@ -5,7 +5,7 @@ function [w, subx, hit_point, hit_time] = f_get_w( x, t, levels, delta, deleteFi
 % x: signal to be analysed
 % t: time ( mandatory )
 % levels: for each level in levels crossings will be calculated at scale delta * 2^level
-% delta: if not 0 then is used as base scale, o/w use stddev( diff( x ) )
+% delta: the base scale
 % deleteFirst: if 1 then delete first crossing at each level
 % 
 % w: crossing duration ( cell structure, size of the number of levels )
@@ -20,11 +20,11 @@ function [w, subx, hit_point, hit_time] = f_get_w( x, t, levels, delta, deleteFi
 
 % hitting times and points
 lx = length( x );   
-if delta == 0
-%% why is std( diff ) better than min( abs( diff ) )
-    % delta = std( diff( x ) );
-    delta = min( abs( diff ) ) * 2 ;
-end
+%% if delta == 0
+%% %% why is std( diff( x ) ) better than min( abs( diff( x ) ) )
+%%     % delta = std( diff( x ) );
+%%     delta = min( abs( diff( x ) ) ) * 2 ;
+%% end
 %% Define lists of consequitive hitting times and levels
 hit_point = cell( length( levels ), 1 );
 hit_time = cell( length( levels ), 1 );
