@@ -178,7 +178,7 @@ It is a fast but a rather crude way of estimating.
 \section{Lecture \# 3} % (fold)
 \label{sec:lecture_3}
 
-Grpah models
+Graph models
 
 Erd\"os-Rnyi model
 
@@ -270,7 +270,253 @@ Non-zero clustering coefficient hint at non-random processes underlying the edge
 \section{Lecture \# 4} % (fold)
 \label{sec:lecture_4}
 
+Dynamical grove (?) model.
+
+Small Worlds model [Watts and Strogatz; 1998]
+
+Previously considered networks were static fixed number of vertices and edges.
+
+Let's have look at evolving graphs.
+Growing networks (evovling with time)
+\begin{itemize}
+	\item Citation networks;
+	\item Collaboration networks;
+	\item Web;
+	\item Social networks.
+\end{itemize}
+
+Consider pure growth model of an network (random growing network)
+\begin{itemize}
+	\item $t=0$ there are $n_t$ unconnected nodes;
+	\item growth . on every time step $t\geq 1$ add a node with $m\leq n_0$ edges $k_t(t) = m$ attached randomly to the existing nodes;
+	\item from $m$ edges between (?) existing nodes uniformly at random \[\Pi(k_i) = \frac{1}{n_0+t-1}\] (? probability of an edge getting connected to some existing node)
+\end{itemize}
+
+The expected degree of any node $i$ (the time the node was introduced):
+\[k_i(t) = m + \sum_{k=0}^k\frac{m}{n_0+i-1 + k}\]
+
+for $t>>n_0$
+\[k_i(t) \aaprox m \brac{1 + \log\frac{t}{i}}\]
+
+The longer the node has been in the system, the more degree it has: ``the first move-in advantage''.
+
+If interpreted as a function of the time of join $i$ for a fixed $t$ (a snapshot), then it can show that a node the more recent nodes have lesser chances of having a high degree.
+
+
+Find the nodes that at time $t$ have degree less than $k$: $\obj{\induc{i}\,k_i(t) < k}$
+
+\[k_i(t) = m\brac{1+\log\frac{t}{i}}<k\,\implies\, i . t e^\frac{m-k}{m}\]
+
+Fraction of nodes with degrees $k_i(t)<k$:
+\[F(k) = \Pr\brac{k_i(t)<k} = \frac{n_0+t-i}{n_0+1} \approx 1 - e^\frac{m-k}{m}\]
+Thus the degree distribution is approximately exponential.
+
+
+Another way of getting at the same result: use continuous approximation!
+
+Since $\Pi(k_i) = \frac{1}{n_0+t-i} \approx \frac{1}{t}$, the following must be true:
+\[k_i(t+\delta t) = k_i(t) - \frac{m}{t}\delta t\]
+whence the following first order differential equation emerges:
+\[\frac{d}{dt}k_i(t) = \frac{m}{t}\]
+with initial conditions $k_i(t=i) = m$.
+the solution id $k_i(t) = m\brac{1+\log\frac{t}{i}}$.
+
+% [Barabasi and Albert; 1999]
+\begin{description}
+	\item[$t=0$] there are $n_0$ nodes;
+	\item[growth] on ever step add a node with $m$ edges ($m\leq n_0$), $k_i(i)=m$;
+	\item[Preferential attachment] probability of linking it to an existing node $i$ is proportional to the node degree $k_i$
+	\[Pi(k_i) = \frac{k_i}{\sum_j k_j}\]
+\end{description}
+
+Preferential attachment represents the heuristic rule that ``similar attract''.
+
+\[k_i(t+\delta t) = k_i(t) + m \Pi(k_i)\delta t\]
+\[\frac{d}{dt}k_i(t) = m \Pi(k_i) = m \frac{m k_i}{2 m t}\]
+which has the solution: time evolution of a node $i$ degree
+\[k_i(t) = m\brac{\frac{t}{i}}^\tfrac{1}{2}\]
+
+Nodes with degree less than $k$: $\frac{m^2}{k^2} t<i$
+
+The power law emerges:
+\[F(k) = \Pr\brac{k_i(t)<k} = \frac{n_0+t-i}{n_0+1} \approx \frac{n_0+t-\frac{m^2}{k^2} t}{n_0+1} \approx 1 - \frac{m^2}{k^2} t\]
+
+
+Barabasi model has heavier tails than the random graph: indeed it is obvious from the exponent versus hyperbola comparison.
+
+Had such model been a reality there would be extremely many poor, and a few extremely rich, who get richer with time.
+
+The average path length (analytical result):
+\[\brkt{L}\approx \frac{\log N}{\log\log N}\]
+
+Clustering coefficient (simulation result):
+\[C\approx n^{-\frac{3}{4}}\]
+$C$ is infinitesimal as $N\to \infty$.
+
+Barabasi (1999) preferential attachment model has been rediscovered multiple times:
+\begin{itemize}
+	\item Yule process 1925;
+	\item Polya's urn model;
+	\item Herbert simon;
+	\item Evolution of citation networks, cumulative advantage model; Derek de Solla Price, 1976;
+\end{itemize}
+
+\subsection{The small world model} % (fold)
+\label{sub:the_small_world_model}
+
+Devised by Watts and Strogatz in 1998.
+
+Image a two-tier ring graph, with structural triangles.
+
+% subsection the_small_world_model (end)
+The motivation of the small world model: keep high clustering, get small diameter (the greatest distance between any two nodes).
+
+Evolution is to construct shortcuts so as to decrease the average path length.
+
+Strogatz proposed to re-wire the graph: pick any edge, sever it, and wire it elsewhere.
+
+start with regular lattice with $n$ nodes, $k$ edges per vertex $k<<n$.
+randomly connect with 
+
+Small world region:
+\begin{itemize}
+	\item high clustering coefficient;
+	\item small average path length.
+\end{itemize}
 
 % section lecture_4 (end)
+
+\section{Lecture \# 5} % (fold)
+\label{sec:lecture_5}
+
+Centrality measures of graphs
+
+Which vertices in the network are important?
+
+Is it possible to order the nodes in the network, so that the first node is the mos important, and the last is the least important.
+
+What is meant by importance?
+
+let's have a look at graph theoretic understanding of the centrality.
+
+\noindent\textbf{Definition}\hfill\\
+THe \textbf{eccentricity} of vertex $u\in V$ is the maximum distance between the vertex $u\in V$ and any other $v\in V$ in the graph $G$ 
+\[\text{ecc}(u) \defn \max_{v\in V}\induc{d}_G(u,v)\]
+
+The diameter is really the largest eccentricity: the larges possible distance between any two nodes in a graph.
+\[\text{diam}(G)\defn \max_{u\in V} \text{ecc}(u)\]
+
+The radius of a graph is the minimum eccentricity
+\[\text{rad}(G)\defn \min_{u\in V} \text{ecc}(u)\]
+
+The \textbf{central point} of a graph $G$ is a vertex, with eccentricity equal to the radius of $G$:
+\[\text{diam}(G)\defn \max_{u\in V} \text{ecc}(u)\]
+
+A graph \textbf{centre} is the set of all central nodes of $G$. The \textbf{periphery} of $G$ is the set of nodes with eccentricities equal to the diameter of $G$.
+
+The just defined notions are not robust with respect to ``small'' changes to the graph: the may undergo extreme changes when the graph is perturbed. But what change is ``small'' for a given graph? (adding a chain may actually change the topology quite significantly)
+
+
+Periphery is a graph is used in the sense other than graph theoretic (may be with respect to the vertex degree distribution).
+
+The notion of vertex importance (from Sociology): the location of the node in a social graph is correlated with the influence of that vertex in the network (the ``ties'').
+
+Notions of centrality usually deal with undirected graphs, corresponding to symmetric relations. Well what about prestige network relations?
+
+
+The degree centrality is just the number of nearest neighbours for a graph incidence matrix $A$:
+\[C_D(u) = \detla_u = \sum_{v\in V} A_{uv}\]
+
+Normalized graph centrality, defined as $C_D^*(u) \defn \frac{C_D(u)}{\abs{V}-1}$, is useful for comparison between graphs, not just within one graphs.
+
+High centrality means direct contact with many other nodes. Low centrality degree -- an in active vertex, a peripheral vertex.
+
+Calculate how close the node is to any other vertex in the system. This gives us the closeness centrality metric
+\[C_C(u) \defn \frac{1}{\sum_{v\in V} d(u,v)}\]
+It can be normalise by $\tfrac{}{\abs{V}-1}$.
+
+Nodes in the centre can quickly interact with all others, have short communication path to others, and minimal number of steps to reach others.
+
+There are problems for disconnected graphs, where infinite distances emerge. In theses cases use the harmonic centrality
+\[C_H(u)\defn \brac{\sum_{v\in V} \frac{1}{d(u,v)}}^{-1}\]
+
+The most interesting definition of centrality is betweenness centrality.
+
+Consider the network as a set of interconnected communication hub. The most important nodes are those, which are indispensable for proper network operation. 
+
+Consider a graph $G = \brac{V,E}$.
+The betweenness centrality measure of $G$ is defined as follows:
+\[C_B(u) = \sum_{s\neg t\neq u}\frac{\sigma_{st}(u)}{\sigma_{st}}\] 
+
+The normalised version of betweenness is just scaled by
+\[\frac{2}{(n-1)(n-2)}\]
+
+It is possible to extend the betweenness centrality to edges.
+
+Probability that a communication from $s$ to $t$ will go through $u$ (geodesics) is given by $\frac{\sigma_{st}(u)}{\sigma_{st}}$.
+
+Usage of these measures greatly depends on what is understood by ``cnetrality''.
+
+\subsection{Eigenvector centrality} % (fold)
+\label{sub:eigenvector_centrality}
+
+Consider a recursive definition of centrality: An important nodes have important neighbours and connections.
+
+Let $\brac{I^{t+1}_u}_{u\in V}$ be the importance vector at some iteration $t\geq1$, with components corresponding to each node. Then define the importance as the limit of the following process
+\begin{align*}
+	\sum_{j\in V} A_{ij} I^t_j \to I^{t+1}_i \\
+	\frac{1}{\lambda}\sum_{j\in V} A_{ij} I_j = I_i \\
+\end{align*}
+
+Thus if the iteration converge, then they converge to an eigenvector of the adjacency matrix.
+
+A node with large centrality will be connected with nodes of large centrality. Thus highly important nodes are likely to have highly important neighbours.
+
+It is a kind of \emph{self-reinforced centrality}.
+
+% subsection eigenvector_centrality (end)
+
+\subsection{Katz centrality} % (fold)
+\label{sub:katz_centrality}
+
+Weighted count of the path coming to the node (Katz; 1953). The weight of a path of length $n$ is counted with attenuation factor $\beta^n$.
+\begin{align*}
+	k_u &= \sum_{v\in V} \brac{E_{uv} + \beta A_{uv} + \beta^2 A_{uv} + \ldots}\\
+	k = \brac{\sum_{k\geq0} \beta^k A^k} \mathbf{1} \\
+	k = \brac{E - \beta A}^{-1} \mathbf{1} \\
+	\brac{E - \beta A} k = \mathbf{1} 
+\end{align*}
+
+The parameter $\beta$ controls the measure, if it is $1$ then Katz centrality reduces to the ... NO IT DOES NOT!
+
+Two-parametric centrality measure
+
+Let $\beta$ be the degree to which node's importance is a function of it's neighbours' importance, and $\alpha$ be a normalization parameter.
+\[c_u(\alpha,\beta) \defn \sum_{v\in V}\brac{\alpha+\beta c_v} A_{uv}\]
+In the matrix form:$c = \alpha A\mathbf{1} + A\mathbf{1} c$.
+
+% subsection katz_centrality (end)
+
+\textbf{Centralization} of the whole network is measure of how ``cnetral'' is the most central node in relation to all other vertices.
+
+%% Slide p.~18
+\[C_x(G) \defn \frac{\sum_{v\in V} C_x(\bar{u}_G) - C_x(v) }{\max_H \sum_{v\in V} C_x(\bar{u}_H) - C_x(v)}\]
+where $C_x$ is any vertex centrality measure and $\bar{p}_G$ is the central node of the graph $G$. The maximum is take over the graph of the same order as $G$.
+
+Prestige is a measure of centrality of directed graphs.
+Degree prestige $\delta_{\text{in}}(u)$ is the vertex in-degree.
+
+The main contribution of the Page Rank algorithm is in how to deal with ``directedness'' of the graph.
+
+It is insightful to compare the centrality measures between each other and see how they are correlated.
+\begin{itemize}
+	\item Pearson's correlation measures strength of linear association;
+	\item Spearman's rank correlation -- strength of monotone relationship;
+	\item Kendall $\tau$, count the number of pairwise agreements and disagreements between a pair of ranked data series. 
+	\[2\frac{n_c - n_d}{n(n-1)}\]
+	$n_c$ is the number of concordant pairs, and $n_d$ -- discordant pairs (agreements $\tau=1$, disagreements $\tau=-1$).
+\end{itemize}
+
+% section lecture_5 (end)
 
 \end{document}
