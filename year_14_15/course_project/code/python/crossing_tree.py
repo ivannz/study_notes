@@ -20,7 +20,6 @@ import numpy as np
 #
 #  [w, subx, hit_point, hit_time] = f_get_w( fname, levels, delta, deleteFirst )
 
-
 ## Compute the crossings of the grid spawned by integers by a process X_T.
 def xtree_integer_crossings( T, X ) :
 ## Assume the process starts at zero, and that its first
@@ -31,14 +30,14 @@ def xtree_integer_crossings( T, X ) :
 ##  in separate arrays to minimize the overhead.
 	X_floor = np.floor( X, np.empty_like( X, np.int ) )
 	for t in xrange( len( X ) - 1 ) :
-		if X[ t ] < X[ t + 1 ] : 	## Upcrossing
+		if X[ t ] < X[ t + 1 ] : 	# # Upcrossing
 ## If it was an upcrossing find the smallest integer, larger
 ##  than the starting point, and the largest integer, smaller
 ##  than the final point.
 			direction = 1
 			level0 = X_floor[ t ] + 1 		# np.ceil( X[ t ] )
 			level1 = X_floor[ t + 1 ] 		# np.floor( X[ t + 1 ] )
-		elif X[ t ] > X[ t + 1 ] :	## Downcrossing
+		elif X[ t ] > X[ t + 1 ] :	# # Downcrossing
 ## For a downcrossing find the closest integer less than
 ##  the origin, and the least integer, greater than the
 ##  final point.
@@ -119,7 +118,7 @@ def xtree_build( T, X, delta = None, max_height = float( 'inf' ) ) :
 	Z = ( X - X[ 0 ] ) / delta
 ## First compute the crossing times and points of the finest
 ##  integer grid
-	lht, lhp, lhx = xtree_integer_crossings( T, Z )
+	lht, lhp, lhx = xtree_integer_crossings_fast( T, Z )
 ## Add the times and property translated point to the master queue
 	hp.append( lhp * delta + X[ 0 ] )
 	ht.append( lht )
@@ -134,3 +133,56 @@ def xtree_build( T, X, delta = None, max_height = float( 'inf' ) ) :
 		ht.append( lht )
 		hx.append( lhx )
 	return ( ht, hp, hx )
+
+def xtree_integer_crossings_fast( T, X ) :
+## Assume the process starts at zero, and that its first crossing is at
+##  the zero-th line of the grid.
+	last_hit = 0
+	lht = list([ 0.0 ]) ; lhp = list([ last_hit ])
+## Compute the crossing directions
+	X_delta = np.diff( X )
+	cross_d = np.sign( X_delta, np.empty_like( X_delta, np.int ) )
+## Preemptively round the process values down to minimize the overhead.
+	X_floor = np.floor( X, np.empty_like( X, np.int ) )
+## If it was an upcrossing find the smallest integer, larger than the starting
+##  point, and the largest integer, smaller than the final point. For a
+##  downcrossing find the closest integer less than the origin, and the least
+##  integer, greater than the final point.
+## X_t is rounded either up or down depending on the direction of the crossing
+##  it starts: upcrossing -- ceiling, downcrossing -- floor.
+	X_begin = X_floor[:-1] + ( 1 + cross_d ) // 2
+## X_{t+1} is rounded down if the crossing it finishes if upward, and is
+##  rounded up if the crossing is down, i.e in the direction opposite to the
+##  crossing. However due to the nature of xrange() it is also necessary
+##  to adjust the final grid level in the direction of the crossing.
+	X_final = X_floor[1: ] + ( 1 - cross_d ) // 2 + cross_d
+	# X_final = X_floor[1: ] + ( 1 + cross_d ) // 2
+## It is possible to regard hitting times as a collection of successive
+##  stopping times until the first leave of the current grid band:
+##    T^n_{k+1} \defn \inf\{ t > T^n_k\,: \, \abs{ X_t - X_{T^n_k} } \geq \delta 2^{-n} \}
+##  where T^n_0 = 0.
+	for t in xrange( len( X ) - 1 ) :
+		if cross_d[ t ] == 0 : continue
+## Usually X_begin and X_final are ordered or reversed with respec to the
+##  crossing direction, but if the process didn't move enough to cross a grid
+##  line, i.e. that is the endpoints are between two levels but within one
+##  band, then these integers would be inverted, when corrected for the
+##  direction.
+		for level in xrange( X_begin[ t ], X_final[ t ], cross_d[ t ] ) :
+## Either level0 equals the last_hit or no grid line between X_begin and
+##  X_final does. 
+			if level == last_hit :
+## It is not a crossing if the process returned to the level of the previous
+##  crossing.
+				continue
+## Due to discretized nature of the process the hitting times are
+##  approximated with linear interpolation. The speed is not improved
+##  by precalculating the coefficients of the linear interpolation.
+			lht.append( T[ t ] + ( T[ t + 1 ] - T[ t ] ) * ( ( level - X[ t ] ) / X_delta[ t ] ) )
+## Record the crossed grids: a continuous process during an upcrossing
+##  will have almost surely visited all the intermediate grid lines.
+			lhp.append( level )
+## The last hit is always the last grid line to have been crossed
+			last_hit = level
+## Return the crossing times and grid lines
+	return ( np.array( lht, np.float ), np.array( lhp, np.int ), np.array( [ ], np.int ) )
