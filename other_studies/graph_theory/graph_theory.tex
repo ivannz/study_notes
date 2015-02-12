@@ -17,6 +17,7 @@
 \newcommand{\nrm}[1]{{\left\| #1 \right \|}}
 \newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
 \newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+\newcommand{\ceil}[1]{{\left\lceil #1 \right\rceil}}
 
 \newcommand{\Real}{\mathbb{R}}
 \newcommand{\Cplx}{\mathbb{C}}
@@ -101,9 +102,9 @@ For any $v\in V$ the set of neighbours of $v$ is defined as
 For any $v\in V$ the \textbf{degree} of $v$, $d(v)$, is defined as
 \[d(v) \defn \abs{\obj{\induc{ e\in E }\, v\in e }}\]
 The minimum degree is $\delta(G)\defn \min_{v\in V} d(v)$ and the maximum -- $\Delta(G) \defn \max_{v\in V} d(v)$.
-The \textbf{average} degree of $G$ is defined as \[d(G) \defn \frac{1}{\abs{V}} \sum_{v\in V d(v)}\] and obviously $\delta(G)\leq d(G)\leq \Delta(G)$.
+The \textbf{average} degree of $G$ is defined as \[d(G) \defn \frac{1}{\abs{V}} \sum_{v\in V} d(v)\] and obviously $\delta(G)\leq d(G)\leq \Delta(G)$.
 
-The value $d(G)$ average degree measures globally what the vertex degree quantifies locally.
+The value $d(G)$, the average degree, measures globally what the vertex degree quantifies locally.
 The ratio $\epsilon(G) \defn \sfrac{\abs{E}}{\abs{V}}$ is the average number of edges per vertex.
 By definition there must be the following relation: $\epsilon(G) = \frac{1}{2} d(G)$.
 
@@ -127,6 +128,70 @@ implies that $\sum_{v\in V'} d(v)$, a sum of odd numbers, must be an even number
 
 
 % section chapter_1 (end)
+
+%% diestel2006, p.~25
+A \textbf{tree} is a connected acyclic graph, whereas dropping the
+connectedness requirement yields a \textbf{forest}.
+
+The following are equivalent:
+\begin{itemize}
+	\item A graph $T$ is a tree;
+	\item The graph $T$ is minimally connected: dropping any edge from $T$ produces a disconnected graph, though $T$ is connected;
+	\item Every pair of vertices in $T$ is joined by unique path within $T$;
+	\item Tree $T$ is maximally acyclic: $T$ is acyclic, but linking any pair of non-adjacent nodes by an edge generates a cycle.
+\end{itemize}
+
+For any $u,v\in T$ the unique path joining them is denoted by $xTy$.
+
+The connectedness minimality of a tree actually implies that every
+connected graph contains a \textbf{spanning tree} -- a tree $T$ such
+that it contains all vertices of $G$.
+Indeed removing edges one-by-one from $G$ would yield a graph $G'$
+such that removing an extra edge yields a disconnected graph.
+This means that $G'$ is a tree.
+
+The vertices of a tree can be enumerated in such a way
+$\brac{v_i}_{i=1}^n$ that for every $k\geq 1$ the node $v_k$ has
+a unique neighbour among $\brac{v_i}_{i=1}^{k-1}$.
+
+A connected graph with $n$ vertices is a tree if and only if it has
+$n-1$ edges.
+
+A tree $T$ is a \textbf{rooted} tree if there is a distinguished
+root vertex $r$.
+Since every pair of vertices in a tree are connected by a unique
+path, it is possible to define a partial order relation on the nodes
+of $T$ as follows: $x\leq y$ whenever $x\in xTr$.
+This is a so called \textbf{tree-order}.
+\begin{description}
+	\item[Reflexivity] \hfill \\
+		For any $x\in T$ it is obviously true that $x$ lies on a
+		path from $r$ to $x$ in $T$;
+	\item[Asymmetry] \hfill \\
+		If $x,y\in T$ are such that $x\leq y$ and $y\leq x$, then
+		$x\in yTr$, meaning that $xTr\subseteq yTr$, and $y\in xTr$, 
+		which in turn implies that $yTr\subseteq xTr$;
+	\item[Transitivity] \hfill \\
+		If $x\leq y$ and $y\leq z$ in $T$, then $y\in zTr$ and
+		$x\in yTr$. Since path are unique, $yTr\subseteq zTr$ and
+		$x\in yTr$ implies that $xTr$. Therefore it must be true
+		that $x\in zTr$.
+\end{description}
+
+A rooted tree $T$ which is a subgraph of some $G=(V,E)$ is normal if 
+the ends of every edge $(u,v)$ of $G$ are comparable in the tree-
+order of $T$ whenever $u,v\in T$.
+
+The \textbf{down-closure} of a node $y$ is defined as
+\[\ceil{y} \defn \obj{\induc{w\in T}\, w\leq y}\]
+For any $u,v\in \ceil{y}$ it is true that $u,v\in yTr$. Since $u$
+and $v$ lie on the same path it path uniqueness implies that either
+$u\leq v$ or $v\leq u$. Therefore the down-closure is a complete
+poset -- a \textbf{chain}.
+
+
+
+
 
 \bibliographystyle{plain}
 \bibliography{references}
