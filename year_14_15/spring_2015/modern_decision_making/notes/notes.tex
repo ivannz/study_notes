@@ -546,8 +546,386 @@ Take a matrix of predictors $X$, its standardized version \[X^\sigma \defn \frac
 and \[X^c \defn \frac{X-m}{\sigma}\]
 
 
-
-
 % section lecture_3 (end)
+
+\section{Lecture \# 4} % (fold)
+\label{sec:lecture_4}
+Departing from the linearity of the Linear regression.
+
+Transform $\brac{f_m}_{m=1}^M:\Real^p \to \Real$ since there are initially $P$ predictors.
+Sample space is augmented and now has $M$ predictors. The regression function now becomes:
+\[f(X) = \sum_{m=1}^M \theta_m f_m(x)\]
+
+This model generalises the original linear regressions since $f_m(x) = \pi_m(x)$ 
+
+Polynomial regression problem what happens in the tails. It is no t very trustworthy in near the endpoints.
+In this respect Polynomial regression is no a good idea -- use local regression by partitioning the range into regions with different model in each area: $f_m(X) = 1_{\clo{l_m, u_m}}(x_k)$
+
+Piecewise polynomials and splines
+
+Suppose that $x$ is unidimensional -- only one feature.
+%%% The following really resembles the dummy variables in ecnometrics.
+
+Divide $x$ in several region with different thresholds(knots since they link the regions). To each region fit the constant.In order to cover the whole range of $x$ in this case one has to have three basis functions:
+
+$1_{\ploc{-\infty, \xi_1}}$, $1_{\ploc{\xi_1, \xi_2}}$ and $1_{\ploc{\xi_2, \infty}}$.
+
+Consider linear function of each region: fitting something piecewise linear. In this aces we nee 6 basis functions, since we don not only model the piecewise intercept but also the piecewise slope.
+
+Enforcing continuity at two knots than four basis functions are only needed.
+
+$h_1 = 1$ and $h_2 = x$ (no need for the indicator here, since it would introduce discontinuity), $h_3 = \brac{x-\xi_1}^+$ and $h_4 = \brac{x-\xi_2}^+$ -- fix their intercepts.
+
+Overlapping region are refined into a partition, which is then estimated and the test on linear constraints of coefficients on the estimated coefficients.
+
+To add smoothness at the knots, one has to impose continuity of the derivatives at the knots.
+
+Three regions and two knots, require continuity up to the second derivative at the first knot.
+The remaining degree of ``freedom'' at this knot is the convexity of the fitted line.
+The set of basis function is $h_1 = 1$, $h_2 = x$, $h_3 = x^2$, $h_4 = x^3$, $h_5 = \brac{\brac{x-\xi_1}^+}^3$ and $h_6 = \brac{\brac{x-\xi_2}^+}^3$.
+
+
+In general Splines are piecewise polynomial regression with smoothness at the binding knots:
+\begin{align*}
+	h_j(x) = x^{j-1}\quad i=1,\ldots, M\\
+	h_{m+k}(x) = \brac{\brac{x-\xi_i}^+}^M \quad k=1,\ldots,K
+\end{align*}
+
+One polynomial -- global and smooth.
+More polynomials with a local regression are not necessarily smooth.
+Splines are local and smooth!
+
+What to do with the endpoints?
+Problems with the values out the common region of $x$.
+
+Natural cubic splines: fit a linear model in the ends to achieve robustness and get more trustworthy prediction
+
+Order-4-spline (cubic spline) $\to$ 6 basis functions ($K+4$ functions).
+Natural cubic spline $\to$ 2 basis functions ($K$ basis functions):
+\[G(x) = \sum_{j=1}^K \theta_j N_j(x)\]
+where $\brac{N_j}_{j=1}^K$ is the set of basis functions for the natural cubic spline.
+
+Goal: show that it is enough to know the value of the NCS at $K$ knots to know it everywhere.
+
+$K$ -- the number of knots $\brac{\xi_k}_{k=1}^K$. Consider a regression problem on some interval $\clo{a,b}$ with $a<\xi_1\<\ldots<\xi_K<b$.
+
+Let $g$ be the NCS -- piecewise function, cubic in the main region, linear at the ends.
+Let $g_k = g(\xi_k)$ for all $k=1,\ldots K$.
+
+Since NCS is cubic, the second derivative must be linear in $x$ between any two consecutive knots.
+
+Let $\gamma_k=g''(\xi_k)$. Due to linearity at the ends $\gamma_K = \gamma_1 = 0$.
+
+$g''(x) - \alpha x + \beta$ since $g''$ is linear.
+...
+thus we get
+\begin{matrix}
+	\gamma_k = \alpha_k \xi_k + \beta_k \\
+	\gamma_{k+1} = \alpha_k \xi_{k+1} + \beta_k
+\end{matrix}
+
+
+g(x) = \frac{(x-\xi_k)g_{k+1} + (\xi_k-x)g_k}{\xi_{k+1}-\xi_k} - \frac{1}{6}(x-\xi_k)(\xi_{k+1}-x)
+g(x) = g_1 - (\xi_1-x)g'(\xi_1) & \text{if}\,x\leq \xi_1 \\
+g(x) = g_K - (x-\xi_K)g'(\xi_K) & \text{if}\,x\geq \xi_K \\
+
+
+There must be some relation between the coefficients since continuity across the knots is required.
+g'(x) = \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k}
+	-\frac{1}{6} \brac{ \frac{\gamma_{k+1}-\gamma_k}{\xi_{k+1}-\xi_k} (x-\xi_k)(\xi_{k+1}-x) }
+	+ \obj{
+		\brac{1+\frac{x-\xi_k}{\xi_{k+1}-\xi_k}}\gamma_{k+1}
+		+ \brac{1+\frac{\xi_{k+1}-x}{\xi_{k+1}-\xi_k}}\gamma_k
+	} \brac{\xi_{k+1} + \xi_k - 2 x}
+
+g'(\xi_k+) = \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} - \frac{1}{6} \brac{\xi_{k+1}-\xi_k}\brac{\gamma_{k+1}+2\gamam_k}
+g'(\xi_{k+1}-) =\frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} + \frac{1}{6} \brac{\xi_{k+1}-\xi_k}\brac{2\gamma_{k+1}+\gamam_k}
+% g'(\xi_k-) =\frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k}
+
+Smoothness condition: for $g$ to be an NCS $g'(\xi_k+)=g'(\xi_{k+1}-)$.
+
+Which yields:
+
+\[ \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} - \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k}\]
+
+
+All of the above in the matrix notation:
+\[\underset{(K-2)\times K}{Q}'\underset{K\times1}{g} = \underset{(K-2)\times(K-2)}{R}\underset{(K-2)\times1}{\gamma}\]
+
+the matrix $R$ is invertible whence its inverse exists.
+
+% the structure of $R$ and $Q$ is on the sheet.
+
+\noindent\textbf{Theorem}\hfill \\
+The vectors $g$ and $\gamma$ fully specify the NCS if and only if $Q'g = R'\gamma$.
+
+When this is satisfied, then 
+\[\int_a^b \abs{g''(s)}^2 ds = \gamma' R \gamma = g' Q R^{-1} R R^{-1} Q g = g' K g\]
+
+The nice observation is that this integral can be used as a penalty term in the regression problem.
+
+\begin{align*}
+	\int_a^b \abs{g''(s)}^2 ds &= \induc{\brac{g''(s)g'(s)}}_a^b - \int_a^b g'(s) g'''(s) ds \\
+% Since on $(a, \xi_1]$ and $[\xi_K, b)$ the function $g$ is linear.
+	&= - \int_{\xi_1}^{\xi_K} g'(s) g'''(s) ds = - \sum_{k=1}^{K-1} \int_{\xi_k}^{\xi_{k+1}} g'(s) g'''(s) ds\\
+% Due to piecewise linearity
+	&= - \sum_{k=1}^{K-1} \int_{\xi_k}^{\xi_{k+1}} g'(s) \frac{\gamma_{k+1}-\gamma_k}{\xi_{k+1}-\xi_k} ds\\
+%  But $g'''$ is constant over each interval
+	&= - \sum_{k=1}^{K-1} \frac{\gamma_{k+1}-\gamma_k}{\xi_{k+1}-\xi_k} \int_{\xi_k}^{\xi_{k+1}} g'(s) ds\\
+%  Since \int_{\xi_k}^{\xi_{k+1}} g'(s) ds = g(\xi_{k+1}) - g(\xi_k)
+	&= - \sum_{k=1}^{K-1} \frac{\gamma_{k+1}-\gamma_k}{\xi_{k+1}-\xi_k} \brac{\gamma_{k+1}-\gamma_k}\\
+	&= - \sum_{k=2}^{K-2} \brac{\frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} - \frac{g_k-g_{k-1}}{\xi_{k+1}-\xi_k}} \gamma_k \\
+	& = \gamma' Q' g = \gamma' R \gamma
+\end{align*}
+
+Putting things in other words:
+the NCS has the minimum value of the smoothness integral among all smooth curves interpolating the data.
+
+This means that formally we have the following:
+with at leas two knots and $g$ being the NCS interpolating $z_1,\ldots,z_K$ on knots $\xi_1,\ldots,\xi_K$ within a bounded interval.
+
+Then for any other interpolating function on the same mesh $\bar{g}$, the total variation of $\bar{g}''$ is necessarily grater than that of the NCS.
+
+
+The function $h \defn g - \bar{g}$ has root at the knots $\xi_k$
+Consider the difference of these integrals. 
+\begin{align*}
+	\int_a^b h'' g'' ds
+%% Integrate by part using the nice properties of g 
+	& = \brac{h'(s)g''(s)}_a^b - \int_a^b h'(s) g'''(s) ds \\
+%% since g''' is zero outside \clo{\xi_1, \xi_K} and g'' is zero at the endpoints of the interval \clo{a,b}
+	& = - \int_{\xi_1}^{\xi_K} h'(s) g'''(s) ds \\
+	& = - \sum_{k=1}^{K-1} \int_{\xi_k}^{\xi_{k+1}} h'(s) g'''(s) ds \\
+	& = - \sum_{k=1}^{K-1}  g'''(\xi_k+) \int_{\xi_k}^{\xi_{k+1}} h'(s) ds \\
+	& = - \sum_{k=1}^{K-1}  g'''(\xi_k+) \brac{h(\xi_{k+1})-h(\xi_k)} = 0
+\end{align*}
+
+
+\int_a^b \abs{\bar{g}''}^2 ds &= 
+\int_a^b \abs{g'' + h''}^2 ds = \int_a^b \abs{g''}^2 + \abs{h''}^2 ds + \int_a^b 2h''g'' ds= \int_a^b \abs{g''}^2 + \abs{h''}^2 ds \geq \int_a^b \abs{g''}^2 ds
+
+\begin{itemize}
+	\item the NCS on $\clo{a,b}$ is completely determined by the levels and derivatives at the interpolation knots;
+	\item The NCS brings the value of the $\int_a^b \abs{g''}ds$ to its minimum in the class of all smooth curves interpolating the data at the same knots;
+	\item The NCS with $K$ knots has $K$ basis functions.
+\end{itemize}
+
+
+Cubic spline with $K$ knots
+\[f(x) = \sum_{k=1}^3 \beta_k x^k + \sum_{k=1}^K \theta_k \brac{\brac{x-\xi_k}^+}^3\]
+
+% See the handwritten notes 
+
+
+\subsection{Smoothing spline} % (fold)
+\label{sub:smoothing_spline}
+
+The goal of fitting a smoothing spline is among all functions $g(x)$ with two continuous derivatives, to find the one that minimizes the following penalized sum of squares
+\[\RSS(g,\lambda) = \sum_{i=1}^n \brac{t_i - g(x_i)}^2 + \lambda \int \abs{g''(s)}^2 ds\]
+Trying to make $g$ fit the data s much as possible and yet penalizing if it varies too much. This is basically a problem of calculus of variations. The penalty term sums up all non-linearities in the function $g$ and is higher the more oscillations the $g$ has.
+
+$\lambda\to \infty$ then the optimal solution is linear $g$
+$\lambda = 0$ then the optimal solution is some ``wild'' function, matching all the points, with no structure known beforehand.
+
+
+This seems to be a problem of functional analysis.
+
+consider the function $g(\xi_k) = \bar{g}(\xi_k)$ for all $k$.
+Consider as $\bar{g}$ an NCS at knots given by $\brac{\xi_k}_{k=1}^K$.
+Since an NCS has the lest variation integral, the solution of the problem cannot be anything but the NCS.
+\[\int \abs{g''(s)}^2 ds\geq \int \abs{\bar{g}''(s)}^2 ds\]
+
+Thus the optimal solution to this infinite dimensional problem is a quite finite dimensional NCS.
+% Surprise
+Therefore the problem reduces to the following quadratic optimization problem:
+\[\RSS(g,\lambda) = {(t - g)}'{(t - g)} + \lambda g'K g \to \min_g\]
+\[\RSS(g,\lambda) = t't - g't - t'g + g'( I + \lambda K )g  \to \min_g\]
+using the matrix derivatives, the solution turns out to be
+\[\frac{\partial}{\partial g} \quad:\quad 2( I + \lambda K )g - 2 t = 0\]
+which reduces to
+\[\hat{g} = \brac{I + \lambda K}^{-1} t\]
+
+The matrix $\brac{I + \lambda K}^{-1}$ is called the \textbf{smoother matrix} $S_\lambda$.
+
+Where does the smoothing take place? 
+
+Define the effective degree freedom as, again, the trace of $S_\lambda$.
+\[\text{df}(\lambda_ = \tr\brac{S_\lambda}\]
+
+Use the SVD of $S_\lambda$ to extract the eigenvalues and eigenvectors.
+
+Since $K \defn Q R^{-1} Q'$, whence $K$ is symmetric. The unit matrix is symmetric, hence $S_\lambda$ is symmetric and its inverse is symmetric.
+% Thus it is an Hermitian matrix, whence the eigenvalues must be real.
+\[S_\lambda = \sum_{i=1}^n \lambda_i u_i u_i' = U\Lambda U'\]
+
+Since  $S_\lambda$ is positive-semidefinite, all eigenvalues are non-negative.
+
+\begin{itemize}
+	\item The eigenvalues of $K$ do not depend on the parameter $\lambda$;
+	\item Both $S_\lambda$ and $K$ have the same eigenvectors.
+\end{itemize}
+
+If $\eta$ -- the eigenvalues of $K$, then $\text{det}\brac{K-\eta I} = 0$.
+Thus \[\text{det}\brac{\frac{1}{\lambda}\brac{\brac{I+\lambda K} -(1 + \lambda \eta) I} } = 0\]
+
+Thus $1 + \lambda \eta$ are the eigenvalues of $\brac{I+\lambda K}$, and $\frac{1}{1 + \lambda \eta}$ is the eigenvalue of $S_\lambda$.
+Thus $\lambda_j = \frac{1}{1+\lambda \eta_{n-j+1}}$ is a decreasing function of $\lambda$.
+
+Consider a $u_j$ the eigenvector of $S_\lambda$ corresponding to $\lambda_j$.
+Then $S_\lambda u_j = \lambda_j u_j$ and
+\[u_j = \lambda_j \brac{S_\lambda}^{-1} u_j
+= \lambda_j \brac{I+\lambda K} u_j
+= \lambda_j u_j + \lambda_j \lambda K u_j\]
+Whence
+\[K u_j = \frac{1-\lambda_j}{\lambda \lambda_j} u_j = \eta_{n-j+1} u_j\]
+therefore the eigenvectors of $S_\lambda$ are the eigenvectors of $K$ (with other eigenvalues).
+
+
+Thus due to the spectral decomposition:
+\[g = S_\lambda t = \sum_{j=1}^n \lambda_j u_j u_j' t = \sum_{j=1}^n \lambda_j \brkt{u_j, t} u_j \]
+
+Since each eigenvector $u_j$ is independent of the $\lambda$, the projections on are invariant under $\lambda$. Therefore models are comparable.
+
+\[\sum_{j=1}^n \frac{1}{1+\lambda\eta_{n-j+1}} \brkt{u_j, t} u_j\]
+some smoothing take place
+
+The higher the $j$ the more smoothing take place:
+	the less principal component is, the more smoothed it is.
+
+\[g = \lambda_1\brkt{u_1, t} u_1 + \lambda_2\brkt{u_2, t} u_2 + \sum_{j=3}^n \lambda_j \brkt{u_j, t} u_j \]
+The nature of the matrix $K$ makes the first $\lambda_1$ and $\lamba_2$ equal to $1$.
+
+What is the relationship between $x$ and $u_1$?
+
+The smoothing spline does not shrink linear components.
+
+Higher $u_j$ correspond to more and more oscillating functions of $x$.
+
+% Reproducing Hilbert spaces
+
+
+
+\begin{itemize}
+	\item
+\end{itemize}
+
+% subsection smoothing_spline (end)
+% section lecture_4 (end)
+
+\section{Lecture \# 5} % (fold)
+\label{sec:lecture_5}
+
+\[\RSS = \sum_{i=1}^n \brac{t_i - g(x_i)}^2 + \lambda \int \abs{g''(s)}^2ds\]
+The solution to this problem is the Natural cubic spline , which is finite dimensional reduces the problem to
+\[\brac{t-g}'\brac{t-g} + \lambda g'K g\]
+where $K$ is a symmetric and positive  semi-definite matrix
+the fitted $\hat{g}$ are determined by the 
+\[S_\lambda = \brac{I+\lambda H}^{-1}\]
+
+The smoother matrix $S_\lambda$ is positive semi-definite and has eigenvalues $\lambda_k$. Why does $\lambda_1$ and $\lambda_2$ are equal to $1$?
+
+%% See handwritten notes
+
+What happens when the soother is applied again to the smoothed output?
+In the case of a linear regression we get the same output.
+
+Re-applying the smoother to $\hat{g}$ yields a more linear fit, since the first pair of eigenvalues are unit, thus preserving the linear components, while other higher degree polynomial components diminish.
+
+Indeed, \begin{align*}
+	\hat{g}_2 & = \sum_{k=1}^n \lambda_k \brkt{\hat{g}, u_k} u_k \\
+	& = \sum_{k=1}^n \lambda_k \brkt{\sum_{j=1}^n \lambda_j \brkt{g, u_j} u_j, u_k} u_k \\
+	& = \sum_{k=1}^n \sum_{j=1}^n \lambda_j \lambda_k \brkt{g, u_j} \brkt{u_j, u_k} u_k \\
+	& = \sum_{k=1}^n \sum_{j=1}^n \lambda_j \lambda_k \brkt{g, u_j} \delta_{kj} u_k \\
+	& = \sum_{k=1}^n \lambda_k^2 \brkt{g, u_k} u_k \\
+	& = \sum_{k=1}^n \lambda_k^2 \brkt{g, u_k} u_k
+\end{align*}
+
+The projection matrix is idempotent, hence for any eigenvector-eigenvalue pair $(\lamba, u)$ it is true that $\lamba u = Hu = H^2u = H\lamba u = \lamba Hu = \lamba^2 u$. Thus $\lamba$ is either $\pm1$ or $0$.
+
+The solution to the weighted problem is the same Natural Cubic spline.
+\[\sum_{i=1}^n \omega_i \brac{t_i - g(x_i)}^2 + \lamba \int \abs{g''(s)}^2 ds \tom \min\]
+Since again, we can take an NCS with the same first sum but with lesser penalty term.
+
+The solution is $\hat{g} = \brac{W+\lamba K}^{-1} Wt$.
+
+\subsection{Model selection} % (fold)
+\label{sub:model_selection}
+
+%% See the handwritten notes
+
+Four adjustments to the likelihood, which incorporate the complexity of the model.
+
+Elements of information theory
+
+Suppose $x$ is a discrete random variable.
+The main question is how much information one gets when one observes a realisation of $X$.
+
+THe amount of information is quantified by the amount of ``'surprise'':\begin{itemize}
+	\item very likely -- not surprising;
+	\item very unlikely -- very surprising.
+\end{itemize}
+
+$H$ the measure of information has the following properties: \begin{description}
+	\item[Monotonicity] $H$ is a monotonic functional of the probability measure function;
+	\item[Independence] If events are independent or unrelated, then the information gained from both must be poled together: in the case of densities this means that $H(X,Y) = H(X)+H(Y)$ when $p_{X,Y}(x,y) = p_X(x) p_Y(y)$;
+	\item[]
+\end{description}
+
+Average amount of information for a discrete random variable
+\[H(X) = \Ex\brac{H(X)} = - \sum_x p(x) \log_2 p(x)\]
+for a continuous:
+\[H(X) = \int \log_2\frac{1}{p(x)} p(x) dx\]
+
+Suppose the $f$ is unknown distribution modelled using $\hat{f}$.
+
+The Kullback-Leibler \textbf{divergence} between $f$ and $\hat{f}$: the additional information need to describe the random variable with $f$ using $\hat{f}$: \[\int f(x) \log_2\frac{1}{\hat{f}(x)} dx - \int f(x) \log_2\frac{1}{f(x)} dx \leq 0 \]
+
+Use Jensen's inequality $\Ex g(X) \geq g\brac{\Ex X}$ for any convex $g$.
+\begin{align*}
+	-\int f(x) \log_2\frac{\hat{f}(x)}{f(x)} dx & \geq -\log_2\int f(x) \frac{\hat{f}(x)}{f(x)}  dx = 
+\end{align*}
+
+First criterion of model selection (Akaike; 1973).
+
+Suppose $\brac{Y_i}_{i=1}^n$ is some data generate according to some unknown density $g\brac{\induc{y}\theta_0}$. Let there be a parametric family of models
+\[M_K \defn \obj{\induc{f\brac{\induc{y}\theta_k}}\,\theta_k\in \Theta}\]
+where $\Theta\subseteq \Real^K$ -- the $K$-dimensional parametric family.
+
+Let $\hat{\theta}_k$ be the MLE estimator of the parameter in $\Theta$, and $\hat{f}_k = f\brac{\induc{y}\theta_k}$.
+
+Assume that the models are nested, and are distinguished by their dimension $K$.
+
+How far the $\hat{f}_k$ is from $g$.
+
+The idea is to look a t the Kullback-Leibler divergence between $g$ and $f_k$, and get the $f_k$ with the smallest distance:
+\[\text{KL}(g||f_k) = \int g(y) \log g(y) dy - \int g(y) \log f_k(y) dy\]
+is the sum of the inherent entropy of $Y$ and the cross entropy.
+
+The problem is to minimize this function, and it is equivalent to minimizing the Kullback-Leibler \textbf{discrepancy}:
+\[d(\theta_k) = -2\int g(y) \log f_k(y) dy = - 2 \Ex_g\brac{\log f_k(Y)}\]
+
+Instead	let's look at
+\[d(\hat{\theta}_k) = - 2\induc{\Ex_g\brac{\log f(\induc{y}\theta)}}_{\theta=\theta_k(y)} \]
+
+Since in practice $g$ is unknown, Akaike suggested to use the log likelihood as a proxy for $d(\hat{\theta}_k)$, which is a biased estimator of it.
+
+In fact, using the law of large numbers
+\[\frac{1}{N} \sum_{i=1}^n \log f(Y_i|\hat{\theta}_k) \overset{a.s}{\to} \Ex_g\brac{\log f(\induc{Y}\hat{\theta}_k)}\]
+
+Therefore
+\[-\frac{2}{N} \sum_{i=1}^n \log f(Y_i|\hat{\theta}_k) \approx d(\hat{\theta}_k)\] and Akaike has something great in mind.
+
+In order to compute the bias, it is necessary look an the average Kullback-Leibler distance with respect to the distribution of the MLE estimate $\hat{\theta}_k$
+\[\Ex_{\hat{\theta}_k} d(\hat{\theta}_k) - \Ex_g\brac{- \log f\brac{\induc{Y}\hat{\theta}_k(Y)}}\]
+
+The AIC is given by (up to the terms of the first order):
+\[-2\log \hat{f}\brac{\induc{y}\,\hat{\theta}_k(y)} + 2k\]
+
+%% See the handwritten notes!
+
+% subsection model_selection (end)
+
+% section lecture_5 (end)
+
 
 \end{document}

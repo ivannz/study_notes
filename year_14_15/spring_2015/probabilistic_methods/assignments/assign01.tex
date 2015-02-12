@@ -129,14 +129,14 @@ $\abs{A_J}$ равна $\brac{\abs{\Omega} - \abs{C}}^n$, то после сбо
 подмножеств.
 Итак количество искомых конфигураций, в которых имеется хотя бы один купон
 каждого типа из $k$ возможных, задаётся числом $f_{n,k}$ определяемым как
-\[f_{n,k} \defn  k! \obj{\begin{matrix} n \\ k \end{matrix}}\]
-где $\obj{\begin{matrix} n \\ k \end{matrix}}$ -- число Стирлинга второго
+\[f_{n,k} \defn  k! \obj{n \atop k}\]
+где $\obj{n \atop k}$ -- число Стирлинга второго
 рода, отражающее количество разбиений $n$ элементного множества на $k$
 непустых неупорядоченных групп.
 
 Таким образом, вероятность того, что в коллекции из $n$ пачек собраны все $k$
 возможных типов купонов равна
-\[q_n \defn k^{-n} k! \obj{\begin{matrix} n \\ k \end{matrix}}\]
+\[q_n \defn k^{-n} k! \obj{n \atop k}\]
 Обязательно выполняется соотношение $q_n\leq q_{n+1}$ поскольку если в
 некоторой коллекции из $n$ есть все $k$ купонов, то любая коллекция из $n+1$,
 содержащая предыдущую как подколлекцию, тоже имеет все $k$ купонов.
@@ -153,12 +153,12 @@ $\abs{A_J}$ равна $\brac{\abs{\Omega} - \abs{C}}^n$, то после сбо
 \[\pr(N=n) = \pr\brac{N>(n-1)} - \pr(N>n) = q_n - q_{n-1} \]
 
 Из рекуррентного соотношения для чисел Стирлинга второго рода, а именно из
-\[\obj{\begin{matrix} n \\ k \end{matrix}}
-	= \obj{\begin{matrix} n-1 \\ k-1 \end{matrix}} + k \obj{\begin{matrix} n-1 \\ k \end{matrix}}\]
+\[\obj{n \atop k}
+	= \obj{n-1 \atop k-1} + k \obj{n-1 \atop k}\]
 следует, что 
 \[\pr(N=n) = q_n - q_{n-1}
-	= \frac{k!}{k^n}\brac{ \obj{\begin{matrix} n \\ k \end{matrix}} - k\obj{\begin{matrix} n-1 \\ k \end{matrix}} }
-	= \frac{k!}{k^n} \obj{\begin{matrix} n-1 \\ k-1 \end{matrix}}\]
+	= \frac{k!}{k^n}\brac{ \obj{n \atop k} - k\obj{n-1 \atop k} }
+	= \frac{k!}{k^n} \obj{n-1 \atop k-1}\]
 
 Производящая функция случайной величины $N$ равна
 \begin{align*}
@@ -169,7 +169,7 @@ $\abs{A_J}$ равна $\brac{\abs{\Omega} - \abs{C}}^n$, то после сбо
 		& = \sum_{m=1}^k \brac{-1}^{m-1} C^m_k z \frac{m}{k} \sum_{n\geq k} z^{n-1} \brac{1 - \frac{m}{k}}^{n-1} \\
 		& = \sum_{m=1}^k \brac{-1}^{m-1} C^m_k \frac{z \frac{m}{k}}{1-z\brac{1 - \frac{m}{k}}} z^{k-1} \brac{1 - \frac{m}{k}}^{k-1}
 \end{align*}
-% Туговатое выражение() и не ясно, как оно сводится к тому, что ниже...
+% Туговатое выражение и не ясно, как оно сводится к тому, что ниже...
 
 Посмотрим на задачу с другой стороны: последовательной.
 Сбора полного набора купонов на самом деле происходит так: сначала в пустую
@@ -221,7 +221,7 @@ $\obj{1,2,\ldots}$ и имеет распределение для $n\geq 1$:
 		= \prod_{i=1}^k \frac{z\theta_i}{1-z(1-\theta_i)} \\
 		& = \prod_{i=1}^k \frac{z \brac{k-(i-1)}}{k - z (i-1)}
 		= z^k \prod_{m=0}^{k-1} \frac{k-m}{k - z m}
-\end{align*}()
+\end{align*}
 при $\abs{z}<\frac{k}{k-1}$.
 
 Математической ожидание $N$ равно
@@ -256,6 +256,7 @@ $\obj{1,2,\ldots}$ и имеет распределение для $n\geq 1$:
 	&= \sum_{\substack{\sum_{j=1}^{r-1} l_i = n-r \\ m_k\geq0}} \frac{(r-1)!}{r^n} \prod_{i=1}^{r-1} {(r-i)}^{l_i} \\
 %% Indices can be renumbered!!
 	&= \frac{(r-1)!}{r^n} \sum_{\substack{\sum_{j=1}^{r-1} l_i = n-r \\ m_k\geq0}} \prod_{i=1}^{r-1} i^{l_i} \\
+	& =  \frac{(r-1)!}{r^n} \obj{n-1 \atop r-1}
 \end{align*}
 
 % subsection* snaity_check (end)

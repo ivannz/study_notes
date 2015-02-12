@@ -336,9 +336,262 @@ The weights of the decomposition are determined by the dot product in the $L^2$ 
 
 Either use infinitely large basis, or manage to approximate the evolved density with another solution.
 
-
-
-
 % section lecture_2 (end)
+
+\section{Lecture \#3} % (fold)
+\label{sec:lecture_3}
+
+Invariant measure
+
+Perron-Fr\"obeinus tranfomrmation
+
+Integral transformations: decompose the kernel into into the finite basis, and obtain a matrix representation of the integral operator.
+
+If one can tune the spectrum, then it is possible to get \textbf{something} to get the invariant density function.
+
+Trigonometric sinusoidal a basis.
+
+Another canonical basis via the Rodrigues method.
+
+The trigonometric basis works great on a compact support: it is orthogonal and normalised.
+
+In the polynomial case it is hard to find a suitable orthogonality region.
+
+It is time to recall the Gramm-Schmidt orthogonalization procedure.
+
+
+The weighting function is ``spices for the axe'', and it does not influence the final porridge.
+% Why do we need the weighting function at all?
+
+% See hand-written notes.
+
+% If I want to get some files from the lecturer, I should notice him before hand by SMS on Monday.
+
+
+$\detla = y'$ -- the density function.
+\[F(y,\delta, x) = \delta \log \delta + \brac{\alpha \brac{x-\mu} + \beta \brac{x-\sigma}^2 + \epsilon \brac{x-\eta}^3 + \zeta \brac{x-\xi}^4} \delta \]
+
+Shannon's entropy is used for emphasizing the localisation of the data.
+
+Solving the Euler-Lagrange equation for the variational problem with the above functional with respect to the density of $y$ ($\delta$).
+
+\[\lambda \defn \max\abs{r} + \sqrt{\sigma^2(r)}\]
+
+No derivatives or gradients written out in stack -- only the numerical methods.
+% Conjugate gradients or Newton-Raphson can easily fail to converge.
+
+% Эрудит -- это библиотека с уже существующими ящичками и шкафчиками
+% non-linear Fokker-Planck equation.
+
+If one uses the Perron-Fr\"obenius :
+\begin{align*}
+	p(x) = f'(x) g(y)\\
+	y'(x) = p(x) \frac{1}{q(y)} = p(x) \phi(x)
+	x = \int \frac{1}{\phi(y)} dy + c
+\end{align*}
+
+Do note try to solve the problem analytically -- it usually brings about non integrable functions, -- resort to numerical methods.
+
+In designing a trading rule on could use quantile functions.
+
+% кривая требует стоп лося
+
+% Не в праве просто совать кошку в микроволновку; её нужно сначала причесать
+
+Enter a market at some ask, hold, and then leave when the bid is satisfactory.
+One must forecast both the bid and the ask price series.
+
+We are interested in support of of the empirical process.
+
+
+The general formulation of the model:
+Two approaches to forecasting in finance
+\begin{itemize}
+	\item We know from behavioural finance that there exists a malevolent player : the next state contrasts the current state
+	\[H_{KL} = \int \log\frac{p(x)}{q(x)} p(x) dx + \int \log\frac{q(x)}{p(x)} q(x) dx\]
+	Informational divergence between $p$ and $q$. Find such that the derivative of $H$ is zero.
+	\[p(x) = \int K(x,\epsilon) g(\epsilon) d\epsilon \]
+	see the hand-written notes.
+
+	Extremum of the informational gain due to $H$.
+
+	\item If the kernel is decomposed in another basis, then the kernel is a non-diagonal matrix. If $M$ is hermitian then the spectral theorem 
+	% Hamilton-Keli theorem: SVD
+
+% В четверг: СМС в среду
+
+
+\end{itemize}
+
+
+% Здравствуйте Владимир Рубенович!
+
+% Подскажите, пожалуйста, возможно ли подойти к Вам на Шаболовку завтра (Среда 4 Февраля) после 1900, для того, чтобы посмотреть Вашу электронную библиотеку (по финансам и уравнениям математической физики в финансах), о которой Вы упоминали на Ваших лекциях?
+
+% В пятницу в конце прошлой лекции Вы обещали прислать прислать на почтовые ящики слушателей письмо со следующим содержимым :
+% 	* небольшая подборка интересных книг, связанных с курсом;
+% 	* MathCAD файлы к лекции и к Вашему курсу в прошлом семестре;
+% 	* материалы по задаче применения информационного расхождения Кульбака-Лейблера (informational gain);
+% 	* список ключевых слов для самостоятельного поиска статей и ссылок.
+
+% с уважением,
+% Назаров Иван
+% Группа 101мНОД(ИССА)
+
+
+% section lecture_3 (end)
+
+\section{Lecture \# 4} % (fold)
+\label{sec:lecture_4}
+
+\subsection{Which basis to choose?} % (fold)
+\label{sub:the_choice_of_basis}
+
+Fokker-Planck:
+\[\frac{\partial}{\partial t} p(x,t) = \frac{\partial^2}{\partial x^2} \brac{\sigma(x) p(x,t) } - \frac{\partial}{\partial x}\brac{\mu(x) p(x,t)}\]
+
+Separation of variables yields the Cauchy problem (with arbitrary $\lambda$):
+\[\sigma(x) f''(x) + \brac{2\sigma'(x) - \mu(x)} f'(x) + \brac{\sigma''(x) - \mu'(x)} f(x) = \lambda f(x)\]
+
+The Sturm-Liuville problem is when $\lambda=0$.
+
+Three types of solutions:
+\begin{itemize}
+	\item plynomial (with non-zero Wronsy determinant);
+	\item trigonometric (sines and cosines).
+\end{itemize}
+
+The following density function solves the Sturm-Liuville problem:
+\[n e^{-\int \frac{\sigma'(s)-\mu(s)}{\sigma(s)} ds}\]
+
+The selection of basis is of utter importance in financial analysis.
+
+The basic idea is to choose the evolution engine by selecting the parametrization function: the drift ($\mu$) and the direction cone around it ($\sigma$).
+
+\noindent\textbf{A good approach}\hfill \\
+Estimate (using the ML) a family of densities defined just above on the learning sample to infer the $\mi(x)$ and $\sigma(x)$.
+
+Diebold's method 
+Make an integral CDF transformation of the data, then back to the normal variate (using the inversion method by normal quantiles). Then select the sample, which is best describe by the normal distribution.
+
+% subsection the_choice_of_basis (end)
+
+\subsection{How many basis function to use?} % (fold)
+\label{sub:the_effective_subspace_dimension}
+
+This significantly affects the evolution properties and the accuracy of fitting.
+
+Recall that $f(x) = \induc{p(x,t)}_{t=0}$ is the boundary condition on the partial differential equation problem of Fokker-Planck. Thus the initial density is decomposed as:
+\[f(x) = p(x, 0) \sim \sum_n^{\text{finite}} c_n u_n(x)\]
+where $c_n = \int_a^b p(x) u_n(x) w(x) dx$.
+
+Use as many as needed in order to achieve acceptable approximation error of the initial (sample) distribution:
+\[\epsilon = \nrm{f(\cdot) - p(\cdot,0)}_2 = \brac{\int \abs{f(x)-p(x,0)}^2 dx}^\frac{1}{2}\]
+
+Having selected a finite basis $\brac{u_n}_{n=1}^k$, the density now evolves according to
+\[p(x,t) \approx \sum_{k=1}^n c_n e^{-\lambda_n t} u_n(x)\]
+
+Each basis function has a corresponding $\lambda_n$.
+
+Thus the first problem is also concerned with the selection of the spectrum.
+
+The evolution of the density is nothing but an evolution of an $k$ dimensional vector, since $p(x, t) \approx C_t' U(x)$
+where the vector evolves according to the following decay
+\[C_t = \brac{ c_1 e^{-\lambda_1 t},\,\ldots,\, c_k e^{-\lambda_k t} }\]
+
+The solution spectrum depends on the parametrization of the problem!
+
+Note that each basis function is a density function of the Sturm-Liuville problem where .
+
+% subsection the_effective_subspace_dimension (end)
+
+\subsection{How to correct for destabilization} % (fold)
+\label{sub:how_to_correct_for_destabilization}
+
+Since a finite basis has been chosen, for any $t\neq0$ the evolved function ceases to be a density function at all, since $C_t\to 0$ as $t\uparrow$.
+
+The general form of the solution does not guarantee that there is no loss or gain of probability in $p(x,t)$.
+\[f(x) \leftarrow \sum_n \brac{c_n e^{-\lambda_n t}} u_n(x)\]
+
+% (?) (what is this $g(x)$)
+For some $t>0$ one has to re-approximate:
+\[\int g(x) u_n(x) w(x) dx \approx c_{tn}\]
+where 
+\[g(x) = N e^{F(x,\alpha,\beta,\eta)}\]
+
+%% Where does the weighting function come from????
+
+Consider a constrained variational minimization problem:
+\[\Fcal(F, f, x) \defn - f \log f + \sum_n \beta_n f(x) u_n(x) w(x) \]
+where $f = \frac{d}{dx} F$.
+
+the informational gain is condensed in the entropy term:
+\[\int p(x) \log\frac{1}{p(x)} dx\]
+%% See the InfoMax files sent by email.
+
+The solution if given by the Euler-Lagrange equation:
+\[\frac{d}{dx}\Fcal_f - \Fcal_F = 0\]
+where $\Fcal_F = \frac{\partial}{\partial F}\Fcal = 0$.
+This the solution involves exponents of integrals.
+
+The problem of integrating exponents of exponents one may use polynomial expansion, but it is very dangerous, or inaccurate, and requires the knowledge of the parameters of $q$.
+ALso the problem of numerical integration (but much consideration should be devoted to the precision).
+
+% Бунин: Встреча как разлука
+% Шукшин: ненависть являющаяся какрсисом всего -- Любовь как ненависть
+
+% subsection how_to_correct_for_destabilization (end)
+
+\subsection{The actual lecture} % (fold)
+\label{sub:the_actual_lecture}
+
+What to is come after the break:
+\begin{itemize}
+	\item Gaussian weighting, constant spectrum, $\text{dim}=3$;
+	\item Gaussian weighting, constant spectrum, $\text{dim}=4$;
+	\item Quasi-Gaussian weights, variable spectrum, $\text{dim}=3$.
+\end{itemize}
+
+% Risk neutral density is for the option price.
+
+Real pirates regard options (non-linear derivatives) not as a delta-hedging, but as the main asset of trading.
+
+Derivatives prices are considerably more volatile that the underlying assets. The market is however is not liquid enough.
+
+% Diversifying, futures, indices, forex pairs
+Every invest banker does not solve new stochastic differential equations, but plugs the known parameters into Black-Scholes formula for a fair price and adds a certain non-zero fee.
+
+Fokker-Planck
+The density function must be defined on the same domain as the basis function.
+%% Cf. FXCM-long_short.xmcd
+
+Weighting function is $\Real$, while the one, being decomposed, is defined over a finite interval. Thus one needs to transform the domain (probabilistically): random variable transform $Y=G(X)$
+\[f(y) = \induc{\frac{1}{\abs{G_x'(x)}}}_{x=G^{-1}(y)}} h\brac{G^{-1}(y)}\]
+
+% c.f. transfrom15.xmcd and Malinkevich
+
+The following \textbf{L}east \textbf{S}quares fitting problem
+\[L_t = \sum_{n=1}^k \brac{ \int \Fcal(s;\Theta) u_n(s) w(s) ds - c_n e^{-\lambda_n t} }^2 \to \min_\Theta\]
+
+% Кролики жрут траву с постоянной скоростью так, что при поедании на поверхности травы может образовываться воронка (если наполнить коробку с ним рубленой тарвой до краёв). Куда же девается в них съеденная трава?
+
+Fitness criteria \begin{description}
+	\item[Binary options trading] price-change directions; leave-option -- median, entry -- ``close value'';
+	\item[Traditional investing] Bid-ask spread, it there a price within the 30 minute interval, where the ask price is higher than the bid price on entry.
+\end{description}
+
+%При точности 65% не придерётся ни эконометрист нудний, ни Петрович, который дал нам денги.
+
+% Single-symbol parameters are for the function at $t=0$, double-symbol -- at $t=1$
+
+Implicit functions 
+Bivariate density function considered as an implicit function, might uncover different dependence structure between $x$ and $y$.
+%% jointimplicit.xmcd
+
+
+% subsection the_actual_lecture (end)
+
+% section lecture_4 (end)
+
 
 \end{document}
