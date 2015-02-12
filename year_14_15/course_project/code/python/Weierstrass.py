@@ -36,7 +36,7 @@ class synth_Weier(object):
 		super(synth_Weier, self).__init__()
 		self.__N = N
 		self.__H = H
-	def __call__( self, seed ) :
+	def __call__( self, seed = None ) :
 		return synthweier( self.__N, self.__H, nu0 = 1.2, nue = self.__N - 1, seed = seed )
 
 ## Example

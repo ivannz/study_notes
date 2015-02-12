@@ -41,9 +41,9 @@ def __mp_mc_worker( ) :
 ## Initialize the cluster to run the Monte Carlo experiment
 def __mp_mc_setup( generator, kernel, M = 100, **kwargs ) :
 ## The parallel computing part: use synchronous computations
-	cli = mp.Client()
-	cli.clear( )
-	clu = cli.direct_view()
+	cli = mp.Client( )
+	clu = cli.direct_view( )
+	clu.clear( block = True )
 ## Make the workers import the necessary dependencies
 	clu.execute( 'import numpy as np', block = True )
 ## The crossing tree toolkit
