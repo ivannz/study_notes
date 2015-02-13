@@ -12,7 +12,7 @@ def monte_carlo_serial( generator, kernel, M = 100, **kwargs ) :
 ## Return a MxKxT 3D array made from M concatenated 2D KxT slices
 	import time
 	tic = time.time( )
-	result = [ kernel( m, generator, **kwargs ) for m in xrange( M ) ]
+	result = [ kernel( generator, **kwargs ) for m in xrange( M ) ]
 	print( "--: %.3f" % ( time.time( ) - tic ) )
 	return np.concatenate( [ result ] )
 
@@ -35,7 +35,7 @@ def monte_carlo_parallel( generator, kernel, M = 100, **kwargs ) :
 @interactive
 def __mp_mc_worker( ) :
 ## Define a local storage for the results of calls to the kernel
-	return [ kernel( m, generator, **local_kwargs ) for m in local_replications ]
+	return [ kernel( generator, **local_kwargs ) for m in local_replications ]
 ## http://stackoverflow.com/questions/10857250/python-name-space-issues-with-ipython-parallel/10859394#10859394
 
 ## Initialize the cluster to run the Monte Carlo experiment
@@ -48,7 +48,6 @@ def __mp_mc_setup( generator, kernel, M = 100, **kwargs ) :
 	clu.execute( 'import numpy as np', block = True )
 ## The crossing tree toolkit
 	clu.execute( 'from crossing_tree import xtree_build', block = True )
-	clu.execute( 'from crossing_tree import f_get_w', block = True )
 ## The generators
 	clu.execute( 'from Weierstrass import synth_Weier', block = True )
 	clu.execute( 'from synthfbmcircul import synth_fbm, synth_fgn', block = True )
