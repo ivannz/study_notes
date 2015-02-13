@@ -8,27 +8,32 @@ import numpy as np
 import IPython.parallel as mp
 from IPython.parallel import interactive
 
-def monte_carlo_serial( generator, kernel, M = 100, **kwargs ) :
+def monte_carlo_serial( generator, kernel, M = 100, quiet = False, **kwargs ) :
 ## Return a MxKxT 3D array made from M concatenated 2D KxT slices
 	import time
 	tic = time.time( )
 	result = [ kernel( generator, **kwargs ) for m in xrange( M ) ]
-	print( "--: %.3f" % ( time.time( ) - tic ) )
+	if quiet :
+		print( "--: %.3f" % ( time.time( ) - tic ) )
 	return np.concatenate( [ result ] )
 
 ## DD = monte_carlo_serial( generator, M=100, K = 16, T = 3 )
-def monte_carlo_parallel( generator, kernel, M = 100, **kwargs ) :
+def monte_carlo_parallel( generator, kernel, M = 100, quiet = False, **kwargs ) :
 	import time
 ## Setup the cluster for the monte carlo experiment.
 	cluster = __mp_mc_setup( generator, kernel, M, **kwargs )
+	if quiet :
+## Run the expriment synchronously
+		result = cluster.apply_sync( __mp_mc_worker )
+	else :
 ## Run the expriment asynchronously
-	result = cluster.apply_async( __mp_mc_worker )
+		result = cluster.apply_async( __mp_mc_worker )
 ## Wait intil the jobs are complete
-	tic = time.time( )
-	while not result.ready( ) :
-		time.sleep( 1 )
+		tic = time.time( )
+		while not result.ready( ) :
+			time.sleep( 1 )
 ## Track the porgress
-		print( "%i: %.3f" % ( result.progress, time.time( ) - tic ) )
+			print( "%i: %.3f" % ( result.progress, time.time( ) - tic ) )
 	return np.concatenate([r for r in result if r])
 
 ## This is a genral procedure to be run on each node of the cluster.
