@@ -199,7 +199,7 @@ def xtree_integer_crossings_fast( T, X ) :
 ################################# CODE REVIEW! #################################
 ################################################################################
 ### Checking the original code by Decrouez and Owen:
-### Results identical!!
+### Results identical!! Checked through monet-carlo assertions of indenity.
 def f_get_w_int( T, X, deleteFirst = False ) :
 #    if deleteFirst
 	if deleteFirst :
@@ -216,6 +216,7 @@ def f_get_w_int( T, X, deleteFirst = False ) :
 # compt=1;
 # y_floor = floor( y );
 	X_floor = np.floor( X, np.empty_like( X, np.int ) )
+	X_ceil = np.ceil( X, np.empty_like( X, np.int ) )
 # for i = 1:(lx-1)
 	for t in xrange( len( X ) - 1 ) :
 #     if y(i) ~= y(i+1)
@@ -226,20 +227,22 @@ def f_get_w_int( T, X, deleteFirst = False ) :
 #             step = 1;
 			direction = 1
 #             x_init = ceil(y(i));
-			level0 = np.ceil( X[ t ] )
+			level0 = X_ceil[ t ]
 #             x_final = floor(y(i+1));
-			level1 = np.floor( X[ t + 1 ] )
+			level1 = X_floor[ t + 1 ]
 #         else
 		elif X[ t ] > X[ t + 1 ] :
 #             step = -1;
 			direction = -1
 #             x_init = floor(y(i));
-			level0 = np.floor( X[ t ] )
+			level0 = X_floor[ t ]
 #             x_final = ceil(y(i+1));
-			level1 = np.ceil( X[ t + 1 ] )
+			level1 = X_ceil[ t + 1 ]
 #         end
 #         for j = x_init:step:x_final
-		for level in xrange( int( level0 ), int( level1 ) + direction, direction ) :
+		# has_run = False
+		for level in xrange( level0, level1 + direction, direction ) :
+			# has_run = True
 #             if j ~= last_hit
 			if level != last_hit :
 #                 h_t(compt) = t(i) + (j - y(i))/(y(i+1) - y(i))*(t(i+1) - t(i));
@@ -250,6 +253,8 @@ def f_get_w_int( T, X, deleteFirst = False ) :
 				last_hit = level
 #                 last_hit = j;
 #             end
+		# if has_run :
+		# 	assert( level == level1 )
 #         end
 #     end
 # end
@@ -281,7 +286,7 @@ def f_get_w( T, X, levels = [ ], delta = 1.0, deleteFirst = False ) :
 # hit0=[hit_time{1}' hit_point{1}'];
 	hit0 = ht[ 0 ]
 # subx=cell(length(levels),1);
-	hx = list( )
+	hx = list( [np.array( [], np.int )] )
 # for level = 2:length(levels)   
 	for level in xrange( 1, len( levels ) ) :
 #    hit1=[hit_time{level}' hit_point{level}'];  
