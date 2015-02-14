@@ -34,6 +34,7 @@ def monte_carlo_parallel( generator, kernel, M = 100, quiet = False, **kwargs ) 
 			time.sleep( 1 )
 ## Track the porgress
 			print( "%i: %.3f" % ( result.progress, time.time( ) - tic ) )
+	cluster.clear( block = True )
 	return np.concatenate([r for r in result if r])
 
 ## This is a genral procedure to be run on each node of the cluster.
