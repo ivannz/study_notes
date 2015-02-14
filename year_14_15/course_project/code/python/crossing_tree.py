@@ -146,7 +146,8 @@ def xtree_integer_crossings_fast( T, X ) :
 	lht = list([ 0.0 ]) ; lhp = list([ last_hit ])
 ## Compute the crossing directions
 	X_delta = np.diff( X )
-	cross_d = np.sign( X_delta, np.empty_like( X_delta, np.int ) )
+	cross_d = np.sign( X_delta, np.empty_like( X_delta, np.int8 ) )
+	del X_delta
 ## Preemptively round the process values down to minimize the overhead.
 	X_floor = np.floor( X, np.empty_like( X, np.int ) )
 ## Note that floor(x) + 1 = ceil(x) for non-integer x only, and for
@@ -186,7 +187,8 @@ def xtree_integer_crossings_fast( T, X ) :
 ## Due to discretized nature of the process the hitting times are
 ##  approximated with linear interpolation. The speed is not improved
 ##  by precalculating the coefficients of the linear interpolation.
-			lht.append( T[ t ] + ( T[ t + 1 ] - T[ t ] ) * ( ( level - X[ t ] ) / X_delta[ t ] ) )
+			lht.append( T[ t ] + ( T[ t + 1 ] - T[ t ] ) * ( ( level - X[ t ] ) / ( X[ t + 1 ] - X[ t ] ) ) )
+			# lht.append( T[ t ] + ( T[ t + 1 ] - T[ t ] ) * ( ( level - X[ t ] ) / X_delta[ t ] ) )
 ## Record the crossed grids: a continuous process during an upcrossing
 ##  will have almost surely visited all the intermediate grid lines.
 			lhp.append( level )
