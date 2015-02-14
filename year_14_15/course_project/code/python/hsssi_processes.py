@@ -15,7 +15,7 @@ from synthfbmcircul import synth_fgn as synth_fgn
 ## C.f. [Abry, Pipiras; 2005]
 
 ## Hermite process of order 2
-class synth_Rosenblatt(synth_fgn):
+class synth_Rosenblatt( synth_fgn ):
 	def __init__(self, N, H, K = 16 ):
 		self.__t = np.arange( N, dtype = np.float ) / ( N - 1 )
 ## It is imperative that the vraince of the fGn be unity
@@ -28,9 +28,11 @@ class synth_Rosenblatt(synth_fgn):
 ## The renorm-group transformation, without the renormalisation by the n^{-H}
 		u = np.cumsum( u*u - 1 )[ (self.__K-1): :self.__K ]
 		return self.__t, u / np.max( np.abs( u ) )
+	def reset( self ):
+		super(synth_Rosenblatt, self).reset( )
 
 ## Hermite process of order 3
-class synth_Hermite3(synth_fgn):
+class synth_Hermite3( synth_fgn ):
 	def __init__(self, N, H, K = 16 ):
 		self.__t = np.arange( N, dtype = np.float ) / ( N - 1 )
 ## It is imperative that the vraince of the fGn be unity
@@ -43,9 +45,11 @@ class synth_Hermite3(synth_fgn):
 ## The renorm-group transformation, without the renormalisation by the n^{-H}
 		u = np.cumsum( ( u*u - 3 ) * u )[ (self.__K-1): :self.__K ]
 		return self.__t, u / np.max( np.abs( u ) )
+	def reset( self ):
+		super(synth_Hermite3, self).reset( )
 
 ## Hermite process of order 3
-class synth_Hermite4(synth_fgn):
+class synth_Hermite4( synth_fgn ):
 	def __init__(self, N, H, K = 16 ):
 		self.__t = np.arange( N, dtype = np.float ) / ( N - 1 )
 ## It is imperative that the vraince of the fGn be unity
@@ -66,3 +70,5 @@ class synth_Hermite4(synth_fgn):
 ## The renorm-group transformation, without the renormalisation by the n^{-H}
 		u = np.cumsum( u*u - 6.0 )[ (self.__K-1): :self.__K ]
 		return self.__t, u / np.max( np.abs( u ) )
+	def reset( self ):
+		super(synth_Hermite4, self).reset( )

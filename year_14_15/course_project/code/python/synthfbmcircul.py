@@ -44,6 +44,8 @@ class synth_fgn(object):
 ##  F with F[::-1][1:-1] so that it mathces the output of the complex FFT. Real
 ##  FFT returns (2*N-2)/2+1 = N
 		self.__acf_ft = np.append( Z, Z[::-1][1:-1] )
+## The circulant embedding method actually generates a pair of independent
+##  long-range dependent processes.
 		self.__queue = []
 ## Use call semantics for brevity
 	def __call__( self, seed = None ) :
@@ -67,10 +69,13 @@ class synth_fgn(object):
 # %% ATTENTION: ne pas utiliser ifft, qui utilise une normalisation differente
 ## F \times {(\tfrac{1}{2M}\Lambda)}^\tfrac{1}{2} \times w (see p.~1091 [Dietrich,Newsam; 1997])
 		W = fft( self.__acf_ft * W )
-## Dietrich, Newsam 1997: In our case the real and imaginary parts of any N
+## Dietrich, Newsam 1997: "In our case the real and imaginary parts of any N
 ##  consequtive entries yield two independent realizations of \mathcal{N}_N(0,R)
-##  where $R$ is the autocorrelation structure of an fBM
+##  where $R$ is the autocorrelation structure of an fBM."
+## Therefore take the first N complex draws.
 		return ( np.real( W[ :self.__N ] ), np.imag( W[ :self.__N ] ) )
+	def reset( self ):
+		del self.__queue[:]
 
 ## A class for generating fractional brownian motion
 ## Actually fBM is a Hermite process of order 1
@@ -85,6 +90,8 @@ class synth_fbm( synth_fgn ):
 	def __call__( self, seed = None ) :
 		increments = super(synth_fbm, self).__call__( seed )
 		return self.__t, np.cumsum( increments[:-1] )
+	def reset( self ):
+		super(synth_fbm, self).reset( )
 
 # def synthgausscircul( N, H, variance = 1.0, seed = None ) :
 # 	if seed is not None : rnd.seed( seed )

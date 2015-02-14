@@ -15,7 +15,9 @@ import numpy.random as rnd
 ##
 ## [x,t] = weir( N,H,nu0,nue,choix );
 def synthweier( N, H, nu0, nue, deterministic = False, seed = None ) :
-## Create thee time axis
+## I don't understand the mathematics behind these prameters -- must
+##  investigate further!
+## Create the time axis.
 	t = np.arange( N, dtype = np.float ) / nue
 	nmax = int( np.fix( np.log( 0.5 * nue ) / np.log( nu0 ) ) )
 ## Initialize the trajectory
@@ -38,6 +40,8 @@ class synth_Weier(object):
 		self.__H = H
 	def __call__( self, seed = None ) :
 		return synthweier( self.__N, self.__H, nu0 = 1.2, nue = self.__N - 1, seed = seed )
+	def reset( self ):
+		pass
 
 ## Example
 # import matplotlib.pyplot as plt

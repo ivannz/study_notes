@@ -39,6 +39,14 @@ def monte_carlo_parallel( generator, kernel, M = 100, quiet = False, **kwargs ) 
 ## This is a genral procedure to be run on each node of the cluster.
 @interactive
 def __mp_mc_worker( ) :
+## It is necessary to reininialize the random number generator so
+##  as to avoid rndom number sequence collisions on different worker
+##  units. cf. http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=5547156
+##  http://stackoverflow.com/questions/12915177/same-output-in-different-workers-in-multiprocessing
+	np.random.seed( )
+## Each process generator must be equipped with a reset method() which
+##  resets its internal state.
+	generator.reset( )
 ## Define a local storage for the results of calls to the kernel
 	return [ kernel( generator, **local_kwargs ) for m in local_replications ]
 ## http://stackoverflow.com/questions/10857250/python-name-space-issues-with-ipython-parallel/10859394#10859394
