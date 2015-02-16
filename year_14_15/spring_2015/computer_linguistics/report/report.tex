@@ -248,12 +248,52 @@
 
 % section bayes_demonstration (end)
 
+\section{section name} % (fold)
+\label{sec:section_name}
+
+% section section_name (end)
+\begin{frame}{Процесс Дирихле}
+  \begin{block}
+
+    распределение заданное на функциях конечных дискретных рапсределений
+    Применительно к К \begin{description}
+      \item[нет ограничений на сложность словаря]\hfill\\
+        закладывается ненулевая вероятность появления неизвестного ранее термина 
+    \end{description}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Определение}
+  \begin{block}
+
+    Случайное распределение $G$ является реализацией процесса $\text{DP}\brac{\alpha,H}$, где $H$ -- базовое распределение на пространстве параметров $\Theta$, и $\alpha$ -- папарметр концентрации, если для любого измеримого конечного разбиения $\brac{A_t}_{t\in T}$ пространства $\Theta$ выполнено:
+    \[\brac{G(A_t)}_{t\in T}\sim \text{Dir}\brac{ \brac{\alpha H(A_t)}_{t\in T} }\] 
+  \end{block}
+\end{frame}
+
+
+\begin{frame}
+  \begin{block}{Примеры}
+
+    \begin{itemize}
+      \item разбиение отрезка $\clo{0,1}$: раскалываем отрезок $I_{n-1}$ в пропроции $\beta_n$, присваиваем $\eta_n$ длину произвольного ``осколка'', обозначаем оставщийся $I_n$: \[G = \sum_{k\geq1} \eta_k \delta_{\theta_k^*}\]
+      \item наполнение корзины цветными шарами: \begin{itemize}
+        \item случайным цветом $\theta_1\sim H$ помечаем шар и кладём его в корзину;
+        \item на шаге $n+1$ с вероятностью $\frac{\alpha}{\alpha+n}$ вытягиваем цвет $\theta_{n+1}\sim H$, помечаем им шар и кладём его в корзину;
+        \item с вероятностью $\frac{n}{\alpha+n}$ выбираем шар из корзины, его цветом помечаем новый шар и кладём оба в корзину;
+        \item 
+      \end{itemize} 
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+
 \section{Байесовские сети} % (fold)
 \label{sec:bayesian_networks}
 
 \begin{frame}
   \begin{block}
-
+  
     Вероятностная модель, основанная на направленном ацикличном графе причинно-следственных связей.
   \end{block}
   \begin{block}{Описание}
@@ -278,10 +318,13 @@
 
 \end{frame}
 
-\begin{frame}{$n$-граммная модель текста}
-  \begin{block}
+\section{Приложени} % (fold)
+\label{sec:applications}
 
-    Основная идея модели в том, что чем дальше вхождения единц текста отстоят друг от друга, тем они более независимы. 
+\begin{frame}{$n$-граммная модель текста}
+  \begin{block}{Основная идея}
+
+     чем дальше вхождения единц текста отстоят друг от друга, тем они более независимы
   \end{block}
 
   \begin{block}
@@ -299,14 +342,44 @@
 \end{frame}
 
 \begin{frame}{$n$-граммная модель текста}
-  \begin{block}
+  \begin{block}{Параметры}
 
-    Параметрами $n$-граммной являются вероятности
+    Вероятности
     \[p\brac{\induc{x_n}x_1, x_2, \ldots, x_{n-1}}\] 
-    где $x_i\in \obj{\$}\cup \Sigma$ -- расширенный алфавит единиц.
-    Количество параметров модели $\propto \abs{\Sigma}^n$. 
+    где $x_i\in \obj{\$}\cup \Sigma$ -- алфавит единиц текста, расширенный маркером конца строки.
+    Количество параметров модели $\propto \abs{\Sigma}^n$.
   \end{block}
 \end{frame}
+
+\begin{frame}{Униграммы [Goldwater et al. (2008)]}
+  \begin{block}{Модель}
+
+    независимое порождение строк, состоящих из независимых входжений слов или конца строки. 
+  \end{block}
+
+  \begin{block}
+
+    Слово вытягивается по следующему закону ($\text{DP}\brac{\alpha_0,P_0}$)
+    \begin{description}
+      \item[новое слово]\hfill\\
+        новое слово $w$ вытягивается из $P_0$;
+        \item[иначе]\hfill\\
+        слово $w$ вытягивается из накопленного лексикона согласно его частотным характеристикам.
+    \end{description}    
+  \end{block}
+\end{frame}
+\begin{frame}{Униграммы}
+  \begin{block}
+
+    Условная вероятность слова $l$ на $i$ месте в предложении равна:
+    \[P\brac{\induc{w_i = t}w_{i-1},\ldots,w_1} = \frac{n_t}{i-1+\alpha_0} + \frac{\alpha_0 P_0(w_i = t)}{i-1+\alpha_0}\]
+    Базовое распределение $P_0$ -- униграммная модель на фонемах:
+    \[P_0\brac{\induc{w_i = x_1\ldots x_M}} = p_\$ \brac{1-p_\$}^{M-1} \prod_{j=1}^M P(x_j)\]
+    где $P(x_j)$ -- равномерное распределение на фонемах, $p_\$$ -- вероятность конца слова.
+  \end{block}
+\end{frame}
+
+% section applications (end)
 
 %% \begin{frame}[fragile]{$n$-граммная модель}
 %% 
