@@ -100,7 +100,7 @@
   \begin{block}
 
   \begin{itemize}
-    \item Классификация текстов, тэггирование слов частями речи;
+    \item Классификация текстов, тэгирование слов частями речи;
     \item Машинный перевод, сопоставление текстов;
     \item Разрешение омонимии;
     \item Извлечение информации.
@@ -121,7 +121,7 @@
   \end{block}
   \begin{block}{Описание}
 
-    Набор случайных величин $\brac{X_v}_{v\in V}$ и ориентированный граф $G=(V,E)$, узлам которого соответствовуют набюдаемые или скрытые переменные или состояния. Рёбра -- отношения причинности или влияния.
+    Набор случайных величин $\brac{X_v}_{v\in V}$ и ориентированный граф $G=(V,E)$, узлам которого соответствуют наблюдаемые или скрытые переменные или состояния. Рёбра -- отношения причинности или влияния.
 
     При этом требуется возможность следующей факторизации совместной плотности вероятности
     \[p\brac{\brac{X_v}_{v\in V}} = \prod_{v\in V} p\brac{\induc{X_v} \brac{X_w}_{w\in\pi^+(v)}}\]
@@ -144,14 +144,14 @@
 \begin{frame}{$n$-граммная модель текста}
   \begin{block}{Основная идея}
 
-     чем дальше вхождения единц текста отстоят друг от друга, тем они более независимы
+     чем дальше вхождения единиц текста отстоят друг от друга, тем они более независимы
   \end{block}
 
   \begin{block}
 
-    Пусть $\brac{w_i}_{i=0}^{l+1}$ -- базовые едининцы текста в порядке их следования, $w_0=w_{l+1}=\$$ -- символы начала и конца текста.
+    Пусть $\brac{w_i}_{i=0}^{l+1}$ -- базовые единицы текста в порядке их следования, $w_0=w_{l+1}=\$$ -- символы начала и конца текста.
 
-    Совокупная веротяность $w_k$ единицы определяется $n-1$ предыдущей единицей и не зависит от ``префикса'' текста $\brac{w_i}_{i=0}^{k-n}$:
+    Совокупная вероятность $w_k$ единицы определяется $n-1$ предыдущей единицей и не зависит от ``префикса'' текста $\brac{w_i}_{i=0}^{k-n}$:
     \begin{align*}
       p\brac{\induc{w}M} &= p\brac{\induc{w_1}\$;M} \cdot p\brac{\induc{w_2}\$,w_1;M} \cdot \ldots \\
         &\times p\brac{\induc{w_n},w_1,\ldots,w_{n-1};M} \\
@@ -202,7 +202,7 @@
 
     Задача определить класс $c\in K$ для текста $d$ по частотным характеристикам его терминов $T_d = \obj{\induc{h(w)}\,w\in d}$.
     Максимизируется апостериорная вероятность 
-   \[\hat{c} = \underset{c\in K}{\text{argmax}} p\brac{\induc{c}\,d} = \underset{c\in K}{\text{argmax}} \ln p\brac{\induc{d}\,c} + \ln \pi\brac{c} \]
+   \[\hat{c} = \underset{c\in K}{\text{argmax}}\,p\brac{\induc{c}\,d} = \underset{c\in K}{\text{argmax}}\,\ln p\brac{\induc{d}\,c} + \ln \pi\brac{c} \]
     Фактически это выбор наиправдоподобнейшей модели текста $d$ -- (\eng{\emph{model selection}}).
   \end{block}
 \end{frame}
@@ -268,7 +268,7 @@
     \begin{align*}
       p\brac{\induc{t} c} &= \frac{\Gamma\brac{\sum_{s\in T}\alpha_s}}{\prod_{s\in T} \Gamma(\alpha_s)} \int\limits_{S_{n-1}^\circ} \theta_t \prod_{s\in T} \theta_s^{\alpha_s-1} d\theta \\
       &= \frac{\Gamma\brac{\sum_{s\in T}\alpha_s}}{\Gamma(\alpha_t) \prod_{s\neq t} \Gamma(\alpha_s)} \frac{\Gamma(\alpha_t+1) \prod_{s\neq t} \Gamma(\alpha_s)}{\Gamma\brac{\sum_{s\in T}\alpha_s + 1}}\\
-      &= \frac{\alpha_t+1}{\sum_{s\in T}\alpha_s}\\
+      &= \frac{\alpha_t}{\sum_{s\in T}\alpha_s}\\
     \end{align*}
   \end{block}
 \end{frame}
@@ -298,7 +298,7 @@
   \begin{block}{Классификация}
 
     Итак, к какому классу следует отнести текст?
-    \[\hat{c} = \underset{c\in K}{\text{argmax}} \sum_{t\in T} \ln \frac{f_{ct} + 1}{\sum_{s\in T}f_{cs} + \abs{T}} + \ln\frac{\abs{\Dcal_c}}{\abs{\Dcal}}\]
+    \[\hat{c} = \underset{c\in K}{\text{argmax}}\, \sum_{t\in T} \ln \frac{f_{ct} + 1}{\sum_{s\in T}f_{cs} + \abs{T}} + \ln\frac{\abs{\Dcal_c}}{\abs{\Dcal}}\]
   \end{block}
 \end{frame}
 
@@ -307,7 +307,7 @@
 \begin{frame}{Процесс Дирихле}
   \begin{block}
 
-    распределение на функциях конечных дискретных рапсределений.
+    распределение на функциях конечных дискретных распределений.
     \begin{description}
       \item[нет ограничений на сложность словаря]\hfill\\
         закладывается ненулевая вероятность появления неизвестного ранее термина
@@ -315,7 +315,7 @@
   \end{block}
   \begin{block}{Определение}
 
-    Случайное распределение $G$ является реализацией процесса $\text{DP}\brac{\alpha,H}$, где $H$ -- базовое распределение на пространстве параметров $\Theta$, и $\alpha$ -- папарметр концентрации, если для любого измеримого конечного разбиения $\brac{A_t}_{t\in T}$ пространства $\Theta$ выполнено:
+    Случайное распределение $G$ является реализацией процесса $\text{DP}\brac{\alpha,H}$, где $H$ -- базовое распределение на пространстве параметров $\Theta$, и $\alpha$ -- параметр концентрации, если для любого измеримого конечного разбиения $\brac{A_t}_{t\in T}$ пространства $\Theta$ выполнено:
     \[\brac{G(A_t)}_{t\in T}\sim \text{Dir}\brac{ \brac{\alpha H(A_t)}_{t\in T} }\] 
 
   \end{block}
@@ -333,7 +333,7 @@
   \begin{block}{Примеры процесса}
 
     \begin{itemize}
-      \item разбиение отрезка $\clo{0,1}$: раскалываем отрезок $I_{n-1}$ в пропроции $\beta_n$, присваиваем $\eta_n$ длину произвольного ``осколка'', обозначаем оставщийся $I_n$. Для некоторой реализации $\brac{\theta_k^*}_{k\geq 1}\sim H$ \[G = \sum_{k\geq1} \eta_k \delta_{\theta_k^*}\]
+      \item разбиение отрезка $\clo{0,1}$: раскалываем отрезок $I_{n-1}$ в пропорции $\beta_n$, присваиваем $\eta_n$ длину произвольного ``осколка'', обозначаем оставшийся $I_n$. Для некоторой реализации $\brac{\theta_k^*}_{k\geq 1}\sim H$ \[G = \sum_{k\geq1} \eta_k \delta_{\theta_k^*}\]
       \item наполнение корзины цветными шарами: \begin{itemize}
         \item случайным цветом $\theta_1\sim H$ помечаем шар и кладём его в корзину;
         \item на шаге $n+1$ с вероятностью $\frac{\alpha}{\alpha+n}$ вытягиваем цвет $\theta_{n+1}\sim H$, помечаем им шар и кладём его в корзину;
@@ -346,7 +346,7 @@
 \begin{frame}{Униграммы [\eng{Goldwater et al.; 2008}]}
   \begin{block}{Модель}
 
-    независимое порождение строк, состоящих из независимых входжений слов или конца строки. 
+    независимое порождение строк, состоящих из независимых вхождений слов или конца строки. 
   \end{block}
 
   \begin{block}
@@ -375,53 +375,12 @@
   \begin{block}
 
     \begin{itemize}
-      \item Автоматическая обработка текстов на естественном языке и компьютерная лингвистика : учеб. пособие / Большакова~Е.И., Клышинский~Э.С., Ландэ~Д.В., Носков~А.А., Пескова~О.В., Ягунова~Е.В. — М.: МИЭМ, 2011. — 272~с.
+      \item Автоматическая обработка текстов на естественном языке и компьютерная лингвистика : учеб. пособие / Большакова~Е.И., Клышинский~Э.С., Ландэ~Д.В., Носков~А.А., Пескова~О.В., Ягунова~Е.В. — М.: МИЭМ, 2011. — 272~с. стр.~176
       \item \eng{Goldwater, Sharon, Thomas L. Griffiths, and Mark Johnson. 2008. A Bayesian framework for word segmentation: Exploring the effects of context. In submission. Available at \url{http://homepages.inf.ed.ac.uk/sgwater/papers/journalwordseg-hdp.pdf}.}
       \item \eng{Sharif-Razavian, Narges, and Andreas Zollmann. ``An overview of nonparametric bayesian models and applications to natural language processing.'' Science (2008): 71-93.}
     \end{itemize}
   \end{block}
 \end{frame}
-
-% \begin{frame}{Сопоставление переводных текстов [\eng{DeNero et al.; 2008}]}
-%   \begin{block}
-%     Пары предложений в корпусе порождаются независимо
-
-%   \end{block}
-% \end{frame}
-
-% section applications (end)
-
-%% \begin{frame}[fragile]{$n$-граммная модель}
-%% 
-%%   \begin{block}
-%% 
-%%     % http://texographie.fr/2014/09/arbres-probabilite-forest/
-%%     %% Рисуем часть дерева горниц от уровня {n+1} до {n}
-%%     \begin{figure}[htb]\begin{center}
-%%     %% Задаём стили вершин дерева и меток рёбер.
-%%       \tikzstyle{tree} = [isosceles triangle, shape border rotate = 90, % isosceles triangle stretching = True,
-%%         fill = none, thick, draw, minimum height = 2em, minimum width = 1cm]
-%%       \tikzstyle{door} = [minimum width = 1em, minimum height = 1em, yshift = -1.5em]
-%%       \tikzstyle{passable} = [midway, fill = white] % , circle, draw]
-%% 
-%%       \begin{tikzpicture}[level/.style={sibling distance = 15mm/#1, level distance = 25mm }]
-%% 
-%%       \node [door] (root) {$\pi_{n+1}$} [child anchor = north]
-%%         child { node [tree] (s1) {$\pi_n$} { node[door] {$1$} }
-%%            edge from parent node [passable] {$p$} }
-%%         child { node [tree] (s2) {$\pi_n$} { node[door] {$2$} }
-%%            edge from parent node [passable] {$p$} }
-%%         child { node[draw=none] (hidden) {} edge from parent[draw=none] }
-%%         child { node [tree] (sk) {$\pi_n$} { node[door] {$k$} }
-%%            edge from parent node [passable] {$p$} };
-%%       \path (s2) -- (sk) node [midway, above] {$\cdots$};
-%%       \end{tikzpicture}
-%% 
-%%       \caption{Граф части байесовской сети $n$-граммной модели}
-%%     \label{fig:tree_structure}
-%%     \end{center}\end{figure}
-%%   \end{block}
-%% \end{frame}
 
 \end{document}
 
