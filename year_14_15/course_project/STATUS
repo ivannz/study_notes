@@ -28,7 +28,7 @@ Later:
 	- Pool all the Zs and check whether or not their distribution equals the conjectured
 
 ToDo for (2015-02-12):
-	-- Finalize the code and do a final check;
-	--	P(z=2i) is geometric with p = 2^(1-1/H)
+	++ Finalize the code and do a final check;
+	+-	P(z=2i) is geometric with p = 2^(1-1/H): definitely looks like it is geometric
 	--	P(-+|u) = P(+-|d) = 1/sqrt(\mu), where \mu is the expectation of the geometric rv
 	-- Since we try to estimate the the marginal offspring distribution, don't wast too much time in trying to test serial independence.
