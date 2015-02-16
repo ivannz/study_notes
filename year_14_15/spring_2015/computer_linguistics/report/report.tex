@@ -100,16 +100,78 @@
   \begin{block}
 
   \begin{itemize}
-    \item Классификация текстов
-    \item Определение частей речи
-    \item Разрешение омонимии
-    \item Машинный перевод
-    \item Извлечение информации
+    \item Классификация текстов, тэггирование слов частями речи;
+    \item Машинный перевод, сопоставление текстов;
+    \item Разрешение омонимии;
+    \item Извлечение информации.
   \end{itemize}
   \end{block}
 \end{frame}
 
 % section probability (end)
+
+
+\section{Байесовские сети} % (fold)
+\label{sec:bayesian_networks}
+
+\begin{frame}
+  \begin{block}
+  
+    Вероятностная модель, основанная на направленном ацикличном графе причинно-следственных связей.
+  \end{block}
+  \begin{block}{Описание}
+
+    Набор случайных величин $\brac{X_v}_{v\in V}$ и ориентированный граф $G=(V,E)$, узлам которого соответствовуют набюдаемые или скрытые переменные или состояния. Рёбра -- отношения причинности или влияния.
+
+    При этом требуется возможность следующей факторизации совместной плотности вероятности
+    \[p\brac{\brac{X_v}_{v\in V}} = \prod_{v\in V} p\brac{\induc{X_v} \brac{X_w}_{w\in\pi^+(v)}}\]
+    где $\pi^+(v)$ -- множество непосредственных родителей $v$ в $G$.
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \begin{block}{Локальная Марковость}
+
+    Для любого $v\in V$ и любого $S\subseteq V\setminus\brac{\sigma(v)\cup\obj{v}}$ выполняется
+    \[p\brac{\induc{X_v}\brac{X_w}_{w\in \pi^+(v)},\,\brac{X_k}_{k\in S} } = p\brac{\induc{X_v}\brac{X_w}_{w\in \pi^+(v)} }\]
+    где множество потомков узла $v\in V$ равно
+    \[\sigma(v) = \obj{\induc{w\in V} \exists\,\text{path}\,\pi\subseteq E,\, v\overset{\pi}{\leadsto}w}\]
+    
+  \end{block}
+
+\end{frame}
+
+\begin{frame}{$n$-граммная модель текста}
+  \begin{block}{Основная идея}
+
+     чем дальше вхождения единц текста отстоят друг от друга, тем они более независимы
+  \end{block}
+
+  \begin{block}
+
+    Пусть $\brac{w_i}_{i=0}^{l+1}$ -- базовые едининцы текста в порядке их следования, $w_0=w_{l+1}=\$$ -- символы начала и конца текста.
+
+    Совокупная веротяность $w_k$ единицы определяется $n-1$ предыдущей единицей и не зависит от ``префикса'' текста $\brac{w_i}_{i=0}^{k-n}$:
+    \begin{align*}
+      p\brac{\induc{w}M} &= p\brac{\induc{w_1}\$;M} \cdot p\brac{\induc{w_2}\$,w_1;M} \cdot \ldots \\
+        &\times p\brac{\induc{w_n},w_1,\ldots,w_{n-1};M} \\
+        &\times \prod_{i=n+1}^l p\brac{\induc{w_i}w_{i-n+1}, w_{i-n+2}, \ldots, w_{i-1};M} \\ 
+        &\times p\brac{\induc{\$}w_{l-n+2}, \ldots, w_l;M}
+    \end{align*}
+  \end{block}
+\end{frame}
+
+\begin{frame}{$n$-граммная модель текста}
+  \begin{block}{Параметры}
+
+    Вероятности
+    \[p\brac{\induc{x_n}x_1, x_2, \ldots, x_{n-1}}\] 
+    где $x_i\in \obj{\$}\cup \Sigma$ -- алфавит единиц текста, расширенный маркером конца строки.
+    Количество параметров модели $\propto \abs{\Sigma}^n$.
+  \end{block}
+\end{frame}
+
+% section bayesian_networks (end)
 
 \section{Иллюстрация байесовского подхода} % (fold)
 \label{sec:bayes_demonstration}
@@ -240,118 +302,48 @@
   \end{block}
 \end{frame}
 
-\begin{frame}
-  \begin{block}{Источник}
-    Автоматическая обработка текстов на естественном языке и компьютерная лингвистика : учеб. пособие / Большакова~Е.И., Клышинский~Э.С., Ландэ~Д.В., Носков~А.А., Пескова~О.В., Ягунова~Е.В. — М.: МИЭМ, 2011. — 272~с. 
-  \end{block}
-\end{frame}
-
 % section bayes_demonstration (end)
 
-\section{section name} % (fold)
-\label{sec:section_name}
-
-% section section_name (end)
 \begin{frame}{Процесс Дирихле}
   \begin{block}
 
-    распределение заданное на функциях конечных дискретных рапсределений
-    Применительно к К \begin{description}
+    распределение на функциях конечных дискретных рапсределений.
+    \begin{description}
       \item[нет ограничений на сложность словаря]\hfill\\
-        закладывается ненулевая вероятность появления неизвестного ранее термина 
+        закладывается ненулевая вероятность появления неизвестного ранее термина
     \end{description}
   \end{block}
-\end{frame}
-
-\begin{frame}{Определение}
-  \begin{block}
+  \begin{block}{Определение}
 
     Случайное распределение $G$ является реализацией процесса $\text{DP}\brac{\alpha,H}$, где $H$ -- базовое распределение на пространстве параметров $\Theta$, и $\alpha$ -- папарметр концентрации, если для любого измеримого конечного разбиения $\brac{A_t}_{t\in T}$ пространства $\Theta$ выполнено:
     \[\brac{G(A_t)}_{t\in T}\sim \text{Dir}\brac{ \brac{\alpha H(A_t)}_{t\in T} }\] 
+
   \end{block}
 \end{frame}
 
+\begin{frame}{$\text{DP}\brac{\alpha,H}$}
+  \begin{block}
+
+    Распределение $H$ является ``средним'' распределением, ``вокруг'' которого порождаются случайные распределения.
+    Распределения почти наверное дискретны, однако концентрация вероятности в атомах снижается с ростом $\alpha$.
+  \end{block}
+\end{frame}
 
 \begin{frame}
-  \begin{block}{Примеры}
+  \begin{block}{Примеры процесса}
 
     \begin{itemize}
-      \item разбиение отрезка $\clo{0,1}$: раскалываем отрезок $I_{n-1}$ в пропроции $\beta_n$, присваиваем $\eta_n$ длину произвольного ``осколка'', обозначаем оставщийся $I_n$: \[G = \sum_{k\geq1} \eta_k \delta_{\theta_k^*}\]
+      \item разбиение отрезка $\clo{0,1}$: раскалываем отрезок $I_{n-1}$ в пропроции $\beta_n$, присваиваем $\eta_n$ длину произвольного ``осколка'', обозначаем оставщийся $I_n$. Для некоторой реализации $\brac{\theta_k^*}_{k\geq 1}\sim H$ \[G = \sum_{k\geq1} \eta_k \delta_{\theta_k^*}\]
       \item наполнение корзины цветными шарами: \begin{itemize}
         \item случайным цветом $\theta_1\sim H$ помечаем шар и кладём его в корзину;
         \item на шаге $n+1$ с вероятностью $\frac{\alpha}{\alpha+n}$ вытягиваем цвет $\theta_{n+1}\sim H$, помечаем им шар и кладём его в корзину;
-        \item с вероятностью $\frac{n}{\alpha+n}$ выбираем шар из корзины, его цветом помечаем новый шар и кладём оба в корзину;
-        \item 
+        \item с вероятностью $\frac{n}{\alpha+n}$ выбираем шар из корзины, его цветом помечаем новый шар и кладём оба в корзину.
       \end{itemize} 
     \end{itemize}
   \end{block}
 \end{frame}
 
-
-\section{Байесовские сети} % (fold)
-\label{sec:bayesian_networks}
-
-\begin{frame}
-  \begin{block}
-  
-    Вероятностная модель, основанная на направленном ацикличном графе причинно-следственных связей.
-  \end{block}
-  \begin{block}{Описание}
-
-    Набор случайных величин $\brac{X_v}_{v\in V}$ и ориентированный граф $G=(V,E)$, узлам которого соответствовуют набюдаемые или скрытые переменные или состояния. Рёбра -- отношения причинности или влияния.
-
-    При этом требуется возможность следующей факторизации совместной плотности вероятности
-    \[p\brac{\brac{X_v}_{v\in V}} = \prod_{v\in V} p\brac{\induc{X_v} \brac{X_w}_{w\in\pi^+(v)}}\]
-    где $\pi^+(v)$ -- множество непосредственных родителей $v$ в $G$.
-  \end{block}
-\end{frame}
-
-\begin{frame}
-  \begin{block}{Локальная Марковость}
-
-    Для любого $v\in V$ и любого $S\subseteq V\setminus\brac{\sigma(v)\cup\obj{v}}$ выполняется
-    \[p\brac{\induc{X_v}\brac{X_w}_{w\in \pi^+(v)},\,\brac{X_k}_{k\in S} } = p\brac{\induc{X_v}\brac{X_w}_{w\in \pi^+(v)} }\]
-    где множество потомков узла $v\in V$ равно
-    \[\sigma(v) = \obj{\induc{w\in V} \exists\,\text{path}\,\pi\subseteq E,\, v\overset{\pi}{\leadsto}w}\]
-    
-  \end{block}
-
-\end{frame}
-
-\section{Приложени} % (fold)
-\label{sec:applications}
-
-\begin{frame}{$n$-граммная модель текста}
-  \begin{block}{Основная идея}
-
-     чем дальше вхождения единц текста отстоят друг от друга, тем они более независимы
-  \end{block}
-
-  \begin{block}
-
-    Пусть $\brac{w_i}_{i=0}^{l+1}$ -- базовые едининцы текста в порядке их следования, $w_0=w_{l+1}=\$$ -- символы начала и конца текста.
-
-    Совокупная веротяность $w_k$ единицы определяется $n-1$ предыдущей единицей и не зависит от ``префикса'' текста $\brac{w_i}_{i=0}^{k-n}$:
-    \begin{align*}
-      p\brac{\induc{w}M} &= p\brac{\induc{w_1}\$;M} \cdot p\brac{\induc{w_2}\$,w_1;M} \cdot \ldots \\
-        &\times p\brac{\induc{w_n},w_1,\ldots,w_{n-1};M} \\
-        &\times \prod_{i=n+1}^l p\brac{\induc{w_i}w_{i-n+1}, w_{i-n+2}, \ldots, w_{i-1};M} \\ 
-        &\times p\brac{\induc{\$}w_{l-n+2}, \ldots, w_l;M}
-    \end{align*}
-  \end{block}
-\end{frame}
-
-\begin{frame}{$n$-граммная модель текста}
-  \begin{block}{Параметры}
-
-    Вероятности
-    \[p\brac{\induc{x_n}x_1, x_2, \ldots, x_{n-1}}\] 
-    где $x_i\in \obj{\$}\cup \Sigma$ -- алфавит единиц текста, расширенный маркером конца строки.
-    Количество параметров модели $\propto \abs{\Sigma}^n$.
-  \end{block}
-\end{frame}
-
-\begin{frame}{Униграммы [Goldwater et al. (2008)]}
+\begin{frame}{Униграммы [\eng{Goldwater et al.; 2008}]}
   \begin{block}{Модель}
 
     независимое порождение строк, состоящих из независимых входжений слов или конца строки. 
@@ -378,6 +370,24 @@
     где $P(x_j)$ -- равномерное распределение на фонемах, $p_\$$ -- вероятность конца слова.
   \end{block}
 \end{frame}
+
+\begin{frame}{Источники}
+  \begin{block}
+
+    \begin{itemize}
+      \item Автоматическая обработка текстов на естественном языке и компьютерная лингвистика : учеб. пособие / Большакова~Е.И., Клышинский~Э.С., Ландэ~Д.В., Носков~А.А., Пескова~О.В., Ягунова~Е.В. — М.: МИЭМ, 2011. — 272~с.
+      \item \eng{Goldwater, Sharon, Thomas L. Griffiths, and Mark Johnson. 2008. A Bayesian framework for word segmentation: Exploring the effects of context. In submission. Available at \url{http://homepages.inf.ed.ac.uk/sgwater/papers/journalwordseg-hdp.pdf}.}
+      \item \eng{Sharif-Razavian, Narges, and Andreas Zollmann. ``An overview of nonparametric bayesian models and applications to natural language processing.'' Science (2008): 71-93.}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+% \begin{frame}{Сопоставление переводных текстов [\eng{DeNero et al.; 2008}]}
+%   \begin{block}
+%     Пары предложений в корпусе порождаются независимо
+
+%   \end{block}
+% \end{frame}
 
 % section applications (end)
 
@@ -412,8 +422,6 @@
 %%     \end{center}\end{figure}
 %%   \end{block}
 %% \end{frame}
-
-% section bayesian_networks (end)
 
 \end{document}
 
