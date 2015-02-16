@@ -52,10 +52,10 @@
 \frame{\titlepage}
 
 %% Table of Contents
-\begin{frame}
-  \frametitle{\rus{Содержание}}
-  \tableofcontents
-\end{frame}
+% \begin{frame}
+%   \frametitle{\rus{Содержание}}
+%   \tableofcontents
+% \end{frame}
 
 \selectlanguage{russian}
 \section{\rus{Байесовская вероятность}} % (fold)
@@ -67,21 +67,41 @@
   \end{block}
   \begin{block}
 
-    требуется возможность повторять наблюдения бесконечно
+    Требуется возможность повторять наблюдения бесконечно
+  \end{block}
+
+  \begin{block}{Принципиально неповторяемые события}
+
+    Вероятность -- характеристика веры в наступление события \eng{degree of belief}
+    Априорная информация $\oplus$ наблюдения $\Leftarrow$ теорема Байеса $\implies$ апостериорная вероятность
+    \[\mathbb{P}\brac{\induc{\theta} \Dcal} \propto L\brac{\induc{\Dcal}\theta} \pi\brac{\theta}\]
+
   \end{block}
 \end{frame}
 
-\begin{frame}
-  \begin{block}{Принципиально неповторяемые события}
+\begin{frame}\selectlanguage{russian}\frametitle{Типы задач}
+  Всегда постулируется вероятностная модель
+  \begin{block}{Обратные}
 
-    вероятность -- характеристика веры в наступление события \eng{degree of belief}
-
+    по наблюдениям определить вероятностные свойства скрытых состояний (классификация)
   \end{block}
-  \begin{block}{Принципиально неповторяемые события}
+  \begin{block}{Прямые}
 
-    априорная информация $\oplus$ наблюдения $\Leftarrow$ теорема Байеса $\implies$ апостериорная вероятность
-    \[\mathbb{P}\brac{\induc{\theta} \Dcal} \propto L\brac{\induc{\Dcal}\theta} \pi\brac{\theta}\]
+    определить вероятностные характеристики наблюдений (прогнозирование)
+  \end{block}
+\end{frame}
 
+\begin{frame}\selectlanguage{russian}\frametitle{Байесовские задачи в компьютерной лингвистике}
+
+  \begin{block}
+
+  \begin{itemize}
+    \item Классификация текстов
+    \item Определение частей речи
+    \item Разрешение омонимии
+    \item Машинный перевод
+    \item Извлечение информации
+  \end{itemize}
   \end{block}
 \end{frame}
 
@@ -92,7 +112,7 @@
 \begin{frame}\selectlanguage{russian}\frametitle{Пример байесовского подхода}
   \begin{block}
 
-    В качестве примера применения байесовского подхода, рассмотрим подробно ``наивный'' классификатор. Он предполагает независимость появления слов внутри текста.
+    В качестве примера применения байесовского подхода, рассмотрим подробно ``наивный'' классификатор текстов: основное допущение в независимости появления единиц внутри текста.
   \end{block}
   \begin{block}{Текст}
 
@@ -126,7 +146,7 @@
 
     Предполагается независимость появления терминов в тексте (с точностью до константы):
     \[p\brac{\induc{d}\,c} \propto \prod_{t\in \Tcal}\theta_{ct}^{n_{dt}}\]
-    где $\brac{\theta_{ct}}_{t\in \Tcal}$ -- вероятностные характеристики текстов класса $c$ (``модель'' текста), $n_{dt}$ -- количество вхождений термина $t$ в текст $d$
+    где $\brac{\theta_{ct}}_{t\in \Tcal}$ -- вероятностные характеристики текстов класса $c\in K$, ``модель'' текста согласно этому классу, $n_{dt}$ -- количество вхождений термина $t$ в текст $d$
     \[n_{dt} = \abs{\obj{\induc{w\in d} h(w) = t}}\]
   \end{block}
 
@@ -159,9 +179,6 @@
     Нужно многомерное обобщение Бета распределения на $S_{\#T-1}^\circ$.
   \end{block}
 \end{frame}
-
-% \begin{frame}
-% \end{frame}
 
 \begin{frame}
   \begin{block}{Распределение Дирихле}
@@ -219,7 +236,44 @@
   \end{block}
 \end{frame}
 
+\begin{frame}
+  \begin{block}{Источник}
+    Автоматическая обработка текстов на естественном языке и компьютерная лингвистика : учеб. пособие / Большакова~Е.И., Клышинский~Э.С., Ландэ~Д.В., Носков~А.А., Пескова~О.В., Ягунова~Е.В. — М.: МИЭМ, 2011. — 272~с. 
+  \end{block}
+\end{frame}
+
 % section bayes_demonstration (end)
+
+\section{Байесовские сети} % (fold)
+\label{sec:bayesian_networks}
+
+\begin{frame}
+  \begin{block}
+
+    Вероятностная модель, основанная на направленном ацикличном графе причинно-следственных связей.
+  \end{block}
+  \begin{block}{Описание}
+
+    Набор случайных величин $\brac{X_v}_{v\in V}$ и ориентированный граф $G=(V,E)$, узлам которого соответствовуют набюдаемые или скрытые переменные или состояния. Рёбра -- отношения причинности или влияния.
+
+    При этом требуется возможность следующей факторизации совместной плотности вероятности
+    \[p\brac{\brac{X_v}_{v\in V}} = \prod_{v\in V} p\brac{\induc{X_v} \brac{X_w}_{w\in\pi^+(v)}}\]
+    где $\pi^+(v)$ -- множество непосредственных родителей $v$ в $G$.
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \begin{block}{Локальная Марковость}
+    Для любого $v\in V$ и любого $S\subseteq V\setminus\brac{\sigma(v)\cup\obj{v}}$ выполняется
+    \[p\brac{\induc{X_v}\brac{X_w}_{w\in \pi^+(v)},\,\brac{X_k}_{k\in S} } = p\brac{\induc{X_v}\brac{X_w}_{w\in \pi^+(v)} }\]
+    где множество потомков узла $v\in V$ равно
+    \[\sigma(v) = \obj{\induc{w\in V} \exists\,\text{path}\,\pi\subseteq E,\, v\overset{\pi}{\leadsto}w}\]
+    
+  \end{block}
+
+\end{frame}
+
+% section bayesian_networks (end)
 
 \end{document}
 
