@@ -1,0 +1,228 @@
+\documentclass{beamer}
+\usepackage[utf8x]{inputenc}
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+\selectlanguage{russian}
+\mode<presentation>
+{
+  \usetheme{default}      % or try Darmstadt, Madrid, Warsaw, ...
+  \usecolortheme{default} % or try albatross, beaver, crane, ...
+  \usefonttheme{default}  % or try serif, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+} 
+
+%\usepackage{fullpage}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+\newcommand{\obj}[1]{\left\{ #1 \right \}}
+\newcommand{\clo}[1]{\left [ #1 \right ]}
+\newcommand{\clop}[1]{\left [ #1 \right )}
+\newcommand{\ploc}[1]{\left ( #1 \right ]}
+
+\newcommand{\brac}[1]{\left ( #1 \right )}
+\newcommand{\crab}[1]{\left ] #1 \right [}
+\newcommand{\induc}[1]{\left . #1 \right \vert}
+\newcommand{\abs}[1]{\left | #1 \right |}
+\newcommand{\nrm}[1]{\left\| #1 \right \|}
+\newcommand{\brkt}[1]{\left\langle #1 \right\rangle}
+
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Tcal}{\mathcal{T}}
+\newcommand{\Real}{\mathbb{R}}
+
+\selectlanguage{russian}
+
+\begin{document}
+\selectlanguage{russian}
+\title{Байесовские модели в компьютерной лингвистике}
+\author{Назаров Иван}
+\date
+
+%% Title slide
+\frame{\titlepage}
+
+%% Table of Contents
+\begin{frame}
+  \frametitle{\rus{Содержание}}
+  \tableofcontents
+\end{frame}
+
+\selectlanguage{russian}
+\section{\rus{Байесовская вероятность}} % (fold)
+\label{sec:probability}
+\begin{frame}
+  \begin{block}
+
+    Закон больших чисел: предел относительной частоты явления равен вероятности
+  \end{block}
+  \begin{block}
+
+    требуется возможность повторять наблюдения бесконечно
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \begin{block}{Принципиально неповторяемые события}
+
+    вероятность -- характеристика веры в наступление события \eng{degree of belief}
+
+  \end{block}
+  \begin{block}{Принципиально неповторяемые события}
+
+    априорная информация $\oplus$ наблюдения $\Leftarrow$ теорема Байеса $\implies$ апостериорная вероятность
+    \[\mathbb{P}\brac{\induc{\theta} \Dcal} \propto L\brac{\induc{\Dcal}\theta} \pi\brac{\theta}\]
+
+  \end{block}
+\end{frame}
+
+% section probability (end)
+
+\section{Иллюстрация байесовского подхода} % (fold)
+\label{sec:bayes_demonstration}
+\begin{frame}\selectlanguage{russian}\frametitle{Пример байесовского подхода}
+  \begin{block}
+
+    В качестве примера применения байесовского подхода, рассмотрим подробно ``наивный'' классификатор. Он предполагает независимость появления слов внутри текста.
+  \end{block}
+  \begin{block}{Текст}
+
+    Текст $d$ -- упорядоченный набор базовых единиц из пространства $W$.
+    Например, $n$-граммы символов или слов.
+  \end{block}
+  \begin{block}{Термины}
+
+    Пусть $h:W\to \Tcal$ сопоставляет каждой единице некоторый ``термин'' из пространства $\Tcal$. Например, хэш от $n$-граммы или лемма от словоформы.
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \begin{block}{Корпус}
+
+    Пусть $\Dcal$ -- корпус в обучающей выборке, тексты которого разбиты на классы $\brac{D_c}_{c\in K}$, и $T$ -- термины во всех текстах:
+    \[T = \bigcup_{c\in K}T_c;\,T_c = \bigcup_{d\in D_c} T_d\]
+  \end{block}
+
+  \begin{block}{Классификация}
+
+    Задача определить класс $c\in K$ для текста $d$ по частотным характеристикам его терминов $T_d = \obj{\induc{h(w)}\,w\in d}$.
+    Максимизируется апостериорная вероятность 
+   \[\hat{c} = \underset{c\in K}{\text{argmax}} p\brac{\induc{c}\,d} = \underset{c\in K}{\text{argmax}} \ln p\brac{\induc{d}\,c} + \ln \pi\brac{c} \]
+    Фактически это выбор наиправдоподобнейшей модели текста $d$ -- (\eng{\emph{model selection}}).
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \begin{block}{Модель текста}
+
+    Предполагается независимость появления терминов в тексте (с точностью до константы):
+    \[p\brac{\induc{d}\,c} \propto \prod_{t\in \Tcal}\theta_{ct}^{n_{dt}}\]
+    где $\brac{\theta_{ct}}_{t\in \Tcal}$ -- вероятностные характеристики текстов класса $c$ (``модель'' текста), $n_{dt}$ -- количество вхождений термина $t$ в текст $d$
+    \[n_{dt} = \abs{\obj{\induc{w\in d} h(w) = t}}\]
+  \end{block}
+
+\end{frame}
+
+\begin{frame}
+  \begin{block}{Вероятность класса}
+
+    Введём набор распределений $\brac{\pi_c}_{c\in K}$ вероятностных характеристик терминов в классах.
+    Согласно теореме Байеса, на основании наблюдений текста $d$, апостериорная плотность распределения вектора вероятностных характеристик $\theta_c = \brac{\theta_{ct}}_{t\in \Tcal}$ класса $c\in K$ равна:
+      \[p\brac{\induc{\theta_c}\,d} \propto p\brac{\induc{d}\,\theta_c}\pi_c(\theta_c)\]
+    где $\pi_c$ -- априорная плотность распределения $\theta_c$.
+  \end{block}
+  \begin{block}{Сопряжённые распределения}
+
+    Для анализа, обучения и классификации удобно найти \emph{собственное} семейство многомерных распределений оператора преобразования априорного в апостериорное распределение.
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \begin{block}{\eng{Noninformative prior}}
+
+    В силу скудности априорных знаний, нет оснований приписывать \textbf{особенную} вероятностную модель $\theta = \brac{\theta_{ct}}_{t\in T}$ классу $c$.
+    В качестве такого неинформативного априорного распределения $\pi_0=\pi(\theta)$ годится равномерное распределение на $S_{\#T-1}^\circ$ открытом $\#T-1$-мерном симплексе в $\clo{0,1}^{\#T}$.
+  \end{block}
+  \begin{block}
+
+    \begin{align*}
+      p\brac{\induc{\theta_c}\,d} & \propto p\brac{\induc{d}\,\theta_c}\pi_0(\theta_c) \\
+        & \propto \prod_{t\in T}\theta_{ct}^{n_{dt}} \cdot \frac{1}{\text{const}_{\#T}}
+    \end{align*}
+    Случай $\#T=2$ сильно напоминает Бета распределение, которое по сути определено на одномерном симплексе в $\clo{0,1}^2$.
+    Нужно многомерное обобщение Бета распределения на $S_{\#T-1}^\circ$.
+  \end{block}
+\end{frame}
+
+% \begin{frame}
+% \end{frame}
+
+\begin{frame}
+  \begin{block}{Распределение Дирихле}
+
+    Случайный вектор $x=\brac{X_k}_{k=1}^n$ имеет распределение Дирихле если его совместная плотность равна
+    \[f\brac{x;\alpha} = \frac{\Gamma\brac{\sum_{k=1}^n\alpha_k}}{\prod_{k=1}^n \Gamma(\alpha_k)} \prod_{k=1}^n x_k^{\alpha_k-1} 1_{x\in S_{n-1}^\circ}\]
+    где $\alpha = \brac{\alpha_k}_{k=1}^n$ -- вектор параметров концентрации, и $S_{n-1}^\circ$ -- открытый $n-1$ мерный симплекс в $\clo{0,1}^n$.
+  \end{block}
+  \begin{block}{Сопряжённость}
+
+    Если $\pi_c(\theta_c) = \text{Dir}\brac{\theta_c;\alpha_c}$, $\alpha_c$ -- гиперпараметр класса $c$, то при поступлении текста $d$ из $c$ выполняется
+    \[\text{Dir}\brac{\theta_c; \alpha_c+n_d} \propto \prod_{t\in T}\theta_{ct}^{n_{dt}} \text{Dir}\brac{\theta_c; \alpha_c}\]
+    Апостериорные вероятностные характеристики класса $c$ задаются распределением Дирихле с параметром $\alpha_c + n_d$.
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \begin{block}{Правдоподобие термина в классе}
+
+    Вероятность появления термина $t$ в классе $c$ с гиперпараметром $\brac{\alpha_t}_{t\in T}$ равна
+    \begin{align*}
+      p\brac{\induc{t} c} &= \frac{\Gamma\brac{\sum_{s\in T}\alpha_s}}{\prod_{s\in T} \Gamma(\alpha_s)} \int\limits_{S_{n-1}^\circ} \theta_t \prod_{s\in T} \theta_s^{\alpha_s-1} d\theta \\
+      &= \frac{\Gamma\brac{\sum_{s\in T}\alpha_s}}{\Gamma(\alpha_t) \prod_{s\neq t} \Gamma(\alpha_s)} \frac{\Gamma(\alpha_t+1) \prod_{s\neq t} \Gamma(\alpha_s)}{\Gamma\brac{\sum_{s\in T}\alpha_s + 1}}\\
+      &= \frac{\alpha_t+1}{\sum_{s\in T}\alpha_s}\\
+    \end{align*}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \begin{block}{Обучение}
+
+    Обучение классификатора сводится к определению вероятностных характеристик терминов в текстах классов.
+    Если наблюдается набор текстов $D_c$, то $\alpha_c \to \alpha_c + \sum_{d\in D_c}n_d$.
+    Поскольку нет оснований полагать неравномерность распределения вероятностных характеристик, то $\alpha_c = \mathbf{1}$ для каждого класса $c\in K$.
+  \end{block}
+  \begin{block}{Правдоподобие термина}
+
+    Пусть $f_{ct} = \sum_{d\in D_c} n_{dt}$ -- количество вхождений термина $t$ в класс $c$.
+    Тогда апостериорная вероятность термина $t$ в классе $c$ равна
+    \[p\brac{\induc{t}c} = \frac{ f_{ct} + 1}{ \sum_{s\in T}f_{cs} + \abs{T}}\]
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \begin{block}{Априорная вероятность класса}
+
+    В корпусе $\Dcal$ текстов, и каждый принадлежит некоторому классу $c\in K$. Если корпус репрезентативен, то вероятность $\mathbb{P}(c)$ что текст принадлежит классу $c$, точно приближается частотностью
+    \[\eta_c = \frac{\abs{\Dcal_c}}{\abs{\Dcal}}\]
+    Очень важна сбалансированность и репрезентативность корпуса текстов, поскольку в противном случае повышается риска ``застревания'' классификатора в некотором классе.
+  \end{block}
+  \begin{block}{Классификация}
+
+    Итак, к какому классу следует отнести текст?
+    \[\hat{c} = \underset{c\in K}{\text{argmax}} \sum_{t\in T} \ln \frac{f_{ct} + 1}{\sum_{s\in T}f_{cs} + \abs{T}} + \ln\frac{\abs{\Dcal_c}}{\abs{\Dcal}}\]
+  \end{block}
+\end{frame}
+
+% section bayes_demonstration (end)
+
+\end{document}
+
