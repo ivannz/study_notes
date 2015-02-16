@@ -20,6 +20,10 @@
 \usepackage{amsmath, amsfonts, xfrac}
 \usepackage{mathtools}
 
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\colorlet{light blue}{blue!50}
+
 \newcommand{\obj}[1]{\left\{ #1 \right \}}
 \newcommand{\clo}[1]{\left [ #1 \right ]}
 \newcommand{\clop}[1]{\left [ #1 \right )}
@@ -264,6 +268,7 @@
 
 \begin{frame}
   \begin{block}{Локальная Марковость}
+
     Для любого $v\in V$ и любого $S\subseteq V\setminus\brac{\sigma(v)\cup\obj{v}}$ выполняется
     \[p\brac{\induc{X_v}\brac{X_w}_{w\in \pi^+(v)},\,\brac{X_k}_{k\in S} } = p\brac{\induc{X_v}\brac{X_w}_{w\in \pi^+(v)} }\]
     где множество потомков узла $v\in V$ равно
@@ -272,6 +277,68 @@
   \end{block}
 
 \end{frame}
+
+\begin{frame}{$n$-граммная модель текста}
+  \begin{block}
+
+    Основная идея модели в том, что чем дальше вхождения единц текста отстоят друг от друга, тем они более независимы. 
+  \end{block}
+
+  \begin{block}
+
+    Пусть $\brac{w_i}_{i=0}^{l+1}$ -- базовые едининцы текста в порядке их следования, $w_0=w_{l+1}=\$$ -- символы начала и конца текста.
+
+    Совокупная веротяность $w_k$ единицы определяется $n-1$ предыдущей единицей и не зависит от ``префикса'' текста $\brac{w_i}_{i=0}^{k-n}$:
+    \begin{align*}
+      p\brac{\induc{w}M} &= p\brac{\induc{w_1}\$;M} \cdot p\brac{\induc{w_2}\$,w_1;M} \cdot \ldots \\
+        &\times p\brac{\induc{w_n},w_1,\ldots,w_{n-1};M} \\
+        &\times \prod_{i=n+1}^l p\brac{\induc{w_i}w_{i-n+1}, w_{i-n+2}, \ldots, w_{i-1};M} \\ 
+        &\times p\brac{\induc{\$}w_{l-n+2}, \ldots, w_l;M}
+    \end{align*}
+  \end{block}
+\end{frame}
+
+\begin{frame}{$n$-граммная модель текста}
+  \begin{block}
+
+    Параметрами $n$-граммной являются вероятности
+    \[p\brac{\induc{x_n}x_1, x_2, \ldots, x_{n-1}}\] 
+    где $x_i\in \obj{\$}\cup \Sigma$ -- расширенный алфавит единиц.
+    Количество параметров модели $\propto \abs{\Sigma}^n$. 
+  \end{block}
+\end{frame}
+
+%% \begin{frame}[fragile]{$n$-граммная модель}
+%% 
+%%   \begin{block}
+%% 
+%%     % http://texographie.fr/2014/09/arbres-probabilite-forest/
+%%     %% Рисуем часть дерева горниц от уровня {n+1} до {n}
+%%     \begin{figure}[htb]\begin{center}
+%%     %% Задаём стили вершин дерева и меток рёбер.
+%%       \tikzstyle{tree} = [isosceles triangle, shape border rotate = 90, % isosceles triangle stretching = True,
+%%         fill = none, thick, draw, minimum height = 2em, minimum width = 1cm]
+%%       \tikzstyle{door} = [minimum width = 1em, minimum height = 1em, yshift = -1.5em]
+%%       \tikzstyle{passable} = [midway, fill = white] % , circle, draw]
+%% 
+%%       \begin{tikzpicture}[level/.style={sibling distance = 15mm/#1, level distance = 25mm }]
+%% 
+%%       \node [door] (root) {$\pi_{n+1}$} [child anchor = north]
+%%         child { node [tree] (s1) {$\pi_n$} { node[door] {$1$} }
+%%            edge from parent node [passable] {$p$} }
+%%         child { node [tree] (s2) {$\pi_n$} { node[door] {$2$} }
+%%            edge from parent node [passable] {$p$} }
+%%         child { node[draw=none] (hidden) {} edge from parent[draw=none] }
+%%         child { node [tree] (sk) {$\pi_n$} { node[door] {$k$} }
+%%            edge from parent node [passable] {$p$} };
+%%       \path (s2) -- (sk) node [midway, above] {$\cdots$};
+%%       \end{tikzpicture}
+%% 
+%%       \caption{Граф части байесовской сети $n$-граммной модели}
+%%     \label{fig:tree_structure}
+%%     \end{center}\end{figure}
+%%   \end{block}
+%% \end{frame}
 
 % section bayesian_networks (end)
 
