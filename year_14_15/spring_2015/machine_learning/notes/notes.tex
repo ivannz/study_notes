@@ -82,10 +82,10 @@ For a binary variable:
 \[H(\theta) = - \theta \log \theta - (1-\theta) \log (1-\theta)\]
 The entropy as a function of $\theta$ resembles a bell with zeros at $0,1$. Use l'H\^opital's rule.
 
-\txetbf{Idea}: Select the successive feature $Q$ to be as informative as possible.
+\textbf{Idea}: Select the successive feature $Q$ to be as informative as possible.
 
 
-Suppose $A$ elemnts with a property $S$ are classified by a feature $Q$ with $q$ distinct values then the \txetbf{information gain} is
+Suppose $A$ elemnts with a property $S$ are classified by a feature $Q$ with $q$ distinct values then the \textbf{information gain} is
 \[\text{Gain} = H(A,S) = \sum_{k=1}^q \frac{\abs{A_k}}{\abs{A}} H(A_k,S)\]
 where $A_k$ is the partition by $Q$: $A_k = \obj{\induc{\omega \in A} Q(\omega)=k }$.
 
@@ -134,6 +134,109 @@ One-node (one-rule) degenerate decision trees are called \eng{decision stumps}.
 
 % section lecture_4 (end)
 
+\section{Lecture \# 5} % (fold)
+\label{sec:lecture_5}
+
+Associative rules mining.
+
+A ocntext is an object-attribute table: $\brac{G,M,I}$, with $I\subseteq G\times M$.
+An Associative rule is a a pair $A\to B$ with $A,B\subseteq M$ (and sometimes $A\cap B = \emptyset$).
+
+\subsection{A brief history of FCA} % (fold)
+\label{sub:a_brief_history_of_fca}
+
+\begin{itemize}
+	\item Aristotle. An extnet (the objects) and an intent (the set of common attributes);
+	\item Galois. I his reserach he used the what now is know as a Galois connection: a pair of maps $\psi:P\to Q$ and $\phi:Q\to P$ between ordered sets $(P,\leq)$ and $(Q,\leq)$ with the \textbf{GALOIS} property: for any $a\in P$ and $b\in Q$ it
+	\[a\leq \phi(b) \Leftrightarrow b\leq \psi(a)\]
+	\item Lattice structure; Birkhgoff proposed to compare incomparable elements of a poset $(P,\leq)$ by using the least upper and the greatest lower bounds $a\vee b$ and $a\wedge b$;
+\end{itemize}
+
+% subsection a_brief_history_of_fca (end)
+
+\subsection{A recap of the FCA} % (fold)
+\label{sub:a_recap_of_the_fca}
+
+The intent of $A\subseteq G$ is the set of attributes
+\[A' \defn \obj{\induc{m\in M}\,\forall g\in A (g,m)\in I} = \bigcap_{a\in A} a'\]
+Similarly the extent of $B\subseteq M$ is the collection of objects
+\[B' \defn \obj{\induc{g\in G}\,\forall m\in B (g,m)\in I} = \bigcap_{b\in B} b'\]
+
+Also the ${(\cdot)}'$ operator has the following property:
+\[\brac{\bigcup_{j\in J}A_j}' = \bigcap_{j\in J}A_j'\]
+
+A formal concept is a pair $(A,B)$ such that $A'=B$ and $B'=A$ -- stability. 
+
+% subsection a_recap_of_the_fca (end)
+
+An associative rule is an intent (a formal intent, itemset). The support of an associative rule $A\to B$ is
+\[\text{supp}(A\to B) = \frac{\abs{\brac{A\cup B}'}}{\abs{G}}\]
+The confidence of a rule is 
+\[\text{conf}(A\to B) = \frac{\abs{\brac{A\cup B}'}}{\abs{A'}}\]
+
+The setting of the problem
+Find all associative rules of the context with support and confidence higher than some pre-set threshold value.
+
+An implication of the context is an associative rule $A\to B$ with $A'\subseteq B'$, which implies that $\text{conf}(A\to B) = 1$.
+
+The problem is that $A\to B$ is an implication even if $A'=B'=\emptyset$.
+For example $bc\to ad$ in the context $\abs{\begin{matrix}\times & \times & \cdot & \cdot\\ \cdot & \cdot & \times & \times\end{matrix}}$
+
+\subsection{The Apriori algorithm} % (fold)
+\label{sub:the_apriori_algorithm}
+The algorithm is based on the following property of support:
+\noindent\textbf{anti-monotonicity}\hfill\\
+If $A,B\subseteq M$ and $A\subseteq B$ then $\text{supp}(B) \leq \text{supp}(A)$
+
+\textbf{Apriori}
+\begin{description}
+	\item[input] A context $\brac{G,M,I}$, the minimum confidence $\alpha$ and support $\beta$ thresholds;
+	\item[output] All frequent intents (itemsets);
+	\item $C_i\leftarrow \obj{\text{1-itemsets}}$;
+	\item[while] $C_i\neq \emptyset$;\begin{itemize}
+		\item SupportCount($C_i$);
+		\item $F_i \leftarrow \obj{\induc{f\in C_i}\,\text{supp}(f)\geq \beta}$;
+		\item $C_{i+1}\leftarrow \text{AprioriGen}\brac{F_i}$.
+	\end{itemize}
+	\item[Finalization] $I_F \leftarrow \bigcup_i F_i$;
+\end{description}
+
+Where the service procedure is given by:
+\textbf{AprioriGen}
+\begin{description}
+	\item[input] $F$ -- frequent itemsets of size $i$;
+	\item[output] $C_{i+1}$ -- the potential candidate itemsets;
+	\item[SQL-step]\hfill\\
+		insert into $C_{i+1}$ select $\brac{p_k}_{k=1}^i$, $q_i$ from $F_ip$, $F_iq$ where $\brac{p_k}_{k=1}^{i-1} = \brac{q_k}_{k=1}^{i-1}$ and $p_i\leq q_i$;
+	\item[for each] $c\in C_{i+1}$;\begin{description}
+		\item $S\leftarrow (i-1)\text{-element subsets of }c$;
+		\item[for each] $s\in S$;
+		\item if $s\notin F_i$, then $C_{i+1}\leftarrow C_{i+1}\setminus \obj{s}$.
+	\end{description}
+\end{description}
+
+Let $F$ be a frequent itemset. A rule is satisfactory if 
+\[\text{conf}(f\to F\setminus \obj{f}) = \frac{\text{supp}(F)}{\text{supp}(f)} \geq \alpha\]
+
+The confidence of $f\to F\setminus f$ is minimal when $\text{supp}(f)$ is maximal.
+
+The the confidence is minimal when the Antecedent has only one attribute. Supersets of this attribute have lesser support and thus higher confidence.
+
+The associative rules are extracted a frequent itemset $F$ recursively:
+\begin{itemize}
+	\item starting from $1$-itemset of $F$ antecedent which satisfies the $\alpha$ and $\beta$ thresholds;
+	\item check its supersets in $F$; If the confidence requirement is met, then the association rule $f\to F\setminus f$ is kept.
+\end{itemize}
+
+In data mining $A$ is closed if $\text{supp}(A)\leq \alpha$ and there exists no $A\subseteq B$ with $\text{supp}(B)=\text{supp}(A)$.
+
+
+
+% subsection the_apriori_algorithm (end)
+
+% Associative rule document mining.
+
+% section lecture_5 (end)
 
 
 \end{document}

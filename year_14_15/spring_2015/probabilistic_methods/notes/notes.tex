@@ -26,6 +26,7 @@
 \newcommand{\borel}{\mathcal{B}}
 
 \newcommand{\Ex}{\mathbb{E}}
+\newcommand{\Var}{\text{Var}}
 \newcommand{\pr}{\mathbb{P}}
 
 \newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
@@ -395,7 +396,7 @@ Then $Y_n\overset{D}{\to}\mathcal{N}(0,1)$
 
 \textbf{Proff}\hfill\\
 
-If $Z_n = \sum_{k=1}^n X_k - n\mu$. Then $\Ex Z_n = 0$ and $\text{var} Z_n = n \sigma^2$ due to independence.
+If $Z_n = \sum_{k=1}^n X_k - n\mu$. Then $\Ex Z_n = 0$ and $\Var Z_n = n \sigma^2$ due to independence.
 
 Let $\phi_n(s) = \Ex\brac{e^{isZ_n}}$. Then
 \[\phi_n(s) = 1 + 0 - \frac{n\sigma^2}{2} s^2 + o(s^2)\]
@@ -589,7 +590,136 @@ Stability
 
 if $0<\alpha<1$ then ...
 
-
 % section lecture_4 (end)
+
+\section{Lecture \# 5} % (fold)
+\label{sec:lecture_5}
+
+Mathematical statistics.
+
+Probability theory -- we have some understiandingho
+
+We have an experiment, the data is random, and we attmepto to infer something about the underlying physical phenomenon.
+
+Suppose $\brac{X_k}_{k=1}^n$ is some sample.
+
+Using the strong law of large numbers \[\frac{\sum_{k=1}^n X_k}{n}\overset{\text{a.s}}{\to}\]
+Does not tell us anything about the speed of convergence.
+
+The model of the data plays very important role. $X_k \sim C+\xi_i$ with $\xi_i\sim \mathcal{D}(0,1)$ iid.
+
+All probabilistic properties are governevd by the noise term.
+The distribution function of the vectore of the noiset rems is gven by 
+\[F\brac{y_1, \ldots, y_n;\Theta} \Pr\brac{\xi_k\leq y_k;\Theta} = \prod_{k=1}^n F_{\xi_k}(y_k)\]
+
+THe basic properties of distribution funcutions:
+\begin{itemize}
+	\item Normalisation: $0\leq F\leq 1$ and $\lim_{x\to -\infty} F(x)=0$ and $\lim_{x\to \infty} F(x)=1$;
+	\item Right-continuous non-decreasing map;
+	\item It has a density if the derivative exists.
+\end{itemize}
+
+Multivariate distribution:
+\begin{itemize}
+	\item \[p(x,y) = \frac{\partial}{\partial x}\frac{\partial}{\partial y} F(x,y)\]
+\end{itemize}
+
+The law of large numbers:
+The central limit theorem:
+
+Suppose we have $\brac{\xi_k}_{k\geq1}\sim \mathcal{D}(\mu, \sigma^2)$ iid., Then
+\[\sqrt{n}\frac{\frac{1}{n}\sum_{k=1}^n \xi_k - \mu n}{\sigma} \overset{\mathcal{D}}{\to} \mathcal{N}(0,1)\]
+
+\noindent\textbf{The Chebyshev inequality}\hifll\\
+Suppose $\xi$ is some random variable, then 
+\[\Pr\brac{\abs{\xi-\mu}> \epsilon}\leq \frac{\Var{\xi}}{\epsilon^2}\] 
+
+\noindent\textbf{Chernoff's inequality}\hfill\\
+Suppose $\xi$ is a real-valued random variable.
+\[\Pr\brac{\xi>\epsilon}\leq \inf_{\lambda>0} \Ex\exp\brac{\lambda\xi - \lambda\epsilon}\]
+
+Since $1_\obj{\xi\>x}\leq e^{\lambda \xi - \lambda x}$ and expectations preserve monotonicity, we have for every $\lambda>0$
+\[\Pr\brac{\xi>\epsilon}\leq \Ex\brac{e^{\lambda \xi - \lambda x}}\]
+whence the inequality for the infumum over all $\lambda$ follows.
+
+Similarly being a real function of a real value $\xi$ we have the following inequality
+\[1_\obj{\xi\>x}\leq \frac{\abs{\xi}^p}{x^p}\]
+form which Chebyshev's inequality follows as well (not only the markov's inequality).
+
+\subsection{Random variate generation} % (fold)
+\label{sub:random_variate_generation}
+
+Suppose it is necessary to generate a random variable $\theta$ with a known distribution $F$ using the uniform random variable $U\sim\mathcal{U}\clo{0,1}$.
+
+If the function $F$ is invertible ($F$ has no atoms), then $\eta \efn F^{-1}(U)\sim F$.
+
+Indeed, \[\Pr\brac{\eta\leq x} = \Pr\brac{F^{-1}(U)\leq x} = \Pr\brac{U\leq F(x)} = F(x)\]
+
+For example, for $F\sim \text{Exp}(\lambda)$ it is true that $F(x)= 1-\e^{-\lambda x}$, whence \[Y \defn -\frac{1}{\lambda}\log{(1-U)}\] has is exponentially distributed. Notice, that $1-U\sim\mathcal{U}\clo{0,1}$, which implies that \[-\frac{1}{\lambda}\log U \sim F\]
+
+The inversion method is not always convenient. Take normally distributed random variables for instance.
+
+% subsection random_variate_generation (end)
+
+\subsection{Box-M\"uller method} % (fold)
+\label{sub:box_muller_method}
+
+Suppose we need to generate a pair of normally distributed random variates $X,Y$.
+Find the joint distribution of independent $(r,\phi)$ such that the following random vectors have a normal join distribution and are independent
+\[\xi_1 = r \cos\phi\,\text{and}\,\xi_2 = r \sin\phi\]
+
+Consider an infinitesimal patch of a plane
+\[(\xi_1, \xi_2)\in\clo{r,r+\Delta r}\times \clo{\phi,\phi+\Delta \phi}\sim
+\frac{1}{2\pi} e^{-\frac{r^2}{2}} \Delta_r r\sin \Delta_\phi\]
+Note that $\sin\Delta_\phi\apporx \Delta_\phi$ for an infinitesimal $\Delta_\phi$. At the same time
+\[\clo{r,r+\Delta r}\times \clo{\phi,\phi+\Delta \phi} \sim p(r,\phi) \Delta_r\Delta_\phi\] 
+
+Therefore
+\[p(r,\phi) = \frac{1}{2\pi} r e^{-\frac{r^2}{2}}\]
+
+Thus the marginal distribution of $\phi$ is uniform on $\ploc{0,2\pi}$, and $F_r(x) = 1 - e^{-\frac{x^2}{2}}$.
+
+% subsection box_muller_method (end)
+
+Suppose we have a sample $\brac{Y_k}_{k=1}^n$ iid with $F(x)$. The empirical distribution function of $Y$ given the sample is 
+\[\hat{F}_n(x) \defn \frac{1}{n}\sum_{k=1}^n 1_\ploc{-\infty, x}(Y_k)\]
+The expectation of $\hat{F}_n(x)$ for any $x$ is 
+\[\Ex \hat{F}_n(x) = \frac{1}{n} n \Ex1_\ploc{-\infty, x}(Y) = \Pr\brac{Y\leq x} = F(x)\]
+
+The variance of $\hat{F}_n(x)$ at any $x$ is given by
+\[\Var\brac{\hat{F}_n(x)} = \frac{1}{n^2}n \Var{1_\ploc{-\infty, x}(Y)}\]
+where independence assumption has been used.
+The variance on an indicator is
+\[\Var{1_A(Y)} = \Ex 1_A(Y) - \brac{\Ex 1_A(Y)}^2 = \Pr(Y\in A)\brac{1-\Pr(Y\in A)}\]
+Thus \[\Var\brac{\hat{F}_n(x)} = \frac{1}{n} F(x)\brac{1-F(x)}\]
+
+Using the central limit theorem we get
+\[\frac{\hat{F}_n(x) - F(x)}{\sqrt{\frac{1}{n} F(x)\brac{1-F(x)}}}\overset{\mathcal{D}}{\to} \mathcal{N}(0,1)\]
+The convergence rate is $\frac{1}{\sqrt{n}}$.
+
+There is another way to define the empirical distribution function -- though the order statistics
+\[\hat{F}_n(x) = \frac{1}{n}\sum_{k=1}^n 1_\ploc{-\infty,x}(Y_{(k)})\]
+
+\noindent\textbf{Glivenko-Cantelli theorem}\hfill\\
+\[\nrm{\hat{F}_n(x) - F(x)}_\infty \overset{\text{a.s}}{\to} 0\]
+
+If $F(x)$ is invertible, $u_k\sim\mathcal{U}\clo{0,1}$ -- iid and $Y_k\sim F$ -- iid, then it is easy to see that 
+\[\Pr\brac{\nrm{\hat{F}_n(x) - F(x)}_\infty>z} = \Pr\brac{\sup_{u\in\clo{0,1}}{\hat{U}_n(u) - u}>z}\]
+where $\hat{U}_n(u) = \frac{1}{n}\sum_{k=1}^n 1_\ploc{0,F^{-1}(Y_k)}(u)$.
+
+\noindent\textbf{Kolmogorov's theorem}\hfill\\
+\[\Pr\brac{\sqrt{n}\nrm{\hat{F}_n(x) - F(x)}_\infty>z} = 2\sum_{k\geq1} {(-1)}^{k-1} e^{-2k^2z^2}\]
+
+\noindent\textbf{Dworezky-Kifer-Wolfowitz theorem}\hfill\\
+\[\Pr\brac{\sqrt{n}\nrm{\hat{F}_n(x) - F(x)}_\infty>z} \leq 2 e^{-2z^2}\]
+
+\noindent\textbf{Pike's theorem}\hfill\\
+Suppose $\brac{\xi_k}_{k=1}^{n+1}\sim \text{Exp}(1)$.
+The distribution of the ordered statistics coincides with 
+\[U_{(k)} = \frac{\sum_{i=1}^k\xi_i}{\sum_{i=1}^{n+1}\xi_i}\]
+
+%% See Renyi 1953 On the theory of Order Statistics
+
+% section lecture_5 (end)
 
 \end{document}

@@ -593,5 +593,114 @@ Bivariate density function considered as an implicit function, might uncover dif
 
 % section lecture_4 (end)
 
+\section{Lectire \# 5} % (fold)
+\label{sec:lectire_5}
+
+Considering $p(x,t)$ agianst $p(x,0) = f(x)$ and $q(x) = p(x,1)$.
+
+Consider the Kullback-Leibler divergence:
+\[H_{\text{KL}} \defn \int \log \frac{p(x)}{q(x)} p(x) dx + \int \log \frac{q(x)}{p(x)} q(x) dx \]
+
+The idea is to find the maximum of this information gain between $0$ and $1$.
+
+Give a scheme for finding a parametrisation of the differential operator, so that the information gain between $t_0$ and $t_1$ is maximal.
+
+The parametrisation is the coefficients of the spectral decomposition of and the weights density. What this basis should look like?
+
+the main result: for any $\lambda$ it is true that
+\[\sigma(x) p''(x) + \brac{2\sigma'(x) - \mu(x) + (\lambda-1) \sigma'(x)} p'(x) + \brac{\sigma''(x) - \mu'(x) + (\lambda-1) \sigma'(x) f(x) } p(x) = 0\]
+where $f(x) = \frac{\sigma'(x) - \mu(x)}{\sigma(x)}$ for \[p(x) = N e^{\int f(s) ds}\]
+The problem is that the same solution is also a solution to an infinitely many differential equations.
+
+Solving the variational problem to get a ``good'' density function, with many desirable properties. Then identically the discovered solution with a solution to some parametrized Fokker-Planck equation.
+
+% Entropy plus the determinant of Fisher's information matrix.
+
+% Что сложнее: боковичок или болтанка?
+
+The problem can be reduced to finding the appropriate diffusion parameter $\sigma(x)$. However due to the ``main result'' there are infinitely many possibilities for sigma.
+
+We have $\mu= \sigma'(x) - f(x)\sigma(x)$
+
+It is possible to get $\sigma(x)$ as an eigenfunction of some Fredholm integral operator. Thus may yield a countable of even a finite set of candidates.
+
+How to chose the bes specification of the Fokker-Planck equation?
+
+
+If $f(x,t)$ is some termed derivative contract for $x$ -- the underlying asset price, then 
+\[\frac{\partial}{\partial t} f(x,t) + \mu(x) \frac{\partial}{\partial x}f(x,t) + \frac{1}{2}\sigma^2(x) \frac{\partial^2}{\partial x^2} f(x,t) = r f(x,t)\] 
+The probability density function comes here from the terminal value $F(x) = f(x,T)$, then \[f(x,t) = e^{-r(T-t)}\Ex_t F(x)\]
+
+The Langewin equation for $x$ with $\xi\sim \mathcal{N}(0,1)$
+\[dx  = \mu(x) dt + \sqrt{\sigma^2(x)dt}\xi\]
+
+%% Утром в Среду -- СМС по поводу встречи с Евстигнеевым в тот же вечер.
+%% Заранее написать Email.
+
+\subsection{Integral operators} % (fold)
+\label{sub:integral_operators}
+
+Formalize the process, where there is no physical time. A subjective forecasting actually does not support the use of continuous time: the planning happens in discrete time steps. Intuitive foreseeing does not involve smooth time transitions: foreseeing works with discrete events.
+
+The transitions between time moments is discontinuous.
+
+Thus the application of Fokker-Planck operator is philosophically incorrect.
+
+Suppose we have some probability density $p(x)$ and wish to obtain the density $q(x)$ at some future moment.
+
+Recall that $y=f(x)$, then $q(y) = \frac{p\brac{f^{-1}(y)}}{\abs{f'\brac{f^{-1}(y)}}}$ if $f$ is invertible.
+
+This about the following possible transition operator:
+\[p(x)\to q(x)\quad : \quad q(x) = \int_a^b K(x,\xi) p(\xi) d\xi\]
+where $K(x,\xi)$ is the kernel of the integral operator. 
+
+Consider this equation (Sturm-Liuville when $f = 0$):
+\[\sigma(x) \phi''(x) + \brac{2\sigma'(x) - \mu(x)} \phi'(x) + \brac{\sigma''(x) - \mu'(x) } \phi(x) = f(x)\]
+where $f(x)$ is an \textbf{external loading} and it makes the equation inhomogeneous. The solution in general is given by
+\[\phi(x) = \int G(x,\ix) f(\xi) d\xi\]
+where $G(x,\xi)$ is the Greene function, derived form two linearly independent solution of the homogeneous equation.
+
+If we instead consider the Cauchy problem $f=\lambda \phi$, then it is possible to construct a symmetric integral kernel and get a basis of eigenfunctions on the integral operator:
+\[u_n(x)\sqrt{\omega(x)} = \lambda_n \int_a^b K(x,\xi) u_n(\xi)\sqrt{\omega(\xi)} d\xi\]
+
+\noindent\textbf{Merser's theorem}\hfill\\
+The kernel of the integral operator can be represented as
+\[K(x,\xi) = \sum_n \frac{u_n(x)\sqrt{\omega(x)} }{\lambda_n} u_n(\xi)\sqrt{\omega(\xi)} \]
+
+Now define 
+\[A_{ij} = \iint u_i(x)\sqrt{\omega(x)} K(x,\xi) u_j(\xi)\sqrt{\omega(\xi)} dxd\xi\]
+
+It is possible to have $A$ be a diagonal matrix.
+% $p(x)\to C'U(x) \sqrt{\omega(x)}
+
+Hmaburger's method gives an orthonormal polynomial basis.
+
+Suppose we have a density function $z(x) = ne^{-\int_a^x f(s) ds}$ and a set of linearly independent functions $\brac{y_k(\cdot)}_{k=1}^n$ with
+\[\int y_i(s) y_j(s) z(s) ds = \delta_{ij}\]
+What is the spectrum? And whether there exists a kernel equal to
+\[G(x,\xi)=\sum_{k=1}^n \frac{y_k(x)y_k(\xi)}{\lambda_k}\]
+
+Consider a degenerate kernel (separable kernel).
+
+We still must make additional assumption regarding the specifics of the integral transition operator: it has to be a specialized Fredholm operator.
+
+% Tikhonov Vasilyeva §9, Kornov §15.3.2, Felfund Fomin §27
+
+\subsubsection{Estimating the spectrum of a degenerate kernel} % (fold)
+\label{ssub:estimating_the_spectrum_of_a_degenerate_kernel}
+
+Suppose we have a planar grid where the products $u_n(x) u_n(\xi)$ are evaluated. Uniform grid won't do, since it results in ``wild'' eigenvalues.
+
+For \[K(x,\xi) = \sum_{n=1}^p \frac{u_n(x) u_n(\xi)}{\lambda_n}\]
+we must place the grid knots uniformly on the scale of the cumulative weighting function in order to get better approximation.
+
+
+
+% subsubsection estimating_the_spectrum_of_a_degenerate_kernel (end)
+
+% subsection integral_operators (end)
+
+% section lectire_5 (end)
 
 \end{document}
+
