@@ -927,5 +927,318 @@ The AIC is given by (up to the terms of the first order):
 
 % section lecture_5 (end)
 
+\section{Lecture \# 6} % (fold)
+\label{sec:lecture_6}
+
+Akaike criterion combines parameter estimation and model selection
+
+By looking at the Kullback-Leibler divergence between the estimated and the true
+
+\[d(\theta_k) = - 2 \Ex_g \ln f\brac{\induc{Y}\theta_k}\]
+
+$g(y\vert \theta_0)$
+
+\[d(\hat{theta}_k) = - 2 \induc{\Ex \ln f\brac{\induc{Y}\theta_k}}_{\theta_k = \hat{\theta}_k(y)}\]
+
+\[\Ex_{\hat{\theta}_k} d(\hat{theta}_k) = - 2 \induc{\Ex_z \Ex_Y \ln f\brac{\induc{Y}\theta_k}}_{\theta_k = \hat{\theta}_k(z)}\]
+
+The idea is to use the sample twice (law of Large Numbers)
+
+What is the bias here?
+
+Law of Large numbers
+\[-2 \ln f\brac{\induc{y}\hat{\theta}_k(y)} \to \Ex \]
+
+Modified (Corrected) AIC
+
+Akaike's information criterion in which the contribution of the error term is computed.
+This way it is possible to relax the assumption of large sample size $n$.
+
+Look at what happens in the normal linear regression setting.
+
+AIC is is more general, but the bias of the estimate can be really large
+$\text{AIC}_c$ requires the model class assumption -- restrictive, but offers greater precision.
+
+\subsection{Derivation} % (fold)
+\label{sub:derivation}
+Assumptions \begin{description}
+	\item[the true model]\hfill\\
+	\[y = \underset{n\times p_0}{X}\underset{p_0\times 1}{\beta_0} + \epsilon\]
+	where $\epsilon \sim \Ncal_n\brac{0,\sigma^2 \underset{n\times 1}{E}}$
+	\item[the candidate model] \hfill\\
+	\[y = \underset{n\times p}{X}\underset{p\times 1}{\beta_0} + \epsilon\]
+	where $\epsilon \sim \Ncal_n\brac{0,\sigma^2 \underset{n\times 1}{E}}$.
+	There are $k=p+1$ parameters to estimate: $\theta_0 = \brac{\beta_0,\sigma_0^2}$ and $\theta_k = \brac{\beta_k,\sigma_k^2}$.
+	\item[Nested models] assume that $0\leq p_0 \leq p$ and $\beta_0$ has $(p-p_0)$ zeros at the end. The models are nested $f\brac{\induc{y}\theta_0}\in \Mcal_k$
+\end{description}
+
+The LS estimate of $\Mcal_k$:\begin{align*}
+	\hat{\beta}_k &= \brac{X'X}^{-1} X'Y\\
+	\hat{\sigma}^2_k &= \frac{1}{n}\brac{Y-X\hat{\beta}_k}'\brac{Y-X\hat{\beta}_k}
+\end{align*}
+
+
+the log likelihood is 
+\[\ln f\brac{\induc{y}\theta} = -\frac{n}{2} \ln 2\pi -\frac{n}{2}\ln \sigma^2_k - \frac{1}{2\sigma^2_k} \brac{Y-X\beta_k}'\brac{Y-X\beta_k}\]
+
+For $\theta_k$ this can be simplified to 
+\[\ln f\brac{\induc{y}\hat{\theta}_k(y)} = -\frac{n}{2} \ln 2\pi -\frac{n}{2}\ln \hat{\sigma}^2_k - \frac{1}{2\hat{\sigma}^2_k} n \hat{\sigma}^2_k \]
+\[\ln f\brac{\induc{y}\hat{\theta}_k(y)} = -\frac{n}{2} \brac{ 1 + \ln 2\pi} -\frac{n}{2}\ln \hat{\sigma}^2_k\]
+
+However
+\[-2\ln f\brac{\induc{y}\theta_k} = n \ln 2\pi +n\ln \sigma^2_k + \frac{1}{\sigma^2_k} \brac{Y-X\beta_k}'\brac{Y-X\beta_k}\]
+
+Since 
+\begin{align*}
+	\brac{Y-X\beta_k}'\brac{Y-X\beta_k} &= \brac{\beta_0-\beta_k}'X'X\brac{\beta_0-\beta_k} + \\
+		& + \brac{\beta_0 - \beta_k}'X'\epsilon + \epsilon'X\brac{\beta_0 - \beta_k}
+		& + \epsilon'\epsilon
+\end{align*}
+
+Therefore 
+\[\Ex-2\ln f\brac{\induc{y}\theta_k} = n \ln 2\pi + n\ln \sigma^2_k + \frac{1}{\sigma^2_k} \brac{ \brac{\beta_0-\beta_k}'X'X\brac{\beta_0-\beta_k} + n\sigma_0^2 }\]
+
+Now 
+\[d\brac{\hat{\theta}_k} = n \ln 2\pi + n\ln \hat{\sigma}^2_k + \frac{1}{\hat{\sigma}^2_k}\brac{\beta_0-\beta_k}'X'X\brac{\beta_0-\beta_k} + \frac{n\sigma_0^2}{\hat{\sigma}^2_k}\]
+
+taking expectations
+\[\Ex d\brac{\hat{\theta}_k} = n \ln 2\pi + n\Ex \ln \hat{\sigma}^2_k + n^2\Ex \frac{\sigma_0^2}{n\hat{\sigma}^2_k} + n \Ex \frac{1}{n\hat{\sigma}^2_k}\brac{\beta_0-\beta_k}'X'X\brac{\beta_0-\beta_k}\]
+
+Since $\frac{n\hat{\sigma}^2_k}{\sigma_0^2} \sim \chi^2_{n-p}$ and 
+\[\brac{\beta_0-\beta_k}'X'X\brac{\beta_0-\beta_k}{\sigma_0^2} \sim \chi^2_p\]
+and are independent
+
+Hence
+\[\Ex d\brac{\hat{\theta}_k} = n \ln 2\pi + n\Ex \ln \hat{\sigma}^2_k + \frac{n^2}{n-p-2} + n \Ex \frac{1}{n\hat{\sigma}^2_k} \Ex \brac{\beta_0-\beta_k}'X'X\brac{\beta_0-\beta_k}\]
+and thus 
+\[\Ex d\brac{\hat{\theta}_k} = n \ln 2\pi + n\Ex \ln \hat{\sigma}^2_k + \frac{n^2}{n-p-2} + \frac{n p}{n-p-2} \]
+
+Whence 
+\[\Ex d\brac{\hat{\theta}_k} = n \brac{1+\ln 2\pi} + n\Ex \ln \hat{\sigma}^2_k + \frac{2n(p+1)}{n-p-2}\]
+\[\Ex d\brac{\hat{\theta}_k} = \Ex -2 \ln f\brac{\induc{y}\hat{\theta}_k} + \frac{2n(p+1)}{n-p-2}\]
+
+Since 
+\[\frac{2n(p+1)}{n-p-2} = \frac{2nk}{n-k-1} = 2k + \frac{2k(k+1)}{n-k-1}\]
+
+the original AIC is
+\[\text{AIC} = -2 \ln f\brac{\induc{y}\hat{\theta}_k(y)} + 2k\]
+
+The corrected AIC is 
+\[\text{AIC}_c = \text{AIC} + \frac{2k(k+1)}{n-k-1}\]
+
+% subsection derivation (end)
+
+\subsection{Mallow's $C_p$} % (fold)
+\label{sub:mallows_cp}
+
+The $C_p$ stands for the conceptual predictive statistic in the context of the multivariate regression.
+
+Assumptions \begin{description}
+	\item[the true model]\hfill\\
+	The true model is $y = \underset{n\times p_0}{X}\underset{p_0\times 1}{\beta_0} + \epsilon$, where $\epsilon \sim \Ncal_n\brac{0,\sigma_0^2 \underset{n\times 1}{E}}$;
+	\item[the candidate model] \hfill\\
+	The candidate is $y = \underset{n\times p}{X}\underset{p\times 1}{\beta} + \epsilon$, where $\epsilon \sim \Ncal_n\brac{0,\sigma^2 \underset{n\times 1}{E}}$.
+	There are $k=p+1$ parameters to estimate: $\theta_0 = \brac{\beta_0,\sigma_0^2}$ and $\theta_k = \brac{\beta_k,\sigma_k^2}$. THe MLE of $\theta_k$ is $\hat{\theta}_k$.
+	\item[the density] $f\brac{\induc{y}\hat{\theta}_k} = f_k$.
+\end{description}
+
+The idea is to look athow the RSS behaves
+
+\[\RSS = \sum_{i=1}^n \brac{y_i - x_i \hat{\beta}}^2 = \brac{Y-X\hat{\beta}}'\brac{Y-X\hat{\beta}} = Y'\brac{E-H}Y\]
+where $H$ is the projection matrix $X\brac{X'X}^{-1}X'$.
+
+The expected value of the RSS is given by
+\begin{align*}
+	\Ex Y'\brac{E-H}Y &= \Ex\tr{Y'\brac{E-H}Y} \\
+		&= \beta_0'X_0' \brac{E-H} X_0\beta_0 + \tr\brac{\brac{E-H} \sigma^2_0 I}\\
+		&= \beta_0'X_0' \brac{E-H} X_0\beta_0 + (n-p)\sigma^2_0
+\end{align*}
+
+Show that if $z\sim \Dcal_m\brac{\mu,\Sigma}$ and $A$ is a non-random $m\times m$ matrix, then
+\[\Ex\brac{z'Az} = \mu'A\mu + \tr\brac{A\Sigma}\] 
+
+Define the $C_p^0$ as
+\[C_p^0 = \frac{\RSS}{\sigma^2_0} - n + 2p\]
+
+The expectation is 
+\[\Ex C_p^0 = p + \frac{1}{\sigma^2_0} \beta_0'X_0' \brac{E-H} X_0\beta_0\]
+
+If the true model has bee selected then $\Ex C_p^0 = p$, otherwise $\Ex C_p^0 > p$.
+
+Put $C_p$ to $\frac{\RSS}{\hat{\sigma}^2} - n + 2p$, with the hope, that it leads to the same expectation of $C_p^0$.
+
+But which estimator of the reference $\sigma^2$ to use? Use the smallest -- for the full model
+\[\hat{\sigma}^2_*\frac{1}{n-p} \sum_{i=1}^n\brac{y_i - X_i\hat{\beta}}^2\]
+where $p$ is the number of parameters in the full model.
+
+% subsection mallows_cp (end)
+
+\subsection{Comparison between the $C_p$ and $\text{AIC}_c$} % (fold)
+\label{sub:comparison_between_cp_and_aicc}
+
+These criteria are asymptotically equivalent.
+
+The AIC for (the biased estimator)
+\[\text{AIC} = - \ln f\brac{\induc{y}\hat{\theta}_k} + 2k \\
+	&= n \ln \hat{\sigma}^2 + n\brac{1 + \ln 2\pi} + 2(p+1)\]
+
+Return the model with the minimum values of the AIC. For a fixed $n$ it is the same a looking at 
+\[n\ln \hat{\sigma}^2 - n\ln \hat{\sigma}^2_* + 2 p \]
+
+But this minimization is equivalent to minimization of the following 
+\[ n\ln \frac{\hat{\sigma}^2}{\hat{\sigma}^2_*} + 2p\]
+
+For large $n$ the ratio of $\hat{\sigma}^2$ to $\hat{\sigma}^2_*$ is approximately $1$ due to consistency.
+Hence it is possible to expand the logarithm around $1$: $\ln(1+x)\approx x + o(x)$.
+
+Hence
+\[\approx b\brac{\frac{\hat{\sigma}^2}{\hat{\sigma}^2_*} - 1} + 2p = C_p\]
+
+\textbf{Exercise}\\
+Prove the expected Gauss discrepancy
+\[\Ex C_p^0 = \Ex \frac{1}{\sigma^2_0}\brac{X_0\beta_0 -X \beta}'\brac{X_0\beta_0 -X \beta}\]
+Indeed, take a look at the Gauss discrepancy:
+\begin{align*}
+	\brac{X_0\beta_0 -X \beta}'\brac{X_0\beta_0 -X \beta} &= \brac{X_0\beta_0 - X \brac{X'X}^{-1}X'X_0\beta_0 - X \brac{X'X}^{-1}X'\epsilon }'\brac{ \ldots }\\
+	&= \brac{ (I - H )X_0\beta_0 - H \epsilon }'\brac{ (I - H )X_0\beta_0 - H \epsilon }\\
+	&= \beta_0'X_0'(I-H)X_0\beta_0 - \epsilon'H(I-H)X_0\beta_0 - \beta_0'X_0'(I-H)H \epsilon + \epsilon'H\epsilon\\
+	&= \beta_0'X_0'(I-H)X_0\beta_0 + \epsilon'H\epsilon
+\end{align*}
+Since $I-H$ and $H$ are projectors onto orthogonal subspaces of $\Real^n$.
+
+Taking expectations yields
+\[\Ex\brac{\beta_0'X_0'(I-H)X_0\beta_0 + \epsilon'H\epsilon} = \beta_0'X_0'(I-H)X_0\beta_0 + \Ex\brac{\epsilon'H\epsilon}\]
+while at the same time due to linearity of $\Ex$ and $\tr$:
+
+\[\Ex(\epsilon'H\epsilon) &= \tr\Ex(\epsilon'H\epsilon) = \Ex\tr(\epsilon'H\epsilon) \\
+&= \Ex\tr(H\epsilon\epsilon) = \tr(H\Ex\epsilon\epsilon)\]
+
+% subsection comparison_between_cp_and_aicc (end)
+
+\subsection{The Bayesian information criterion} % (fold)
+\label{sub:the_bayesian_information_criterion}
+
+Also known as the \textbf{B}ayesian \textbf{I}nformation \textbf{C}riterion introduced by Schwartz as the competitor of the AIC.
+
+This looks at the problem from the Bayesian point of view.
+
+Assumptions \begin{description}
+	\item[Data] $\brac{y_k}_{k=1}^n$;
+	\itme[Parametric] The distribution function is fully specified by the vector of parameters $\theta_k\in \Theta_k$.
+	\item[the true model]\hfill\\
+	The true model is $y = \underset{n\times p_0}{X}\underset{p_0\times 1}{\beta_0} + \epsilon$, where $\epsilon \sim \Ncal_n\brac{0,\sigma_0^2 \underset{n\times 1}{E}}$;
+	\item[the candidate model] \hfill\\
+	The candidate is $y = \underset{n\times p}{X}\underset{p\times 1}{\beta} + \epsilon$, where $\epsilon \sim \Ncal_n\brac{0,\sigma^2 \underset{n\times 1}{E}}$.
+	There are $k=p+1$ parameters to estimate: $\theta_0 = \brac{\beta_0,\sigma_0^2}$ and $\theta_k = \brac{\beta_k,\sigma_k^2}$. THe MLE of $\theta_k$ is $\hat{\theta}_k$.
+	\item[the density] $f\brac{\induc{y}\hat{\theta}_k} = f_k$.
+\end{description}
+
+\begin{itemize}
+	\item There is prior distribution $\pi_k$ on the classes of models $\Mcal_k$;
+	\item Each model class has a prior distribution $G_k\brac{\theta_k}$ on the true parameter $\theta_k$;
+	\item 
+\end{itemize}
+The bayes formula yields the following posterior distribution of $\Mcal_k$ given $\mathbf{y}$:
+\[p\brac{\induc{\Mcal_k}\mathbf{y}} \propto p\brac{\induc{\mathbf{y}}\Mcal_k} \pi_k\]
+up to the factor $\frac{1}{f(\mathbf{y})}$.
+
+Also
+\[p\brac{\induc{\mathbf{y}}\Mcal_k}
+= \int p\brac{\induc{\mathbf{y}, \theta_k}\Mcal_k} d\theta_k
+= \int p\brac{\induc{\mathbf{y}}\theta_k, \Mcal_k} p\brac{\induc{\theta_k}\Mcal_k}d\theta_k
+= \int \induc{L}_{\Mcal_k}(\theta_k;\mathbf{y}) g_k(\theta_k) d\theta_k\]
+
+\subsection{Laplace approximation} % (fold)
+\label{sub:laplace_approximation}
+
+Idea is to find a Gaussian approximation to a probability density defined over a set of continuous variables.
+
+Univariate case
+\[p(z) = \frac{1}{N_z}f(z)\]
+where $N_z$ is the normalizing constant, and $f(z)$ is unimodal.
+The idea is to approximate $f(z)$ with gaussians $q(z)$.
+
+Consider the Taylor expansion of the logarithm of $f(z)$ around its mode $z_0$, given by $f'(z_0) = 0$.
+\[\ln f(z) \approx \ln f(z_0) + \induc{\frac{f'(z)}{f(z)}}_{z=z_0} (z-z_0) - \frac{1}{2} \induc{\frac{d^2}{dz^2} \ln f(z)}_{z=z_0} \brac{z-z_0}^2 \]
+the reminder term decays to zero faster than $\brac{z-z_0}^2$. Thus $f(z)\approx e^{ -\frac{1}{2} A {(z-z_0)}^2 }$.
+
+Whence around $z_0$:
+\[q(z) = \brac{\frac{A}{2\pi}}^\frac{1}{2}e^{ -\frac{1}{2} A {(z-z_0)}^2 }\]
+
+In the multidimensional case for $A = \induc{-\frac{d^2}{dz'dz}\ln f(z)}_{z=z_0}$
+\[q(\mathbf{z}) = \frac{\abs{A}^\frac{1}{2}}{{(2\pi)}^\frac{1}{2}} e^{-\frac{1}{2} (z-z_0)'A(z-z_0)}\]
+
+Therefore
+\[N_z = \int f(z) dz = f(z_0) \frac{{(2\pi)}^\frac{1}{2}}{\abs{A}^\frac{1}{2}}\]
+
+% subsection laplace_approximation (end)
+
+The integrand
+\[f(\theta_k) = p\brac{\induc{y}\theta_k}g_k(\theta_k)\]
+
+Using the Laplace approximation we can treat the integrand as a normal density.
+
+Let's compute the Laplace approximation.
+
+Let $\theta_k^* = \text{argmax}_{\theta_k\in \Theta_k}\,f(\theta_k)$ and put $A_{\theta_k^*}$ as
+\[\induc{- \frac{d^2}{d\theta_kd\theta_k'} \ln f(\theta_k)}_{\theta_k=\theta_k^*}\]
+
+Could be ignore the contribution coming from $g_k$?
+
+The log of
+\[\ln p\brac{\induc{\mathbf{y}}\theta_k} = \sum_{i=1}^n p\brac{\induc{y_i}\theta_k}\]
+which hints at the fact that $P\brac{\induc{\mathbf{y}}\theta_k}$ dominates the $\ln g_k(\theta_k)$.
+
+Thus we can take $\theta_k^* = \hat{\theta}_k$ -- the MLE and the observed Fisher information matrix
+\[I_{\hat{\theta}_k} = \induc{- \frac{\partial^2}{\partial\theta_k \partial\theta_k'}\ln p\brac{\induc{\mathbf{y}} \theta_k}} \]
+
+In fact it is possible to have better Laplace approximations of $\int e^{n\phi(z)}dz = \text{approx} + o(n^{-\frac{1}{2}})$.
+
+The posterior distribution is given by 
+\[p\brac{\induc{\mathbf{y}}\Mcal_k} = \int f(\theta_k) d \theta_k = \int p\brac{\induc{\mathbf{y}}\theta_k} g_k(\theta_k) d \theta_k \approx p\brac{\induc{\mathbf{y}}\hat{\theta}_k} g_k(\hat{\theta}_k) \frac{\brac{2\pi}^\frac{k}{2}}{\abs{I_{\hat{\theta}_k}}^\frac{1}{2}}\]
+the exponent $\frac{k}{2}$ comes from the dimension of $\theta_k$.
+
+Therefore
+\[\ln p\brac{\induc{\mathbf{y}}\Mcal_k} = \ln f\brac{\induc{\mathbf{y}}\hat{\theta}_k} + \ln g_k(\theta_k) + \frac{k}{2} \ln 2 \pi - \frac{1}{2}\ln \abs{I_{\hat{\theta}_k}} \]
+
+For independent observations the full information matrix is just the one-observation information matrix times the number of observations.
+Thus 
+\[\abs{I_{\hat{\theta}_k}} = n^k \abs{I_1}\]
+
+Hence 
+\[\ln p\brac{\induc{\mathbf{y}}\Mcal_k} = \ln f\brac{\induc{\mathbf{y}}\hat{\theta}_k} + \ln g_k(\theta_k) + \frac{k}{2} \ln 2 \pi - \frac{k}{2}\ln n - \ln \abs{I_1} \]
+
+But the terms 
+\[ + \ln g_k(\theta_k) + \frac{k}{2} \ln 2 \pi - \ln \abs{I_1}\]
+are bound with regardless of the values of $n$ and moreover are independent of it!
+
+Therefore for asymptotic model comparison we can use
+\[\text{BIC} = -2\ln f\brac{\induc{\mathbf{y}}\hat{\theta}_k} + k\ln n \]
+
+The BIC tends to favour simpler models, because the penalty term is larger as $n\to \infty$.
+In Bayesian modelling one needs to accumulate larger evidence in order to make estimation.
+Uncertainty comes from the estimation and from the uncertainty of the underlying parameter.
+
+
+The BIC is consistent
+If the true model is in $\obj{\Mcal_{k_1},\ldots,\Mcal_{k_L}}$ then the the minimal BIC pick the true model with probability 1 as $n$ gets larger.
+
+Heuristics on the values of BIC $\text{BIC}-\text{BIC}_{\min}$
+\begin{itemize}
+	\item if $\in\clo{0,2}$ -- virtually no evidence against;
+	\item if $\in\clo{2,6}$ -- the evidence id positive;
+	\item if $\in\clo{6,10}$ -- the evidence is strong;
+	\item if $\in\clop{10, +\infty}$ -- the evidence is very strong.
+\end{itemize}
+
+Kass & Raffey (1995)
+
+
+% subsection the_bayesian_information_criterion (end)
+
+
+% section lecture_6 (end)
+
+
 
 \end{document}
