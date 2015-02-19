@@ -23,6 +23,9 @@
 \newcommand{\Cplx}{\mathbb{C}}
 
 \newcommand{\Fcal}{\mathcal{F}}
+\newcommand{\Tcal}{\mathcal{T}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Dcal}{\mathcal{D}}
 \newcommand{\borel}{\mathcal{B}}
 
 \newcommand{\Ex}{\mathbb{E}}
@@ -630,7 +633,7 @@ The central limit theorem:
 Suppose we have $\brac{\xi_k}_{k\geq1}\sim \mathcal{D}(\mu, \sigma^2)$ iid., Then
 \[\sqrt{n}\frac{\frac{1}{n}\sum_{k=1}^n \xi_k - \mu n}{\sigma} \overset{\mathcal{D}}{\to} \mathcal{N}(0,1)\]
 
-\noindent\textbf{The Chebyshev inequality}\hifll\\
+\noindent\textbf{The Chebyshev inequality}\hfill\\
 Suppose $\xi$ is some random variable, then 
 \[\Pr\brac{\abs{\xi-\mu}> \epsilon}\leq \frac{\Var{\xi}}{\epsilon^2}\] 
 
@@ -651,11 +654,11 @@ form which Chebyshev's inequality follows as well (not only the markov's inequal
 
 Suppose it is necessary to generate a random variable $\theta$ with a known distribution $F$ using the uniform random variable $U\sim\mathcal{U}\clo{0,1}$.
 
-If the function $F$ is invertible ($F$ has no atoms), then $\eta \efn F^{-1}(U)\sim F$.
+If the function $F$ is invertible ($F$ has no atoms), then $\eta \defn F^{-1}(U)\sim F$.
 
 Indeed, \[\Pr\brac{\eta\leq x} = \Pr\brac{F^{-1}(U)\leq x} = \Pr\brac{U\leq F(x)} = F(x)\]
 
-For example, for $F\sim \text{Exp}(\lambda)$ it is true that $F(x)= 1-\e^{-\lambda x}$, whence \[Y \defn -\frac{1}{\lambda}\log{(1-U)}\] has is exponentially distributed. Notice, that $1-U\sim\mathcal{U}\clo{0,1}$, which implies that \[-\frac{1}{\lambda}\log U \sim F\]
+For example, for $F\sim \text{Exp}(\lambda)$ it is true that $F(x)= 1-e^{-\lambda x}$, whence \[Y \defn -\frac{1}{\lambda}\log{(1-U)}\] has is exponentially distributed. Notice, that $1-U\sim\mathcal{U}\clo{0,1}$, which implies that \[-\frac{1}{\lambda}\log U \sim F\]
 
 The inversion method is not always convenient. Take normally distributed random variables for instance.
 
@@ -671,7 +674,7 @@ Find the joint distribution of independent $(r,\phi)$ such that the following ra
 Consider an infinitesimal patch of a plane
 \[(\xi_1, \xi_2)\in\clo{r,r+\Delta r}\times \clo{\phi,\phi+\Delta \phi}\sim
 \frac{1}{2\pi} e^{-\frac{r^2}{2}} \Delta_r r\sin \Delta_\phi\]
-Note that $\sin\Delta_\phi\apporx \Delta_\phi$ for an infinitesimal $\Delta_\phi$. At the same time
+Note that $\sin\Delta_\phi\approx \Delta_\phi$ for an infinitesimal $\Delta_\phi$. At the same time
 \[\clo{r,r+\Delta r}\times \clo{\phi,\phi+\Delta \phi} \sim p(r,\phi) \Delta_r\Delta_\phi\] 
 
 Therefore
@@ -721,5 +724,340 @@ The distribution of the ordered statistics coincides with
 %% See Renyi 1953 On the theory of Order Statistics
 
 % section lecture_5 (end)
+
+\section{Lecture \# 6} % (fold)
+\label{sec:lecture_6}
+
+Suppose $\brac{X_k}_{k=1}^n$ is independent and identically distributed like Cauchy, then $\frac{\sum_{k=1}^n X_k}{n}\sim \text{Cauchy}$ and this property is known as stability.
+
+If $p(x)\sim \frac{1}{\abs{x}^{\alpha+1}}$ for $\alpha\in\brac{0,1}$, then $\frac{\sum_{k=1}^n X_k}{n}\sim n^{\frac{1}{\alpha}-1} X_i$.
+
+This looks very much like the renormalisation transformation in self-similarity studies.
+
+What is the reason for this strange result? The limiting distributions for extreme values.
+
+\subsection{Extreme value distribution} % (fold)
+\label{sub:extreme_value_distribution}
+
+Other properties of characteristic functions.
+
+Let $X,Y$ be two random variables with distributions $F$ and $G$ respectively. Then \[\Pr\brac{\max\obj{X,Y}\leq x} = F(x)G(x)\]
+since $\obj{\max{X,Y}\leq x} = \obj{X\leq x}\cap \obj{Y\leq x}$ and $X\perp Y$.
+
+This fact can be used for deriving distribution of maxima.
+
+Let's get back to the example of Cauchy distribution. The maximum of two Cauchy distributed random variables is distributed according to
+\[F^2(x) = \brac{\frac{1}{2} + \frac{1}{\pi}\arctan x}^2\]
+and $F(x)\approx 1 - \frac{1}{\pi x}$.
+
+Indeed 
+\begin{align*}
+	\tan \xi
+	&= \frac{\cos \frac{\pi}{2} - \xi}{\sin \frac{\pi}{2} - \xi}\\
+	\tan \xi &\overset{\xi\to \frac{\pi}{2}}{=} \frac{\cos \frac{\pi}{2} - \xi \to }{\sin \frac{\pi}{2} - \xi}\sim \frac{1}{\frac{\pi}{2} - \xi}\\
+	x\sim \brac{\pi\brac{1-F(x)}}^{-1} \Rightarrow F(x)\sim 1-\frac{1}{\pi x}
+\end{align*}
+
+Therefore the asymptotics of the sum is
+\[F_{\sum_{k=1}^n X_i} (x) = F_{nX}(x) = F_X(\frac{x}{n})\approx 1 - \frac{n}{\pi x}\]
+
+The largest sum component dominates the sum, and the normalisation kills off the meagre sum components and retains the scaled ``giant''.
+
+However the maximum has the right tail asymptotically equal to
+\[F_{\max_{k=1}^n X_i} (x) = \brac{F_X(x)}^n \approx \brac{1 - \frac{1}{\pi x}}^n \approx 1 - \frac{n}{\pi x}\]
+
+% subsection extreme_value_distribution (end)
+
+\subsection{The Fisher-Tipett-Gnedenko} % (fold)
+\label{sub:the_fisher_tipett}
+
+Gnedeko proved the exclusiveness of the limiting distributions.
+
+Reasoning in complete analogy to the limiting stable distributions, one has to decide on the recentering and rescaling.
+
+\noindent \textbf{Definition}\hfill\\
+Let $F(x)$ be some distribution function. Define the \emph{typical maximum value} in the sample of size $n$ as the solution to the following equation: \[F(\bar{x}_{(n)}) = 1-\frac{1}{n}\]
+
+The expected number of sample elements larger than $\bar{x}_{(n)}$ is $n\frac{1}{n}$, over the random samples of size $N$ from $F(x)$.
+
+Let's use $X_{(n)}$ to renormalise the maxima.
+
+\noindent\textbf{Theorem}\hfill\\
+Suppose $\brac{X_k}_{k=1}^n$ is an independent sample. Denote by $X_{(k)}$ the order statistics of the sample. Recall that for all $k\leq n-1$
+\[x_{(k)}\leq X_{(k+1)}\]
+The order statistics are obtained via a random permutation and are dependent.
+
+The maximum of a random sample of size $n$ is \[X_{(n)} = \max_k X_k\] and its CDF is $F_{(n)}(x) = F^n(x)$.
+
+Let's looks for the limiting distribution of the form 
+\[F_{(n)}(\xi \bar{x}_{(n)}) \overset{n\to \infty}{\to} e^{-\phi(\xi)} \]
+
+This renormalise makes sense if $F(x)<1$ for all $x\in \Real$, for otherwise the limiting distribution is a step function.
+
+It is more practical to consider the complimentary distribution function $\bar{F}(x) = 1-F(x)$.
+
+\begin{align*}
+	F_{(n)}(\xi \bar{x}_{(n)}) &= \brac{1-\bar{F}(\xi \bar{x}_{(n)})}^n\\
+	n \ln\brac{1-\bar{F}(\xi \bar{x}_{(n)})} \to -\phi(\xi)
+\end{align*}
+
+Now if $\bar{F}(\xi \bar{x}_{(n)})\to 0$, then asymptotically 
+\[- n \bar{F}(\xi \bar{x}_{(n)}) \to -\phi(\xi)\]
+since $\ln (1-\epsilon)\approx -\epsilon$.
+
+On the othe hand, by definition of $\bar{x}_{(n)}$ it is true that $
+n\bar{F}(\bar{x}_{(n)}) \equiv 1$. Therefore we look for
+\[\lim_{n\to \infty} - \frac{n \bar{F}(\xi \bar{x}_{(n)})}{ n\bar{F}(\bar{x}_{(n)}) }\]
+
+Note that for all $t\in \clo{ \bar{x}_{(n)}\leq \bar{x}_{(n+1)}}$ it is true that 
+\[
+\frac{\bar{F}(\bar{x}_{(n+1)})}{ \bar{F}(\bar{x}_{(n)}) } \frac{\bar{F}(\xi \bar{x}_{(n)})}{ \bar{F}(\bar{x}_{(n)}) } \leq
+\frac{\bar{F}(\xi t)}{ \bar{F}(t) } \leq
+\frac{\bar{F}(\bar{x}_{(n)})}{ \bar{F}(\bar{x}_{(n+1)}) }
+\frac{\bar{F}(\xi \bar{x}_{(n+1)})}{ \bar{F}(\bar{x}_{(n+1)}) }
+\]
+
+Where $\frac{\bar{F}(\bar{x}_{(n+1)})}{ \bar{F}(\bar{x}_{(n)}) }\to 1$ and $\frac{\bar{F}(\bar{x}_{(n)})}{ \bar{F}(\bar{x}_{(n+1)}) }\to 1$.
+%% Use limsups and liminfs
+
+Therefore
+\[\phi(\xi) = \lim_{n\to\infty} \frac{\bar{F}(\bar{x}_{(n+1)})}{\bar{F}(\bar{x}_{(n+1)}) } = \lim_{t\to\infty} \frac{\bar{F}(t \xi)}{\bar{F}(t) }\]
+
+Next notice that for any $\xi_1, \xi_2\geq 0$ it is true that
+\[\phi(\xi_1\xi_2) = \lim_{t\to\infty} \frac{\bar{F}(t \xi_1\xi_2)}{\bar{F}(t\xi_1) } \frac{\bar{F}(t \xi_1)}{\bar{F}(t) }\]
+whence \[\phi(\xi_1\xi_2) = \phi(\xi_1)\phi(\xi_2)\]
+
+A continuous positive solution to this functional equation is given by $\phi(\xi) = \xi^{-\alpha}$.
+In order for $\phi$ to be a meaningful solution, it must be true that the limiting function $e^{-\phi(\xi)}$ be a distribution function.
+
+This the limiting distribution is
+\[G(\xi) = e^{-\xi^{-\alpha}}\]
+
+Therefore the tail of the distribution
+\[\bar{F}(\xi) = 1 - F(\xi) = 1-e^{-\xi^{-\alpha}}\approx \xi^{-\approx}\]
+
+The limiting distribution if called Fr\'ech\'et distribution and it emerges when the tail is polynomial and $\bar{x}_{(n)}\sim n^\frac{1}{\alpha}$.
+
+For light tailed distributions this derivation will yield $\alpha=\infty$. This means that it is necessary to change the normalisation for this class of distributions. The scaling is $F_{(n)}(\bar{x}_{(n)} + \eta)$. In this case the limiting exponent satisfies
+\[\phi(\eta) =\lim_{t\to\infty} \frac{\bar{F(t\eta)}}{\bar{F(t)}}\]
+the functional equation is thus $\phi(\eta_1+\eta_2)=\phi(\eta_1)\phi(\eta_2)$.
+
+Thus the limiting distribution is the Gumbel's distribution
+\[F(\eta) = e^{-e^{-\beta\eta}}\]
+
+If the distribution $X\sim F$ has compact support, i.e. $X_i\leq X_*$, then one can consider another random variable $Y_i = \frac{1}{x_*-X_i}$ and reduce this problem a previously solved.
+
+Then for heavy tail $\alpha\in\ploc{0,\infty}$: Weibull's distribution
+\[F(\theta) = e^{-{(x_*-\theta)}^\alpha}\]
+Since the exponential decay to zero is so fast, that it would yield a step function.
+
+% subsection the_fisher_tipett (end)
+
+% section lecture_6 (end)
+
+\section{Lecture \# 7} % (fold)
+\label{sec:lecture_7}
+
+Suppose we have a sample  $\brac{Y_k}_{k=1}^n$ of independent And identically distributed random variables with $F(x)$.
+
+The empirical distribution function is
+\[\hat{F}_n(x) = \frac{1}{n}\sum_{k=1}^n 1_{\ploc{-\infty, x}}(Y_k)\]
+
+The divergence of the eCDF from the true CDF with respect to the $
+sup$-norm is equivalent in distribution to
+\[\Pr\brac{\sup_{x}\nrm{\hat{F}_n(x) - F(x)}_\infty > z} = \Pr\brac{\sup_{u\in\clo{0,1}}\nrm{\hat{U}_n(u) - u}_\infty > z}\]
+where 
+\[\hat{U}_n(u) = \frac{1}{n}\sum_{k=1}^n 1_{\clo{0, u}}\brac{F^{-1}(Y_k)}\]
+
+Kolmogorov's theorem
+\[\Pr\brac{\sqrt{n} \sup_{u\in\clo{0,1}}\nrm{\hat{U}_n(u) - u}_\infty \leq z} = 2\sum_{k\geq1} {(-1)}^{k-1} e^{-2 k^2 z^2}\]
+
+
+Pike's theorem
+%%%%% Suppose $\brac{\xi_k}_{k=1}^{n+1}\sim \text{Exp}(1)$.
+%%%%% The distribution of the ordered statistics coincides with 
+%%%%% \[U_{(k)} = \frac{\sum_{i=1}^k\xi_i}{\sum_{i=1}^{n+1}\xi_i}\]
+
+
+An intermediate result:
+\[\lim_{n\to \infty} \Pr\brac{\sqrt{n} \sup_{x}\nrm{\hat{F}_n(x) - F(x)}_\infty > z} = \Pr\brac{\sqrt{n} \abs{W_0(t)} > z}\]
+
+A scalar process on a probability space $\brac{\Omega, \Fcal, \Pr}$ is an $\Fcal$ measurable function $X = X(\omega, t)$ for $\omega\in \Omega$ and $t\in \Tcal$ is a non-random parameter.
+
+A Gaussian random process is a scalar process $X_t$ \begin{itemize}
+	\item $\brac{X_{t_k}}_{k=1}^p\sim \Ncal_p\brac{\brac{m(t_i)}_{i=1}^p, \Sigma^p}$ for any $\brac{t_k}_{k=1}^m$ of time slices;
+	\item The covariance matrix is given by 
+	\[\Sigma^p_{ij} = \Ex\brac{X_{t_i} - m(t_i)}\brac{X_{t_j} - m(t_j)}\]
+\end{itemize}
+
+A Wiener process is a Gaussian process $W_t$, $t\geq 0$ with $m(t) = 0$ and $\Ex\brac{W_t W_s} = \min\obj{t,s}$.
+
+The Brownian Bridge is a process defined over $t\in\clo{0,1}$ by
+\[W_0(t) \defn W(t) - t W(1)\]
+
+To reiterate:
+\[\Pr\brac{\sqrt{n} \sup_{u\in\clo{0,1}} \nrm{\hat{U}_n(u) - u}_\infty \leq z} \overset{n\to\infty}{\to} \Pr\brac{\sqrt{n} \sup_{u\in \clo{0,1}}\abs{W_0(u)} > z}\]
+
+Consider the ordered statistics $\brac{U_{(k)}}_{k=1}^n$ of a uniformly distributed random variables:
+\[\hat{U}_n(U_{(k)}) = \frac{k}{n}\]
+
+Therefore 
+\[\Pr\brac{\sqrt{n} \sup_{u\in\clo{0,1}} \nrm{\hat{U}_n(u) - u}_\infty \leq z}  = \Pr\brac{\sqrt{n} \max_{k=1}^n \abs{U_{(k)} - \frac{k}{n}} \leq z} \]
+
+According to Pike's theorem
+\[U_{(k)} = \frac{\sum_{i=1}^k \xi_j}{\sum_{j=1}^{n+1} \xi_j}\]
+
+Thus 
+\[\Pr\brac{\sqrt{n} \max_{k=1}^n \abs{U_{(k)} - \frac{k}{n}} \leq z}  = \Pr\brac{\max_{k=1}^n \abs{ n \sum_{i=1}^k \xi_j - k\sum_{j=1}^{n+1} \xi_j} \leq \sqrt{n} z\sum_{j=1}^{n+1} \xi_j } \]
+
+Next
+\[ = \Pr\brac{\max_{k=1}^n \abs{ \frac{1}{\sqrt{n}} \sum_{i=1}^k (\xi_j-1) - \frac{k}{n\sqrt{n}} \sum_{j=1}^{n+1} (\xi_j-1) - \frac{1}{n}} \leq \frac{1}{n} z\sum_{j=1}^{n+1} \xi_j } \]
+
+Consider for $\brac{\xi_i}_{i\geq1}$ independent and identically distribution $\xi_i\sim\text{exp}(1)$:
+\[W_n(t) = \frac{1}{\sqrt{n}} \sum^{\floor{n t}}_{i=1} (\xi_i - 1)\]
+
+First of all $\Ex W_n(t) = 0$ and the covariance is given by
+\[\Ex W_n(t)W_n(s)  = \frac{1}{n} \sum^{\floor{n t}}_{j=1} \sum^{\floor{n s}}_{i=1} (\xi_j - 1) (\xi_i - 1) = \frac{1}{n^2}
+\sum^{\floor{n t}\vee \floor{n s}}_{i=1} \Ex {(\xi_i - 1)}^2 = 
+\frac{1}{n} \floor{n t}\vee \floor{n s} = \floor{t}\vee \floor{s} + o(\frac{1}{n})\]
+
+Thus from the Central Limit Theorem on $t\in 
+clo{0,1}$
+\[W_n(t)\overset{\Dcal}{\to} W(t)\,\text{and}\, \frac{1}{\sqrt{n}} \sum_{i=1}^k (\xi_j-1) - \frac{t}{n\sqrt{n}} \sum_{j=1}^{n+1} (\xi_j-1) \to W(t)-tW(1)\]
+
+Since 
+\[\frac{1}{n} z\sum_{j=1}^{n+1} \xi_j \overset{\Pr}{\to} z\]
+
+Thus the theorem is proved.
+
+
+\subsection{Extreme Value Distribution} % (fold)
+\label{sub:extreme_value_distribution}
+
+A sample $\brac{Y_k}_{k=1}^n$ of independent and identically distributed random variables with $F(x)$. The distribution of 
+\[\Pr\brac{\max_{i=1}^n Y_i \leq x} = \prod_{i=1}^n \Pr\brac{Y_i \leq x} = F^n(x)\]
+
+There are three types of limitnig distributions of maxima (properly scaled and centred) \begin{description}
+	\item[Fr\'ech\'et]\hfill\\
+	\[ e^{-x^{-\alpha}} 1_{\clop{0,\infty}}(x) \]
+	\item[Gumbel]\hfill\\
+	\[ e^{-e^{-x}} 1_{\clop{0,\infty}}(x) \]
+	\item[Weibull (Wallodi)]\hfill\\
+	\[ e^{-{(-x)}^\alpha} 1_{\brac{-\infty, 0}}(x) \]
+\end{description}
+
+
+The normal distribution is 
+\[F(x) = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^x e^{-\frac{u^2}{2}}du\]
+
+recall the inversion method $Y_{(n)} = F^{-1}(U_{(n)})$.
+
+Now using Pike's theorem
+\[U_{(n)} = 1-\frac{ \xi_{n+1}}{\sum_{j=1}^{n+1} \xi_j}\]
+
+Next
+\[U_{(n)} = 1-\frac{ \xi_{n+1}}{n+1}\brac{1 + \frac{1}{n+1}\sum_{j=1}^{n+1} {(\xi_j-1)}}^{-1}\]
+
+Using the CLT we get the following
+\[U_{(n)} \overset{\Dcal}{\approx} 1-\frac{\xi_{n+1}}{n+1}\brac{1+o(\frac{1}{\sqrt{n+1}})}\]
+
+So $1-U_{(n)}$ decays as $n\to \infty$, thus we apply the gaussian inversion to it.
+
+Integrating the Gaussian distribution by parts yields
+\[\int_x^\infty \frac{1}{u} de^{-\frac{u^2}{2}} =  \induc{ \frac{1}{u} e^{-\frac{u^2}{2}} }_x^\infty - \int_x^\infty \frac{1}{u^2} e^{-\frac{u^2}{2}}du\]
+
+Then 
+\[= - \frac{1}{x} e^{-\frac{x^2}{2}}
++ \int_x^\infty \frac{1}{u^3} de^{-\frac{u^2}{2}} 
+= - e^{-\frac{x^2}{2}} \brac{\frac{1}{x} + o(\frac{1}{x^3})}\]
+
+Thus
+\[F(x) = 1 - \frac{1}{\sqrt{2\pi}}e^{-\frac{x^2}{2}} \brac{\frac{1}{x} + o(\frac{1}{x^3})}\]
+
+let's invert this for values of $y$ close to zero.
+
+\[ x = F^{-1}(y) = \sqrt{ 2\log{\frac{1}{x}+o(\frac{1}{x^3})} + \log \frac{1}{1-y}\frac{1}{\sqrt{2\pi}}} = L_y(x) \]
+
+Then 
+\[L_y'(x) \leq - \frac{L_y(x)}{2x}\]
+
+whence an approximate solution of the inversion is
+\[ x\approx \sqrt{-\log{(1-y)2\sqrt{\pi}}}\]
+
+Therefore
+\[Y_{(n)} = F^{-1}(U_{(n)}) \approx F^{-1}\brac{1-\frac{\xi_{n+1}}{n+1}\brac{1+o(\frac{1}{\sqrt{n+1}})}}\]
+
+whence 
+\[Y_{(n)} \approx \sqrt{ \log \frac{n+1}{\xi_{n+1} \sqrt{2\pi} } } \]
+
+Using the first approximation of $x$ into $L_y(x)$ we can obtain a more precise approximation to $x$ and thus the final distribution:
+
+\[ Y_{(n)} \approx \sqrt{ \log \frac{n+1}{\xi_{n+1} \sqrt{2\pi} } - 2\log \log \frac{{(n+1)}^2}{\xi_{n+1}^2 \sqrt{2\pi} }  + o(1) }  \]
+
+Setting 
+\[m_n^2 \defn \log \frac{n+1}{\xi_{n+1} \sqrt{2\pi} } \]
+
+we get 
+\[Y_{(n)} \approx \sqrt{ m_n^2 - \frac{2\log \xi_{n+1}}{m_n^2} }\]
+
+Using Taylor's expansion (? STRANGE)
+\[Y_{(n)} \approx m_n\brac{ 1 - \frac{2\log \xi_{n+1}}{m_n} }\]
+
+Thus 
+\[\Pr\brac{ Y_{(n)} < z } \approx \Pr\brac{ m_n\brac{ 1 - \frac{2\log \xi_{n+1}}{m_n} } < z } \]
+
+
+\textbf{CHECK THE CONSTANTS!!!!!}
+
+Redoing this: the first approximation id $x$ is
+\[x_0 \approx \sqrt{ \log\frac{1}{(1-y)\sqrt{2\pi}} }\]
+
+Then 
+\[x = \sqrt{ \log\frac{1}{(1-y)\sqrt{2\pi}} + \log\brac{ \frac{1}{x} + o(\frac{1}{x^3}) }}\]
+
+Substituting $x_0$ instead of $x$ and neglecting the infinitesimal yields:
+\[ x \approx \sqrt{ \log\frac{1}{(1-y)\sqrt{2\pi}} - \frac{1}{2} \log\log\frac{1}{(1-y)\sqrt{2\pi}} }\]
+
+Then 
+\[ Y_{(n)}^2 \approx \brac{
+\log\frac{n+1}{\xi_{n+1}\sqrt{2\pi}}
+- \frac{1}{2} \log\log\frac{n+1}{\xi_{n+1}\sqrt{2\pi} + o(1)}
+}\]
+
+So
+\[ Y_{(n)} \approx \sqrt{ - \log \xi_{n+1} + \log\frac{n+1}{2\log{(n+1)} \sqrt{8\pi} + o(1) } }\]
+
+Whence
+\[ Y_{(n)} \approx \brac{-\log \xi_{n+1} + m_n + o(1) }^\frac{1}{2}\]
+
+Thus using the Taylor once again
+\[ Y_{(n)} \approx m_n^\frac{1}{2} \brac{-\frac{\log \xi_{n+1}}{m_n} + 1 }\]
+
+Next 
+\[ \sqrt{m_n} Y_{(n)} - m_n\approx - \log \xi_{n+1}\]
+
+Thus
+\[ \Pr\brac{\sqrt{m_n} \brac{Y_{(n)} - \sqrt{m_n}}} \approx \Pr\brac{- \log \xi_{n+1} < z }\]
+
+So
+\[\Pr\brac{- \log \xi_{n+1} < z } = \Pr\brac{\xi_{n+1} > e^{-z} } = e^{-e^{-z}}\]
+
+And $m_n\approx \sqrt{ 2 \log n}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Laplace distribution
+\[F(x) = 1-e^{-\frac{x}{2}} 1_{x\geq 0} + e^{\frac{x}{2}} 1_{x\leq 0}\]
+
+The inverse is given for $y\in clo{\frac{1}{2},1}$ by
+\[ F^{-1}(y) = - \log 2(1-y)\]
+
+Since $\max_{i=1}^n Y_i \sim \log\frac{n+1}{2\xi_{n+1}}$ 
+we have
+\[\Pr\brac{ \log\frac{n+1}{2} - \log \xi_{n+1} < z } \approx e^{-e^{-z}}\]
+
+% subsection extreme_value_distribution (end)
+
+% section lecture_7 (end)
 
 \end{document}
