@@ -72,13 +72,14 @@ def xtree_integer_crossings( T, X ) :
 ##  will have almost surely visited all the intermediate grid lines.
 				lhp.append( level )
 ## Return the crossing times and grid lines
-	return ( np.array( lht, np.float ), np.array( lhp, np.int ), np.array( [ ], np.int ) )
+	return ( np.array( lht, np.float ), np.array( lhp, np.int ),
+		np.array( [ ], np.int ), np.empty( (0,3), np.int ) )
 
 ## Using the crossing data construct the associated super-crossings
 def xtree_super_crossing( T, P, band_width ) :
 ## By construction, the first crossing is always the zero-th.
 	last_hit = 0 ; next_hit = 1
-	lht = list( ) ; lhp = list( ) ; subx = list( )
+	lht = list( ) ; lhp = list( ) ; subx = list( ) ; excur = list( )
 ## Instead of initializing the lists with the first hit, add it
 	lhp.append( P[ last_hit ] )
 	lht.append( T[ last_hit ] )
@@ -103,10 +104,18 @@ def xtree_super_crossing( T, P, band_width ) :
 			# if last_hit > 0 :
 ## Count the number of excursions (children in the crossing tree).
 			subx.append( next_hit - last_hit )
+## Aggregate the directions of excrusions: \/ and /\
+			directions = np.sign( np.diff( P[ last_hit : ( next_hit + 1 ) ] ) )
+## Count the number of /\ excluding the last pair // or \\
+			U = np.sum( directions[ 1:-2:2 ] == -1 )
+## The number of \/ is equal to the total number of subscrossings, without
+##  the last upward or downward movement.
+			excur.append( ( U, ( next_hit - last_hit ) // 2 - U - 1, directions[ -1 ] ) )
 ## Start a new super-crossing
 			last_hit = next_hit
 		next_hit += 1
-	return ( np.array( lht, np.float ), np.array( lhp, np.int ), np.array( subx, np.int ) )
+	return ( np.array( lht, np.float ), np.array( lhp, np.int ),
+		np.array( subx, np.int ), np.array( excur, np.int ) )
 
 ## Adaptive selection of the basic grid scale is based on
 ##  the standard deviation of the process increments.
@@ -118,26 +127,28 @@ def xtree_build( T, X, delta = None, max_height = float( 'inf' ) ) :
 ##  deviation of the increments.
 	delta = np.std( np.diff( X ) ) if delta is None else delta
 ## Set up the crossing tree structure
-	hp = list( ) ; ht = list( ) ; hx = list( )
+	hp = list( ) ; ht = list( ) ; hx = list( ) ; ex = list( )
 ## Rescale the sample path, so that the grid base scale is 1.0
 	Z = ( X - X[ 0 ] ) / delta
 ## First compute the crossing times and points of the finest
 ##  integer grid
-	lht, lhp, lhx = xtree_integer_crossings_fast( T, Z )
+	lht, lhp, lhx, lex = xtree_integer_crossings_fast( T, Z )
 ## Add the times and property translated point to the master queue
 	hp.append( lhp * delta + X[ 0 ] )
 	ht.append( lht )
 	hx.append( lhx )
+	ex.append( lex )
 ## If the height restriction permits and the crossings did occur
 ##  iteratively construct crossings of increasingly coarser grids.
 	height = 1
 	while len( lhp ) > 1 and height < 2**max_height:
 		height *= 2
-		lht, lhp, lhx = xtree_super_crossing( lht, lhp, height )
+		lht, lhp, lhx, lex = xtree_super_crossing( lht, lhp, height )
 		hp.append( lhp * delta + X[ 0 ] )
 		ht.append( lht )
 		hx.append( lhx )
-	return ( ht, hp, hx )
+		ex.append( lex )
+	return ( ht, hp, hx, ex )
 
 def xtree_integer_crossings_fast( T, X ) :
 ## Assume the process starts at zero, and that its first crossing is at
@@ -195,7 +206,8 @@ def xtree_integer_crossings_fast( T, X ) :
 ## The last hit is always the last grid line to have been crossed
 			last_hit = level
 ## Return the crossing times and grid lines
-	return ( np.array( lht, np.float ), np.array( lhp, np.int ), np.array( [ ], np.int ) )
+	return ( np.array( lht, np.float ), np.array( lhp, np.int ),
+		np.array( [ ], np.int ), np.empty( (0,3), np.int ) )
 
 ################################################################################
 ################################# CODE REVIEW! #################################
@@ -260,7 +272,8 @@ def f_get_w_int( T, X, deleteFirst = False ) :
 #         end
 #     end
 # end
-	return ( np.array( lht, np.float ), np.array( lhp, np.int ), np.array( [ ], np.int ) )
+	return ( np.array( lht, np.float ), np.array( lhp, np.int ),
+		np.array( [ ], np.int ), np.empty( (0,3), np.int ) )
 
 def f_get_w( T, X, levels = [ ], delta = 1.0, deleteFirst = False ) :
 # hit_point=cell(length(levels),1);
