@@ -1,0 +1,355 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{xfrac, mathptmx}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\w}{\mathbf{w}}
+\newcommand{\e}{\mathbf{1}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+\newcommand{\Ex}{\mathbb{E}}
+\newcommand{\Var}{\text{var}}
+\newcommand{\Tr}{\mathop{\text{tr}}\nolimits}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Assignment \# 1}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+\begin{document}
+\selectlanguage{english}
+\maketitle
+
+\section{problem \# 1} % (fold)
+\label{sec:problem_1}
+
+\subsection{subproblem a} % (fold)
+\label{sub:subproblem_a}
+
+Suppose instead of a one new observation we are given $m$ observation
+$\big(\w_k\big)_{k=0}^m$ with $\w_k\in \obj{1}\times\Real^p$
+collected in a matrix $\underset{m\times 1+p}{W}$. The vector of predictions
+is then $\hat{T}_W = W\hat{\beta}$, where $\hat{\beta}$ is the OLS estimate of
+the model
+\[ \underset{n\times 1}{T} = \underset{n\times p+1}{X} \underset{(1+p)\times 1}{\beta} + \underset{n\times 1}{\epsilon}\]
+given by $\hat{\beta} = \big(X'X\big)^{-1} X'T$, where $X$ is the observed matrix of explanatory variables and $T$ is the vector of associated responses
+all in the training sample.
+
+Let the errors in new observations be given by a random vector $\underset{m\times 1}{\eta}$ with mean $\Ex \eta = 0$ and variance $\Var \eta = \sigma^2 I_m$,
+which is independent from $\epsilon$.
+
+The expectation of the error vector of the joint prediction $\hat{\eta} = T_W - \hat{T}_W$ is given by
+\begin{align*}
+	\Ex \hat{\eta} &= \Ex\Big( T_W - \hat{T}_W \Big) \\
+	&= \Ex\Big( W\beta + \eta - W\hat{\beta} \Big) \\
+	&= \Ex\Big( W (\beta - \hat{\beta}) + \eta \Big) \\
+	&= W \Ex(\beta - \hat{\beta}) + \Ex(\eta) = W 0 + 0 = 0
+\end{align*}
+because $\beta$ is an unbiased estimator of the true vector of parameters
+(provided the model is specified correctly).
+
+Note that since it is assumed the the linear model is correct, and the errors
+$\epsilon$ and $\eta$ are independent, we have
+\begin{align*}
+	\underset{(1+p)\times 1}{\big(\beta-\hat{\beta}\big)}\underset{1\times m}{\eta'}
+	&= \beta\eta' - \big(X'X\big)^{-1} X'\big(X\beta + \underset{n\times 1}{\epsilon}) \eta' \\
+	&= \beta\eta' - \big(X'X\big)^{-1} X'X\beta\eta' - \big(X'X\big)^{-1} X'\epsilon \eta' \\
+	&=  - \big(X'X\big)^{-1} X' \big( \epsilon \eta' \big)
+\end{align*}
+whence $\Ex \big(\beta-\hat{\beta}\big)\eta' = \underset{(1+p)\times m}{\mathbf{0}}$.
+
+Thus the covariance matrix of the prediction error vector is
+\begin{align*}
+	\Var \hat{\eta} &= \Ex \hat{\eta}\hat{\eta}'
+	= \Ex\big(W (\beta - \hat{\beta}) + \eta\big)\big(W (\beta - \hat{\beta}) + \eta\big)'\\
+	&= \Ex \big( W (\beta - \hat{\beta})(\beta - \hat{\beta})'W' + \eta (\beta - \hat{\beta})'W' + W (\beta - \hat{\beta}) \eta' + \eta \eta' \big)\\
+	&= \Big[ \text{linearity of expectation} \Big] = \\
+	&= W \big( \Ex (\beta - \hat{\beta})(\beta - \hat{\beta})' \big) W' + \big( \Ex \eta(\beta - \hat{\beta}) \big)'W \\
+		& \quad + W \Ex(\beta - \hat{\beta}) \eta' + \Ex \eta \eta' \\
+	&= W \big( \Ex (\beta - \hat{\beta})(\beta - \hat{\beta})' \big) W' + \Ex\eta\eta' \\
+	&= W \big( \sigma^2 (X'X)^{-1} \big) W' + \sigma^2 I_m \\
+	&= \sigma^2 \Big( I_m + W \big( \sigma^2 (X'X)^{-1} \big) W' \Big)
+\end{align*}
+
+Now the mean square error of the prediction is given by
+\begin{align*}
+	\Ex \frac{1}{m}\hat{\eta}' \hat{\eta}
+	&= \Ex\, \Tr \frac{1}{m} \hat{\eta}'\hat{\eta} 
+	 = \frac{1}{m} \Tr \Ex \hat{\eta} \hat{\eta}' \\
+	&= \frac{1}{m} \sigma^2 \Tr \big( I_m + W (X'X)^{-1} W' ) \\
+	&= \sigma^2 + \frac{\sigma^2}{m} \Tr W (X'X)^{-1} W' \\
+	&= \sigma^2 + \frac{\sigma^2}{m} \sum_{k=1}^m \w_k (X'X)^{-1} \w_k'
+\end{align*}
+where $\e\in \Real^{m\times 1}$ is a vector of ones.
+
+When $m=1$ this is equal to
+\[ \Ex \hat{\eta}^2 = \sigma^2( 1 + \w_k (X'X)^{-1} \w_k' ) \]
+
+% subsection subproblem_a (end)
+
+\subsection{subproblem b} % (fold)
+\label{sub:subproblem_b}
+
+In the case of a simple linear regression the model matrix $X$ is given by
+\[X = \big( \underset{n\times 1}{\e} \underset{n\times 1}{\mathbf{x}} \big)\]
+which is an $n\times p+1$ matrix for $p=1$.
+
+The inverse of $X'X$ is given by
+\begin{align*}
+ 	(X'X)^{-1}
+ 	&= \bigg(\begin{matrix}\e'\e & \e'\mathbf{x} \\ \mathbf{x}'\e & \mathbf{x}'\mathbf{x}\end{matrix}\bigg)^{-1}\\
+ 	&= \bigg(\begin{matrix}n & n\bar{x} \\ n\bar{x} & n\overline{x^2}\end{matrix}\bigg)^{-1}
+ \end{align*} 
+where $\bar{x}\in \Real$ and $\overline{x^2}\in \Real$ are the sample mean and
+the mean square of the observations $\mathbf{x}\in \Real^n$ respectively.
+
+The inverse of a $2\times 2$ matrix, provided it is non-singular, is given by
+\[\bigg(\begin{matrix} a & b\\c & d\end{matrix}\bigg)^{-1} = \frac{1}{ad-bc}\bigg(\begin{matrix} d & -b\\-c & a\end{matrix}\bigg)\]
+
+Therefore 
+\begin{align*}
+ 	(X'X)^{-1}
+ 	&= \frac{1}{n^2 \big( \overline{x^2} - \bar{x}^2 \big)} \bigg(\begin{matrix} n\overline{x^2} & -n\bar{x} \\ -n\bar{x} & n \end{matrix}\bigg)\\
+ 	&= \frac{1}{n \big( \overline{x^2} - \bar{x}^2 \big)} \bigg(\begin{matrix} \overline{x^2} & -\bar{x} \\ -\bar{x} & 1 \end{matrix}\bigg)
+\end{align*}
+
+In the bivariate regression case $\w = (1\, x_{n+1})\in \Real^{1+p}$, and the
+product $\w (X'X)^{-1}\w'$ reduces to
+\[\frac{1}{n \big( \overline{x^2} - \bar{x}^2 \big)} \big(\begin{matrix}1 & x_{n+1}\end{matrix}\big) \bigg(\begin{matrix} \overline{x^2} & -\bar{x} \\ -\bar{x} & 1 \end{matrix}\bigg) \bigg(\begin{matrix}1 \\ x_{n+1}\end{matrix}\bigg) = \frac{1}{n}\frac{ \overline{x^2} - 2 x_{n+1}\bar{x} - x_{n+1}^2 }{ \overline{x^2} - \bar{x}^2} \]
+
+After simplification this becomes
+\begin{align*}
+	W (X'X)^{-1} W'
+	&= \frac{1}{n} \frac{ \overline{x^2} - \bar{x}^2 + \bar{x}^2 - 2 x_{n+1}\bar{x} - x_{n+1}^2 }{ \overline{x^2} - \bar{x}^2 } \\
+	&= \frac{1}{n} + \frac{1}{n}\frac{ \bar{x}^2 - 2 x_{n+1}\bar{x} - x_{n+1}^2 }{ \overline{x^2} - \bar{x}^2} \\
+	&= \frac{1}{n} + \frac{1}{n}\frac{ \big(\bar{x} - x_{n+1}\big)^2 }{ \overline{x^2} - \bar{x}^2 } \\
+	&= \frac{1}{n} + \frac{ \big(\bar{x} - x_{n+1}\big)^2 }{ \sum_{i=1}^n (x_i - \bar{x})^2 }
+\end{align*}
+since $\overline{x^2} - \bar{x}^2$ is the sample variance of the observations
+$\mathbf{x}$.
+
+Therefore the expected squared error is 
+\[
+	\Ex \hat{\eta}^2
+	= \sigma^2( 1 + \w_k (X'X)^{-1} \w_k' )
+	= \sigma^2 \Big( 1 + \frac{1}{n} + \frac{ \big(\bar{x} - x_{n+1}\big)^2 }{ \sum_{i=1}^n (x_i - \bar{x})^2 } \Big)
+\]
+
+% subsection subproblem_b (end)
+
+\subsection{subproblem c} % (fold)
+\label{sub:subproblem_c}
+
+In the bivariate case the expression for the square error of one-point
+predicton is quadratic in $x_{n+1}$. Furthermore the squared term enters the
+expression with a positive coefficient \[\frac{1}{\sum_{i=1}^n (x_i - \bar{x})^2}\geq 0\]
+
+Therefore the term
+\[\frac{ \big(\bar{x} - x_{n+1}\big)^2 }{ \sum_{i=1}^n (x_i - \bar{x})^2 } \geq 0 \]
+whence its minimum is $x_{n+1} = \bar{x}$.
+
+One could also compute the first order condituion of a local maximum and then
+the second order conditions to persuade oneslef that this is indeed the case,
+but this not needed here.
+
+% subsection subproblem_c (end)
+
+\subsection{subproblem d} % (fold)
+\label{sub:subproblem_d}
+
+Using the rules of matrix-matrix multiplication and the properties of the
+transpose operator it is easy to see that
+\[
+X'X 
+= \Bigg(\begin{matrix} \underset{1\times n}{\e'} \\ \underset{p\times n}{Z'} \end{matrix}\Bigg) \Big(\begin{matrix} \underset{n\times 1}{\e} & \underset{n\times p}{Z} \end{matrix}\Big)
+= \bigg(\begin{matrix} \e'\e & \e'Z \\ Z\e' & Z'Z \end{matrix}\bigg) 
+\]
+
+% subsection subproblem_d (end)
+
+\subsection{subproblem e} % (fold)
+\label{sub:subproblem_e}
+
+Notice that in 
+\[ X'X = \bigg(\begin{matrix} T & U \\ V & W \end{matrix}\bigg) = \bigg(\begin{matrix} \e'\e & \e'Z \\ Z\e' & Z'Z \end{matrix}\bigg) \]
+the block $T$ is given by $\e'\e$, which is a non-zero scalar and thus is an
+invertible albeit degenerate $1\times 1$ matrix.
+
+Let's employ the formula 
+\[\bigg(\begin{matrix} T & U \\ V & W \end{matrix}\bigg)^{-1} = \bigg(\begin{matrix} T^{-1} + T^{-1} V Q^{-1} U T^{-1} & - T^{-1} U Q^{-1} \\ -Q^{-1} V T^{-1} & Q^{-1} \end{matrix}\bigg) \]
+where $Q = W - VT^{-1}U$, which is valid when the left hand side matrix and
+$T$ are invertible.
+
+Thus one gets
+\begin{align*}
+	(X'X)^{-1}
+	&= \bigg(\begin{matrix} (\e'\e)^{-1} + (\e'\e)^{-1} \e'Z Q^{-1} Z'\e (\e'\e)^{-1} & - (\e'\e)^{-1} \e'Z Q^{-1} \\ -Q^{-1} Z'\e (\e'\e)^{-1} & Q^{-1} \end{matrix}\bigg)
+\end{align*}
+where $Q = Z'Z - Z'\e (\e'\e)^{-1}\e'Z$.
+
+First of all note the following:
+\[Q = Z'Z - Z'\e (\e'\e)^{-1}\e'Z = Z'\big( I_n - \e (\e'\e)^{-1}\e' \big)Z\]
+
+Second denote by $\bar{z}$ the vector of sample mean values of the explanatory
+variables in $Z$: $\bar{z}_j = \frac{1}{n}\sum_{i=1}^n Z_{ij}$.
+
+However in order to make further computations easier, note that the sample
+mean vector is in fact given by the projection of the column vectors in $Z$
+onto the space spanned by $\e$, denoted by $E = \clo{\e}$:
+\[\underset{1\times p}{\bar{z}} = \underset{1\times 1}{(\e'\e)}^{-1}\, \underset{1\times n}{\e'}\,\underset{n\times p}{Z}\]
+
+Note that $\e'\e \bar{z} = \e'Z$.
+
+Third, in light of the second observation the $n\times n$ odd-looking matrix
+$\e (\e'\e)^{-1}\e'$ is in fact a projector onto the mentioned linear one
+dimensional subspace. Thus the operator $\pi$, identified by the matrix
+$I_n - \e (\e'\e)^{-1}\e'$ is a projector onto the space orthogonal to $E$.
+
+Now, let's simplify the expression of $(X'X)^{-1}$. Each element can be
+simplified to
+\begin{align*}
+	(\e'\e)^{-1} \e'Z Q^{-1} Z'\e (\e'\e)^{-1} &= (\e'\e)^{-1} \e'\e \bar{z} Q^{-1} \bar{z}' \e'\e (\e'\e)^{-1} = \bar{z} Q^{-1} \bar{z}'\\
+	(\e'\e)^{-1} \e'Z Q^{-1} &= (\e'\e)^{-1} \e'\e \bar{z} Q^{-1} = \bar{z} Q^{-1}\\
+	Q^{-1} Z'\e (\e'\e)^{-1} &= Q^{-1} \bar{z}' \e'\e (\e'\e)^{-1} = Q^{-1} \bar{z}'
+\end{align*}
+whence
+\begin{align*}
+	(X'X)^{-1}
+	&= \bigg(\begin{matrix} (\e'\e)^{-1} + \bar{z} Q^{-1} \bar{z}' & - \bar{z} Q^{-1} \\ - Q^{-1} \bar{z}' & Q^{-1} \end{matrix}\bigg)
+	&= \bigg(\begin{matrix} \frac{1}{n} & 0 \\ 0 & 0 \end{matrix}\bigg)
+	+ \bigg(\begin{matrix} \bar{z} Q^{-1} \bar{z}' & - \bar{z} Q^{-1} \\ - Q^{-1} \bar{z}' & Q^{-1} \end{matrix}\bigg)
+\end{align*}
+since matrices constitute a linear space and $(\e'\e)^{-1} = \frac{1}{n}$. The
+zeroes in the first matrix in the right hand side expression denote
+appropriately sized matrices of zeroes.
+
+The block shapes of the matrix blocks of $(X'X)^{-1}$ are
+\[\bigg(\begin{matrix} 1\times 1 & 1\times p \\ p\times 1 & p\times p \end{matrix}\bigg)\] 
+
+% subsection subproblem_e (end)
+
+\subsection{subproblem f} % (fold)
+\label{sub:subproblem_f}
+
+Suppose the new observation is $\w = ( 1\, z_{n+1} )\in \Real^{1+p}$.
+Then the variance of the prediction error is 
+\[\Ex \hat{\eta}^2 = \sigma^2( 1 + \w_k (X'X)^{-1} \w_k' )\]
+the term $\w_k (X'X)^{-1} \w_k'$ is equal to
+\begin{align*}
+	\w_k (X'X)^{-1} \w_k'
+	&= \big( \begin{matrix} 1 & z_{n+1} \end{matrix} \big) \big(X'X\big)^{-1}  \bigg(\begin{matrix}1 \\ z_{n+1}'\end{matrix}\bigg)\\
+	&= \big( \begin{matrix} 1 & z_{n+1} \end{matrix} \big) \Bigg[ \bigg(\begin{matrix} \frac{1}{n} & 0 \\ 0 & 0 \end{matrix}\bigg) + \bigg(\begin{matrix} \bar{z} Q^{-1} \bar{z}' & - \bar{z} Q^{-1} \\ - Q^{-1} \bar{z}' & Q^{-1} \end{matrix}\bigg) \Bigg]  \bigg(\begin{matrix}1 \\ z_{n+1}'\end{matrix}\bigg)\\
+	&= \frac{1}{n} + \big( \begin{matrix} 1 & z_{n+1} \end{matrix} \big) \bigg(\begin{matrix} \bar{z} Q^{-1} \bar{z}' & - \bar{z} Q^{-1} \\ - Q^{-1} \bar{z}' & Q^{-1} \end{matrix}\bigg) \bigg(\begin{matrix}1 \\ z_{n+1}'\end{matrix}\bigg)
+\end{align*}
+The last product in this expression can be simplified even further:
+\begin{align*}
+	\ldots
+	&= \big( \begin{matrix} 1 & z_{n+1} \end{matrix} \big) \bigg(\begin{matrix} \bar{z} Q^{-1} \bar{z}' & - \bar{z} Q^{-1} \\ - Q^{-1} \bar{z}' & Q^{-1} \end{matrix}\bigg) \bigg(\begin{matrix}1 \\ z_{n+1}'\end{matrix}\bigg)\\
+	& =  \big( \begin{matrix} \bar{z} Q^{-1} \bar{z}' - z_{n+1} Q^{-1} \bar{z}' & - \bar{z} Q^{-1} + z_{n+1} Q^{-1} \end{matrix} \big) \bigg(\begin{matrix}1 \\ z_{n+1}'\end{matrix}\bigg)\\
+	&= \bar{z} Q^{-1} \bar{z}' - z_{n+1} Q^{-1} \bar{z}' - \bar{z} Q^{-1} z_{n+1}' + z_{n+1} Q^{-1} z_{n+1}'\\
+	&= \big(\bar{z} - z_{n+1}\big)Q^{-1} \bar{z}' - \big(\bar{z} - z_{n+1}\big)Q^{-1} z_{n+1}'\\
+	&= \big(\bar{z} - z_{n+1}\big)Q^{-1} \big(\bar{z}' - z_{n+1}'\big) = \big(z_{n+1} - \bar{z}\big)Q^{-1} \big(z_{n+1} - \bar{z}\big)'
+\end{align*}
+Hence
+\[\w_k (X'X)^{-1} \w_k' = \frac{1}{n} + \big(z_{n+1} - \bar{z}\big)Q^{-1} \big(z_{n+1} - \bar{z}\big)'\]
+
+Now note that
+\begin{align*}
+	Q
+	&= Z'Z - Z'\e (\e'\e)^{-1}\e'Z \\
+	&= Z'Z - \bar{z}'\e'\e (\e'\e)^{-1}\e'\e \bar{z} \\
+	&= Z'Z - \bar{z}'\e'\e \bar{z} \\
+	&= n \big( \frac{1}{n} Z'Z - \bar{z}'\bar{z} \big )
+\end{align*}
+looks similar to the expression in the denominator in the bivariate regression
+case.
+
+Next
+\begin{align*}
+	\w_k (X'X)^{-1} \w_k' & = \frac{1}{n} + \frac{1}{n} (z_{n+1} - \bar{z})\Gamma^{-1} (z_{n+1} - \bar{z})'
+\end{align*}
+where $\Gamma = \frac{1}{n} Z'Z - \bar{z}' \bar{z}$ is invertible since
+$X'X$ is.
+
+Finally the variance of the square prediction error is 
+\[ \Ex \hat{\eta}^2 = \sigma^2\big( 1 + \frac{1}{n} + \frac{1}{n} (z_{n+1} - \bar{z})\Gamma^{-1} (z_{n+1} - \bar{z})' \big) \]
+
+% subsection subproblem_f (end)
+
+\subsection{subproblem h} % (fold)
+\label{sub:subproblem_h}
+
+Since $X'X$ is invertible, the matrix $Q = Z'Z - n \bar{z}'\bar{z}$ is
+invertible. Furthermore $Q$ is invertible if and only if
+$\Gamma = \frac{1}{n} Z'Z - \bar{z}'\bar{z}$ is non-singular.
+
+It has been shown before that
+\[Q = Z'Z - n \bar{z}'\bar{z} = Z'\big(I_n - \e(\e'\e)^{-1}\e'\big) Z = Z'\pi Z\]
+and $\pi$ is a projection matrix onto a subspace orthogonal to $\clo{\e}$.
+Therefore $\pi$ is idempotent and symmetric, whence $Z'\pi Z = Z'\pi \pi Z =
+Z'\pi' \pi Z = \big(\pi Z\big)'\pi Z$. Therefore the matrix $Q$ is positive
+semidefinite. It is in fact positive definite, because it is also invertible,
+which means that it cannot have zero eigenvalues.
+
+Since $\Gamma = n Q$ it must also be a positive definite matrix.
+
+% subsection subproblem_h (end)
+
+\subsection{subproblem g} % (fold)
+\label{sub:subproblem_g}
+
+Consider the following quadratic form
+\[ f(\xi) =  \xi'A\xi - 2 b \xi + c\]
+Using the very definition of a matrix vector product, it is possible to show
+that its gradient with respect to $\xi$ is given by
+\[\underset{n\times 1}{\nabla f(\xi)} = \underset{n\times n}{(A+A')} \underset{n\times 1}{\xi} - 2 \underset{n\times 1}{b}\]
+The Hessian of $f$ is thus $A+A'$ -- an $n\times n$ matrix.
+
+If $f$ is a positive definite quadratic form, then $A=A'$, whence 
+\[\nabla f = 2 A\xi - 2 b \text{ and } \nabla^2 f = 2A\]
+
+The extremum of $f$ is this a minimum and it is determined by the solution
+\[ A\xi - b = \mathbf{0} \Leftrightarrow A\xi = b\]
+Since $A$ a positive definite, the optimal solution exists and is unique.
+
+Now the variance of the prediction error is a positive definite quadratic form
+with respect to $\xi = z_{n+1} - \bar{z}$. Therefore its minimal value is
+attained at $\xi$ satisfying
+\[\Gamma^{-1} \xi = \mathbf{0}\]
+Since $\Gamma$ is invertible, the optimal $\xi$ for the minimum of the
+variance is thus $\mathbf{0}$, whence $z_{n+1} - \bar{z} = \mathbf{0}$. Thus
+the prediction error variance attains its minimum at $z_{n+1} = \bar{z}$,
+where its value is $\sigma^2(1+\frac{1}{n})$.
+
+% subsection subproblem_g (end)
+
+% section problem_1 (end)
+
+\clearpage
+
+\section{Problem 2} % (fold)
+\label{sec:problem_2}
+
+
+% section problem_2 (end)
+
+\end{document}

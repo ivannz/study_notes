@@ -22,6 +22,7 @@
 \newcommand{\Cplx}{\mathbb{C}}
 \newcommand{\Pwr}{\mathcal{P}}
 \newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Ccal}{\mathcal{C}}
 \newcommand{\Ncal}{\mathcal{N}}
 \newcommand{\Lcal}{\mathcal{L}}
 \newcommand{\Ex}[0]{{\mathbb{E}}}
@@ -1231,14 +1232,392 @@ Heuristics on the values of BIC $\text{BIC}-\text{BIC}_{\min}$
 	\item if $\in\clop{10, +\infty}$ -- the evidence is very strong.
 \end{itemize}
 
-Kass & Raffey (1995)
-
+% Kass & Raffey (1995)
 
 % subsection the_bayesian_information_criterion (end)
 
-
 % section lecture_6 (end)
 
+\section{Lecture \# 7} % (fold)
+\label{sec:lecture_7}
+
+The goal is to estimate the test error given the small sample we have.
+
+\subsection{Validation techniques} % (fold)
+\label{sub:validation_techniques}
+
+Enough data : split the data into two samples and fit on one subsample and test (validate) in the other.
+
+Hold out a set of points in the training set $\brac{x_{2k}}_{k=1}^{n_2}$ on which to test the error of the model.
+On the remaining subsample $\brac{x_{1k}}_{k=1}^{n_1}$ fit the model. The splitting is done randomly.
+However there are some shortcomings:
+\begin{description}
+	\item[Variability] \hfill\\
+		Depends on which observations are put in both subsamples ;
+	\item[Test error] \hfill\\
+		The true error might be overestimated due to having less data to estimate the model.
+\end{description}
+
+\subsubsection{Leave one out cross validation} % (fold)
+\label{ssub:leave_one_out_cross_validation}
+
+The idea is instead of splitting the dataset in two subsets, we test the fit on one single observation.
+
+Is the full training sample is $X=\brac{x_k}_{k=1}^n$, then for each $j=1,\ldots n$ fit the model on $X_{-j} = \brac{X_k}_{k=1,\neq j}^n$.
+Let $\hat{T}_j$ be the prediction of the model fit on $X_{-j}$, then the \textbf{M}ean \textbf{S}quare \textbf{E}rror is 
+\[\text{MSE} \defn \frac{1}{n}\ \sum_{j=1}^n \big(\hat{T}_j - T_j\big)^2 \]
+
+\begin{description}
+	\item[Pros] \hfill\\
+		\begin{itemize}
+			\item Very general and applicable in many settings;
+			\item It is not variable at all -- yields the same results, since the splitting is deterministic;
+			\itme Compared to validation, the bias of the model error is reduced;
+		\end{itemize}
+	\item[Cons] \hfill\\
+		\begin{itemize}
+			\item The variance of the MSE is increased, since there is a substantial overlap in the subsamples;
+			\item It inflates the computational complexity (not true for linear estimators -- a linear combination of the response variables);
+			\[\text{MSE} = \frac{1}{n}\sum_{j=1}^n \Big(\frac{y_j - \hat{y}_j}{1-h_{jj}}\Big)^2\]
+			where $h_{jj}$ is the $j$-th diagonal element of the hat matrix. It is also known as the \emph{leverage}.
+			\item Unsuitable for non-independent data.
+		\end{itemize}
+\end{description}
+
+Covariance function of the residuals $\epsilon = Y - H Y$ is given by 
+\[\text{cov}\big(\hat{\epsilon}\big) = \Ex\big( (I-H)YY'(I-H) \big) = \sigma^2 (I-H)\]
+
+Thus $\Var(\hat{\epsilon}_j) = \sigma^2 (1-h_{jj})$.
+
+And we arrive at the concept of normalised residuals
+\[r_j = \frac{\hat{\epsilon}_j}{\sigma \sqrt{1-h_{jj}}}\]
+
+Since $\sigma$ is usually unknown, the \emph{Studentized} residuals arise:
+\[ \hat{t}_j = \frac{\hat{\epsilon}_j}{\hat{\sigma} \sqrt{1-h_{jj}}}\]
+
+% subsubsection leave_one_out_cross_validation (end)
+
+\subsubsection{$k$-fold cross validation} % (fold)
+\label{ssub:_k_fold_cross_validation}
+
+Divide the training sample into ``folds'' all of approximately equal size. Estimate the model and the MSE on each fold. The $k$-fold MSE is given by 
+\[\text{MSE}_{(k)} = \frac{1}{k}\sum_{j=1}^k \text{MSE}_j \]
+where $\text{MSE}_j$ is the MSE of the $j$-th fold with the model estimated on all the remaining data. The LOOCV is a special case of $k$-fold with $k=n$.
+
+Which method and what values of $k$? Using $k=5,10$ is universally recognized.
+
+The mean square error:
+\begin{description}
+	\item[$k=10$] \hfill\\
+		Bias is reduced, with lower variance;
+	\item[$k=n$] \hfill\\
+		Bias is further reduced at the cost of higher variance.
+\end{description}
+
+% subsubsection _k_fold_cross_validation (end)
+
+\subsection{Wrong ways to cross validate} % (fold)
+\label{sub:wrong_ways_to_cross_validate}
+
+There are $p=10^4$ predictors, and the task is to keep at most $100$. If the model includes a preprocessing step which finds the $100$ best predictors, then it must be incorporated in x-validation.
+
+In multi step modelling cross validation must be applied to the entire sequence of the modelling steps. This way the we will get the right estimate of the test error (of picking the ``best'' $100$ predictors).
+
+% subsection wrong_ways_to_cross_validate (end)
+
+% subsection validation_techniques (end)
+
+\subsection{Bootstrap} % (fold)
+\label{sub:bootstrap}
+
+It is also a resampling technique, where the data is drawn from the already observed data points. The idea is to artificially recreate new samples.
+
+If the training set is $Z=\brac{z_k}_{k=1}^n$, then the bootstrap sample $Z^*_b$ is created by sampling with replacement from $Z$ (non-parametric bootstrap).
+
+This allows to compute the accuracy of any statistic, which is derived from the sample, using the empirical distributions function.
+
+If $S(Z)$ is computed directly form the original sample $Z$, then 
+\[\var\big(S(Z^*)\big) = \frac{1}{B}\sum_{b=1}^B S(Z^*_b)\]
+
+Bootstrap seems a bit magical.
+% (Peter Hall. Edgeworth's view of the bootstrap). 
+
+Cross validation is simple: fit the model on the bootstrap sample and then compute the MSE on those observations, which did not make it into the bootstrap sample.
+
+The probability that an observation ends up in a bootstrap sample is 
+\[\Pr\big(\text{obs}_i\in Z^*_b\big) = 1 - \big(1-\frac{1}{n}\big)^n\approx = 1-e^{-1}\]
+
+The number of distinct observations in a bootstrap sample is $Y$. Then $Y = n (1-\frac{1}{n})$.
+
+Thus the bootstrap cross-validation is approximately equal to the $3$-fold cross validation.
+Since bootstrapping is computationally expensive, $k$-fold cross validation is preferred.
 
 
+
+
+% Model selection with penalty of complexity
+Estimate the test error directly from the data.
+Bootstrap is used to estimate the accuracy of the estimates.
+
+
+
+% subsection bootstrap (end)
+
+Classification procedures
+
+% section lecture_7 (end)
+
+\section{Lecture \# 8} % (fold)
+\label{sec:lecture_8}
+
+SUpervised learning
+
+an input $X$ and the output $T$ assuming the existence of a link between them. Up to now the case of continuous response $T$ variable has been considered, which led to regression methods.
+
+In classification the value space of the response is finite or countable (a class, category or any discrete value).
+
+Thus there is no special order between the distinct values of $T$. 
+Thus the problem of classification arises :
+construct a function $y(\cdot)$ of $X$ so that it predicts the value of the target variable $T$.
+
+Training data $\big(x_k, t_k\big)_{k=1}^n$ 
+
+Consider a simple case of a binary $T$ -- a binary classification problem and let $X$ be univariate.
+
+For small $x$ the response is zero, for large -- $T=1$, and in the intermediate region the intervals with $T=0$ and $T=1$ overlap.
+
+Minimizing the expectd sum of squares, the minimizer is the conditional expectation $\Ex\big(\big. T\big.\big\rvert X\big.\big)$, which is equal to 
+\[\Pr\big(\big. T = 1\big.\big\rvert X = \mathbf{x}\big.\big) = \mathbf{x}\beta\]
+and the classification is done through comparison of the probability of $T=1$ versus $T=0$.
+
+%% an estimated slop
+In classification the problem is to assign a new class $c\in \Ccal$ to an observation, whereas in the regression setting the goal was to predict the response gicen the new observation.
+
+\subsection{As little misclassification as possible} % (fold)
+\label{sub:as_little_misclassification_as_possible}
+
+Minimize the misclassification, by looking at the probability of a mistake:
+\[\Pr\big(y(X)\neq T\big)\]
+observe that this is a generative approach.
+
+The loss function is
+\begin{align*}
+	\Pr\big(\big. y(X) = C_1\big.\big\rvert X\in C_2\big.\big) + \Pr\big(\big. y(X) = C_2\big.\big\rvert X\in C_1\big.\big) = \\
+	&= \int_{R_1} p(x, C_2) dx + \int_{R_2} p(x, C_1) dx \to \min_{R_i}
+\end{align*}
+
+If $p(x, C_2) > p(x, C_1)$ then classify $x$ in $C_2$, otherwise in $C_1$.
+This is known as the Bayes classifier, and it is the best possible classification in this setting.
+
+Consider the conditional probabilities and the Bayesian inference rules:
+\[\Pr\big(\big. X\in C_1\big.\big\rvert X\big.\big) \Pr( X ) > \Pr\big(\big. X\in C_2\big.\big\rvert X\big.\big) \Pr( X ) > \]
+
+There are two possibilities \begin{itemize}
+	\item a generative approach, which models the joint distribution : linear discriminative analysis;
+	\item a discriminative approach, with a parametric form, to come up with tractable models;
+\end{itemize}
+
+% subsection as_little_misclassification_as_possible (end)
+
+\subsection{Expected loss} % (fold)
+\label{sub:expected_loss}
+
+A different perspective: minimize the expected loss, which is suitable under various circumstances where the risk of misclassification of significant.
+
+Introduce a cost of misclassification of a new $x\in C_k$ to a region $R_j$ : $L_{jk}$.
+and minimize the expected loss:
+\[\text{EL} = \sum_{jk} \int_{R_j} L_{jk} p(x, C_k) dx\]
+
+Thus for each $x$ minimize 
+\[\sum_{jk} L_{jk} p(x, C_k) = \sum_{jk} L_{jk} p\big(\big. C_k\big.\big\rvert x\big.\big) p(x)\]
+
+Indeed a similar problem.
+% subsection expected_loss (end)
+
+\subsection{Discriminative approach} % (fold)
+\label{sub:discriminative_approach}
+
+There is a function $y(\cdot):\mathcal{X}\to \Ccal$ which maps $x$ directly to q decision region.
+
+In the case of two classes, assign $x$ to $C_1$ if $y(x) \geq 0$.
+
+This approach does not have probabilistic motivation, whereas the previous approaches are not.
+
+There is a problem with higher number of classes when using discriminant functions.
+
+\begin{description}
+	\item[One-versus-all]\hfill\\
+		Classify according to the rule $C_j$ and $\neg C_j$ to get different classification boundaries.
+		Basically fits $k$ classifiers. It works in some cases, but may yield undefined regions;
+	\item[One-on-one] \hfill\\
+		Consider the classes in pairs $C_i$ and $C_j$, neglecting the others. This results in $i-j$ boundaries,
+		but requires $\frac{k(k-1)}{2}$ classifiers to fit. Still this can produce undefined regions;
+	\itme[]
+	Consider a single $K$-class discrimiminant given by $K$ linear functions $\brac{y_k(\cdot)}_{i=1}^K$.
+	In the $\Real^d$ case these function look like 
+	\[y_k(x) = \beta_{0k} + \beta_k'x\]
+	Classify $x$ to class $C_k$ if $y_k(x) > y_j(x)$ for all $j\neq k$.
+	The boundaries are given by $y_k(x) = y_j(x)$ which define hyperplanes in $\Real^d$:
+	\[\big(\beta_j-\beta_k\big)'x + (\beta_{0j}-\beta_{0k}) = 0\]
+
+	This partitions the space into convex decision regions. Indeed:
+	If $x_1,x_2\in R_k$, then for any $\lambda\in \clo{0,1}$ consider $x = \lambda x_1 + (1-\lambda x_2)$.
+	Then $y_k(x)$ is given by:
+	\begin{align*}
+		y)k(x) &= \beta_k'x +\beta_{0k} = \lambda\beta_k'x_1 + (1-\lambda)\beta_k'x_2 + \beta_{0k} \\
+		& = \lambda\big(\beta_k'x_1 +\beta_{0k}\big) + (1-\lambda)\big(\beta_k'x_2 +\beta_{0k}\big) \\
+		& = \lambda y_k(x_1) + (1-\lambda)y_k(x_2)
+	\end{align*}
+	Since $x_1, x_2\in R_k$ we have $y_k(x_m)>y_j(x_m)$ for all $j\neq k$ and $m=1,2$, whence
+	$y_k(x) > y_j(x)$ for all $j\neq k$, which means that $R_k$ is convex. And thus single connected (?)...
+\end{description}
+
+% subsection discriminative_approach (end)
+
+\subsection{Logistic regression} % (fold)
+\label{sub:logistic_regression}
+
+Suppose there are $K$ distinct categories.
+
+This is a discriminative approach: model $\Pr\big(\big. T=j\big.\big\rvert X=x\big.\big)$ with
+\[\sum_{j=1}^K \Pr\big(\big. T=j\big.\big\rvert X=x\big.\big) = 1\]
+
+The form of a logistic regression:
+\[\ln\Pr\big(\big. T=j\big.\big\rvert X=x\big.\big) = \beta_{0j} + \sum_{s=1}^p\beta_{js} x_s \]
+
+Take the last category as the reference category: for $j=1,\ldots,K-1$
+\[\ln\frac{\Pr\big(\big. T=j\big.\big\rvert X=x\big.\big)}{\Pr\big(\big. T=K\big.\big\rvert X=x\big.\big)}
+	= \beta_{0j} + \sum_{s=1}^p\beta_{js} x_s = \beta_j'x \]
+where $x_0 = \mathbf{1}$.
+
+The probability that $T=j$ given $x$ is
+\[\Pr\big(\big. T=j\big.\big\rvert X=x\big.\big) = \Pr\big(\big. T=K\big.\big\rvert X=x\big.\big) e^{\beta_j'x}\]
+
+Using the constraint yields
+\[1 = \Pr\big(\big. T=K\big.\big\rvert X=x\big.\big) \Big(1 + \sum_{i=1}^{K-1} e^{\beta_i'x}\Big)\]
+
+whence 
+\[\Pr\big(\big. T=K\big.\big\rvert X=x\big.\big) = \frac{1}{1 + \sum_{i=1}^{K-1} e^{\beta_i'x}}\]
+
+and
+\[\pi_j = \Pr\big(\big. T=j\big.\big\rvert X=x\big.\big) = \frac{e^{\beta_j'x}}{1 + \sum_{i=1}^{K-1} e^{\beta_i'x}}\]
+
+\subsubsection{Interpretation} % (fold)
+\label{ssub:interpretation}
+
+Valid for the two class classification only.
+
+What might the interpretation of the coefficients in $\beta_j$.
+
+First note that the odds of classifying to $j$
+\[\frac{\pi_j}{1-\pi_j} = e^{\beta_j'x}\]
+which means that
+\[\ln \frac{\pi_j}{1-\pi_j} = \beta_j'x\]
+The log of the odds of the posterior behaves linearly.
+
+The \textbf{logit} transform of $x\in \brac{0,1}$ is 
+\[\ln\frac{x}{1-x}\]
+
+An increase of one unit in $x_s$ multiplies the odds by $e^\beta_{js}$
+
+% subsubsection interpretation (end)
+
+\subsection{Estimation} % (fold)
+\label{sub:estimation}
+Consider the case of binary classification of the training sample $\big(x_k,t_k\big)_{k=1}^n$. What is the MLE of $\beta$?
+Let $\theta = \brac{\beta_{sj}}_{s=0, j=1}^{p, K}$.
+
+\begin{align*}
+	l(\theta) &= - \ln \prod_{i=1}^n p\big(\big. t_i\big.\big\rvert x_i, \theta\big.\big) \\
+	&= - \sum_{i=1}^n \ln p\big(\big. t_i\big.\big\rvert x_i, \theta\big.\big)
+\end{align*}
+
+Notation: $t_i$ has zero-one values, and $\sigma_i = \sigma\big(\beta'x_i\big)$ where $\sigma(a) = \frac{e^a}{1-e^a}$.
+
+Note that 
+
+Therefore the log-likelihood is 
+\begin{align*}
+	l(\theta) &= - \sum_{i=1}^n \ln \big( \sigma_i^{t_i} (1-\sigma_i)^{1-t_i} \big) \\
+	&= - \sum_{i=1}^n t_i\ln \sigma_i + (1-t_i)\ln (1-\sigma_i)
+\end{align*}
+
+The first order conditions are given by
+\begin{align*}
+	\frac{\partial}{\partial \beta_j}\ln \sigma_i & = \frac{\partial}{\partial \beta_j}-\ln ( 1 + e^{-\beta'x_i} ) \\  
+	& = \frac{\partial}{\partial \beta_j} -\ln ( 1 + e^{-\beta'x_i} ) = \frac{x_{ij}e^{-\beta'x_i}}{1 + e^{-\beta'x_i}} \\
+	& = x_{ij} (1-\sigma_i)
+	\frac{\partial}{\partial \beta_j}\ln (1-\sigma_i) & = - \sigma_i x_{ij}
+\end{align*}
+notice that $\ln(1-\sigma_i) = -\beta'x_i - \ln(1 + e^{-\beta'x_i})$
+
+therefore
+\[\frac{\partial}{\partial \beta_j} l(\theta) = -\sum_{i=1}^n \big( t_i x_{ij} (1-\sigma_i) - (1-t_i)\sigma_i x_{ij} \big) = \sum_{i=1}^n (\sigma_i-t_i)x_{ij} \]
+
+In the matrix notation we have the following:
+\begin{align*}
+	\nabla_\beta l(\beta) = \underset{n\times p+1}{X}' (\underset{n\times 1}{\sigma} - \underset{n\times 1}{t})
+\end{align*}
+
+in appears to be non-linear in $\beta$
+
+In order to employ numerical procedures, the second order conditions must be checked.
+\begin{align*}
+	\frac{\partial}{\partial \beta_i}\frac{\partial}{\partial \beta_j} l(\theta)
+	&= \frac{\partial}{\partial \beta_i} \sum_{i=1}^n (\sigma_i-t_i)x_{ij} \\
+	&= \sum_{i=1}^n x_{ij}\frac{\partial}{\partial \beta_i} \sigma_i \\
+	&= \sum_{i=1}^n x_{ij} x_{ik} \sigma_i (1 - \sigma_i)
+\end{align*}
+
+Introduce a diagonal matrix $B = \text{diag}\big(\sigma_i(1-\sigma_i)\big)_{i=1}^n$.
+
+Therefore
+\[\nabla_\beta^2 l(\beta) = X'BX\]
+which means that the Hessian is a positive semidefinite matrix.
+implying that the optimal $\beta$ is the minimizer. The whole problem is that of convex optimization.
+
+\subsubsection{Newton-Raphson} % (fold)
+\label{ssub:newton_raphson}
+
+The idea is to find a second order approximation of $f:\Real^d\to \Real$ in order to find its roots. As usual use the multivariate Taylor expansion
+\[f(x)-f(a)  = \nabla f(a)' \big(x-a\big) + \frac{1}{2}\big(x-a\big)'\nabla^2 f(a) \big(x-a\big) + \ldots \]
+Thus we approximate $f$ by 
+\[q(x) = \frac{1}{2}x'\nabla^2 f(a) x + \alpha' x + \beta\]
+where $\alpha = \nabla f(a) - \nabla^2 f(a)a$ and $\beta = \ldots$.
+
+The main ides is to approximate a function near its minimum by a quadratic.
+
+The minimum of $q$ is
+\[\nabla q(x) = \nabla^2 f(a) + \alpha = 0\]
+whence 
+\[ x = -\big(\nabla^2 f(a)\big)^{-1} \alpha \]
+and 
+\[ x^* = a - \big(\nabla^2 f(a)\big)^{-1} \nabla f(a) \]
+
+Let's apply this idea to the log-likelihood.
+\begin{enumerate}
+	\item begin with some initial $\beta_0$;
+	\item update $\beta\to \beta_{\text{new}}$ using
+	\[\beta_{\text{old}} - \big(X'BX\big)^{-1} X'(\sigma - t) = \big(X'BX\big)^{-1} X'B \big( X \beta_{\text{old}} - B^{-1} (\sigma- t ) \big)\]
+	the term in brackets is the adjusted response $Z = X \beta_{\text{old}} - B^{-1} (\sigma - t )$ and the $\sigma$ is evaluated at $\beta_{\text{old}}$;
+	use the weighted least squares.
+\end{enumerate}
+
+
+% subsubsection newton_raphson (end)
+
+\subsubsection{Probit regression} % (fold)
+\label{ssub:probit_regression}
+
+Motivation: there is a latent variable $t^* = \beta'x + \epsilon$ with $\epsilon\sim \Ncal(0,1)$ and the observed binary variable $T = 1_{T^*(x)>0}(x)$.
+Now $\Pr\big(\beta'x+\epsilon > 0\big) = \Pr\big(\epsilon > -\beta'x\big) = 1-\Phi(-\beta'x) = \Phi(\beta'x)$
+
+
+% subsubsection probit_regression (end)
+
+% subsection estimation (end)
+
+% subsection logistic_regression (end)
+
+% section lecture_8 (end)
 \end{document}
