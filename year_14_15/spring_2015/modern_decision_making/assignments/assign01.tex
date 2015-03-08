@@ -517,7 +517,126 @@ It is obvious that
 \section{Problem 3} % (fold)
 \label{sec:problem_3}
 
-You
+Suppose $X\in \Real^{n\times p}$ is a full rank matrix of $p$ explanatory
+varaibles (predictors) and $T\in \Real^{n\times 1}$ is the vector of
+associated reponses.
+
+The elastic net timisation problem, proposed by Zou and Hastie (2005), is
+\[\min \Big\{ (T-X\beta)'(T-X\beta) + \lambda\big( \alpha \nrm{\beta}_2^2 + (1-\alpha) \nrm{\beta}_1 \big) \Big\}\]
+for $\alpha\in [0,1]$ and $\nrm{\beta} = \sum_{k=1}^p \lvert \beta_k\rvert$.
+
+Though it looks deifferent, in fact it can be reduced to a lasso problem, albeit with transformed input data $X$ and response $T$. What follows is the detailed exposition of the steps required to do this.
+
+The \textbf{S}ingular \textbf{V}alue \textbf{D}ecomposition theorem states
+that for any matrix $A\in \Cplx^{n\times m}$ of rank $k\leq n,m$ there exist
+unitary matrices $U\in \Cplx^{n\times n}$ and $V\in\Cplx^{m\times m}$
+together with a diagonal matrix $\Sigma\in \Real^{k\times k}$ of nonnegative
+values singular values such that
+\[X = U \Big(\begin{smallmatrix}\Sigma & 0 \\ 0 & 0\end{smallmatrix}\Big)V^*\]
+where $\cdot^*$ is the matrix conjugate transpose. A unitary matrix
+$U\in \Cplx^{n\times n}$ is such that $U^*U = UU^* = I_n$. If the matrix $A$ is real-valued, then $U$ and $V$ are real matrices as well.
+
+Now, consider the matrix $X$. It is real and of full rank, whence by the SVD
+theorem there exist an orthogonal $U\in \Real^{n\times n}$, a diagonal $\Sigma\in \Real^{p\times p}$ and another orthogonal $V\in \Real^{p\times p}$ such that 
+\[X = U \Big(\begin{smallmatrix}\Sigma \\ 0\end{smallmatrix}\Big) V'\]
+Since $X$ is full rank, the matrix $X'X$ must be nonsingluar, whence $\Sigma$ must have strictly positive diagonal elements. Indeed, if there had existed such $z\neq 0$ that $X'Xz = 0$, then $z'X'Xz = 0$, whence $Xz = 0$ would have meant that $z$ are the coefficients of a non-trivial linear combination of columns of $X$, which are linearly independent by assumption of the full rank. Thus
+\[\lvert X'X \rvert =
+\lvert V(\begin{smallmatrix}\Sigma' & 0\end{smallmatrix})UU'\Big(\begin{smallmatrix}\Sigma \\ 0\end{smallmatrix}\Big)V'\rvert
+= \lvert V(\Sigma'\Sigma + 0'0)' V'\rvert = \lvert V\Sigma'\Sigma V'\rvert = \lvert \Sigma\rvert^2 = \prod_{i=1}^p \sigma_i^2 \neq 0\]
+where $\sigma_i$ is the $i$-th singular value in $\Sigma$.
+
+Armed with this wonderful decomposition let's embark on a perilous
+adventure, which if successful would yield a reduction of this problem to
+that of lasso.
+
+\subsection*{First} % (fold)
+\label{sub:first}
+
+Minor bracket expansion in the penalty term in the core expression
+produces
+\begin{align*}
+ 	\ldots + \lambda\big( \alpha \nrm{\beta}_2^2 + (1-\alpha) \nrm{\beta}_1 \big) &= \ldots + \lambda \alpha \beta'\beta + \lambda (1-\alpha) \nrm{\beta}_1
+\end{align*}
+this suggests that the reduced problem would have the lasso penalty term with the complexity coefficient given by $\lambda(1-\alpha)$ -- both known values.
+
+Given this simplification, it seems logical to focus on this expression:
+\[(T-X\beta)'(T-X\beta) + \lambda \alpha \beta'\beta\]
+bearing in mind that $X = U \Big(\begin{smallmatrix}\Sigma \\ 0\end{smallmatrix}\Big) V'$.
+
+% subsection* first (end)
+
+\subsection*{Second} % (fold)
+\label{sub:second}
+
+The expression is equivalent to
+\[T'T - \beta'X'T - T'X\beta + \beta'X'X\beta + \beta'\beta \alpha\lambda \]
+Since $V$ is orthogonal, $V'=V^{-1}$ and $VV' = I_p$, and it can be transformed into
+\[T'T - \beta'X'T - T'X\beta + \beta'X'X\beta + \beta'VV'\beta \alpha\lambda \]
+If the following matrices $S$ and $\delta$ are defined:
+\[S = \bigg(\begin{matrix} \Sigma \\ 0 \end{matrix}\bigg)\quad\text{and}\quad \Delta = \bigg(\begin{matrix} \sqrt{\alpha \lambda}I_p \\ 0 \end{matrix}\bigg)\]
+then the expression reduces to
+\[T'T - \beta'X'T - T'X\beta + \beta'VS'SV'\beta + \beta'V \Delta' \Delta V'\beta \]
+because $X'X = VS'U'USV' = VS'SV'$, since $U$ is orthogonal, and $\Delta\Delta' = \Delta'\Delta = \alpha\lambda I_p$.
+Collecting the quadratic term results in
+\[T'T - \beta'X'T - T'X\beta + \beta'V(S'S+\Delta'\Delta)V'\beta \]
+
+% subsection* second (end)
+
+\subsection*{Third} % (fold)
+\label{sub:third}
+
+Now, put $\Lambda = S'S+\Delta'\Delta$. Being a sum of non-negative diagonal matrices, $\Lambda$ is itself non-negative diagonal. In fact its $u$-th diagonal value is equal to $\Lambda_{ii} = \sigma_i^2 + \alpha \lambda$. Furthermore, begin a \textbf{diagonal} matrix, $\Lambda$ admits the square root $\sqrt{\Lambda}$ which is diagonal with elements equal to $\sqrt{\Lambda_{ii}}$. In addition, the root is invertible.
+
+Define $L = \big(\begin{smallmatrix} \sqrt{\Lambda} \\ 0 \end{smallmatrix}\big)$ an $n\times p$ matrix, and observe that
+\[L'L = (\begin{smallmatrix}\sqrt{\Lambda} & 0\end{smallmatrix})\Big(\begin{smallmatrix}\sqrt{\Lambda} \\ 0\end{smallmatrix}\Big) = \sqrt{\Lambda}\sqrt{\Lambda} + 0 = S'S + \Delta'\Delta\]
+Furthermore, for
+\[\tilde{L}_{n\times p} = \bigg(\begin{matrix}\Lambda^{-\sfrac{1}{2}} \\ 0\end{matrix}\bigg)\]
+it is true that
+\[\tilde{L}'L = L'\tilde{L} = \Lambda^{-\sfrac{1}{2}} \sqrt{\Lambda} + 0 = I_p\]
+and
+\[L\tilde{L}' = \tilde{L} L'= \bigg(\begin{matrix} \sqrt{\Lambda}\Lambda^{-\sfrac{1}{2}} & 0 \\ 0 & 0\end{matrix}\bigg) = \bigg(\begin{matrix} I_p & 0 \\ 0 & 0\end{matrix}\bigg)\]
+Meanwhile the expression becomes
+\[T'T - \beta'X'T - T'X\beta + \beta'VL'U'ULV'\beta \]
+
+Next, since $U'U = I_n$, one has $VL'LV' = VL'U'ULV' = (ULV')'(ULV')$, which means that with $\tilde{X} = ULV'$ it is possible to express $X$ as
+\[X = USV' = USI_pV' = US\tilde{L}'LV' = US\tilde{L}'I_nLV' = US\tilde{L}'U'ULV' = US\tilde{L}'U'\tilde{X}\]
+The core expression is thus further ``simplified'' to
+\[T'T - \beta'\tilde{X}'U\tilde{L}S'U'T - T'US\tilde{L}'U'\tilde{X}\beta + \beta'\tilde{X}'\tilde{X}\beta \]
+
+% subsection* third (end)
+
+\subsection*{Fourth} % (fold)
+\label{sub:fourth}
+If one puts $\tilde{T} = U\tilde{L}S'U'T$, then the expression finally becomes
+\[T'T - \beta'\tilde{X}'\tilde{T} - \tilde{T}'\tilde{X}\beta + \beta'\tilde{X}'\tilde{X}\beta\]
+whence it equals
+\[ T'T - \tilde{T}'\tilde{T} + (\tilde{T} - \tilde{X}\beta)'(\tilde{T} - \tilde{X}\beta) \]
+
+The term $T'T - \tilde{T}'\tilde{T}$ is essentially constant: it is determined by the sample data and the complexity parameters $\alpha$ and $\lambda$, while being entirely independent of $\beta$. With these transformations the elastic net problem becomes the lasso:
+\[\min\Big\{ (\tilde{T} - \tilde{X}\beta)'(\tilde{T} - \tilde{X}\beta) + \lambda(1-\alpha)\nrm{\beta}_1 \Big\}\]
+This establishes the equivalence
+\begin{align*}
+	\tilde{T} &= U\tilde{L}S'U'T\\
+	\tilde{X} &= U\bigg(\begin{matrix} \sqrt{S'S+\alpha \lambda I_p} \\ 0 \end{matrix}\bigg) V'
+\end{align*}
+
+% subsection* fourth (end)
+
+\subsection*{Final} % (fold)
+\label{sub:final}
+
+Observe that 
+\[\tilde{L}S' = \bigg(\begin{matrix}\Lambda^{-\sfrac{1}{2}} \\ 0\end{matrix}\bigg) \bigg(\begin{matrix} \Sigma' & 0 \end{matrix}\bigg) = \bigg(\begin{matrix} \Lambda^{-\sfrac{1}{2}}\Sigma & 0 \\ 0 & 0\end{matrix}\bigg)\]
+The diagonal matrix $W = \Lambda^{-\sfrac{1}{2}}\Sigma \in \Real^{p\times p}$ has especially interesting diagonal elements:
+\[w_{ii} = \frac{\sigma_i}{\sqrt{ \sigma_i^2 + \alpha\lambda } }\]
+Write the matrix $U$ as $\big(\begin{matrix}U_1 & U_2\end{matrix}\big)$, where $U_1\in \Real^{n\times p}$ and $U_2\in \Real^{(n-p)\times p}$.
+Since $U$ is orthogonal, $U_1'U_1 = I_p$. With this decomposition of $U$ the modified response $\tilde{T}$ can be rewritten as
+\[\tilde{T} = \big(\begin{matrix}U_1 & U_2\end{matrix}\big)\bigg(\begin{matrix} \Lambda^{-\sfrac{1}{2}}\Sigma & 0 \\ 0 & 0\end{matrix}\bigg)\bigg(\begin{matrix}U_1' \\ U_2'\end{matrix}\bigg)T = U_1 W U_1'T \]
+which is essentially a projection of $T$ onto the subspace spanned by the columns of $U_1$ with each direction scaled by the appropriate element of the diagonal of $W$. Therefore
+\[\tilde{T}_i = \sum_{j=1}^p U_{1ij} w_{jj} U_{1\cdot j}'T\]
+
+% subsection* final (end)
 
 % section problem_3 (end)
+
 \end{document}
