@@ -20,12 +20,15 @@
 
 \newcommand{\w}{\mathbf{w}}
 \newcommand{\e}{\mathbf{1}}
+\newcommand{\R}{\text{R}}
 \newcommand{\Real}{\mathbb{R}}
 \newcommand{\Cplx}{\mathbb{C}}
 \newcommand{\Pwr}{\mathcal{P}}
 \newcommand{\Ex}{\mathbb{E}}
 \newcommand{\Var}{\text{var}}
 \newcommand{\Tr}{\mathop{\text{tr}}\nolimits}
+\newcommand{\RSS}{\text{RSS}}
+
 
 \newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
 
@@ -47,14 +50,14 @@
 
 Suppose instead of a one new observation we are given $m$ observation
 $\big(\w_k\big)_{k=0}^m$ with $\w_k\in \obj{1}\times\Real^p$
-collected in a matrix $\underset{m\times 1+p}{W}$. The vector of predictions
+collected in a matrix $W_{m\times 1+p}$. The vector of predictions
 is then $\hat{T}_W = W\hat{\beta}$, where $\hat{\beta}$ is the OLS estimate of
 the model
 \[ \underset{n\times 1}{T} = \underset{n\times p+1}{X} \underset{(1+p)\times 1}{\beta} + \underset{n\times 1}{\epsilon}\]
 given by $\hat{\beta} = \big(X'X\big)^{-1} X'T$, where $X$ is the observed matrix of explanatory variables and $T$ is the vector of associated responses
 all in the training sample.
 
-Let the errors in new observations be given by a random vector $\underset{m\times 1}{\eta}$ with mean $\Ex \eta = 0$ and variance $\Var \eta = \sigma^2 I_m$,
+Let the errors in new observations be given by a random vector $\eta_{m\times 1}$ with mean $\Ex \eta = 0$ and variance $\Var \eta = \sigma^2 I_m$,
 which is independent from $\epsilon$.
 
 The expectation of the error vector of the joint prediction $\hat{\eta} = T_W - \hat{T}_W$ is given by
@@ -75,7 +78,7 @@ $\epsilon$ and $\eta$ are independent, we have
 	&= \beta\eta' - \big(X'X\big)^{-1} X'X\beta\eta' - \big(X'X\big)^{-1} X'\epsilon \eta' \\
 	&=  - \big(X'X\big)^{-1} X' \big( \epsilon \eta' \big)
 \end{align*}
-whence $\Ex \big(\beta-\hat{\beta}\big)\eta' = \underset{(1+p)\times m}{\mathbf{0}}$.
+whence $\Ex \big(\beta-\hat{\beta}\big)\eta' = \mathbf{0}_{(1+p)\times m}$.
 
 Thus the covariance matrix of the prediction error vector is
 \begin{align*}
@@ -99,9 +102,7 @@ Now the mean square error of the prediction is given by
 	&= \sigma^2 + \frac{\sigma^2}{m} \Tr W (X'X)^{-1} W' \\
 	&= \sigma^2 + \frac{\sigma^2}{m} \sum_{k=1}^m \w_k (X'X)^{-1} \w_k'
 \end{align*}
-where $\e\in \Real^{m\times 1}$ is a vector of ones.
-
-When $m=1$ this is equal to
+where $\e\in \Real^{m\times 1}$ is a vector of ones. When $m=1$ this is equal to
 \[ \Ex \hat{\eta}^2 = \sigma^2( 1 + \w_k (X'X)^{-1} \w_k' ) \]
 
 % subsection subproblem_a (end)
@@ -119,8 +120,8 @@ The inverse of $X'X$ is given by
  	&= \bigg(\begin{matrix}\e'\e & \e'\mathbf{x} \\ \mathbf{x}'\e & \mathbf{x}'\mathbf{x}\end{matrix}\bigg)^{-1}\\
  	&= \bigg(\begin{matrix}n & n\bar{x} \\ n\bar{x} & n\overline{x^2}\end{matrix}\bigg)^{-1}
  \end{align*} 
-where $\bar{x}\in \Real$ and $\overline{x^2}\in \Real$ are the sample mean and
-the mean square of the observations $\mathbf{x}\in \Real^n$ respectively.
+where $\bar{x}\in \Real^{1\times 1}$ and $\overline{x^2}\in \Real^{1\times 1}$
+are the sample mean and the mean square of the observations $\mathbf{x}\in \Real^{n\times 1}$ respectively.
 
 The inverse of a $2\times 2$ matrix, provided it is non-singular, is given by
 \[\bigg(\begin{matrix} a & b\\c & d\end{matrix}\bigg)^{-1} = \frac{1}{ad-bc}\bigg(\begin{matrix} d & -b\\-c & a\end{matrix}\bigg)\]
@@ -160,15 +161,15 @@ Therefore the expected squared error is
 \label{sub:subproblem_c}
 
 In the bivariate case the expression for the square error of one-point
-predicton is quadratic in $x_{n+1}$. Furthermore the squared term enters the
+prediction is quadratic in $x_{n+1}$. Furthermore the squared term enters the
 expression with a positive coefficient \[\frac{1}{\sum_{i=1}^n (x_i - \bar{x})^2}\geq 0\]
 
 Therefore the term
 \[\frac{ \big(\bar{x} - x_{n+1}\big)^2 }{ \sum_{i=1}^n (x_i - \bar{x})^2 } \geq 0 \]
 whence its minimum is $x_{n+1} = \bar{x}$.
 
-One could also compute the first order condituion of a local maximum and then
-the second order conditions to persuade oneslef that this is indeed the case,
+One could also compute the first order condition of a local maximum and then
+the second order conditions to persuade oneself that this is indeed the case,
 but this not needed here.
 
 % subsection subproblem_c (end)
@@ -307,7 +308,7 @@ It has been shown before that
 and $\pi$ is a projection matrix onto a subspace orthogonal to $\clo{\e}$.
 Therefore $\pi$ is idempotent and symmetric, whence $Z'\pi Z = Z'\pi \pi Z =
 Z'\pi' \pi Z = \big(\pi Z\big)'\pi Z$. Therefore the matrix $Q$ is positive
-semidefinite. It is in fact positive definite, because it is also invertible,
+semi-definite. It is in fact positive definite, because it is also invertible,
 which means that it cannot have zero eigenvalues.
 
 Since $\Gamma = n Q$ it must also be a positive definite matrix.
@@ -349,7 +350,174 @@ where its value is $\sigma^2(1+\frac{1}{n})$.
 \section{Problem 2} % (fold)
 \label{sec:problem_2}
 
+Consider a general problem of testing linear restrictions on coefficients in a linear regression model.
+
+As usual the setting is as follows: \begin{itemize}
+	\item An input set of variable represented by an $n\times p$ matrix $X$, $p<n$, with a technical condition that $X$ be full rank;
+	\item A $n\times 1$ vector $T$ of responses associated with each particular observation (row) in $X$, which behaves according to the joint model
+	\[T = X\beta + \epsilon\]
+	with $\epsilon\sim\mathcal{N}_n(0,\sigma^2 I_n)$.
+\end{itemize}
+
+However this time it of interest to impose a set of linear constraints of the parameter $\beta$ summarized in this linear equation: $Q\beta = q$, where $Q\in \Real^{r\times p}$ is a full rank matrix, and $q\in \Real^{r\times 1}$.
+
+In order to find the constrained lest square estimate of this model it is necessary to solve the following constrained quadratic optimization problem:
+\[\frac{1}{2} (T - X\beta)'(T - X\beta) \to \min_\beta\]
+subject to $Q\beta = q$. This model is called the \emph{restricted} model, whereas the model without the constraints is the \emph{unrestricted} model.
+
+
+The Lagrangian of the problem is given by 
+\[\mathcal{L} = \frac{1}{2} (T - X\beta)'(T - X\beta) + (Q\beta - q)'\lambda\]
+
+which after minor simplification is given by
+\[\mathcal{L} = \frac{1}{2}\big(\beta X'X\beta - T'X\beta - \beta'X'T + T'T\big) + (Q\beta - q)'\lambda\]
+
+The first order conditions (\textbf{FOC}) are
+\begin{align*}
+	\frac{\partial}{D\beta} \mathcal{L} = X'X\beta - X'T + Q'\lambda = 0\\
+	\frac{\partial}{D\lambda} Q\beta - q = 0
+\end{align*}
+
+It is easy to find $\hat{\lambda}$. First express $\beta$ from the first equation of the FOC:
+\[\beta = (X'X)^{-1}(X'T - Q'\lambda) = \hat{\beta} - (X'X)^{-1}Q'\lambda\]
+because the OLS estimate of $\beta$ is given by $\hat{\beta} = (X'X)^{-1}X'T$.
+Left-multiply the expression by $Q$ and use the equation of the constraint to get
+\[Q\beta = Q \hat{\beta} - Q(X'X)^{-1}Q'\lambda = q\]
+Since matrices $Q$ and $X$ are full-rank the matrix $Q(X'X)^{-1}Q'$ is invertible, this implies
+\[\hat{\lambda} = \big(Q(X'X)^{-1}Q'\big)^{-1}(Q\hat{\beta}-q)\]
+
+Now lets express $\hat{\beta}_\R$ through $\hat{\beta}$.
+\begin{align*}
+	\hat{\beta}_\R
+	&= \hat{\beta} - (X'X)^{-1}Q'\hat{\lambda} \\
+	&= \hat{\beta} - (X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}(Q\hat{\beta}-q)
+\end{align*}
+
+Now let's derive the expression for the \textbf{R}esidual \textbf{S}um of \textbf{S}quares of the restricted model.
+\begin{align*}
+	\RSS_\R &= (T - X\hat{\beta}_\R)'(T - X\hat{\beta}_\R)\\
+	&= \big(T - X\hat{\beta} + X (\hat{\beta} - \hat{\beta}_\R) \big)'\big(T - X\hat{\beta} + X (\hat{\beta} - \hat{\beta}_\R) \big)\\
+	&= (T - X\hat{\beta})'(T - X\hat{\beta}) + (T - X\hat{\beta})'X (\hat{\beta} - \hat{\beta}_\R) + \\
+	&+(\hat{\beta} - \hat{\beta}_\R)'X'(T - X\hat{\beta}) + (\hat{\beta} - \hat{\beta}_\R)'X'X(\hat{\beta} - \hat{\beta}_\R) \\
+	&= \RSS + (\hat{\beta} - \hat{\beta}_\R)'X'X(\hat{\beta} - \hat{\beta}_\R)
+\end{align*}
+where $\RSS$ is the residual sum of square of the unrestricted model.
+
+The last requires elaboration:
+\[(T - X\hat{\beta})'X (\hat{\beta} - \hat{\beta}_\R) = T\big(I_n - X(X'X)^{-1}X'\big)'X (\hat{\beta} - \hat{\beta}_\R) = 0\]
+because $P_X = I_n - X(X'X)^{-1}X'$ is a projection matrix onto the space orthogonal to the column space of the matrix $X$ and $\clo{(X_i)_{i=1}^p} \perp \clo{(X_i)_{i=1}^p}^\perp$. Indeed direct calculations confirm this:
+\[P_X X = X - X(X'X)^{-1}X'X = X - X = 0\]
+
+Consider the second term in the right hand side of the final expression of $\RSS_\R$. Since 
+\[(\hat{\beta} - \hat{\beta}_\R) = (X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}(Q\hat{\beta}-q)\]
+one has the following
+\begin{align*}
+	(\hat{\beta} - \hat{\beta}_\R)'X'X(\hat{\beta} - \hat{\beta}_\R)
+	&= (Q\hat{\beta}-q)'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1} (X'X) \\
+	&\quad\times (X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}(Q\hat{\beta}-q)\\
+	&= (Q\hat{\beta}-q)'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}Q' \\
+	&\quad\times \big(Q(X'X)^{-1}Q'\big)^{-1}(Q\hat{\beta}-q)\\
+	&= (Q\hat{\beta}-q)'\big(Q(X'X)^{-1}Q'\big)^{-1}(Q\hat{\beta}-q)
+\end{align*}
+therefore
+\[\RSS_\R = \RSS + (Q\hat{\beta}-q)'\big(Q(X'X)^{-1}Q'\big)^{-1}(Q\hat{\beta}-q)\]
+If the linear model is correct, the RSS of the unconstrained model is
+\begin{align*}
+	\RSS &= (T - X\hat{\beta})'(T - X\hat{\beta}) \\
+	&= (\epsilon - X(X'X)^{-1}X'\epsilon)'(\epsilon - X(X'X)^{-1}X'\epsilon) \\
+	&= \epsilon'(I_n - X(X'X)^{-1}X')'(I_n - X(X'X)^{-1}X')\epsilon = \epsilon'P_X \epsilon
+\end{align*}
+as $P_X$ is a projector.
+
+Furthermore assuming that the linear restrictions are also correct in that for the true parameters $Q\beta = q$, one can simplify the second tern in the expression for $\RSS_\R$ as
+\begin{align*}
+	&(Q\hat{\beta}-q)'\big(Q(X'X)^{-1}Q'\big)^{-1}(Q\hat{\beta}-q) = \\
+	&\quad= (\hat{\beta}-\beta)'Q'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(\hat{\beta}-\beta)\\
+	&\quad= \epsilon'X(X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}X'\epsilon
+\end{align*}
+since $\hat{\beta}-\beta = (X'X)^{-1}X'(X\beta + \epsilon) - \beta = (X'X)^{-1}X'\epsilon$.
+
+The matrix $P_{QX}$ defined as 
+\[P_{QX} = X(X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}X'\]
+is a projector. Indeed, it is symmetric and 
+\begin{align*}
+	P_{QX} P_{QX}
+	&= X(X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}X'\\
+	&\quad\times X(X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}X' \\ 
+	&= X(X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}X' = P_{QX}
+\end{align*}
+Thus 
+\[\RSS_\R = \RSS + \epsilon'X(X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}X'\epsilon = \RSS + \epsilon' P_{QX} \epsilon\]
+
+\noindent Now it is necessary to state some results from the linear algebra and multivariate statistics.
+\begin{description}
+	\item[First] If $A\in \Real^{m\times m}$ is a positive seimdefinite matrix, then the there exists an orthogonal matrix $C$ of column eigenvectors of $A$ that constitute a basis and a diagonal matrix $\Lambda$ of associated eigenvalues such that $A = C\Lambda C'$;
+
+	\item[Second] If $A\in \Real^{m\times m}$ is projection matrix, then its eigenvalues are either $0,$ or $1$. Indeed $A=A^2$ implies that $C\Lambda^2C' = C\Lambda C'$, whence $\Lambda^2 = \Lambda$ since $C$ is non-singular. Thus the elements of $\Lambda$ are either $0$ or $1$. A corollary is, that the trace of a projector matrix is equal to its rank, since the rank is preserved under non-singular linear transformations;
+
+	\item[Third] If $\epsilon\sim\mathcal{N}_m(0,I_m)$ and $A$ is a projector, then $\epsilon'A\epsilon \sim \chi^2_{\text{rank}(A)}$.
+	Indeed,
+	\[\epsilon'A\epsilon = \epsilon'C\Lambda C'\epsilon = (C'\epsilon) \Lambda (C'\epsilon) = \sum_{k=1}^m \lambda_k z_k^2\]
+	where $Z = (z_k)_{k=1}^m = C'\epsilon$. Being a non-degenerate linear transformation of a normally distributed random vector, $Z\sim\mathcal{N}_m(0, C'I_m C)$. Thus $\epsilon'A\epsilon$ is a sum of $\text{rank}(A)$ squares of independent normally distributed random variables.
+
+	\item[Fourth] If $\epsilon\sim\mathcal{N}_m(0,I_m)$ and $A,B$ are $m\times m$ projector matrices with $A B = 0$, then $\epsilon'A\epsilon$ and $\epsilon'B\epsilon$ are independent random variables.
+	Indeed, due to idempotence $\epsilon'A\epsilon = \eta'\eta$ and $\epsilon'B\epsilon = \xi'\xi$ with $\eta = A'\epsilon$ and $\xi = B'\epsilon$.
+	Now since $\epsilon$ is multivariate normal, both $\eta$ and $\xi$ are Gaussian. Thus $\eta$ and $\xi$ are independent if and only if they are uncorrelated. But $\eta'\xi = \epsilon'AB'\epsilon = \epsilon'AB\epsilon = 0$. Thus $\epsilon'A\epsilon\perp \epsilon'B\epsilon$
+\end{description}
+
+\noindent For the projection matrices in the problem one has
+\begin{align*}
+	\text{rank} ( X(X'X)^{-1}X' ) &= \Tr (X'X)^{-1}X'X = p \\
+	\text{rank} (P_X) &= \Tr I_n - \Tr X(X'X)^{-1}X' = n-p \\
+	\text{rank} (P_{QX})
+	&= \Tr X(X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}X' \\
+	&= \Tr \big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}X'X(X'X)^{-1}Q' \\
+	&= \Tr \big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}Q' = \Tr I_r = r
+\end{align*}
+
+In the problem $\epsilon\sim\mathcal{N}_n(0,\sigma^2 I_n)$, which means that $\frac{1}{\sigma} \epsilon \sim \mathcal{N}_n(0,I_n)$. Thus we have the following results
+\begin{align*}
+	\frac{1}{\sigma^2}\RSS &= \frac{1}{\sigma^2}\epsilon'P_X \epsilon \sim \chi^2_{n-p} \\
+	\frac{1}{\sigma^2}(\RSS_\R - \RSS) &= \frac{1}{\sigma^2}\epsilon'n P_{QX} \epsilon \sim \chi^2_r \\
+	& \frac{1}{\sigma^2}\RSS \perp \frac{1}{\sigma^2}(\RSS_\R - \RSS)
+\end{align*}
+where the independence follows from $P_X P_{QX} = 0$:
+\begin{align*}
+	\big(I_n - X(X'X)^{-1}X'\big) P_{QX} &= P_{QX} - X(X'X)^{-1}X' P_{QX} \\
+	&= P_{QX} - X(X'X)^{-1}X'X(X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}X' \\
+	&= P_{QX} - X(X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}X' \\
+	&= P_{QX} - P_{QX} = 0
+\end{align*}
+
+Finally, the Fisher's distribution 
+\[F(m,n) \sim \frac{\chi^2_m}{m} \frac{n}{\chi^2_n}\]
+a ratio of independent $\chi^2$ distributed random variables. Therefore under the null hypothesis $H_0: Q\beta = q$, provided the linear model is specified correctly, one has the following:
+\[\frac{\RSS_\R - \RSS}{r \sigma^2}\frac{(n-p) \sigma^2}{\RSS} = \frac{\RSS_\R - \RSS}{\RSS}\frac{n-p}{r}\sim F(r,n-p)\]
+
+A frequently tested linear restriction is that of the equality of a particular coefficient $\beta_k$, $k=1,\ldots,p$ of the model to a specific value -- zero. In terms of the restriction matrix $Q$ and vector $q$ this is equivalent to $Q_{1\times p} = e_k'$ and $q=0_{1\times 1}$ where $e_k$ is the $k$-th unit column vector (all zeros except for a 1 on the $k$-th coordinate). Thus
+\begin{align*}
+	\RSS_\R - \RSS
+	&= (Q\hat{\beta}-q)'\big(Q(X'X)^{-1}Q'\big)^{-1}(Q\hat{\beta}-q) \\
+	&= \hat{\beta}'e_k\big(e_k'(X'X)^{-1}e_k\big)^{-1}e_k'\hat{\beta} \\
+	&= \hat{\beta}'e_k\big(v_{kk}\big)^{-1}e_k'\hat{\beta} = \frac{1}{v_{kk}}(e_k'\hat{\beta})' e_k'\hat{\beta} = \frac{1}{v_{kk}}\hat{\beta}_k^2
+\end{align*}
+where the scalar $v_{ij} = e_i'(X'X)^{-1}e_j$ -- the $i$-th row and $j$-th column entry of $(X'X)^{-1}$.
+
+Therefore 
+\[ \frac{\RSS_\R - \RSS}{\RSS}\frac{n-p}{r} = \frac{\RSS_\R - \RSS}{\frac{\RSS}{n-p}} = \frac{\hat{\beta}_k^2}{\frac{\RSS}{n-p}v_{kk}} \sim F(1,n-p)\]
+
+However the two-sided test for significance of the $k$-th coefficient is performed by the t-test with the statistic
+\[\frac{\lvert \hat{\beta}_k \rvert}{\hat{\sigma}\sqrt{v_{kk}}}\sim t_{n-p}\] where $\hat{\sigma}$ is given by the unbiased estimate $\sqrt{\frac{\RSS}{n-p}}$.
+
+It is obvious that 
+\[\bigg(\frac{\lvert \hat{\beta}_k \rvert}{\hat{\sigma}\sqrt{v_{kk}}}\bigg)^2 = \frac{\hat{\beta}_k^2}{\hat{\sigma}^2 v_{kk}} = \frac{\hat{\beta}_k^2}{\frac{\RSS}{n-p} v_{kk}} \]
 
 % section problem_2 (end)
 
+\section{Problem 3} % (fold)
+\label{sec:problem_3}
+
+You
+
+% section problem_3 (end)
 \end{document}
