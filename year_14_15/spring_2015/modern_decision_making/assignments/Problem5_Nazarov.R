@@ -46,15 +46,16 @@ lm.kfold <-function( model, data = environment( model ), k = 10, seed = NULL, ..
 ## Perform crossvalidation of linear models in batch
 lm.batch_xvalidate <- function( models, folds = integer( 0 ),
 	replications = 20, ..., .verbose = TRUE ) {
+	if( .verbose ) cat( "Batch cross-validator:\n" )
 ## Fix the extra arguments
 	args <- list( ... )
 
 ## Leave-one-out cross validation
-	if( .verbose ) cat( "LOOCV...\n" )
+	if( .verbose ) cat( "\tLOOCV...\n" )
 	loocv_mse <- sapply( X = models, FUN = lm.kfold, k = -1, data = Boston )
 
 ## perform the k-fold cross validation
-	if( .verbose && length( folds ) ) cat( "k-fold...\n" )
+	if( .verbose && length( folds ) ) cat( "\tk-fold...\n" )
 	kfold_mse <- lapply( folds, extra = args, FUN = function( k, extra ) {
 		replicate( n = replications,
 			do.call( sapply, args = c( list(
@@ -62,7 +63,7 @@ lm.batch_xvalidate <- function( models, folds = integer( 0 ),
 		} )
 
 # Compute the mean values and the standard deviations of the fold MSE
-	if( .verbose ) cat( "processing...\n" )
+	if( .verbose ) cat( "\tprocessing...\n" )
 	avg_kfold_mse <- lapply( kfold_mse, function( mse ) apply( mse, 1, mean ) )
 	 sd_kfold_mse <- lapply( kfold_mse, function( mse ) apply( mse, 1, sd ) )
 
@@ -72,7 +73,7 @@ lm.batch_xvalidate <- function( models, folds = integer( 0 ),
 		sapply( avg_kfold_mse, which.min, USE.NAMES = FALSE ) )
 
 ## Return a cross-validation results object
-	if( .verbose ) cat( "done...\n" )
+	if( .verbose ) cat( "\tdone...\n" )
 	return( list(
 		loocv = list( mse = loocv_mse, opt = opt_loocv, se = numeric( 1 ), raw = loocv_mse ),
 		kfold = list( mse = avg_kfold_mse, opt = opt_kfold, se = sd_kfold_mse, raw = kfold_mse )
@@ -88,109 +89,115 @@ library( splines )
 dis_seq <- do.call( seq, args = c( c( -1, 1 ) + range( Boston$dis ), list( by = .1 ) ) )
 
 ################################################################################
+################################################################################
 ##                             A CUBIC POLYNOMIAL                             ##
 ################################################################################
-fit <- lm( nox ~ poly( dis, 3 ), data = Boston )
-nox_dis <- predict( fit, newdata = list( dis = dis_seq ), se = TRUE )
+{
+	fit <- lm( nox ~ poly( dis, 3 ), data = Boston )
+	nox_dis <- predict( fit, newdata = list( dis = dis_seq ), se = TRUE )
 
 ## Plot the fitted polynomial
-plot( Boston$dis, Boston$nox, type = "p", pch = "+",
-	cex = 1, col = "gray75", xlab = "dis", ylab = "nox",
-	main = "Cubic polynomial" )
+	plot( Boston$dis, Boston$nox, type = "p", pch = "+",
+		cex = 1, col = "gray75", xlab = "dis", ylab = "nox",
+		main = "Cubic polynomial" )
 
 ## Plot the fitted curve
-lines( dis_seq, nox_dis$fit, col = "red", lwd = 2  )
+	lines( dis_seq, nox_dis$fit, col = "red", lwd = 2  )
 
 ## Plot ~95% confidence interval of the true nox
-lines( dis_seq, nox_dis$fit + 1.96 * nox_dis$se, col = "black", lwd = 1 )
-lines( dis_seq, nox_dis$fit - 1.96 * nox_dis$se, col = "black", lwd = 1 )
+	lines( dis_seq, nox_dis$fit + 1.96 * nox_dis$se, col = "black", lwd = 1 )
+	lines( dis_seq, nox_dis$fit - 1.96 * nox_dis$se, col = "black", lwd = 1 )
 
 ## Show the regression output.
-smry <- summary( fit )
+	smry <- summary( fit )
 ## The regression is significant and the fit is adequate overall.
-{
-	print( coef( smry ), digits = 3 )
-	cat( sprintf( "Cubic polynomial\n R^2:\t%.3f\n RSS:\t%.3f\n",
-		smry$r.squared, sum( smry$residuals ^ 2 ) ) )
-}
+	{
+		print( coef( smry ), digits = 3 )
+		cat( sprintf( "Cubic polynomial\n R^2:\t%.3f\n RSS:\t%.3f\n",
+			smry$r.squared, sum( smry$residuals ^ 2 ) ) )
+	}
 
 ################################################################################
 ## We are intereseted in model selection among polynomials of different degrees
-degrees <- seq( 1, 12, by = 1 ) ; names( degrees ) <-  paste0( "P", degrees ) 
+	degrees <- seq( 1, 12, by = 1 ) ; names( degrees ) <-  paste0( "poly ", degrees ) 
 
 ## Model sElection is Too metA.
 ## Create a set of polynomial models: this is meta!
-poly_models <- lapply( degrees, function( d ) {
+	poly_models <- lapply( degrees, function( d ) {
 ## This is the only way to make R not do its lazy evaluation in
 ##  the environment of this function.
-		as.formula( paste0( "nox ~ poly( dis, ", d, " )" ) )
-	} )
+			as.formula( paste0( "nox ~ poly( dis, ", d, " )" ) )
+		} )
 
 ## Create the master plot
-plot( Boston$dis, Boston$nox, type = "p", pch = "+",
-	cex = .75, col = "gray75", xlab = "dis", ylab = "nox",
-	main = "Cubic polynomial" )
+	plot( Boston$dis, Boston$nox, type = "p", pch = "+",
+		cex = .75, col = "gray75", xlab = "dis", ylab = "nox",
+		main = "Cubic polynomial" )
 
 ## Pick some colours and fit a bunch of polynomials
-colours <- brewer.pal( length( poly_models ), "Paired" )
-RSS <- mapply( function( model, col ) {
+	colours <- brewer.pal( length( poly_models ), "Paired" )
+	RSS <- mapply( function( model, col ) {
 ## Fit the model and plot the fitted curve
-	fit <- lm( model, data = Boston )
-	lines( dis_seq, predict( fit, newdata =
-		list( dis = dis_seq ) ), col = col, lwd = 2  )
+		fit <- lm( model, data = Boston )
+		lines( dis_seq, predict( fit, newdata =
+			list( dis = dis_seq ) ), col = col, lwd = 2  )
 ## Return the RSS
-	sum( fit$residuals * fit$residuals )
-}, poly_models, colours, USE.NAMES = TRUE )
+		sum( fit$residuals * fit$residuals )
+	}, poly_models, colours, USE.NAMES = TRUE )
 
 ## Add a legend 
-legend( "topright", lwd = 2, col = colours,
-	legend = names( degrees ), cex = 0.8, ncol = 2 )
+	legend( "topright", lwd = 2, col = colours,
+		legend = names( degrees ), cex = 0.8, ncol = 2 )
 
 ## As the number of parameters grows the fit of the regression curve
 ##  improves, however with dinimishing marginal reduction is the sum
 ##  of squares.
-print( RSS )
+	print( RSS )
 
 ################################################################################
 ## The greater the number of folds, the less variance in the estimated MSE,
 ##  but slower is the computation. For practical reasons it turns out to
 ##  be efficient to use 20-fold x-validation.
-folds <- c( 5, 10, 15, 20 ) ; names( folds ) <- paste0( folds, "-fold" )
-poly_xv <- lm.batch_xvalidate( poly_models, folds = folds, data = Boston )
+	folds <- c( 5, 10, 15, 20 ) ; names( folds ) <- paste0( folds, "-fold" )
+	poly_xv <- lm.batch_xvalidate( poly_models, folds = folds, data = Boston )
 
 ## Create a plot
-plot( range( degrees ), range( c( poly_xv$loocv$mse, unlist( poly_xv$kfold$mse ) ) ),
-	type = "n", xlab = "Degrees", ylab = "MSE (log)", main = "Cross validation", log = "y" )
+	plot( range( degrees ), range( c( poly_xv$loocv$mse, unlist( poly_xv$kfold$mse ) ) ),
+		type = "n", xlab = "Degrees", ylab = "MSE (log)", main = "Cross validation", log = "y" )
 
 ## Brew some adequate colours
-colours <- structure( names = c( "loocv", names( folds ) ),
-	c( "black", brewer.pal( length( folds ), "Paired" ) ) )
+	colours <- structure( names = c( "loocv", names( folds ) ),
+		c( "black", brewer.pal( length( folds ), "Paired" ) ) )
 ## Plot the k-fold cross validation results
-for( i in seq_along( folds ) ) {
-	lines( degrees, poly_xv$kfold$mse[[ i ]], type = "l", lwd = 1, col = colours[ i + 1 ] )
-	abline( v = degrees[ poly_xv$kfold$opt[ i ] ], lwd = 1, col = colours[ i + 1 ] )
-}
+	for( i in seq_along( folds ) ) {
+		lines( degrees, poly_xv$kfold$mse[[ i ]], type = "l", lwd = 1, col = colours[ i + 1 ] )
+		abline( v = degrees[ poly_xv$kfold$opt[ i ] ], lwd = 1, col = colours[ i + 1 ] )
+	}
 
 ## Plot the loocv results atop the others
-lines( degrees, poly_xv$loocv$mse, type = "l", lwd = 2, col = colours[ 1 ]  )
-abline( v = degrees[ poly_xv$loocv$opt ], lwd = 1, col = colours[ 1 ] )
+	lines( degrees, poly_xv$loocv$mse, type = "l", lwd = 2, col = colours[ 1 ]  )
+	abline( v = degrees[ poly_xv$loocv$opt ], lwd = 1, col = colours[ 1 ] )
 
 ## Add a lagend
-legend( "topleft", cex = 0.8, ncol = 2, lwd = 2,
-	col = colours, legend = names( colours ) )
+	legend( "topleft", cex = 0.8, ncol = 2, lwd = 2,
+		col = colours, legend = names( colours ) )
 
 ## Demonstrate the k-fold MSE-optimal models
-{
-	cat( "Cross validation selected the folowing models:\n" )
-	cat( paste0( "\t", names( folds ), " \t", sapply( poly_xv$kfold$opt,
-		function( i ) paste0( deparse( poly_models[[ i ]] ) ) ), "\n" ) )
-	cat( paste0( "\tLOOCV  \t", deparse( poly_models[[ poly_xv$loocv$opt ]] ), "\n" ) )
+	{
+		cat( "Cross validation selected the folowing models:\n" )
+		cat( paste0( "\t", names( folds ), " \t", sapply( poly_xv$kfold$opt,
+			function( i ) paste0( deparse( poly_models[[ i ]] ) ) ), "\n" ) )
+		cat( paste0( "\tLOOCV  \t", deparse( poly_models[[ poly_xv$loocv$opt ]] ), "\n" ) )
+	}
 }
 
+################################################################################
 ################################################################################
 ##                                   SPLINES                                  ##
 ################################################################################
-fit <- lm( nox ~ bs( dis, df = 4, degree = 3 ), data = Boston )
+{
+
+	fit <- lm( nox ~ bs( dis, df = 4, degree = 3 ), data = Boston )
 
 ## Setting 4 degrees of freedom for a cubic spline imposes 2nd order smoothing
 ##  constraints. At each region we have a 3rd degree polynomial with 4 parameters.
@@ -204,83 +211,184 @@ fit <- lm( nox ~ bs( dis, df = 4, degree = 3 ), data = Boston )
 ## By default the bs() selects the knots using the empirical quantiles.
 ##  With 3 degrees of freedom this spline would coincide with a simple 3rd degree
 ##  polynomial.
-nox_dis <- predict( fit, newdata = list( dis = dis_seq ), se = TRUE )
+	nox_dis <- predict( fit, newdata = list( dis = dis_seq ), se = TRUE )
 
 ## Plot the fitted polynomial
-plot( Boston$dis, Boston$nox, type = "p", pch = "+",
-	cex = 1, col = "gray75", xlab = "dis", ylab = "nox",
-	main = "Cubic spline" )
+	plot( Boston$dis, Boston$nox, type = "p", pch = "+",
+		cex = 1, col = "gray75", xlab = "dis", ylab = "nox",
+		main = "Cubic spline" )
 
 ## Plot the fitted spline and ~95% confidence interval of the true nox
-lines( dis_seq, nox_dis$fit, col = "red", lwd = 2  )
-lines( dis_seq, nox_dis$fit + 1.96 * nox_dis$se, col = "black", lwd = 1 )
-lines( dis_seq, nox_dis$fit - 1.96 * nox_dis$se, col = "black", lwd = 1 )
+	lines( dis_seq, nox_dis$fit, col = "red", lwd = 2  )
+	lines( dis_seq, nox_dis$fit + 1.96 * nox_dis$se, col = "black", lwd = 1 )
+	lines( dis_seq, nox_dis$fit - 1.96 * nox_dis$se, col = "black", lwd = 1 )
 
 ## Show the regression output.
-smry <- summary( fit )
+	smry <- summary( fit )
 ## The regression is significant and the fit is adequate overall.
-{
-	print( coef( smry ), digits = 3 )
-	cat( sprintf( "Regression spline\n R^2:\t%.3f\n RSS:\t%.3f\n",
-		smry$r.squared, sum( smry$residuals ^ 2 ) ) )
-}
+	{
+		print( coef( smry ), digits = 3 )
+		cat( sprintf( "Regression spline\n R^2:\t%.3f\n RSS:\t%.3f\n",
+			smry$r.squared, sum( smry$residuals ^ 2 ) ) )
+	}
 
 ################################################################################
-degrees_of_freedom <- 2 + seq_len( 14 )
-names( degrees_of_freedom ) <- paste0( "df=", degrees_of_freedom )
-spline_models <- lapply( degrees_of_freedom, function( df )
-	as.formula( paste0( "nox ~ bs( dis, df = ", df, ", degree = 3 )" ) ) )
+	degrees_of_freedom <- 2 + seq_len( 14 )
+	names( degrees_of_freedom ) <- paste0( "bs ", degrees_of_freedom )
+	spline_models <- lapply( degrees_of_freedom, function( df )
+		as.formula( paste0( "nox ~ bs( dis, df = ", df, ", degree = 3 )" ) ) )
 
 ## Create the master plot
-plot( Boston$dis, Boston$nox, type = "p", pch = "+",
-	cex = .75, col = "gray75", xlab = "dis", ylab = "nox",
-	main = "Regression spline" )
+	plot( Boston$dis, Boston$nox, type = "p", pch = "+",
+		cex = .75, col = "gray75", xlab = "dis", ylab = "nox",
+		main = "Regression spline" )
 
 ## Pick some colours and fit a bunch of polynomials
-colours <- brewer.pal( length( spline_models ), "Paired" )
-RSS <- mapply( function( model, col ) {
+	colours <- brewer.pal( length( spline_models ), "Paired" )
+	RSS <- mapply( function( model, col ) {
 ## Fit the model and plot the fitted curve
-	fit <- lm( model, data = Boston )
-	lines( dis_seq, predict( fit, newdata =
-		list( dis = dis_seq ) ), col = col, lwd = 2  )
+		fit <- lm( model, data = Boston )
+		lines( dis_seq, predict( fit, newdata =
+			list( dis = dis_seq ) ), col = col, lwd = 2  )
 ## Return the RSS
-	sum( fit$residuals * fit$residuals )
-}, spline_models, colours, USE.NAMES = TRUE )
+		sum( fit$residuals * fit$residuals )
+	}, spline_models, colours, USE.NAMES = TRUE )
 
 ## Add a legend 
-legend( "topright", lwd = 2, col = colours,
-	legend = names( degrees_of_freedom ), cex = 0.8, ncol = 2 )
+	legend( "topright", lwd = 2, col = colours,
+		legend = names( degrees_of_freedom ), cex = 0.8, ncol = 2 )
 
 ## As the number of parameters grows the fit residla variance should decrease
 ##  strangely, this doesn't hold here in the case of the spline. Probably due
 ##  to the regularization.
-print( RSS )
+	print( RSS )
 
 ################################################################################
 ## We are interested in the fittness of the spline with varying number of free
 ##  parameters.
-folds <- c( 5, 10, 20 ) ; names( folds ) <- paste0( folds, "-fold" )
-spline_xv <- lm.batch_xvalidate( spline_models, folds = folds, data = Boston )
 
-plot( range( degrees_of_freedom ), range( c( spline_xv$loocv$mse, unlist( spline_xv$kfold$mse ) ) ),
-	type = "n", xlab = "Degrees", ylab = "MSE (log)", main = "BS Cross validation", log = "y" )
+	folds <- c( 5, 10, 20 ) ; names( folds ) <- paste0( folds, "-fold" )
+## Apart from validating the spline we also validate the knot selection method.
+	spline_xv <- lm.batch_xvalidate( spline_models, folds = folds, data = Boston )
 
-colours <- structure( c( "black", brewer.pal( length( folds ), "Paired" ) ),
-	names = c( "loocv", names( folds ) ) )
+	plot( range( degrees_of_freedom ), range( c( spline_xv$loocv$mse, unlist( spline_xv$kfold$mse ) ) ),
+		type = "n", xlab = "Degrees", ylab = "MSE (log)", main = "BS Cross validation", log = "y" )
 
-for( i in seq_along( folds ) ) {
-	lines( degrees_of_freedom, spline_xv$kfold$mse[[ i ]], type = "l", lwd = 2, col = colours[ i + 1 ] )
-	abline( v = degrees_of_freedom[ spline_xv$kfold$opt[ i ] ], lwd = 1, col = colours[ i + 1 ] )
+	colours <- structure( c( "black", brewer.pal( length( folds ), "Paired" ) ),
+		names = c( "loocv", names( folds ) ) )
+
+	for( i in seq_along( folds ) ) {
+		lines( degrees_of_freedom, spline_xv$kfold$mse[[ i ]], type = "l", lwd = 2, col = colours[ i + 1 ] )
+		abline( v = degrees_of_freedom[ spline_xv$kfold$opt[ i ] ], lwd = 1, col = colours[ i + 1 ] )
+	}
+
+	lines( degrees_of_freedom, spline_xv$loocv$mse, type = "l", lwd = 2, col = colours[ 1 ]  )
+	abline( v = degrees_of_freedom[ spline_xv$loocv$opt ], lwd = 1, col = colours[ 1 ] )
+
+	legend( "topleft", lwd = 2, col = colours, legend = names( colours ), cex = 0.8, ncol = 2 )
+
+	{
+		cat( "Cross validation selected the folowing models:\n" )
+		cat( paste0( "\t", names( folds ), " \t", sapply( spline_xv$kfold$opt, function( i ) paste0( deparse( spline_models[[ i ]] ) ) ), "\n" ) )
+		cat( paste0( "\tLOOCV  \t", deparse( spline_models[[ spline_xv$loocv$opt ]] ), "\n" ) )
+	}
 }
 
-lines( degrees_of_freedom, spline_xv$loocv$mse, type = "l", lwd = 2, col = colours[ 1 ]  )
-abline( v = degrees_of_freedom[ spline_xv$loocv$opt ], lwd = 1, col = colours[ 1 ] )
-
-legend( "topleft", lwd = 2, col = colours, legend = names( colours ), cex = 0.8, ncol = 2 )
-
+################################################################################
+################################################################################
+##                          THE NATURAL CUBIC SPLINE                          ##
+################################################################################
 {
-	cat( "Cross validation selected the folowing models:\n" )
-	cat( paste0( "\t", names( folds ), " \t", sapply( xv$kfold$opt, function( i ) paste0( deparse( spline_models[[ i ]] ) ) ), "\n" ) )
-	cat( paste0( "\tLOOCV  \t", deparse( spline_models[[ xv$loocv$opt ]] ), "\n" ) )
+	degrees_of_freedom <- 3 + seq_len( 10 )
+	names( degrees_of_freedom ) <- paste0( "ns ", degrees_of_freedom )
+	ncs_models <- lapply( degrees_of_freedom, function( df )
+		as.formula( paste0( "nox ~ ns( dis, df = ", df, " )" ) ) )
+
+	if( TRUE ) {
+		plot( Boston$dis, Boston$nox, type = "p", pch = "+",
+			cex = .75, col = "gray75", xlab = "dis", ylab = "nox",
+			main = "Regression spline" )
+
+		colours <- brewer.pal( length( ncs_models ), "Paired" )
+		RSS <- mapply( function( model, col ) {
+			fit <- lm( model, data = Boston )
+			lines( dis_seq, predict( fit, newdata =
+				list( dis = dis_seq ) ), col = col, lwd = 2  )
+			sum( fit$residuals * fit$residuals )
+		}, ncs_models, colours, USE.NAMES = TRUE )
+
+		legend( "topright", lwd = 2, col = colours,
+			legend = names( degrees_of_freedom ), cex = 0.8, ncol = 2 )
+	}
+	ncs_xv <- lm.batch_xvalidate( ncs_models, folds = folds, data = Boston )
+
+	plot( range( degrees_of_freedom ), range( c( ncs_xv$loocv$mse, unlist( ncs_xv$kfold$mse ) ) ),
+		type = "n", xlab = "Degrees", ylab = "MSE (log)", main = "the NCS Cross validation", log = "y" )
+
+	colours <- structure( c( "black", brewer.pal( length( folds ), "Paired" ) ),
+		names = c( "loocv", names( folds ) ) )
+
+	for( i in seq_along( folds ) ) {
+		lines( degrees_of_freedom, ncs_xv$kfold$mse[[ i ]], type = "l", lwd = 2, col = colours[ i + 1 ] )
+		abline( v = degrees_of_freedom[ ncs_xv$kfold$opt[ i ] ], lwd = 1, col = colours[ i + 1 ] )
+	}
+
+	lines( degrees_of_freedom, ncs_xv$loocv$mse, type = "l", lwd = 2, col = colours[ 1 ]  )
+	abline( v = degrees_of_freedom[ ncs_xv$loocv$opt ], lwd = 1, col = colours[ 1 ] )
+
+	legend( "topleft", lwd = 2, col = colours, legend = names( colours ), cex = 0.8, ncol = 2 )
+
+	{
+		cat( "Cross validation selected the folowing models:\n" )
+		cat( paste0( "\t", names( folds ), " \t", sapply( ncs_xv$kfold$opt, function( i ) paste0( deparse( ncs_models[[ i ]] ) ) ), "\n" ) )
+		cat( paste0( "\tLOOCV  \t", deparse( ncs_models[[ ncs_xv$loocv$opt ]] ), "\n" ) )
+	}
+
 }
 
+################################################################################
+################################################################################
+##                                 COMPARISON                                 ##
+################################################################################
+## Fetch the best models according to LOOCV
+best_models <- c( poly_models[ poly_xv$loocv$opt ],
+	spline_models[ spline_xv$loocv$opt ],
+	ncs_models[ ncs_xv$loocv$opt ] )
+
+best_loocv_mse <- c( poly_xv$loocv$mse[ poly_xv$loocv$opt ],
+	spline_xv$loocv$mse[ spline_xv$loocv$opt ],
+	ncs_xv$loocv$mse[ ncs_xv$loocv$opt ] )
+
+## Plot the fitted polynomial
+plot( Boston$dis, Boston$nox, type = "p", pch = "+",
+	cex = 1, col = "gray75", xlab = "dis", ylab = "nox",
+	main = "Models" )
+
+## Brew some adequate colours
+colours <- structure( names = c( names( poly_models )[ poly_xv$loocv$opt ],
+	names( spline_models )[ spline_xv$loocv$opt ], names( ncs_models )[ ncs_xv$loocv$opt ] ),
+	c( "black", "red", "blue" ) )
+
+## Add a lagend
+legend( "topright", cex = 0.8, lwd = 2, col = colours, legend = names( colours ) )
+
+## Show the regression output.
+smry <- mapply( function( model, color, mse ) {
+		fit <- lm( model, data = Boston )
+		nox_fit <- predict( fit, newdata = list( dis = dis_seq ), se = TRUE )
+
+		lines( dis_seq, nox_fit$fit, col = color, lwd = 2  )
+		# lines( dis_seq, nox_fit$fit + 1.96 * nox_fit$se, col = "pink", lwd = 1 )
+		# lines( dis_seq, nox_fit$fit - 1.96 * nox_fit$se, col = "pink", lwd = 1 )
+
+		smry <- summary( fit )
+		print( coef( smry ), digits = 3 )
+		cat( sprintf( "Regression spline\n R^2:\t%.3f\n RSS:\t%.3f\n log-MSE:\t%.3f\n",
+			smry$r.squared, sum( smry$residuals ^ 2 ), log( mse ) ) )
+
+		smry
+	}, best_models, colours, best_loocv_mse, SIMPLIFY = FALSE )
+
+## This empirical data suggests that a simple polynomial is inferior ot both kinds
+##  splines. The natural cubic spline does a little worse in terms of the log-MSE
+##  than the B-Spline.
