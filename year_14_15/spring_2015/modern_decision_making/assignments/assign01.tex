@@ -660,7 +660,31 @@ It permits model selection due to the lasso term as well as coefficient shrinkag
 \section{Problem 4} % (fold)
 \label{sec:problem_4}
 
+\subsection{subproblem a} % (fold)
+\label{sub:subproblem_a}
 
+The penalized sum of squares
+\[\RSS(\lambda,\Sigma) = (T-X\beta)'(T-X\beta) + \lambda \beta'\Sigma_1^{-1}\]
+
+Differentiating with respect to $\beta$ yields the first order conditions:
+\[ 2 X'X\beta - 2 X'T + 2\lambda \Sigma_1^{-1}\beta = 0\]
+and the second order conditions:
+\[ X'X + \lambda \Sigma_1^{-1} \text{-- positive semi-definite}\]
+
+since the matrix of predictors is assumed to be full rank, the $X'X$ is positive definite. The correlation matrix $\Sigma_1$, by definition, is positive semi-definite whence the inverse is positive semi-definite as well.
+Therefore the sum $X'X + \Sigma_1^{-1}$ must be positive semi-definite too, meaning that the solution to the first order conditions is the global minimizer of the $\RSS(\lambda,\Sigma_1)$.
+
+The optimal $\beta$ is given by
+\[\hat{\beta} = \big(X'X + \lambda \Sigma_1^{-1}\big)^{-1}X'T\]
+
+% subsection subproblem_a (end)
+
+\subsection{subproblem b} % (fold)
+\label{sub:subproblem_b}
+
+In order to measure the effect of the 
+
+% subsection subproblem_b (end)
 
 % section problem_4 (end)
 \clearpage
