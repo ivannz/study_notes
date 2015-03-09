@@ -42,6 +42,9 @@
 \selectlanguage{english}
 \maketitle
 
+\tableofcontents
+\clearpage
+
 \section{problem \# 1} % (fold)
 \label{sec:problem_1}
 
@@ -403,7 +406,7 @@ Now let's derive the expression for the \textbf{R}esidual \textbf{S}um of \textb
 \end{align*}
 where $\RSS$ is the residual sum of square of the unrestricted model.
 
-The last requires elaboration:
+The last step requires elaboration:
 \[(T - X\hat{\beta})'X (\hat{\beta} - \hat{\beta}_\R) = T\big(I_n - X(X'X)^{-1}X'\big)'X (\hat{\beta} - \hat{\beta}_\R) = 0\]
 because $P_X = I_n - X(X'X)^{-1}X'$ is a projection matrix onto the space orthogonal to the column space of the matrix $X$ and $\clo{(X_i)_{i=1}^p} \perp \clo{(X_i)_{i=1}^p}^\perp$. Indeed direct calculations confirm this:
 \[P_X X = X - X(X'X)^{-1}X'X = X - X = 0\]
@@ -439,7 +442,7 @@ since $\hat{\beta}-\beta = (X'X)^{-1}X'(X\beta + \epsilon) - \beta = (X'X)^{-1}X
 
 The matrix $P_{QX}$ defined as 
 \[P_{QX} = X(X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}X'\]
-is a projector. Indeed, it is symmetric and 
+is a projector. Indeed, it is symmetric and idempotent:
 \begin{align*}
 	P_{QX} P_{QX}
 	&= X(X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}X'\\
@@ -451,21 +454,21 @@ Thus
 
 \noindent Now it is necessary to state some results from the linear algebra and multivariate statistics.
 \begin{description}
-	\item[First] If $A\in \Real^{m\times m}$ is a positive seimdefinite matrix, then the there exists an orthogonal matrix $C$ of column eigenvectors of $A$ that constitute a basis and a diagonal matrix $\Lambda$ of associated eigenvalues such that $A = C\Lambda C'$;
+	\item[Spectral theorem] If $A\in \Real^{m\times m}$ is a symmetric matrix, then the there exists an orthogonal matrix $C$ of column eigenvectors of $A$ that constitute a basis and a diagonal matrix $\Lambda$ of associated eigenvalues such that $A = C\Lambda C'$;
 
-	\item[Second] If $A\in \Real^{m\times m}$ is projection matrix, then its eigenvalues are either $0,$ or $1$. Indeed $A=A^2$ implies that $C\Lambda^2C' = C\Lambda C'$, whence $\Lambda^2 = \Lambda$ since $C$ is non-singular. Thus the elements of $\Lambda$ are either $0$ or $1$. A corollary is, that the trace of a projector matrix is equal to its rank, since the rank is preserved under non-singular linear transformations;
+	\item[Trace-rank] If $A\in \Real^{m\times m}$ is projection matrix, then its eigenvalues are either $0,$ or $1$. Indeed $A=A^2$ implies that $C\Lambda^2C' = C\Lambda C'$, whence $\Lambda^2 = \Lambda$ since $C$ is non-singular. Thus the elements of $\Lambda$ are either $0$ or $1$. A corollary is, that the trace of a projector matrix is equal to its rank, since the rank is preserved under non-singular linear transformations;
 
-	\item[Third] If $\epsilon\sim\mathcal{N}_m(0,I_m)$ and $A$ is a projector, then $\epsilon'A\epsilon \sim \chi^2_{\text{rank}(A)}$.
+	\item[$\chi^2$-distribution] If $\epsilon\sim\mathcal{N}_m(0,I_m)$ and $A$ is a projector, then $\epsilon'A\epsilon \sim \chi^2_{\text{rank}(A)}$.
 	Indeed,
 	\[\epsilon'A\epsilon = \epsilon'C\Lambda C'\epsilon = (C'\epsilon) \Lambda (C'\epsilon) = \sum_{k=1}^m \lambda_k z_k^2\]
-	where $Z = (z_k)_{k=1}^m = C'\epsilon$. Being a non-degenerate linear transformation of a normally distributed random vector, $Z\sim\mathcal{N}_m(0, C'I_m C)$. Thus $\epsilon'A\epsilon$ is a sum of $\text{rank}(A)$ squares of independent normally distributed random variables.
+	where $Z = (z_k)_{k=1}^m = C'\epsilon$. Being a non-degenerate linear transformation of a normally distributed random vector, $Z\sim\mathcal{N}_m(0, C'I_m C)$. Thus $\epsilon'A\epsilon$ is a sum squares of $\text{rank}(A)$ independent normally distributed random variables.
 
-	\item[Fourth] If $\epsilon\sim\mathcal{N}_m(0,I_m)$ and $A,B$ are $m\times m$ projector matrices with $A B = 0$, then $\epsilon'A\epsilon$ and $\epsilon'B\epsilon$ are independent random variables.
+	\item[Independence] If $\epsilon\sim\mathcal{N}_m(0,I_m)$ and $A,B$ are $m\times m$ projector matrices with $A B = 0$, then $\epsilon'A\epsilon$ and $\epsilon'B\epsilon$ are independent random variables.
 	Indeed, due to idempotence $\epsilon'A\epsilon = \eta'\eta$ and $\epsilon'B\epsilon = \xi'\xi$ with $\eta = A'\epsilon$ and $\xi = B'\epsilon$.
 	Now since $\epsilon$ is multivariate normal, both $\eta$ and $\xi$ are Gaussian. Thus $\eta$ and $\xi$ are independent if and only if they are uncorrelated. But $\eta'\xi = \epsilon'AB'\epsilon = \epsilon'AB\epsilon = 0$. Thus $\epsilon'A\epsilon\perp \epsilon'B\epsilon$
 \end{description}
 
-\noindent For the projection matrices in the problem one has
+\noindent For the projection matrices in the problem it is true that
 \begin{align*}
 	\text{rank} ( X(X'X)^{-1}X' ) &= \Tr (X'X)^{-1}X'X = p \\
 	\text{rank} (P_X) &= \Tr I_n - \Tr X(X'X)^{-1}X' = n-p \\
@@ -483,15 +486,15 @@ In the problem $\epsilon\sim\mathcal{N}_n(0,\sigma^2 I_n)$, which means that $\f
 \end{align*}
 where the independence follows from $P_X P_{QX} = 0$:
 \begin{align*}
-	\big(I_n - X(X'X)^{-1}X'\big) P_{QX} &= P_{QX} - X(X'X)^{-1}X' P_{QX} \\
+	P_X P_{QX} &= \big(I_n - X(X'X)^{-1}X'\big) P_{QX} = P_{QX} - X(X'X)^{-1}X' P_{QX} \\
 	&= P_{QX} - X(X'X)^{-1}X'X(X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}X' \\
 	&= P_{QX} - X(X'X)^{-1}Q'\big(Q(X'X)^{-1}Q'\big)^{-1}Q(X'X)^{-1}X' \\
 	&= P_{QX} - P_{QX} = 0
 \end{align*}
 
-Finally, the Fisher's distribution 
+Finally, the Fisher's distribution is a ratio of independent $\chi^2$ distributed random variables
 \[F(m,n) \sim \frac{\chi^2_m}{m} \frac{n}{\chi^2_n}\]
-a ratio of independent $\chi^2$ distributed random variables. Therefore under the null hypothesis $H_0: Q\beta = q$, provided the linear model is specified correctly, one has the following:
+Therefore under the null hypothesis $H_0: Q\beta = q$, nested under a more general hypothesis that the linear model is specified correctly, one has the following:
 \[\frac{\RSS_\R - \RSS}{r \sigma^2}\frac{(n-p) \sigma^2}{\RSS} = \frac{\RSS_\R - \RSS}{\RSS}\frac{n-p}{r}\sim F(r,n-p)\]
 
 A frequently tested linear restriction is that of the equality of a particular coefficient $\beta_k$, $k=1,\ldots,p$ of the model to a specific value -- zero. In terms of the restriction matrix $Q$ and vector $q$ this is equivalent to $Q_{1\times p} = e_k'$ and $q=0_{1\times 1}$ where $e_k$ is the $k$-th unit column vector (all zeros except for a 1 on the $k$-th coordinate). Thus
@@ -513,25 +516,26 @@ It is obvious that
 \[\bigg(\frac{\lvert \hat{\beta}_k \rvert}{\hat{\sigma}\sqrt{v_{kk}}}\bigg)^2 = \frac{\hat{\beta}_k^2}{\hat{\sigma}^2 v_{kk}} = \frac{\hat{\beta}_k^2}{\frac{\RSS}{n-p} v_{kk}} \]
 
 % section problem_2 (end)
+\clearpage
 
 \section{Problem 3} % (fold)
 \label{sec:problem_3}
 
 Suppose $X\in \Real^{n\times p}$ is a full rank matrix of $p$ explanatory
-varaibles (predictors) and $T\in \Real^{n\times 1}$ is the vector of
-associated reponses.
+variables (predictors) and $T\in \Real^{n\times 1}$ is the vector of
+associated responses.
 
-The elastic net timisation problem, proposed by Zou and Hastie (2005), is
+The elastic net optimisation problem, proposed by Zou and Hastie (2005), is
 \[\min \Big\{ (T-X\beta)'(T-X\beta) + \lambda\big( \alpha \nrm{\beta}_2^2 + (1-\alpha) \nrm{\beta}_1 \big) \Big\}\]
 for $\alpha\in [0,1]$ and $\nrm{\beta} = \sum_{k=1}^p \lvert \beta_k\rvert$.
 
-Though it looks deifferent, in fact it can be reduced to a lasso problem, albeit with transformed input data $X$ and response $T$. What follows is the detailed exposition of the steps required to do this.
+Though it looks different, in fact it can be reduced to a lasso problem, albeit with transformed input data $X$ and response $T$. What follows is the detailed exposition of the steps required to do this.
 
 The \textbf{S}ingular \textbf{V}alue \textbf{D}ecomposition theorem states
 that for any matrix $A\in \Cplx^{n\times m}$ of rank $k\leq n,m$ there exist
 unitary matrices $U\in \Cplx^{n\times n}$ and $V\in\Cplx^{m\times m}$
-together with a diagonal matrix $\Sigma\in \Real^{k\times k}$ of nonnegative
-values singular values such that
+together with a diagonal matrix $\Sigma\in \Real^{k\times k}$ of non-negative
+\emph{singular} values such that
 \[X = U \Big(\begin{smallmatrix}\Sigma & 0 \\ 0 & 0\end{smallmatrix}\Big)V^*\]
 where $\cdot^*$ is the matrix conjugate transpose. A unitary matrix
 $U\in \Cplx^{n\times n}$ is such that $U^*U = UU^* = I_n$. If the matrix $A$ is real-valued, then $U$ and $V$ are real matrices as well.
@@ -539,7 +543,7 @@ $U\in \Cplx^{n\times n}$ is such that $U^*U = UU^* = I_n$. If the matrix $A$ is 
 Now, consider the matrix $X$. It is real and of full rank, whence by the SVD
 theorem there exist an orthogonal $U\in \Real^{n\times n}$, a diagonal $\Sigma\in \Real^{p\times p}$ and another orthogonal $V\in \Real^{p\times p}$ such that 
 \[X = U \Big(\begin{smallmatrix}\Sigma \\ 0\end{smallmatrix}\Big) V'\]
-Since $X$ is full rank, the matrix $X'X$ must be nonsingluar, whence $\Sigma$ must have strictly positive diagonal elements. Indeed, if there had existed such $z\neq 0$ that $X'Xz = 0$, then $z'X'Xz = 0$, whence $Xz = 0$ would have meant that $z$ are the coefficients of a non-trivial linear combination of columns of $X$, which are linearly independent by assumption of the full rank. Thus
+Since $X$ is full rank, the matrix $X'X$ must be non-singluar, whence $\Sigma$ must have strictly positive diagonal elements. Indeed, if there had existed such $z\neq 0$ that $X'Xz = 0$, then $z'X'Xz = 0$, whence $Xz = 0$ would have meant that $z$ are the coefficients of a non-trivial linear combination of columns of $X$, which are linearly independent by assumption of the full rank. Thus
 \[\lvert X'X \rvert =
 \lvert V(\begin{smallmatrix}\Sigma' & 0\end{smallmatrix})UU'\Big(\begin{smallmatrix}\Sigma \\ 0\end{smallmatrix}\Big)V'\rvert
 = \lvert V(\Sigma'\Sigma + 0'0)' V'\rvert = \lvert V\Sigma'\Sigma V'\rvert = \lvert \Sigma\rvert^2 = \prod_{i=1}^p \sigma_i^2 \neq 0\]
@@ -559,7 +563,7 @@ produces
 \end{align*}
 this suggests that the reduced problem would have the lasso penalty term with the complexity coefficient given by $\lambda(1-\alpha)$ -- both known values.
 
-Given this simplification, it seems logical to focus on this expression:
+Given this simplification, it seems logical to focus attention on this expression:
 \[(T-X\beta)'(T-X\beta) + \lambda \alpha \beta'\beta\]
 bearing in mind that $X = U \Big(\begin{smallmatrix}\Sigma \\ 0\end{smallmatrix}\Big) V'$.
 
@@ -572,7 +576,7 @@ The expression is equivalent to
 \[T'T - \beta'X'T - T'X\beta + \beta'X'X\beta + \beta'\beta \alpha\lambda \]
 Since $V$ is orthogonal, $V'=V^{-1}$ and $VV' = I_p$, and it can be transformed into
 \[T'T - \beta'X'T - T'X\beta + \beta'X'X\beta + \beta'VV'\beta \alpha\lambda \]
-If the following matrices $S$ and $\delta$ are defined:
+If the following matrices $S$ and $\Delta$ are defined:
 \[S = \bigg(\begin{matrix} \Sigma \\ 0 \end{matrix}\bigg)\quad\text{and}\quad \Delta = \bigg(\begin{matrix} \sqrt{\alpha \lambda}I_p \\ 0 \end{matrix}\bigg)\]
 then the expression reduces to
 \[T'T - \beta'X'T - T'X\beta + \beta'VS'SV'\beta + \beta'V \Delta' \Delta V'\beta \]
@@ -588,17 +592,18 @@ Collecting the quadratic term results in
 Now, put $\Lambda = S'S+\Delta'\Delta$. Being a sum of non-negative diagonal matrices, $\Lambda$ is itself non-negative diagonal. In fact its $u$-th diagonal value is equal to $\Lambda_{ii} = \sigma_i^2 + \alpha \lambda$. Furthermore, begin a \textbf{diagonal} matrix, $\Lambda$ admits the square root $\sqrt{\Lambda}$ which is diagonal with elements equal to $\sqrt{\Lambda_{ii}}$. In addition, the root is invertible.
 
 Define $L = \big(\begin{smallmatrix} \sqrt{\Lambda} \\ 0 \end{smallmatrix}\big)$ an $n\times p$ matrix, and observe that
-\[L'L = (\begin{smallmatrix}\sqrt{\Lambda} & 0\end{smallmatrix})\Big(\begin{smallmatrix}\sqrt{\Lambda} \\ 0\end{smallmatrix}\Big) = \sqrt{\Lambda}\sqrt{\Lambda} + 0 = S'S + \Delta'\Delta\]
+\[L'L = (\begin{smallmatrix}\sqrt{\Lambda} & 0\end{smallmatrix})\Big(\begin{smallmatrix}\sqrt{\Lambda} \\ 0\end{smallmatrix}\Big) = \sqrt{\Lambda}\sqrt{\Lambda} + 0 = S'S + \Delta'\Delta = \Sigma'\Sigma + \alpha \lambda I_p\]
 Furthermore, for
 \[\tilde{L}_{n\times p} = \bigg(\begin{matrix}\Lambda^{-\sfrac{1}{2}} \\ 0\end{matrix}\bigg)\]
 it is true that
 \[\tilde{L}'L = L'\tilde{L} = \Lambda^{-\sfrac{1}{2}} \sqrt{\Lambda} + 0 = I_p\]
 and
 \[L\tilde{L}' = \tilde{L} L'= \bigg(\begin{matrix} \sqrt{\Lambda}\Lambda^{-\sfrac{1}{2}} & 0 \\ 0 & 0\end{matrix}\bigg) = \bigg(\begin{matrix} I_p & 0 \\ 0 & 0\end{matrix}\bigg)\]
-Meanwhile the expression becomes
+Meanwhile $U'U = I_n$ implies
+\[ \Sigma'\Sigma + \alpha \lambda I_p = S'S + \Delta'\Delta = L'L = L'U'UL \]
+Thus the core expression becomes
 \[T'T - \beta'X'T - T'X\beta + \beta'VL'U'ULV'\beta \]
-
-Next, since $U'U = I_n$, one has $VL'LV' = VL'U'ULV' = (ULV')'(ULV')$, which means that with $\tilde{X} = ULV'$ it is possible to express $X$ as
+Next one has $VL'U'ULV' = (ULV')'(ULV')$, which means that with $\tilde{X} = ULV'$ it is possible to express $X$ as
 \[X = USV' = USI_pV' = US\tilde{L}'LV' = US\tilde{L}'I_nLV' = US\tilde{L}'U'ULV' = US\tilde{L}'U'\tilde{X}\]
 The core expression is thus further ``simplified'' to
 \[T'T - \beta'\tilde{X}'U\tilde{L}S'U'T - T'US\tilde{L}'U'\tilde{X}\beta + \beta'\tilde{X}'\tilde{X}\beta \]
@@ -614,11 +619,12 @@ whence it equals
 
 The term $T'T - \tilde{T}'\tilde{T}$ is essentially constant: it is determined by the sample data and the complexity parameters $\alpha$ and $\lambda$, while being entirely independent of $\beta$. With these transformations the elastic net problem becomes the lasso:
 \[\min\Big\{ (\tilde{T} - \tilde{X}\beta)'(\tilde{T} - \tilde{X}\beta) + \lambda(1-\alpha)\nrm{\beta}_1 \Big\}\]
-This establishes the equivalence
+where
 \begin{align*}
-	\tilde{T} &= U\tilde{L}S'U'T\\
-	\tilde{X} &= U\bigg(\begin{matrix} \sqrt{S'S+\alpha \lambda I_p} \\ 0 \end{matrix}\bigg) V'
+	\tilde{T} &= U\tilde{L}S'U'T = U\bigg(\begin{matrix} \sqrt{\Sigma'\Sigma+\alpha \lambda I_p}^{-1} \\ 0 \end{matrix}\bigg) V' X'T\\
+	\tilde{X} &= U\bigg(\begin{matrix} \sqrt{\Sigma'\Sigma+\alpha \lambda I_p} \\ 0 \end{matrix}\bigg) V'
 \end{align*}
+This establishes the equivalence.
 
 % subsection* fourth (end)
 
@@ -632,11 +638,50 @@ The diagonal matrix $W = \Lambda^{-\sfrac{1}{2}}\Sigma \in \Real^{p\times p}$ ha
 Write the matrix $U$ as $\big(\begin{matrix}U_1 & U_2\end{matrix}\big)$, where $U_1\in \Real^{n\times p}$ and $U_2\in \Real^{(n-p)\times p}$.
 Since $U$ is orthogonal, $U_1'U_1 = I_p$. With this decomposition of $U$ the modified response $\tilde{T}$ can be rewritten as
 \[\tilde{T} = \big(\begin{matrix}U_1 & U_2\end{matrix}\big)\bigg(\begin{matrix} \Lambda^{-\sfrac{1}{2}}\Sigma & 0 \\ 0 & 0\end{matrix}\bigg)\bigg(\begin{matrix}U_1' \\ U_2'\end{matrix}\bigg)T = U_1 W U_1'T \]
-which is essentially a projection of $T$ onto the subspace spanned by the columns of $U_1$ with each direction scaled by the appropriate element of the diagonal of $W$. Therefore
-\[\tilde{T}_i = \sum_{j=1}^p U_{1ij} w_{jj} U_{1\cdot j}'T\]
+which is essentially a projection of $T$ onto the subspace spanned by the columns of $U_1$ with each direction scaled by the appropriate element of the diagonal of $W$, though the matrix itself in not a projector. Therefore
+\[\tilde{T} = \sum_{j=1}^p w_{jj} U_{1\cdot j} U_{1\cdot j}'T\]
+where $U_{1\cdot j}$ is the $j$-th column of $U_1$.
+
+Now, the squares of singular values are in fact the eigenvalues of the scaled sample covariance matrix $X'X = V\Sigma'\Sigma V'$ with associated eigenvectors give by the columns of $V$. In turn, the eigenvectors determine the principal components of the column space of $X$: the larger the eigenvalue, the more variance is that direction in the subspace.
+
+This means that before running lasso, the elastic net actually amplifies the variance of all principal directions of the predictors $X$ with non-linear gain $\frac{\tilde{\sigma}_i}{\sigma_i} = \sqrt{1+\frac{\alpha\lambda}{\sigma_i}}$. At the same time, the coordinate of the response vector with respect to the $j$-th principal direction of the columnspace of $X$, $U_{1\cdot j}'T$, is shrunk by the reciprocal of the gain $\frac{1}{w_{jj}}$.
+
+Therefore the optimal coefficients $\beta_{\text{el}}$ are shrunk.
+
+The elastic net is equivalent to running lasso on $(\tilde{X}, \tilde{T})$:
+\[\min\Big\{ (\tilde{T} - \tilde{X}\beta)'(\tilde{T} - \tilde{X}\beta) + \lambda(1-\alpha)\nrm{\beta}_1 \Big\}\]
+It permits model selection due to the lasso term as well as coefficient shrinkage, due to the fact that the predictors and the response are amplified and shrunk respectively along the principal components of the predictors $X$.
 
 % subsection* final (end)
 
 % section problem_3 (end)
+\clearpage
+
+\section{Problem 4} % (fold)
+\label{sec:problem_4}
+
+
+
+% section problem_4 (end)
+\clearpage
+
+\section{Problem 5} % (fold)
+\label{sec:problem_5}
+
+This problem is mostly solved in the accompanying \textbf{R}-script by the name \emph{Problem5\_Nazarov.R}.
+
+A brief summary of the main results:
+\begin{itemize}
+	\item a generic procedure for $k$-fold cross-validation of linear models has been implemented, see \emph{lm.kfold(...)}, which includes LOOCV;
+	\item The $k$-fold cross validation was run with $5$-, $10$-, $15-$ and $20$-folds and the MSE were averaged across $20$ replications of each;
+	\item According to the LOOCV the best polynomial model is of degree $3$, and the averaged $k$-fold cross validators seem to agree with LOOCV;
+	\item The LOOCV selected the regression cubic spline with 10 degrees of freedom yielding $7$ knots and thus $8$ regions (again unilateral agreement from the $k$-fold validators as well). However it should be mentioned that the tested model was actually knot selection and the cubic spline, since the \emph{bs(...)} procedure does automatic knot selection based on empirical quantiles of the sample provided.
+	\item The $R^2$ of the best polynomial and the best cubic spline is $0.715$ and $0.736$ respectively;
+	\item However there seems to be a great amount of overfitting, since the overall shape on the nox$\sim$dis scatter plot suggests a multiplicative model along the line of 
+	\[\log\text{nox}\propto \phi(\log\text{dis})\]
+	with $\phi$ being a piecewise polynomial, for example.
+\end{itemize}
+
+% section problem_5 (end)
 
 \end{document}
