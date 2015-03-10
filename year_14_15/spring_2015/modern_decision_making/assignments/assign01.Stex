@@ -683,33 +683,33 @@ The optimal $\beta$ is given by
 \subsection{subproblem b} % (fold)
 \label{sub:p4subproblem_b}
 
-To measure the effect of the prior correlation marix on the shrinkage of the estimates $\hat{\beta}$ the credit scoring data\footnotemark is studied.
-\footnotetext{ ``An Introduction to Statistical Learning, with applications in R''  (Springer, 2013) with permission from the authors: G. James, D. Witten,  T. Hastie and R. Tibshirani;\url{http://www-bcf.usc.edu/~gareth/ISL/data.html}}
+To measure the effect of the prior correlation matrix on the shrinkage of the estimates $\hat{\beta}$ the credit scoring data\footnotemark is studied.
+\footnotetext{ ``An Introduction to Statistical Learning, with applications in R'' (Springer, 2013) with permission from the authors: G. James, D. Witten, T. Hastie and R. Tibshirani;\url{http://www-bcf.usc.edu/~gareth/ISL/data.html}}
 
 First, load the dataset and setup the necessary procedures.
 \begin{Scode}{fig=FALSE,echo=TRUE}
-# % setwd( file.path(
+## Use Sweave to compile this report
+# % setwd( paste0(
 # % 	"~/study_notes/year_14_15/spring_2015",
-# % 	"modern_decision_making/assignments" ) )
-# % Sweave( file = "assign01.Stex", syntax = SweaveSyntaxLatex )
-
+# % 	"/modern_decision_making/assignments/report" ) )
+# % Sweave( file = "../Assign01.Stex", syntax = SweaveSyntaxLatex )
 ## Load the dataset and remove the first column
-Credit <- read.csv( "./Credit.csv" )[ , -1 ]
+  Credit <- read.csv( "../Credit.csv" )[ , -1 ]
 
-## Center and scale the input and the response, since
+## Centre and scale the input and the response, since
 ##  penalized LS problems are not scale insensitive any more.
-X <- scale( model.matrix( Balance ~ . - 1, Credit ) )
-Y <- scale( Credit$Balance ) #$
+  X <- scale( model.matrix( Balance ~ . - 1, Credit ) )
+  Y <- scale( Credit$Balance ) #$
 
 ## A correlation matrices of an AR(1) process: the coefficients
 ##  are less correlated the farther they are apart in terms of their
 ##  indices.
-sigma_1 <- function( rho, p = 4 )
-  rho ^ abs( outer( 1:p, 1:p,  `-` ) )
+  sigma_1 <- function( rho, p = 4 )
+    rho ^ abs( outer( 1:p, 1:p,  `-` ) )
 
 ## Another matrix with constant correlation between the coefficient
-sigma_2 <- function( rho, p = 4 )
-  rho ^ abs( outer( 1:p, 1:p, `!=` ) )
+  sigma_2 <- function( rho, p = 4 )
+    rho ^ abs( outer( 1:p, 1:p, `!=` ) )
 \end{Scode}
 
 First, it should be noted, that $\Sigma_1$ prior correlation matrix actually assumes some structure in the predictors: indeed, the coefficient $\beta_i$ (of the predictor $x_i$) is more correlated with $\beta_{i+s}$ for $s=1$ rather than $s>1$.
@@ -744,7 +744,7 @@ ridge <- function( X, T, rho = 0, lambda = 10, sigma = NULL ) {
 
 Define a couple of plotting procedures to facilitate the study the effects of the prior covariance matrix.
 \begin{Scode}
-## Study the absolute value of a coefficent by plotting it as
+## Study the absolute value of a coefficient by plotting it as
 ##  a heat map.
 hmap <- function( res, i )
   image( rho, lambda, abs( res[[ i ]] ), col = heat.colors( 12 ),
@@ -768,15 +768,16 @@ dync <- function( res, j, i ) {
 }
 \end{Scode}
 
-Hvaing finished the setting up, run the experiment for both kinds of prior covariance matrices.
+Having finished the setting up, run the experiment for both kinds of prior covariance matrices.
 \begin{Scode}
-## Initalize the grid
-rho <- seq( -.99, .99, by = 0.01 )
-lambda <- 10 ^ seq( -2, 2, length = 100 )
+## Initialize the grid
+  rho <- seq( -.99, .99, by = 0.01 )
+  lambda <- 10 ^ seq( -2, 2, length = 100 )
 ## Run the experiment
-br1 <- ridge( X, Y, rho, lambda, sigma = sigma_1 )
-br2 <- ridge( X, Y, rho, lambda, sigma = sigma_2 )
+  br1 <- ridge( X, Y, rho, lambda, sigma = sigma_1 )
+  br2 <- ridge( X, Y, rho, lambda, sigma = sigma_2 )
 \end{Scode}
+
 
 \begin{figure}[htb]\begin{center}
 	\begin{Scode}{fig=TRUE,echo=FALSE}
