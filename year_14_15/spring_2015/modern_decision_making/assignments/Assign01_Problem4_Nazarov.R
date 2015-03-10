@@ -54,7 +54,7 @@ evl <- function( res, j, i ) {
 X <- scale( model.matrix( Balance ~ . - 1, Credit ) )
 Y <- scale( Credit$Balance )
 
-rho <- seq( -.99, .99, by = 0.01 )
+rho <- seq( 0, .99, by = 0.01 )
 lambda <- 10 ^ seq( -2, 2, length = 100 )
 br1 <- ridge( X, Y, rho, lambda, sigma = sigma_1 )
 br2 <- ridge( X, Y, rho, lambda, sigma = sigma_2 )
@@ -68,3 +68,26 @@ op <- par( mfcol = c( 2, 2 ), mar = c( 0, 0, 0, 0 ),
 	evl( br2, 6 + 1:3, 87 )
 	evl( br2, 9 + 1:3, 87 )
 par( op )
+
+
+## Let's do it correctly
+gain <- function( beta_0, lambda, rho, sigma = NULL ) {
+	sigma <- if( is.function( sigma ) ) sigma else function( r, p ) diag( p )
+## For each $\rho$
+	lapply( rho, function( r ) {
+		sigma_inv <- solve( sigma( r, length( beta_0 ) ) )
+		aperm( sapply( lambda, function( l )
+			crossprod( solve( diag( length( beta_0 ) )
+				+ l * sigma_inv ), beta_0 ) ), c( 2, 1 ) )
+	} )
+}
+
+rho <- seq( 0, .99, by = 0.01 )
+lambda <- 10 ^ seq( -2, 1, length = 100 )
+beta <- seq(-2, 2, by = 0.1 )
+sim <- gain( beta, lambda, rho, sigma_1 )
+
+image( lambda, beta, ( sim[[ 1 ]] ), col = heat.colors( 12 ) )
+image( lambda, beta, ( sim[[ 26 ]] ), col = heat.colors( 12 ) )
+image( lambda, beta, ( sim[[ 51 ]] ), col = heat.colors( 12 ) )
+image( lambda, beta, ( sim[[ 76 ]] ), col = heat.colors( 12 ) )

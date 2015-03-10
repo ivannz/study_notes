@@ -889,7 +889,105 @@ The overall effect does not seem be to be uniform, but the higher the $\rho$ the
 	\label{fig:fig06}
 \end{center}\end{figure}
 
-The effecte of the $\Sigma_2$-type prior covariance seem to be similar to the $\Sigma_1$ case at least for the credit scroing data used. There also appears to be some dependence on the correlation structure of the perdictors.
+\clearpage
+The effects of the $\Sigma_2$-type prior covariance seem to be similar to the $\Sigma_1$ case at least for the credit scoring data used. There also appears to be some dependence on the correlation structure of the predictors. Therefore in order to avoid this interference from the data and to control the analysis, let's simplify the problem and use $p$ orthogonal predictors with Gaussian noise. If the model is $T = X\beta+ \epsilon$ and $X'X = I_p$, then the expectation of the estimate is given by
+\[\Ex\hat{\beta} = \Ex\big(X'X + \lambda \Sigma^{-1}\big)^{-1}X'T = \big(I_p + \lambda \Sigma^{-1}\big)^{-1}X'\Ex\big( X\beta+\epsilon\big) = \big(I_p + \lambda \Sigma^{-1}\big)^{-1}\beta\]
+Since the predictors are orthogonal, there is no interference between $\hat{\beta}$ due to the data and the transformation is entirely due to the prior covariance matrix. The procedure below implements this test estimator:
+\begin{Scode}{fig=FALSE,echo=TRUE}
+coef_gain <- function( beta_0, lambda, rho, sigma = NULL ) {
+  if( !is.function( sigma ) )
+    sigma <- function( r, p ) diag( p )
+  lapply( rho, function( r ) {
+    sigma_inv <- solve( sigma( r, length( beta_0 ) ) )
+    aperm( sapply( lambda, function( l )
+      crossprod( solve( diag( length( beta_0 ) )
+        + l * sigma_inv ), beta_0 ) ), c( 2, 1 ) )
+  } )
+}
+
+## Gauge the effects of the prior covariance matrix
+rho <- seq( 0, .99, by = 0.01 )
+lambda <- 10 ^ seq( -2, 1, length = 100 )
+beta <- seq( -3, 3, by = 0.1 )
+gain1 <- coef_gain( beta, lambda, rho, sigma_1 )
+gain2 <- coef_gain( beta, lambda, rho, sigma_2 )
+\end{Scode}
+
+\clearpage
+The plots below depict the effect of the complexity parameter $\lambda$ on the magnitude of coefficients, for a given value of $\rho$ and for the prior covariance matrix $\Sigma_1$.
+\begin{figure}[htb]\begin{center}
+	\begin{minipage}{0.50\textwidth}
+		\centering
+		\begin{Scode}{fig=TRUE,echo=FALSE}
+			image( lambda, beta, abs( gain1[[ 1 ]] ), col = heat.colors( 12 ), ylab = "magnitude of beta", xlab = "complexity parameter" )
+		\end{Scode}
+	\end{minipage}\hfill
+	\begin{minipage}{0.50\textwidth}
+		\centering
+		\begin{Scode}{fig=TRUE,echo=FALSE}
+			image( lambda, beta, abs( gain1[[ 34 ]] ), col = heat.colors( 12 ), ylab = "magnitude of beta", xlab = "complexity parameter" )
+		\end{Scode}
+	\end{minipage}
+	\caption{The effect of $\rho=\Sexpr{ rho[ 1 ] }$ (left) and $\rho=\Sexpr{ rho[ 34 ] }$ (right) for $\Sigma_1$-type covariance matrix.}
+	\label{fig:fig07}
+\end{center}\end{figure}
+
+\begin{figure}[htb]\begin{center}
+	\begin{minipage}{0.50\textwidth}
+		\centering
+		\begin{Scode}{fig=TRUE,echo=FALSE}
+			image( lambda, beta, abs( gain1[[ 67 ]] ), col = heat.colors( 12 ), ylab = "magnitude of beta", xlab = "complexity parameter" )
+		\end{Scode}
+	\end{minipage}\hfill
+	\begin{minipage}{0.50\textwidth}
+		\centering
+		\begin{Scode}{fig=TRUE,echo=FALSE}
+			image( lambda, beta, abs( gain1[[ 100 ]] ), col = heat.colors( 12 ), ylab = "magnitude of beta", xlab = "complexity parameter" )
+		\end{Scode}
+	\end{minipage}
+	\caption{The effect of $\rho=\Sexpr{ rho[ 67 ] }$ (left) and $\rho=\Sexpr{ rho[ 100 ] }$ (right) for $\Sigma_1$-type covariance matrix.}
+	\label{fig:fig08}
+\end{center}\end{figure}
+
+\noindent\textbf{Conclusion:} These plots clearly show, that higher values of the prior hyperparameter $\rho$ slow down the shrinkage done by the ridge regression penalty, though not linearly.
+
+\clearpage
+The plots below depict the effect of the complexity parameter $\lambda$ on the magnitude of coefficients, for a given value of $\rho$ and for the prior covariance matrix $\Sigma_2$.
+\begin{figure}[htb]\begin{center}
+	\begin{minipage}{0.50\textwidth}
+		\centering
+		\begin{Scode}{fig=TRUE,echo=FALSE}
+			image( lambda, beta, abs( gain2[[ 1 ]] ), col = heat.colors( 12 ), ylab = "magnitude of beta", xlab = "complexity parameter" )
+		\end{Scode}
+	\end{minipage}\hfill
+	\begin{minipage}{0.50\textwidth}
+		\centering
+		\begin{Scode}{fig=TRUE,echo=FALSE}
+			image( lambda, beta, abs( gain2[[ 34 ]] ), col = heat.colors( 12 ), ylab = "magnitude of beta", xlab = "complexity parameter" )
+		\end{Scode}
+	\end{minipage}
+	\caption{The effect of $\rho=\Sexpr{ rho[ 1 ] }$ (left) and $\rho=\Sexpr{ rho[ 34 ] }$ (right) for $\Sigma_2$-type covariance matrix.}
+	\label{fig:fig09}
+\end{center}\end{figure}
+
+\begin{figure}[htb]\begin{center}
+	\begin{minipage}{0.50\textwidth}
+		\centering
+		\begin{Scode}{fig=TRUE,echo=FALSE}
+			image( lambda, beta, abs( gain2[[ 68 ]] ), col = heat.colors( 12 ), ylab = "magnitude of beta", xlab = "complexity parameter" )
+		\end{Scode}
+	\end{minipage}\hfill
+	\begin{minipage}{0.50\textwidth}
+		\centering
+		\begin{Scode}{fig=TRUE,echo=FALSE}
+			image( lambda, beta, abs( gain2[[ 100 ]] ), col = heat.colors( 12 ), ylab = "magnitude of beta", xlab = "complexity parameter" )
+		\end{Scode}
+	\end{minipage}
+	\caption{The effect of $\rho=\Sexpr{ rho[ 68 ] }$ (left) and $\rho=\Sexpr{ rho[ 100 ] }$ (right) for $\Sigma_2$-type covariance matrix.}
+	\label{fig:fig10}
+\end{center}\end{figure}
+
+\noindent\textbf{Conclusion:} Higher values of the prior hyperparameter $\rho$ for the second type covariance matrix enable greater shrinkage for the smae complexity parameter $\lambda$.
 
 % subsection p4subproblem_b (end)
 
