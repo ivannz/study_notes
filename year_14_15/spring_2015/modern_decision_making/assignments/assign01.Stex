@@ -5,6 +5,7 @@
 
 \usepackage{amsmath, amsfonts, amssymb, amsthm}
 \usepackage{xfrac, mathptmx}
+\usepackage{mathtools}
 
 \newcommand{\obj}[1]{{\left\{ #1 \right \}}}
 \newcommand{\clo}[1]{{\left [ #1 \right ]}}
@@ -32,7 +33,7 @@
 
 \newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
 
-\usepackage[english, russian]{babel}
+\usepackage[russian, english]{babel}
 \newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
 \newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
 
@@ -49,7 +50,7 @@
 \label{sec:problem_1}
 
 \subsection{subproblem a} % (fold)
-\label{sub:subproblem_a}
+\label{sub:p1subproblem_a}
 
 Suppose instead of a one new observation we are given $m$ observation
 $\big(\w_k\big)_{k=0}^m$ with $\w_k\in \obj{1}\times\Real^p$
@@ -108,10 +109,10 @@ Now the mean square error of the prediction is given by
 where $\e\in \Real^{m\times 1}$ is a vector of ones. When $m=1$ this is equal to
 \[ \Ex \hat{\eta}^2 = \sigma^2( 1 + \w_k (X'X)^{-1} \w_k' ) \]
 
-% subsection subproblem_a (end)
+% subsection p1subproblem_a (end)
 
 \subsection{subproblem b} % (fold)
-\label{sub:subproblem_b}
+\label{sub:p1subproblem_b}
 
 In the case of a simple linear regression the model matrix $X$ is given by
 \[X = \big( \underset{n\times 1}{\e} \underset{n\times 1}{\mathbf{x}} \big)\]
@@ -158,10 +159,10 @@ Therefore the expected squared error is
 	= \sigma^2 \Big( 1 + \frac{1}{n} + \frac{ \big(\bar{x} - x_{n+1}\big)^2 }{ \sum_{i=1}^n (x_i - \bar{x})^2 } \Big)
 \]
 
-% subsection subproblem_b (end)
+% subsection p1subproblem_b (end)
 
 \subsection{subproblem c} % (fold)
-\label{sub:subproblem_c}
+\label{sub:p1subproblem_c}
 
 In the bivariate case the expression for the square error of one-point
 prediction is quadratic in $x_{n+1}$. Furthermore the squared term enters the
@@ -175,10 +176,10 @@ One could also compute the first order condition of a local maximum and then
 the second order conditions to persuade oneself that this is indeed the case,
 but this not needed here.
 
-% subsection subproblem_c (end)
+% subsection p1subproblem_c (end)
 
 \subsection{subproblem d} % (fold)
-\label{sub:subproblem_d}
+\label{sub:p1subproblem_d}
 
 Using the rules of matrix-matrix multiplication and the properties of the
 transpose operator it is easy to see that
@@ -188,10 +189,10 @@ X'X
 = \bigg(\begin{matrix} \e'\e & \e'Z \\ Z\e' & Z'Z \end{matrix}\bigg) 
 \]
 
-% subsection subproblem_d (end)
+% subsection p1subproblem_d (end)
 
 \subsection{subproblem e} % (fold)
-\label{sub:subproblem_e}
+\label{sub:p1subproblem_e}
 
 Notice that in 
 \[ X'X = \bigg(\begin{matrix} T & U \\ V & W \end{matrix}\bigg) = \bigg(\begin{matrix} \e'\e & \e'Z \\ Z\e' & Z'Z \end{matrix}\bigg) \]
@@ -249,10 +250,10 @@ appropriately sized matrices of zeroes.
 The block shapes of the matrix blocks of $(X'X)^{-1}$ are
 \[\bigg(\begin{matrix} 1\times 1 & 1\times p \\ p\times 1 & p\times p \end{matrix}\bigg)\] 
 
-% subsection subproblem_e (end)
+% subsection p1subproblem_e (end)
 
 \subsection{subproblem f} % (fold)
-\label{sub:subproblem_f}
+\label{sub:p1subproblem_f}
 
 Suppose the new observation is $\w = ( 1\, z_{n+1} )\in \Real^{1+p}$.
 Then the variance of the prediction error is 
@@ -297,10 +298,10 @@ $X'X$ is.
 Finally the variance of the square prediction error is 
 \[ \Ex \hat{\eta}^2 = \sigma^2\big( 1 + \frac{1}{n} + \frac{1}{n} (z_{n+1} - \bar{z})\Gamma^{-1} (z_{n+1} - \bar{z})' \big) \]
 
-% subsection subproblem_f (end)
+% subsection p1subproblem_f (end)
 
 \subsection{subproblem h} % (fold)
-\label{sub:subproblem_h}
+\label{sub:p1subproblem_h}
 
 Since $X'X$ is invertible, the matrix $Q = Z'Z - n \bar{z}'\bar{z}$ is
 invertible. Furthermore $Q$ is invertible if and only if
@@ -316,10 +317,10 @@ which means that it cannot have zero eigenvalues.
 
 Since $\Gamma = n Q$ it must also be a positive definite matrix.
 
-% subsection subproblem_h (end)
+% subsection p1subproblem_h (end)
 
 \subsection{subproblem g} % (fold)
-\label{sub:subproblem_g}
+\label{sub:p1subproblem_g}
 
 Consider the following quadratic form
 \[ f(\xi) =  \xi'A\xi - 2 b \xi + c\]
@@ -344,7 +345,7 @@ variance is thus $\mathbf{0}$, whence $z_{n+1} - \bar{z} = \mathbf{0}$. Thus
 the prediction error variance attains its minimum at $z_{n+1} = \bar{z}$,
 where its value is $\sigma^2(1+\frac{1}{n})$.
 
-% subsection subproblem_g (end)
+% subsection p1subproblem_g (end)
 
 % section problem_1 (end)
 
@@ -661,7 +662,7 @@ It permits model selection due to the lasso term as well as coefficient shrinkag
 \label{sec:problem_4}
 
 \subsection{subproblem a} % (fold)
-\label{sub:subproblem_a}
+\label{sub:p4subproblem_a}
 
 The penalized sum of squares
 \[\RSS(\lambda,\Sigma) = (T-X\beta)'(T-X\beta) + \lambda \beta'\Sigma_1^{-1}\]
@@ -677,14 +678,116 @@ Therefore the sum $X'X + \Sigma_1^{-1}$ must be positive semi-definite too, mean
 The optimal $\beta$ is given by
 \[\hat{\beta} = \big(X'X + \lambda \Sigma_1^{-1}\big)^{-1}X'T\]
 
-% subsection subproblem_a (end)
+% subsection p4subproblem_a (end)
 
 \subsection{subproblem b} % (fold)
-\label{sub:subproblem_b}
+\label{sub:p4subproblem_b}
 
-In order to measure the effect of the 
+To measure the effect of the prior correlation marix on the shrinkage of the estimates $\hat{\beta}$ the credit scoring data\footnotemark is studied.
+\footnotetext{ ``An Introduction to Statistical Learning, with applications in R''  (Springer, 2013) with permission from the authors: G. James, D. Witten,  T. Hastie and R. Tibshirani;\url{http://www-bcf.usc.edu/~gareth/ISL/data.html}}
 
-% subsection subproblem_b (end)
+First, load the dataset and setup the necessary procedures.
+\begin{Scode}{fig=FALSE,echo=TRUE}
+# % setwd( file.path(
+# % 	"~/study_notes/year_14_15/spring_2015",
+# % 	"modern_decision_making/assignments" ) )
+# % Sweave( file = "assign01.Stex", syntax = SweaveSyntaxLatex )
+
+## Load the dataset and remove the first column
+Credit <- read.csv( "./Credit.csv" )[ , -1 ]
+
+## Center and scale the input and the response, since
+##  penalized LS problems are not scale insensitive any more.
+X <- scale( model.matrix( Balance ~ . - 1, Credit ) )
+Y <- scale( Credit$Balance ) #$
+
+## A correlation matrices of an AR(1) process: the coefficients
+##  are less correlated the farther they are apart in terms of their
+##  indices.
+sigma_1 <- function( rho, p = 4 )
+  rho ^ abs( outer( 1:p, 1:p,  `-` ) )
+
+## Another matrix with constant correlation between the coefficient
+sigma_2 <- function( rho, p = 4 )
+  rho ^ abs( outer( 1:p, 1:p, `!=` ) )
+\end{Scode}
+
+First, it should be noted, that $\Sigma_1$ prior correlation matrix actually assumes some structure in the predictors: indeed, the coefficient $\beta_i$ (of the predictor $x_i$) is more correlated with $\beta_{i+s}$ for $s=1$ rather than $s>1$.
+
+Below is the code for a generic estimator derived in the previous subsection.
+\begin{Scode}
+ridge <- function( X, T, rho = 0, lambda = 10, sigma = NULL ) {
+  if( !is.function( sigma ) )
+    sigma <- function( r, p ) diag( p )
+## Precompute the matrix-matrix products
+  XX <- crossprod( X ) ; XT <- crossprod( X, T )
+## For each \rho
+  sim <- lapply( rho, function( r ) {
+##  compute the inverse of \Sigma
+    sigma_inv <- solve( sigma( r, ncol( X ) ) )
+##  and the ridge estimator.
+    sapply( lambda, function( l )
+      crossprod( solve( XX + l * sigma_inv ), XT ) )
+  } )
+## Present the results in by-coefficient format
+  if( ncol( X ) > 1 ) {
+    structure( names = colnames( X ), 
+      lapply( 1 : ncol( X ), function( i ) aperm(
+        sapply( sim, `[`, i, seq_along( lambda ) ),
+        c( 2, 1 ) ) ) )
+  } else {
+    structure( names = colnames( X ), 
+      list( aperm( simplify2array( sim ), c( 2, 1 ) ) ) )
+  }
+}
+\end{Scode}
+
+Define a couple of plotting procedures to facilitate the study the effects of the prior covariance matrix.
+\begin{Scode}
+## Study the absolute value of a coefficent by plotting it as
+##  a heat map.
+hmap <- function( res, i )
+  image( rho, lambda, abs( res[[ i ]] ), col = heat.colors( 12 ),
+    main = names( res )[ i ] )
+
+## Plot the coefficients for a particular values of rho.
+dync <- function( res, j, i ) {
+  data <- lapply( j, function( x ) res[[x]][i,] )
+## Setup the plotting area
+  plot( range( lambda ), range( unlist( data ) ), type = "n",
+    log = "x", xlab = "lambda (log scale)",
+    ylab = "Bayes ridge regression coefficient estimates" )
+## Pick some colours and plot everythin all at once
+  colours <- topo.colors( n = length( j ) )
+  invisible( lapply( seq_along( data ), function( x ) {
+    lines( lambda, data[[x]], col = colours[ x ] )
+  } ) )
+## Never forget to annotate!
+  legend( "bottomleft", names( res )[ j ], ncol = 2,
+    lty = c( 1, 1, 1, 1 ), col = colours )
+}
+\end{Scode}
+
+Hvaing finished the setting up, run the experiment for both kinds of prior covariance matrices.
+\begin{Scode}
+## Initalize the grid
+rho <- seq( -.99, .99, by = 0.01 )
+lambda <- 10 ^ seq( -2, 2, length = 100 )
+## Run the experiment
+br1 <- ridge( X, Y, rho, lambda, sigma = sigma_1 )
+br2 <- ridge( X, Y, rho, lambda, sigma = sigma_2 )
+\end{Scode}
+
+\begin{figure}[htb]\begin{center}
+	\begin{Scode}{fig=TRUE,echo=FALSE}
+		hmap( br1, 1 )
+	\end{Scode}
+	\caption{Parameter ``\Sexpr{ print( colnames( X )[ 1 ] ) }'' for $\Sigma_1$-type covariance matrix.}
+	\label{fig:fig01}
+\end{center}\end{figure}
+
+
+% subsection p4subproblem_b (end)
 
 % section problem_4 (end)
 \clearpage
