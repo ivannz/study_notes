@@ -22,10 +22,12 @@
 \newcommand{\Rbar}{{\bar{\mathbb{R}}}}
 \newcommand{\Cplx}{\mathbb{C}}
 
+\newcommand{\Xcal}{\mathcal{X}}
 \newcommand{\Fcal}{\mathcal{F}}
 \newcommand{\Tcal}{\mathcal{T}}
 \newcommand{\Ncal}{\mathcal{N}}
 \newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Acal}{\mathcal{A}}
 \newcommand{\borel}{\mathcal{B}}
 
 \newcommand{\Ex}{\mathbb{E}}
@@ -71,30 +73,30 @@ Stochastic processes require measure theoretic foundations for their definition 
 
 Suppose $\brac{X_k}_{k=1}^n$ is a finite collection of random variables which are independent and identically distributed.
 
-What is the asymptotics of some function of $\brac{X_k}_{k=1}^n$. The probability distribution 
+What are the asymptotics of functions of $\brac{X_k}_{k=1}^n$ and their probability distributions.
 
-Consider a measure space $(\Omega, \Fcal, P)$ and an RV $X(\omega)$ from $\Omega$ to $(\mathcal{X}, \Sigma)$ on it.
-This induces a measure in $\mathcal{X}$ -- the image space. see image~1.
+Consider a measure space $(\Omega, \Fcal, P)$ and an RV $X(\omega)$ from $\Omega$ to $(\Xcal, \Sigma)$ on it.
+This induces a measure in $\Xcal$ -- the image space. see \textbf{image~1}
+
 \[\mathbb{P}_X \defn X_\# \mathbb{P} = \mathbb{P}\brac{X\in A} = \int 1_{X^{-1}(A)}d\mathbb{P}\]
 
-For limiting theorems the image space is sufficient.
-
-Abstract spaces are needed in stochastic processes (and with filtration).
-
-Convergence in distribution is needed in limiting theorems.
+For limiting theorems the image space is sufficient, but we need convergence in distributions. However, abstract spaces would be needed in studies of stochastic processes (and endowed with filtration).
 
 Consider $X\in \Real$.
 How is the distribution of $X$ defined?
-It is defined using the semi-ring of half-closed intervals $\ploc{a,b}$.
-Or, the most popular method -- Cumulative Distribution function.
 
-An RV is not a measurable map, but a measure representing its probability.
+It can be defined using the semi-ring of half-closed intervals $\ploc{a,b}$, but the most popular, and equivalent, method is via a function with specific properties -- \textbf{C}umulative \textbf{D}istribution \textbf{F}unction.
+
+Since every random variable induces a distribution on its image space, and it is always possible to construct a probability space and a measurable function such that they induce the required law in the image space (Skorohod's representation, see [Williams, 1991, p.~34]).
+Thus random variables can be partitioned into classes identified by their distribution function.
+In the following random variables and their corresponding distributions can be used interchangeably.
+
 A map $F:\Real\to \clo{0,+\infty}$ is a distribution function if \begin{enumerate}
 	\item $F$ is non decreasing;
 	\item $F(-\infty) = 0$ and $F(+\infty) = 1$.
 	\item $F$ is right-continuous and bounded;
 \end{enumerate}
-in short $F$ must be c\'adl\'ag. The crucial thing is $F(\Real)=1$.
+In short $F$ must be c\'adl\'ag with a crucial requirement that $F(\Real)=1$.
 
 Modern statistical physics was founded on Gibbs's idea.
 A physical system might be in different states, thus Gibbs and Bolzmann postulated that each state has some likelihood.
@@ -340,7 +342,7 @@ If
 then for any $b>0$ the following equivalence is true for all $y$:
 \[\frac{1}{2\pi}\int e^{-sy} \phi(s) e^{-\frac{\delta^2 s^2}{2}}ds
 =\frac{1}{\sqrt{2\pi\delta^2}}\int e^{-\frac{{(x-y)}^2}{2\delta^2}}dF(x)\]
-for a gaussian smothing kernel $e^{-\frac{{(x-y)}^2}{2\delta^2}}$.
+for a gaussian smoothing kernel $e^{-\frac{{(x-y)}^2}{2\delta^2}}$.
 
 Indeed, \begin{align*}
 	e^{-isy}\phi(s)e^{-\frac{\delta^2 s^2}{2}} &= e^{-isy}\int e^{isx} e^{-\frac{\delta^2 s^2}{2}} dF(x)\\
@@ -1059,5 +1061,834 @@ we have
 % subsection extreme_value_distribution (end)
 
 % section lecture_7 (end)
+
+\section{LEcture \# 8} % (fold)
+\label{sec:lecture_8}
+
+\subsection{Discrete extreme value theory} % (fold)
+\label{sub:discrete_extreme_value_theory}
+Suppose we have a collection of $\brac{X_k}_{k=1^n}$ independent and identically distributed with values $\brac{1, -1}$ with probabilities $\brac{\frac{1}{2},\frac{1}{2}}$.
+
+Define the cumulative sum $S_n = \sum_{k=1}^n X_k$ -- this is a discrete 1-D random walk.
+
+According to the Law of large numbers the mean displacement 
+\[\frac{S_n}{n} \overset{\Pr}{\to} 0\]
+
+An extreme value is the defined by the event $E_\alpha \defn \obj{ \sfrac{S_n}{n} = \alpha } = \obj{ S_n = n\alpha }$ for $\alpha\in \clo{-1,1}$.
+
+Fluctuations around $0$ have of the order $\sqrt{n}$, that is why a large deviation is defined as $n\alpha$.
+
+The number of upward and downward steps is equal to $N_+ = \frac{1+\alpha}{2}n$ and $N_- = \frac{1-\alpha}{n}$ respectively. With $S-n = N_+-N_-$
+
+\subsubsection{Lazy random walk} % (fold)
+\label{ssub:lazy_random_walk}
+
+Suppose $X_k = 0$ with positive probability $p_0$, while $X_k = 1$ with $p_+$ and $X_k=-1$ with $p_-$. 
+
+Then $\Ex \frac{S_n}{n} = p_+ - p_-$, where $S_n = \frac{N_+-N_-}{n}$ with $N_++N_0+N_- = n$ and $N_i$ is the number of steps in the direction $i$.
+
+Even the most improbable event occurs with some highly probable chances.
+
+% subsubsection lazy_random_walk (end)
+
+\subsubsection{General theory} % (fold)
+\label{ssub:general_theory}
+
+Suppose $\Acal$ is some finite alphabet with $\abs{\Acal}$.
+
+Consider a probability distribution $P = \brac{P_a}_{a\in \Acal}$ on $\Acal$.
+
+Consider a string $s\in \Acal^n$ and define $n_a(s)$  as the $\abs{\obj{\induc{i=1,\ldots,n} s_i = a }}$. Then $\sum_{a\in\Acal} n_a(s) = n$.
+
+Suppose the symbols in $s$ are independent and identically distributed random variables on $\Acal$ with probability distribution $P$.
+
+Consider the probability space $\Acal^n$ with the product probability measure $\Pr(s) = \prod_{a\in \Acal} p_a^{n_a(s)}$.
+Use the discrete $\sigma$-algebra.
+
+One-point distribution of one symbol on $k=1,\ldots,n$ (as opposed to distributions of finite vectors). 
+
+Is the random process is stationary, then the probability of encountering a symbol $a\in \Acal$ is independent of is place in $s$.
+
+How does the typical and atypical string look like. Typicality is defined as the ratio of occurrences of a particular symbol.
+
+The number of strings grows exponentially with $n$.
+
+A characteristic vector of string $s\in\Acal^n$ is the vector $n = \brac{n_a(s)}_{a\in \Acal}$.
+
+The number of string with a given characteristic vector $m = \brac{m_a}_{a\in \Acal}$ is given by 
+\[\Pr(\vec{m}) \defn \frac{n!}{\prod_{a\in \Acal} m_a!}\] 
+
+The number of different characteristic vectors is given by 
+\[\frac{(n+\abs{\Acal}-1)!}{(\abs{\Acal}-1)!n!} = \frac{(n+1)\ldots (n+\abs{\Acal}-1)}{(\abs{\Acal}-1)!}\]
+the number of combinations of size $n$ of $k$ symbols with repetition.
+Thus the number of possible characteristic types is polynomial in the size of the string. One can draw a conclusion that the complexity of strings grows slower than the size of the string.
+
+Consider a characteristic vector $n$, then the probability of a string of this type is \[\Pr\Big(\Big. s \big.\big\rvert \vec{m}\Big.\Big) = \prod_{a\in \Acal} p_a^{n_a}\]
+and the number of strings of the type is $\Pr(\vec{m})$
+Thus the chance of a particular string is
+\[\Pr(s) = \Pr\Big(\Big. s \big.\big\rvert \vec{m}\Big.\Big) \Pr(\vec{m}) = \prod_{a\in \Acal} p_a^{n_a}\]
+
+Since the Stirling's formula is $n! = n^n e^{-n} \sqrt{2 \pi n} \big(1+o(\frac{1}{n})\big)$, we have
+\begin{align*}
+	\frac{n!}{\prod_{a\in \Acal} m_a!} \prod_{a\in \Acal} p_a^{n_a}
+	& \approx \frac{n^n e^{-n} \sqrt{2 \pi n} }{\prod_{a\in \Acal} m_a^{m_a} e^{-m_a} \sqrt{2 \pi m_a} } \prod_{a\in \Acal} p_a^{n_a} \\
+	& \approx \prod_{a\in \Acal} \brac{p_a \frac{n}{m_a}}^m_a \\
+	& = \text{exp}\brac{ n \big( \sum_{a\in \Acal} \eta_a \ln\frac{p_a}{\eta_a} \big) } = e^{-n\text{KL}\big( \eta \lvert \rvert P\big)}
+\end{align*}
+
+where $\eta_a = \frac{m_a}{n}$. 
+
+The relative entropy, or Kullback-Leibler entropy, describes the differences in distributions $\eta$ with respect to $P$:
+\[\text{KL}\big( \eta \lvert \rvert P\big) = \sum_{a\in \Acal} \eta_a \ln \frac{\eta_a}{p_a} = \sum_{a\in \Acal} p_a \frac{\eta_a}{p_a} \ln \frac{\eta_a}{p_a} \]
+Where $\frac{\eta_a}{p_a}$ is the Radon-Nikodym derivative of $\eta$ relative to $p$.
+
+For two measures $Q,P$ on the same space, if $Q<<P$ then
+\[\text{KL}\big( Q \lvert \rvert P\big) = \int \frac{dQ}{dP} \ln \frac{dQ}{dP} dP\]
+where $\frac{dQ}{dP}$ is the Radon-Nikodym derivative of $Q$ with respect to $P$ :
+\[Q(E) = \int_E \frac{dQ}{dP} dP\]
+
+So far we have got the following result
+\begin{align*}
+	\Pr\brac{\brac{n \eta_a}_{a\in \Acal}} &\approx e^{- n \text{KL}\brac{\eta \lvert\rvert p}}
+\end{align*}
+
+If $\Phi(x)$ is a convex function, then for all $x,x_0\in \Real^d$ the following is true
+\[ \Phi(x) \geq \Phi(x_0) + \nabla \Phi(x_0) \big(x-x_0\big) \]
+
+If $\Phi(x) = \sum_{k=1}^d x_k \ln x_k$ for $x\in \Real_+^d$, then $\Phi(x)$ is convex.
+
+Around $\brac{p_a}_{a\in \Acal}$:
+\[\sum_{a\in \Acal} p_a \ln p_a + \sum_{a\in \Acal} \big(1 + \ln p_a \big) \big(x_a - p_a\big)\]
+whence $\sum_{a\in \Acal} x_a \ln\frac{x_a}{p_a} \geq 0$.
+
+% The distribution of possible probability vectors $\brac{p_a}_{a\in \Acal}$ is given by 
+% \[\text{Dir}\brac{\brac{p_a}_{a\in \Acal}} = \frac{\prod_{a\in \Acal} \Gamma(\alpha_a)}{\Gamma\brac{\sum_{a\in \Acal} \alpha_a }}\prod_{a\in \Acal} p_a^{\alpha_a-1}\]
+
+Let's refine the approximation above.
+
+Consider the 
+\[-\frac{1}{n}\ln\Pr\brac{\brac{n \eta_a}_{a\in \Acal}} \overset{n\to\infty}{\to} \text{KL}\brac{\eta \lvert\rvert p} \]
+
+\noindent\textbf{Sanov's theorem}\hfill\\
+Suppose $A$ is a closed subset of a probability simplex $S_\Acal$. Then 
+\[-\frac{1}{n}\ln \Pr\brac{A}\to \min_{\eta\in A} \text{KL}\brac{\eta \lvert\rvert p} \]
+and inside $A$ the conditional probability concentrates around the points where the minimum is achieved.
+
+% subsubsection general_theory (end)
+
+% subsection discrete_extreme_value_theory (end)
+
+\subsection{Continuous extreme values theory} % (fold)
+\label{sub:continuous_extreme_values_theory}
+
+\subsubsection{Extreme values: Cram\'er's theorem} % (fold)
+\label{ssub:extreme_values_cramer_theorem}
+
+One of the earliest theorems on extreme values (1938).
+
+Is investinages the distribution of the normalised sum of independent and identically distributed random variables $\brac{X_k}_{k=1}^n$.
+
+Again the law of large numbers tells us that
+\[\frac{\sum_{k=1}^n X_k}{n} \to \Ex X = \mu\]
+
+A large deviation is the following event :
+\[\obj{ \sum_{k=1}^n X_k - n\mu \neq 0 }\]
+
+The intuition suggests that the following asymptotics holds
+\[\Pr\brac{a < \bar{X}_n < b} \sim e^{-n \rho(a,b)}\] as $n \to \infty$ where $\bar{X}_n = \frac{\sum_{k=1}^n X_k}{n}$.
+
+Let's derive heuristically a general form of $\rho$.
+
+If one has a sub-additive sequence, them there is one general trick in approaching the limit.
+
+We want to show that 
+\[-\frac{1}{n}\ln \Pr(a<\bar{X}_n<b) \overset{n\to\infty}{\to} \rho(a,b)\]
+
+Observe that for $n,m\geq 1$
+\[-\ln \Pr(a<\bar{X}_{n+m}<b) \leq - \ln \Pr(a<\bar{X}_n<b) - \ln \Pr(a<\bar{X}_m<b)\]
+
+Indeed, the sequence of these logarithms is subadditive.
+For this event it is true that
+\[a<\bar{X}_{n+m}<b \Leftrightarrow a<\frac{n \bar{X}_n + m \bar{X}_m}{n+m}<b \]
+and this is true when both $a<\bar{X}_n<b$ and $a<\bar{X}_m<b$ due to convex linear combination.
+
+We have 
+\[\Pr\brac{a<\bar{X}_m<b} = \Pr\brac{a<\frac{\sum_{k=n+1}^{n+m}X_k}{m}<b}\]
+since $X_k$ are identically distributed.
+
+Thus 
+\[\Pr\brac{a<\bar{X}_{n+m}<b} \geq \Pr\brac{a<\bar{X}_n<b \cup a<\bar{X}_m<b} = \Pr\brac{a<\bar{X}_n<b}\Pr\brac{a<\bar{X}_m<b} \]
+
+whence 
+\[\ln \Pr\brac{a<\bar{X}_{n+m}<b} \geq \ln \Pr\brac{a<\bar{X}_n<b} + \ln\Pr\brac{a<\bar{X}_m<b} \]
+
+and
+\[-\ln \Pr\brac{a<\bar{X}_{n+m}<b} \leq -\ln \Pr\brac{a<\bar{X}_n<b}  - \ln\Pr\brac{a<\bar{X}_m<b} \]
+
+Suppose $\brac{S_k}_{k\geq1}$ is a subadditive sequence, i.e $S_{n+m}\leq S_n + S_m$, then there exist $\lim_{n\to \infty} \frac{S_n}{n}$.
+
+Indeed, fix some arbitrary $n_0\geq1$. Then for any $n > n_0$ it is true that $n = q n_0 + r$.  Hence 
+\[S_n \leq S_{n-n_0} + S_{n_0}\leq \ldots \leq S_{n-q n_0} + q S_{n_0} = S_r + q S_{n_0}\]
+
+Therefore 
+\[S_n \leq \frac{S_r}{n} + \frac{q}{q n_0 + r}S_{n_0}\leq \frac{S_r}{n} + \frac{S_{n_0}}{n_0}\]
+
+thus
+\[\bar{S} = \limsup_{n\to \infty} \frac{S_n}{n} \leq \limsup_{n\to \infty} \frac{S_r}{n} + \frac{S_{n_0}}{n_0} = \frac{S_{n_0}}{n_0}\]
+
+Therefore $\bar{S}\leq \frac{S_{n_0}}{n_0}$. Since $n_0$ is arbitrary, 
+\[\liminf_{n_0\to\infty} \frac{S_{n_0}}{n_0} \geq \bar{S}\]
+
+But $\frac{S_{n_0}}{n_0}$ is the same sequence as $\frac{S_n}{n}$! Now since $\liminf a_n \geq \limsup a_n$ for any sequence $a_n$, it must be true that
+\[\bar{S}\leq \liminf_{n\to\infty} \frac{S_n}{n} \leq \limsup_{n\to\infty} \frac{S_n}{n} \leq \bar{S}\]
+
+Given the above observation we have the existence
+\[-\frac{1}{n}\ln \Pr\brac{a<\bar{X}_n<b} \to \rho(a,b)\]
+
+We want not only a result concerning the density of the limiting distribution of the mean, which by the LLN is \[p_{\bar{X}_n}(x)\to \delta(x-\mu)\]
+but also some speed of convergence:
+\[p_{\bar{X}_n}(x)\sim e^{-n \rho^*(x)}\]
+
+\[ -\frac{1}{n} \ln \int dx \]
+
+Then 
+\[-\frac{1}{n}\ln \Pr\brac{a<\bar{X}_n<b} \to \min_{x\in (a,b)} \rho^*(x)\]
+
+The characteristic function is
+\[\phi_{\bar{X}_n}(s) = \brac{\phi_X\big(\frac{s}{n}\big)}^n = e^{n\eta(\frac{s}{n})}\]
+
+Now the inverse Fourier transform is 
+\[p_{\bar{X}_n}(x) = \frac{1}{2\pi}\int e^{-isx } \phi_{\bar{X}_n}(s) ds = \frac{1}{2\pi}\int e^{-isx + n \eta(\frac{s}{n})} ds\]
+
+whence
+\[p_{\bar{X}_n}(x) = \frac{n}{2\pi}\int e^{n\brac{-iux + \eta(u)}} du\]
+
+\noindent \textbf{Saddle point method} \hfill\\
+Suppose we want to integrate 
+\[\int_\Real e^{n\Phi(u)} du\]
+where $\Phi$ is some analytic function.
+
+Now, obviously 
+\[\Phi(u) = \Re \Phi(u) + i \Im\Phi(u)\]
+with the imaginary part governing its phase shift, while the real part influencing the amplitude.
+
+If $\Im\Phi(u)$ varies a lot along a contour, then due to high oscillations they will contribute a small value to the integral.
+
+Thus we want to deform the contour, so that the oscillations are insignificant.
+
+Thus we must deform the contour so that it passed through the point $u^*$ of $\frac{d}{d z}\Phi(z) = 0$. The real and imaginary parts are harmonic functions due to Cauchy-Riemann conditions.
+
+The imaginary part of $\Phi(z)$ must be locally constant.
+
+Using thus deformation
+\[\int_\Real e^{n\Phi(u)} du \approx \int_{\epsilon(u^*)} e^{n\brac{\Phi(u^*) + \frac{1}{2}\Phi''(u^*) \brac{u-u^*}^2}} du\]
+
+whence 
+\[\approx e^{n\Phi(u^*)} \int_{\epsilon(u^*)} e^{\frac{n}{2}\Phi''(u^*) {(u-u^*)}^2} du \approx e^{n\Phi(u^*)} \sqrt{\frac{2\pi}{n\abs{\Phi''(u^*)}}}\brac{1 + O(\frac{1}{n})}\]
+
+Deformation $v\in \Cplx$ : $u = u^* + t v$.
+
+\noindent \textbf{Getting back to Cram\'er} \hfill\\
+
+Suppose the Laplace transform of the distribution of iid $X_k$ is given by
+\[e^{\kappa(s)} = \int_{-\infty}^{+\infty} e^{sx} p(x) dx\]
+exists for $s$ in some interval $\brac{\alpha,\beta}$.
+
+And $p(x) \sim e^{-\beta x}$ for $x\to \beta-$, $p(x) \sim e^{-\alpha x}$ for $x\to \alpha+$. This condition is stronger than what is required for the LLN.
+
+We need the asymptotics of
+\[p_{\bar{X}_n}(x) = \frac{n}{2\pi}\int e^{n\brac{-iux + \eta(u)}} du\]
+Note that $\kappa(is) = \eta(s)$ for all $\Re s \in \brac{\alpha, \beta}$.
+
+Thus $\eta(s)$ is defined when $\Im s\in \brac{-\beta, -\alpha}$ and the integral is analytic.
+
+The largest value of $\Re \eta(s)$ on $\Im s = \xi \in \brac{-\beta, -\alpha}$ is attained when $\Re s = 0$.
+
+Then $\phi(u) = e^{\eta(u)}$ implies that $\abs{\phi(u)} = e^{\Re \eta(u)}$. However 
+\[\abs{\phi(u)} = \abs{\int_\Real e^{iux} p(x) dx} = e^{-\Im u} \abs{ \int_\Real e^{i\Re u x} p(x) dx } \leq e^{-\Im u} 1 \]
+
+Second observation: $\kappa(s)$ is convex and $\lim_{s\to \alpha+} \kappa(s) = \lim_{s\to \beta-} \kappa(s) = +\infty$.
+
+Indeed, 
+\begin{align*}
+	1 &= \int e^{sx - \kappa(s)} p(x) dx \\
+	e^{\kappa(s)} \kappa'(s) &= \int xe^{sx} p(x) dx \\
+	\kappa'(s) &= \int xe^{sx - \kappa(s)} p(x) dx = \Ex_s X
+\end{align*}
+
+Where $\Ex_s$ is the expectation with respect to a distribution with density $e^{sx - \kappa(s)} p(x)$.
+
+Then
+\begin{align*}
+	e^{\kappa(s)} \kappa'(s) &= \int xe^{sx} p(x) dx \\
+	e^{\kappa(s)} \kappa''(s) + e^{\kappa(s)} \brac{\kappa'(s)}^2 &= \int x^2 e^{sx} p(x) dx \\
+	\kappa''(s) + \brac{\kappa'(s)}^2 &= \int x^2 e^{sx-\kappa(s)} p(x) dx \\
+	\kappa''(s) + \brac{\kappa'(s)}^2 &= \Ex_s X^2 \\
+	\kappa''(s) &= \Ex_s X^2 - \brac{\Ex_s X}^2\geq 0
+\end{align*}
+
+Therefore $\kappa(s)$ can be described as an envelope of tangents:
+\[ \kappa(s) = \max_{y} \brac{sy - \kappa^*(y)} \]
+where $\kappa^*(y)$ is the Legendre's transform of $\kappa(s)$:
+\[ \kappa^*(x) = \max_{s} \brac{sx - \kappa(y)} \]
+
+Recall 
+\[\Phi(u) = - iux +\eta(u)\]
+
+From the first observation it follows that $u^* = -is^*$, where
+\[s^* = \min_{s}\Phi(-is) = \min_{s} -sx + \kappa(s) = - \kappa^*(x)\]
+
+Therefore we get the following asymptotics
+\[p_{\bar{X}_n}(x) = e^{-n\kappa^*(x)} \sqrt{\frac{n}{2\pi \abs{\kappa''(s^*)}}}\brac{1+O(\frac{1}{n})}\]
+
+where $\kappa^*(x)$ is the Legendre transform of the logarithm of the Laplace transform of the original density.
+
+% subsubsection extreme_values_cramer_theorem (end)
+
+% subsection continuous_extreme_values_theory (end)
+
+% section lecture_8 (end)
+
+\section{Lecture \# 9} % (fold)
+\label{sec:lecture_9}
+
+Fractals and the multifractal formalism reside at the intersection of the measure theory and geometry. In 60s it it was discovered that there are fractal (self-similar) models in physics.
+
+There are different definitions of fractal dimensions.
+Dimensions in the topological sense is different from some intuitively similar dimensionality measure.
+
+Consider a fyord. What is its coastline length? Given different resolution, the result will converge to the true length.
+
+\subsection{Koch's snowflake} % (fold)
+\label{sub:koch_s_snowflake}
+
+Is an iterative process which on the $n+1$-th step adds an equilateral triangle at the middle third of each edge of the flake at the $n$-th integration.
+
+\begin{tabular}{c|c|c}
+$n$ & \# sides & perimeter \\
+$0$ & $3$ & $3$ \\
+$1$ & $3\cdot 4$ & $3 \cdot 4 \frac{1}{3}$ \\
+$2$ & $3\cdot 4^2$ & $3 \cdot 4^2 \frac{1}{3^2}$ \\
+$\vdots$ & $\cdots$ & $\cdots$\\
+$k$ & $3 \cdot 4^k$ & $3 \cdot 4^k \frac{1}{3^k} = \frac{4^k}{3^{k-1}}$
+\end{tabular}
+
+% subsection koch_s_snowflake (end)
+
+How could one define a value for dimensionality of a set geometrically?
+
+Splitting a region into a finite number and counting how to reconstruct it won't do.
+
+
+Take a bounded line segment and cover it with a covering of some $\epsilon$ templates, $\epsilon$-balls, for example. This would require a certain finte amount of templates $N_\epsilon$. Then $N_\epsilon\propto \epsilon^{-1}$.
+
+For a bounded planar region, we have $S_\epsilon\propto \epsilon^{-2}$.
+
+Consider a metric space $(X,d)$ and a bounded set $M\subseteq X$: the diameter of a set is finite. The box dimensionality of a set is
+\[d_B(M)\defn -\lim_{\epsilon\to 0} \frac{\ln N_\epsilon(M)}{\ln \epsilon}\]
+where $N_\epsilon$ is the exact lower bound of the number of templates across all coverings of $M$ with templates of size $\epsilon$. Templates in a metric space are closed $\epsilon$-balls.
+
+The Box dimensionality of the Koch's snowflake is
+\begin{align*}
+	N_\epsilon &= 3 4^n = 3 4^\frac{-\ln \epsilon}{\ln 3}\\
+	d_B &= -\lim_{\epsilon\to 0} \frac{\ln 3 - \frac{\ln \epsilon}{\ln 3} \ln 4}{\ln \epsilon} = \frac{\ln 4}{\ln 3} > 1
+\end{align*}
+where the standard $\epsilon$-ball template was used.
+
+But the box dimensionality is imperfect. Is there a better one?
+
+\subsection{Hausd\"orf dimensionality} % (fold)
+\label{sub:hausdorf_dimensionality}
+
+Consider a unit interval $\clo{0,1}$ and a set 
+\[M \defn \obj{ \induc{ n^{-\alpha} } n\geq 1}\]
+for some $\alpha>0$.
+
+Let's pick a standard template and some optimal $\epsilon$ cover.
+
+Cover the set thusly : \begin{itemize}
+	\item if the points spaced farther than $\epsilon>0$ apart should be covered with a separate $\epsilon$-ball;
+	\item $\bar{n}_\epsilon$ points clustering near zero are covered by a single common $\epsilon$-ball.
+\end{itemize}
+The estimate is $\bar{n}_\epsilon ^ {-\alpha} < \epsilon$, and then $\bar{n}_\epsilon = O\big(\epsilon^\frac{1}{\alpha}\big)$. Thus $N_\epsilon = C\epsilon^\frac{1}{\alpha}$.
+
+A better estimate is 
+\[\frac{1}{n_*^\alpha} - \frac{1}{(n_*+1)^\alpha}\sim \frac{\alpha}{n_*^{\alpha+1}} < \epsilon\]
+whence $n_*\sim \epsilon^\frac{-1}{\alpha+1}$ and $N_\epsilon > O(\epsilon^\frac{-1}{\alpha+1})$.
+
+This implies that $d_B(M) \geq \frac{1}{\alpha+1}>0$.
+However a countable set of points clustering at zero seems to have $0$-dimensionality.
+
+\noindent\textbf{Definition}\hfill\\
+
+Consider a bounded set $M\subseteq \Real^n$. Then for $\alpha>0$ the Hausd\"orf dimensionality is 
+\[H_\alpha(M) = \lim_{\epsilon\downarrow 0} \inf_{\text{cover}} \sum_{k} \text{diam}(S_k)^\alpha\]
+The limit inferior is taken over all finite or countable covers $S_k$ such that $S_k$ is an arbitrary subset with diameter less that $\epsilon$, where \[\text{diam}(A) \defn \sup_{x,y\in A} d(x,y)\]
+
+Any procedure of measuring a two-dimensional set by a one dimensional measure should yield $\infty$.
+
+Bijection approach.
+A bijection must honour some geometric structure (a diffeomorphism -- a deformation when not only things do not get torn apart but also do not become broken by wild bending).
+
+It is necessary to preserve some kind Lipschitz condition on the space (?).
+
+The Hausd\"orf measure is additive. It is necessary to check that
+the infimums are additive when the sets are disjoint.
+
+If $\alpha<\beta$ then $H_\alpha(M) \geq H_\beta(M)$.
+Indeed, consider some covering $\brac{S_k}$. Then 
+\[\sum_k \text{diam}(S_k)^\alpha \geq \sum_k \text{diam}(S_k)^\beta\]
+
+If $H_\alpha(M) > 0$ for some $\alpha$ then $H_\beta(M) = +\infty$ for all $\beta<\alpha$.
+If $H_\alpha(M) < \infty$ for some $\alpha$ then $H_\beta(M) = 0$ for all $\alpha<\beta$.
+
+Suppose $H_\alpha(M) < +\infty$, then there is an $\epsilon>0$ and a cover $S_k$ such that 
+\[\sum_k \text{diam}(S_k)^\alpha < \infty\]
+
+\[\text{diam}(S_k)^\beta \leq \epsilon^{\beta-\alpha} \text{diam}(S_k)^\alpha \]
+since $\text{diam}(S_k)^\beta = \text{diam}(S_k)^{\beta-\alpha}\text{diam}(S_k)^\alpha$.
+Thus
+\begin{align*}
+	\sum_k \text{diam}(S_k)^\beta &\leq \epsilon^{\beta - \alpha} \sum_k \text{diam}(S_k)^\alpha\\
+	\inf \sum_k \text{diam}(S_k)^\beta &\leq \epsilon^{\beta - \alpha} \sum_k \text{diam}(S_k)^\alpha\\
+	\inf \sum_k \text{diam}(S_k)^\beta &\leq \epsilon^{\beta - \alpha} \inf \sum_k \text{diam}(S_k)^\alpha\\
+	H_\beta(M) &\leq \epsilon^{\beta - \alpha} H_\alpha(M)
+\end{align*}
+
+Thus there exists a unique value of $\alpha$ such that $H_\alpha(M) \in (0,\infty)$. Put 
+\[\alpha_0(M) = \sup_{\beta>0} \obj{ H_\beta(M) = +\infty }\]
+or alternatively
+\[\alpha_0(M) = \inf_{\beta>0} \obj{ H_\beta(M) = 0 }\]
+
+\noindent\textbf{Definition}\hfill\\
+Thus the Hausd\"orf dimensionality is defined as 
+\[d_H(M) \defn \alpha_0(M)\]
+
+In fact $H_\alpha$ defines a measure on Borel sets of $(X, d)$. It coincides with the Lebesgue measure $dx^n$ if $\alpha = n$.
+
+% subsection hausdorf_dimensionality (end)
+
+% section lecture_9 (end)
+
+\section{Lecture \# 10} % (fold)
+\label{sec:lecture_10}
+
+Consider a sample $\brac{X_k}_{k=1}^n$ of iid random variables distributed according to $F(x)$. Let $X_{(n)} \defn \max_{k=1,\ldots,n} X_k$. Using the inversion method the uniform variables are defined as $X_k = F^{-1}(U_k)$. Thus $\brac{U_k}_{k=1}^n\sim \mathcal{U}\clo{0,1}$.
+
+Using Pike's theorem
+\[U_{(n)} = 1 - \frac{e_{n+1}}{n+1}\brac{1+O(\frac{1}{\sqrt{n+1}})}\] with $e_{n+1}\sim\text{exp}(1)$.
+
+Then we found $F^{-1}(1-z)$ when $z\to 0$.
+
+Cauchy distribution:
+\begin{align*}
+	p_X(x) &= \frac{1}{\pi(1+x^2)} \\
+	F(x) &= \frac{1}{2} + \frac{1}{\pi} \text{arctg}(x) \\
+	F^{-1}(y) &= \text{tg}\big(\pi (y-\frac{1}{2}) \big) \\
+\end{align*}
+
+Now \begin{align*}
+	F^{-1}(1-z)
+	& = \text{tg}\big(\pi (\frac{1}{2}-z) \big)\\
+	& = \frac{\sin(\frac{\pi}{2} - \pi z)}{\cos(\frac{\pi}{2} - \pi z)}\\
+	& = \frac{\cos(\pi z)}{\sin(\pi z)} \sim \frac{1}{\pi z}
+\end{align*}
+thus 
+\[X_{(n)} = F^{-1}\big( 1 - (1-U_{(n)}) \big) = \approx \frac{n+1}{\pi e_{n+1}}\]
+
+Thus 
+\[\lim_{n\to \infty}\Pr\big( \frac{\pi}{n}\max_{k=1,\ldots,n}X_k < x \big) = \Pr\big(\frac{1}{e_{n+1}} < x\big) = e^{-\frac{1}{x}} \approx 1-\frac{1}{x}\]
+
+Further consider
+\[S_n = \frac{1}{n}\sum_{k=1}X_k\]
+then using the characteristic function we get $F_{S_n}(x) \sim \text{Cauchy}$, whence the sample mean value of Cauchy distributed random variates is dominated by the maximum value.
+
+\subsection{Subgaussain random variables} % (fold)
+\label{sub:subgaussain_random_variables}
+
+
+Consider $\brac{Y_i}_{i=1}^n$  independent with $\Ex Y_i = 0$ and $\Ex Y_i^2 = 1$, then
+\[\Pr\brac{ \frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i > x } \to \frac{1}{\sqrt{2\pi}} \int_x^\infty e^{-\frac{u^2}{2}}du \]
+
+However
+\begin{align*}
+	\frac{1}{\sqrt{2\pi}} \int_x^\infty e^{-\frac{u^2}{2}}du = \frac{1}{\sqrt{2\pi}} \int_0^\infty e^{-\frac{(u+x)^2}{2}}du \leq \frac{e^{-\frac{x^2}{2}}}{2}
+\end{align*}
+for some $n\geq n_0(x)$.
+
+Consider independent $\brac{Y_i}_{i=1}^n$ such that they are subgaussian: $\exists \sigma^2 > 0$ with \[\Ex\big( e^{\lambda Y_i} \big) \leq \text{exp}\big( \frac{\sigma^2 \lambda^2}{2} \big)\]
+then 
+\[\Pr\brac{ \frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i > x }\leq e^{-\frac{x^2}{2}}\]
+
+Indeed using Chernoff's inequality
+\[\Pr\brac{\xi>\epsilon}\leq \inf_{\lambda>0} \Ex\exp\brac{\lambda\xi - \lambda\epsilon}\]
+
+we get
+\[\Pr\brac{\frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i>\epsilon}\leq \inf_{\lambda>0} \exp\brac{ - \lambda\epsilon} \Ex\exp\brac{\lambda\frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i}\]
+
+since $Y_i$ is subgaussian, we have by the independence
+\[\Ex\exp\brac{\lambda\frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i} = 
+\prod_{i=1}^n \Ex\exp\brac{\frac{\lambda}{\sqrt{n}} Y_i} \leq 
+\text{exp}\big( n \frac{\sigma^2 \lambda^2}{2n} \big)
+\]
+
+whence, minimizing
+\[\inf_{\lambda>0} \Ex\exp\brac{\lambda\frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i} \leq \ldots\]
+and thus $\lambda = \frac{x}{\sigma^2}$
+
+\noindent\textbf{H\"oefding inequality}\hfill\\
+Consider a random variable $\xi$ with $\Ex \xi = 0$ and $\xi\ni\clo{a,b}$ almost surely.
+\[\Ex\brac{\lambda \xi}\leq \exp\big( \frac{\lambda^2(b-a)^2}{8} \big)\]
+
+Indeed, put
+\[\phi(\lambda) = \log \Ex\big(\lambda \xi\big) = \log \int_a^b e^{\lambda x} p(x) dx\]
+
+Differentiating with respect to $\lambda$:
+\[\phi'(\lambda) = \frac{\int_a^b x e^{\lambda x} p(x) dx}{\int_a^b e^{\lambda x} p(x) dx}\]
+
+and 
+\[\phi''(\lambda) = \frac{\int_a^b x^2 e^{\lambda x} p(x) dx}{\int_a^b e^{\lambda x} p(x) dx} - \bigg( \frac{\int_a^b x e^{\lambda x} p(x) dx}{\int_a^b e^{\lambda x} p(x) dx} \bigg)^2\]
+
+Notice that
+\[f(x) = \frac{\int_a^b e^{\lambda x} p(x) dx}{\int_a^b e^{\lambda x} p(x) dx}\]
+
+is a density function of a random variable $\eta\in \clo{a,b}$. Furthermore $\Ex \eta = \phi'(\lambda)$ and $\Var \eta^2 = \phi''(\lambda)$. The second moment is given by
+\[\Ex \eta^2 = \phi''(\lambda) + \big(\phi'(\lambda)\big)^2\]
+
+Now
+\[\bigg(\eta - \frac{b-a}{2}\bigg)^2 \leq \bigg(\frac{b-a}{2}\bigg)^2\]
+
+whence 
+\[\phi''(\lambda) \leq \bigg(\frac{b-a}{2}\bigg)^2 \]
+
+integrating $\phi''$ twice over $\clo{0,\lambda}$ yields
+\[\phi(\lambda) \leq \frac{\lambda^2}{2}\bigg(\frac{b-a}{2}\bigg)^2\]
+
+which implies that $\xi$ is subgaussian.
+
+% subsection subgaussain_random_variables (end)
+
+\subsection{Estimation} % (fold)
+\label{sub:estimation}
+
+Consider $\brac{\xi_i}_{i=1}^n$ iid, and let $Y_i = \mu + \xi_i$, $\mu\in \Real$ -- unknown. Let $p_\xi(x)$ be the density function of $\xi$.
+
+The joint density of observed $\brac{Y_i}_{k=1}^n$ is 
+\[\prod_{i=1}^n p_\xi(y_i - \mu)\]
+
+Suppose $p_0(x)$ is the true unknown density of $Y_i$ which we wish to approximate with a parametric family of distributions.
+
+The empirical CDF is given by
+\[\hat{F}_n(y) = \frac{1}{n}\sum_{k=1}^n 1_{\ploc{-\infty, y}}(y_i)\]
+
+use a generalised function to compute a generalised derivative of the simple step function $\hat{F}_n$:
+\[ \hat{p}(y) = \frac{1}{n} \sum_{k=1}^n \delta_y(y_i) \]
+
+% a linera operator over the space of functions with finite support
+
+The $\delta$ method, the method of moments
+\[M(p_0) = \int_{-\infty}^\infty x p_0(x) dx\]
+
+In general we wish to estimate some $\Phi(p_0)$. With this method we do this by
+\[\hat{\Phi}\big((y_i)_{i=1}^n\big) = \Phi\big(\hat{p}(\cdot)\big)\]
+
+Examples
+\begin{itemize}
+	\item $M(p_0)$: $\hat{M} = \frac{1}{n}\sum_{k=1}^n y_k$;
+	\item $D(p_0)$: $\hat{D} = \frac{1}{n}\sum_{k=1}^n y_k^2 - \big(\frac{1}{n}\sum_{k=1}^n y_k\big)^2$;
+	\item $\phi(p_0) = \Ex_{p_0} e^{is\xi}$: $\hat{\phi} = \frac{1}{n}\sum_{k=1}^n e^{isy_k}$;
+	\item $Q_\alpha(p_0)$ -- quantile: $\hat{Q}_\alpha$ is defined as $\abs{\obj{\induc{k=1,\ldots,n} y_k \leq \hat{Q}_\alpha}} = \floor{n\alpha}$.
+\end{itemize}
+
+In order to understand how well $p_0$ is approximated, we need a metric on the density functions $d$. With this metric we find
+\[\theta^*(p_0) \defn \text{argmin}_{\theta \in\Theta} d\Big(p_0, p(\cdot,\theta)\Big) \]
+
+The list of possible metrics: \begin{description}
+	\item[Covariance distance]\hfill \\
+	\[D_c(f,g)\defn \sup_{A\in \borel{\Real}} \abs{\int_A f dx - \int_A g dx}\]
+	it is not employed much in estimation, since even using Scheffe's theorem, it is hard to use.
+	For the empirical density we have
+	\[D_c(\hat{p}, p(\cdot,\theta)) = \frac{1}{2} \int \abs{\hat{p} - p(\cdot,\theta)}dx = \frac{1}{2}\]
+	\item[Kullback-Leibler]\hfill \\
+	\[D_k(f,g) = \int f \log \frac{g}{f} dx\]
+	it is used even though it is not in fact a metric due to asymmetry.
+	It is easily calculated on the observed empirical data.
+	Suppose $Y-i$ are iid with $p_0$ -- the true density, and let $p_1$ be an estimate, then $D_k(p_0^n, p_1^n) = nD_k(p_0,p_1)$.
+
+\end{description}
+
+\noindent\textbf{Scheffe's theorem}:
+\[D_c(f,g) = \frac{1}{2} = \int \abs{f-g}dx\]
+Indeed suppose $A_0 = \obj{ f\leq g }$. Then
+\[D_c(f,g)\geq \int_{A_0} f-g dx\]
+However (correction is needed.)
+\[\int \abs{f-g} dx = \int_{A_0} f-g dx - \int_{A_0^c} g-f dx = \int_{A_0} f-g dx  - \int_{A_0} -f+g dx = 2\int_{A_0} f-g dx \]
+Thus 
+\[D_c(f,g)\leq \frac{1}{2} \int \abs{f-g} dx \]
+
+Conversely for any measurable $A$ we have $A = (A\cap A_0) \cup (A\cap A_0^c)$, whence
+\[\abs{\int_A f-g dx} = \abs{\int_{A\cap A_0} f-g dx + \int_{A\cap A_0^c} f-g dx} = \abs{\int_{A\cap A_0} f-g dx - \int_{A\cap A_0^c} g-f dx}\]
+
+thus 
+\[\abs{\int_A f-g dx} \leq \max\obj{ \int_{A\cap A_0} f-g dx, \int_{A\cap A_0^c} g-f dx } \leq \ldots\]
+
+however
+\[\ldots \leq \max\obj{ \int_{A_0} f-g dx, \int_{A_0^c} g-f dx } \leq \int_{A_0} f-g dx  = \frac{1}{2}\int \abs{f-g} dx\]
+
+\noindent\textbf{Pinsker inequality}\hfill \\
+\[2 D_c(f,g) \leq D_k(f,g)\]
+
+next time...
+
+% subsection estimation (end)
+
+% section lecture_10 (end)
+
+\section{Lecture \# 11} % (fold)
+\label{sec:lecture_11}
+
+Multifractal analysis
+
+The definition of $\text{dim}(A)$.
+\begin{description}
+	\item[Box dimensionality] For a covering $(S_k)$ of $A$ with $\text{diam}(S)\leq \epsilon$:
+	\[A \subseteq \sum_{k=1}^{N^*_\epsilon(A)} S_k \]
+	where $N^*_\epsilon(A)$ is the number of templates $S_k$ in the most efficient covering of $A$ with templates of diameter $\epsilon$.
+	So $\text{dim}_B(A) = \lim_{\epsilon \to 0} \frac{\log N^*_\epsilon(A)}{-\log \epsilon}$
+	\item[Hausdorf] The Hausdorf outer-measure on $\mathcal{P}(\Xcal)$
+	\[H_\alpha(A) = \lim_{\epsilon\downarrow 0} \inf \sum_k \text{diam}(S_k)^\alpha\]
+	Indeed, $H_\alpha$ is an outer measure, since sub-additivity is due to $\inf$: \[H_\alpha(A\cup B) \geq H_\alpha(A)+H_\alpha(B)\]
+	The definition of Hausdorff dimensionality is
+	$\text{dim}_H(A) = \sup\big\{\big. \alpha\geq 0\big.\big\rvert H_\alpha(A) > 0 \big.\big\}$
+\end{description}
+
+For any $A\subseteq \Xcal$ the Hausdorff dimensionality is not greater than the Box dimensionality, due to templates in $H$ being arbitrary.
+
+Suppose $\alpha = \text{dim}_B(A)$ and consider $H_\alpha(A)$ for the covering in Box dimensionality:
+\[\inf_{*} \sum_n \text{diam}(S_n)^\alpha \leq \sum_k \text{diam}(S_k)^\alpha = \sum_k \epsilon^\alpha = N^*_\epsilon(A) \epsilon^\alpha\]
+where the infimum is taken over the coverings of diameter at most $\epsilon$.
+
+On the other hand $\alpha = \text{dim}_B(A)$:
+\[\alpha = \lim_{\epsilon\to 0}\frac{\log N^*_\epsilon(A)}{-\log \epsilon}\]
+whence $\log N^*_\epsilon(A) = -\alpha \big(\log \epsilon + o(1)\big)$
+and
+\[N^*_\epsilon(A) = \epsilon^{-\alpha}e^{-\alpha o(1)}\]
+
+thereore
+\[H_\alpha(A) = \lim_{\epsilon} \inf_{*} \sum_n \text{diam}(S_n)^\alpha \leq \lim_{\epsilon} \epsilon^{-\alpha}e^{-\alpha o(1)} \epsilon^\alpha \]
+
+
+\noindent\textbf{Frostman's lemma}\hfill\\
+Consider a metric space $(X,d)$ with a finite measure $\mu$ on $\mathcal{B}(X)$. Let $M\subseteq X$ be such that $\mu(M) > 0$. Suppose $\alpha\geq 0$ is such that $\mu(S) \leq c \text{diam}(S)^\alpha$ for any measurable template $S\subseteq M$ with sufficiently small diameter. Then $H_\alpha(M)>0$ implies that $\text{dim}_H(M) \geq \alpha$.
+
+Indeed, consider the sum for this $\alpha$:
+\[\sum_n \text{diam}(S_n)^\alpha \geq \sum_k \frac{1}{c} \mu(S_k) \geq \frac{1}{c} \mu(M)\]
+where the sum is taken over members of a covering of diameter at most $\epsilon$. Thus
+\[H_\alpha(M) = \lim_{\epsilon\to 0}\inf_* \sum_n \text{diam}(S_n)^\alpha \geq \frac{1}{c} \mu(M)\]
+whence by definition of $\dim_H(M)$ it is true that $\dim_H(M) \geq \alpha$.
+
+
+Consider tha box dimensionality of a cantor set $K$.
+Choose $\epsilon = 3^{-n}$ whence $n=-\log_3 \epsilon$. Then $N_\epsilon(K) = 2^n$ and $N_\epsilon^*(K) \leq 2^n = \epsilon^{-\log_3 2}$. Thus
+\[\text{dim}_H(K) \leq \text{dim}_B(K) = \lim_{\epsilon\to 0}\frac{\ln N_\epsilon^*(K)}{-\ln \epsilon}\leq \log_3 2 < 1\]
+
+But for $\mu_\infty$ -- the measure on the cantor set, we have 
+\[\mu_\infty(S_k) \leq 2^{-n} = \text{diam}(S_k)^{\log_3 2}\]
+
+\subsection{Multifractals} % (fold)
+\label{sub:multifractals}
+
+Consider a measure $\mu$ on $(\Xcal, d)$. It has singularity of order $\alpha$ at $x\in \Xcal$ with $x\in \{\mu(S)>0\}$ if for any $\epsilon>0$
+\[\mu(B_\epsilon(x)) \overset{\text{asy}}{\sim} \epsilon^\alpha\]
+where $B_\epsilon(x) = \obj{\induc{y\in \Xcal}d(x,y)\leq\epsilon}$ is a closed ball in $(\Xcal, d)$.
+
+Let $(\Omega, \Tcal)$ be a metrizable topological space and $\mu$ a finite measure on $\big(\Omega, \borel(\Omega)\big)$. Then for all measurable $B$ and every $\epsilon>0$ there exist $F$ closed and $G$ open in $(\Omega, \Tcal)$ with $F\subseteq B \subseteq G$ such that $\mu(G\setminus F) < \epsilon$.
+
+A multifractal spectrum is a function $f$ such that 
+\[f(\alpha) = \text{dim}_H\Big(\big\{\big. x\in \text{supp}\mu\big.\big\rvert \big.\big\} \mu \text{ has singularity order } \alpha \text{ at } x\Big)\]
+
+For any covering $(S_k)$ of the support of $\mu$ with $\text{diam}(S_k)\leq \epsilon$ let
+\[R_{\mu,\epsilon}(q) = \inf_* \sum_k \big(\mu(S_k)\big)^q\]
+The R\'enyi exponent is $\tau_\mu(q)$ defined as follows:
+\[\tau_\mu(q) = \lim_{\epsilon\to 0} \frac{\log R_{\mu,\epsilon}(q) }{\log \epsilon}\]
+The R\'enyi exponent could be estimated numerically, in contrast to the multifractal spectrum (if the measure is given approximately as a set of atomic masses).
+
+The good news is that the spectrum and the exponent are related.
+
+An observation: for $R_{\mu,\epsilon}(q)$ there is the following estimate (using the Box dimensionality templates) for ``good'' sets is
+\begin{align*}
+	R_{\mu,\epsilon}(q)
+	&= \inf_* \sum_k \big(\mu(S_k)\big)^q \\
+	&\approx \sum_\alpha \sum_k \mu(S_k)^{\alpha q} \\
+	&\approx \sum_\alpha \epsilon^{\alpha q} N^*_\epsilon(A_\alpha) \\
+	&\approx \sum_\alpha \epsilon^{\alpha q - \text{dim}_B(A_\alpha)}\\
+	&\approx \sum_\alpha \epsilon^{\alpha q - f(\alpha)}
+\end{align*}
+where $A_\alpha = \Big\{\Big. \Big.\Big\rvert \Big.\Big\}$
+
+Now approximately
+\[\tau_\mu(q) = \lim_{\epsilon\to0} \frac{\ln \sum_\alpha \epsilon^{\alpha q - f(\alpha)}}{\ln \epsilon} = \min_\alpha \big( \alpha q - f(\alpha) \big)\]
+the Legendre transform of $f(\cdot)$. Thus multifractal spectrum is recovered from
+\[f^*(\alpha) = \min_q \Big( \alpha q - \tau_\mu(q) \Big)\]
+The R\'enyi exponent $\tau_\mu(q)$ is convex, since it is defined as a lower envelope.
+
+It is possible to say that for any arbitrary function $f$ sufficiently well-behaved the function
+\[f^*(q) = \min_\alpha\big(\alpha q - f(\alpha)\big)\]
+is convex (?).
+
+Thus for any $\alpha$ and $q$ we have $f_\mu(\alpha)\leq \alpha q - \tau(q)$ or $f_\mu(\alpha) + \tau(q)\leq \alpha q$, which is symmetric. Thus
+\[f(\alpha)\leq f^*(\alpha) \defn \min_q \Big( \alpha q - \tau_\mu(q) \Big)\]
+
+% were $f(\alpha)$ convex, $f^*(\alpha) = f(\alpha)$.
+For what $q$ is the minimum attained in the definition of $f^*(\alpha)$? First order conditions imply $\alpha - \tau_\mu'(q) = 0$ provided the derivative exists. Using the symmetric condition above we get $f'(\alpha) = q$, whence it follows that the derivatives of $\tau$ and $f$ are mutually inverse functions.
+
+The Legendre transform classically is defined as the first integral of the inverse of the (monotonous) derivative of a convex function.
+
+% subsection multifractals (end)
+
+% section lecture_11 (end)
+
+\section{Lecture \# 12} % (fold)
+\label{sec:lecture_12}
+
+Distances in statistics:
+\begin{description}
+	\item[Total varoation] \[D(p,q) = \sup_A\Big\lvert \int_A p dx -  \int_a q dx \Big\rvert\]
+	\item[Total varoation] \[D(p,q) = \frac{1}{2}\int|p-q| dx\]
+	\item[Kullback-Leibler] \[KL(p,q) = \int p\log\frac{p}{q} dx \]
+	if the random variables $(\xi_k)_{k=1}^n\sim p$ and $(\eta_k)_{k=1}^n\sim q$ are each iid then the KL devergence is $KL(p^{(n)},q^{(n)}) = n KL(p,q)$
+\end{description}
+
+Let's show that
+\[K(p,q)\geq 2 D^2(p,q)\]
+Put $A_0 = \{ p \geq q \}$ and $A_0^c = \{p < q\}$. Then 
+\[D(p,q) = \frac{1}{2}\int_{A_0} p-q dx + \frac{1}{2}\int_{A_0^c} q - p dx \]
+using the fact that $p$ and $q$ are densities of $P$ and $Q$ respectively:
+\[D(p,q) = \int_{A_0} p-q dx = P(A_0) - Q(A_0)\]
+
+Jensen's inequality for a convex $f$ yields
+\[\Ex f(X) \geq f\big(\Ex X\big)\]
+
+Since $f(x) = -\log x$ is convex the following is true:
+\[KL(p,q) = \int_{A_0} -\log\frac{q}{p} p dx + \int_{A_0^c} -\log\frac{q}{p} p dx \]
+\[\ldots = P(A_0) \int_{A_0} -\log\frac{q}{p} \frac{p}{P(A_0)} dx + P(A_0^c) \int_{A_0^c} -\log\frac{q}{p} \frac{p}{P(A_0^c)} dx \]
+whence using Jensen's
+\[KL(p,q) \geq  -P(A_0) \log \int_{A_0}\frac{q}{p} \frac{p}{P(A_0)} dx - P(A_0^c) \log \int_{A_0^c} \frac{q}{p} \frac{p}{P(A_0^c)} dx\]
+
+reducing
+\[\ldots \geq -P(A_0) \log \int_{A_0}\frac{q}{P(A_0)} dx -P(A_0^c) \log \int_{A_0^c} \frac{q}{P(A_0^c)} dx \]
+
+yields
+\[KL(p,q) \geq -P(A_0) \log \frac{Q(A_0)}{P(A_0)} -P(A_0^c) \log \frac{Q(A_0^c)}{P(A_0^c)} \]
+
+Putting $\alpha = P(A_0)$ and $\beta = Q(A_0)$
+\[KL(p,q) \geq -\alpha \log \frac{\beta}{\alpha} -(1-\alpha) \log \frac{1-\beta}{1-\alpha} = \alpha \log \frac{\alpha}{\beta} + (1-\alpha) \log \frac{1-\alpha}{1-\beta} \]
+
+Finally, consider for an arbitrary $\lambda$
+\[f(\beta) = \alpha \log \frac{\alpha}{\beta} + (1-\alpha) \log \frac{1-\alpha}{1-\beta} - \lambda (\alpha - \beta)^2\]
+
+differentiating gives:
+\[f'(\beta) = -\frac{\alpha}{\beta} + \frac{1-\alpha}{1-\beta} + 2\lambda (\alpha - \beta) = (\beta - \alpha)\Big(\frac{1}{(1-\beta)\beta} - 2\lambda\Big)\]
+
+when $\lambda < 2$ we have
+\[\frac{1}{(1-\beta)\beta} - 2\lambda > 0\]
+implying that $f'(\beta) = 0$ for $\alpha=\beta$.
+Therefore in the extremum we have $f(\alpha) = 0$ and $f(\beta)\geq f(\alpha) = 0$ for all $\beta\in [0,1]$, since $f(0)=f(1)=+\infty$.
+
+\subsection{Hellinger's distance} % (fold)
+\label{sub:hellinger_s_distance}
+
+Consider the total variation distance
+\[D(p,q) = \frac{1}{2}\int |p-q| dx = \frac{1}{2}\int (\sqrt{p}-\sqrt{q})(\sqrt{p}+\sqrt{q}) dx\]
+whence using the Cauchy-Schwartz-Bunyakovski inequality one gets
+\[D(p,q) \leq \frac{1}{2}\Big(\int (\sqrt{p}-\sqrt{q})^2dx\Big)^\frac{1}{2}\Big(\int (\sqrt{p}+\sqrt{q})^2dx\Big)^\frac{1}{2}\]
+since $(a+b)^2\leq 2 a^2 + 2 b^2$ we have
+\[\int (\sqrt{p}+\sqrt{q})^2dx \leq \int 2p+2q dx = 2 \int p+q dx = 4\]
+Therefore
+\[D(p,q) \leq \Big(\int (\sqrt{p}-\sqrt{q})^2dx\Big)^\frac{1}{2} \frac{1}{2}\Big(4\Big)^\frac{1}{2}\]
+
+% subsection hellinger_s_distance (end)
+
+\subsection{$\chi^2$-distance} % (fold)
+\label{sub:chi2_distance}
+
+The $\chi^2$ distance is an approximation of the Kullback-Leibler distance when $p\approx q$.
+
+Consider the Taylor expansion of $\log(1+x)$. Note that 
+\[\frac{d^k}{dx^k} \log(1+x) = -(-1)^kk!\frac{x^{-k}}{k}\]
+whence Taylor-expanding around $a=0$ we get
+\[\log(1+x) = \log(1) + \sum_{k\geq1} \frac{1}{k!}\bigg.\frac{d^k}{dx^k} \log(1+a)\bigg\rvert_{a=0} (x-0)^k = \sum_{k\geq1} \frac{-(-1)^k}{k!}k!\frac{x^k}{k} = -\sum_{k\geq1} \frac{(-1)^kx^k}{k}\]
+truncating at the second term:
+\[\log(1+x) = x - \frac{x^2}{2} + o(x^2) \]
+whence $\log(1+x)\approx x-\frac{x^2}{2}$ for sufficiently small $x$ we get.
+Therefore we get
+\begin{align*}
+	KL(p,q) &= -\int p\log\frac{q}{p}dx = -\int p \log \Big(1+\big(\frac{q}{p}-1\big)\Big) dx \\
+	& \approx -\int p \Big(\big(\frac{q}{p}-1\big) - \frac{1}{2} \big(\frac{q}{p}-1\big)^2 \Big) dx = -\int (q-p) \Big(1 - \frac{1}{2} \big(\frac{q}{p}-1\big) \Big) dx \\
+	& = -\int (q-p) dx - \int (q-p) (-1) \frac{1}{2} \frac{q-p}{p} dx\\
+	& = \frac{1}{2}\int \frac{|q-p|^2}{p} dx
+\end{align*}
+Therefore for sufficiently close densities $p$ and $q$ the Kullback-Leibler divergence is well approximated by the $\chi^2$ distance
+\[KL(p,q) \approx \frac{1}{2}\int \frac{|p-q|^2}{p}dx\]
+
+% subsection chi2_distance (end)
+
+\subsection{The maximum likelihood} % (fold)
+\label{sub:the_maximum_likelihood}
+
+Suppose there is a sample $\big(Y_k\big)_{k=1}^n\sim p^{(n)}_0$ -- the true density. Consider a parametric family $p^{(n)}(x;\theta)$ for $\theta\in \Theta$.
+We wish to find 
+\[\theta^*(p_0)=\text{argmin}_{\theta\in \Theta} KL(p^{(n)}_0, p^{(n)}(\cdot;\theta))\]
+
+However minimizing the Kullback-Leibler divergence is equivalent to 
+\[\theta^*(p_0)=\text{argmax}_{\theta\in \Theta} \int p^{(n)}_0 \log p^{(n)}(\cdot;\theta) dx^n\]
+
+Using the empirical density to estimate $\int p^{(n)}_0 \log p^{(n)}(\cdot;\theta) dx^n$ we get the likelihood
+\[\hat{L} = \int \delta(x-Y^{(n)}) \log p^{(n)}(\cdot;\theta) dx^n = \log p^{(n)}(Y^{(n)};\theta)\]
+whence 
+\[\hat{\theta}(Y^{(n)}) = \text{argmax}_{\theta\in \Theta} \log p^{(n)}(Y^{(n)};\theta)\]
+
+if $Y^{(n)}$ is iid and $Y_i = \theta + \epsilon_i$ with $\epsilon_i\sim p_\epsilon$ iid with $\Ex \epsilon_i = 0$ and $\Ex \epsilon_i^2 = \sigma^2$, then
+\[\hat{L} = \sum_{i=1}^n\log p_\epsilon(Y_i-\theta)\]
+Using the law of large numbers we get
+\[\frac{1}{n}\hat{L} \to \Ex_{p_0}\log p_\epsilon(Y_1-\theta)\]
+whence
+\[\hat{\theta}_n \to \text{argmax}_{\theta}\Ex_{p_0}\log p_\epsilon(Y_1-\theta) = \text{argmin}_{\theta} KL\Big(p_0,p_\epsilon(\cdot - \theta)\Big)\]
+
+% subsection the_maximum_likelihood (end)
+
+\subsection{Properties of MLE} % (fold)
+\label{sub:properties_of_mle}
+Illustrated for the case of a simple constant and spread estimation.
+
+If $\epsilon\sim \Ncal(0,\sigma^2)$, then 
+\[\hat{L} = -\frac{1}{2\sigma^2}\sum_{i=1}^n - \frac{n}{2}\log(2\pi \sigma^2)\]
+implying that $\hat{\theta} = \frac{1}{n}\sum_{i=1}^n Y_i$.
+If $\epsilon$ are iid with $D(0,\sigma^2)$ then the ML estimate is unbiased $\Ex \hat{\theta} = \theta$.
+Its variance is $\Ex (\hat{\theta}-\theta)^2 = \frac{\sigma^2}{n}$.
+
+using the Central Limit theorem we get
+\[\Pr\big(\sqrt{n} \frac{\hat{\theta}-\theta}{\sigma} \geq z\big)\to \int_z^\infty \frac{1}{\sqrt{2\pi}} e^{-\frac{s^2}{2}}ds \]
+
+The sample variance is estimated using $\hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^n(Y_i - \hat{\theta})^2$ whence
+\[\hat{\sigma}^2 = \sigma^2 + \frac{1}{n}\sum_{i=1}^n (\epsilon_i^2 - \sigma^2) - \frac{1}{n} \sum_{i=1}^n \epsilon_i^2\]
+Therefore
+\[\Ex \hat{\sigma}^2 = \sigma^2 - \frac{1}{n}\sigma^2 \]
+and the estimate is biased.
+
+However the estimates $\hat{\sigma}^2$ and $\hat{\theta}$ are independent. It is based on the fact that for Gaussian random variables only lack of correlation implies independence.
+\begin{align*}
+	\Ex (\hat{\theta}-\theta) (Y_i - \hat{\theta})
+	&= \Ex (\hat{\theta}-\theta) \big(\epsilon_i + (\theta - \hat{\theta}) \big) \\
+	&= \Ex (\hat{\theta}-\theta)\epsilon_i - \Ex (\hat{\theta}-\theta)^2 \\
+	&= \Ex \Big(\frac{1}{n}\sum_{j=1}^n Y_j-\theta\Big)\epsilon_i - \frac{1}{n}\sigma^2 \\
+	&= \frac{1}{n}\sum_{j=1}^n \Ex (Y_j - \theta)\epsilon_i - \frac{1}{n}\sigma^2 \\
+	&= \frac{1}{n}\sum_{j=1}^n \Ex \epsilon_j\epsilon_i - \frac{1}{n}\sigma^2 \\
+	&= \frac{1}{n}\sigma^2 - \frac{1}{n}\sigma^2 = 0
+\end{align*}
+
+% subsection properties_of_mle (end)
+
+% section lecture_12 (end)
 
 \end{document}
