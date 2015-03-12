@@ -923,8 +923,7 @@ First of all $\Ex W_n(t) = 0$ and the covariance is given by
 \sum^{\floor{n t}\vee \floor{n s}}_{i=1} \Ex {(\xi_i - 1)}^2 = 
 \frac{1}{n} \floor{n t}\vee \floor{n s} = \floor{t}\vee \floor{s} + o(\frac{1}{n})\]
 
-Thus from the Central Limit Theorem on $t\in 
-clo{0,1}$
+Thus from the Central Limit Theorem on $t\in \clo{0,1}$
 \[W_n(t)\overset{\Dcal}{\to} W(t)\,\text{and}\, \frac{1}{\sqrt{n}} \sum_{i=1}^k (\xi_j-1) - \frac{t}{n\sqrt{n}} \sum_{j=1}^{n+1} (\xi_j-1) \to W(t)-tW(1)\]
 
 Since 
@@ -1051,7 +1050,7 @@ And $m_n\approx \sqrt{ 2 \log n}$.
 Laplace distribution
 \[F(x) = 1-e^{-\frac{x}{2}} 1_{x\geq 0} + e^{\frac{x}{2}} 1_{x\leq 0}\]
 
-The inverse is given for $y\in clo{\frac{1}{2},1}$ by
+The inverse is given for $y\in \clo{\frac{1}{2},1}$ by
 \[ F^{-1}(y) = - \log 2(1-y)\]
 
 Since $\max_{i=1}^n Y_i \sim \log\frac{n+1}{2\xi_{n+1}}$ 
@@ -1146,6 +1145,10 @@ For two measures $Q,P$ on the same space, if $Q<<P$ then
 \[\text{KL}\big( Q \lvert \rvert P\big) = \int \frac{dQ}{dP} \ln \frac{dQ}{dP} dP\]
 where $\frac{dQ}{dP}$ is the Radon-Nikodym derivative of $Q$ with respect to $P$ :
 \[Q(E) = \int_E \frac{dQ}{dP} dP\]
+
+The Radon-Nikodym derivative of $Q$ with respect to $P$ when $Q,P<<dx$ and $Q<<P$ is
+\[\int_E \frac{q}{p} dP = \int_E \frac{q}{p} p dx = \int_E q dx = \int_E dQ = \int_E \frac{dQ}{dP} dP\]
+whence $\frac{dQ}{dP} = \frac{q}{p}$ $P$-almost surely. (and thus $dx$-almost surely).
 
 So far we have got the following result
 \begin{align*}
@@ -1614,7 +1617,6 @@ The list of possible metrics: \begin{description}
 	it is used even though it is not in fact a metric due to asymmetry.
 	It is easily calculated on the observed empirical data.
 	Suppose $Y-i$ are iid with $p_0$ -- the true density, and let $p_1$ be an estimate, then $D_k(p_0^n, p_1^n) = nD_k(p_0,p_1)$.
-
 \end{description}
 
 \noindent\textbf{Scheffe's theorem}:
@@ -1753,14 +1755,17 @@ The Legendre transform classically is defined as the first integral of the inver
 
 Distances in statistics:
 \begin{description}
-	\item[Total varoation] \[D(p,q) = \sup_A\Big\lvert \int_A p dx -  \int_a q dx \Big\rvert\]
-	\item[Total varoation] \[D(p,q) = \frac{1}{2}\int|p-q| dx\]
-	\item[Kullback-Leibler] \[KL(p,q) = \int p\log\frac{p}{q} dx \]
-	if the random variables $(\xi_k)_{k=1}^n\sim p$ and $(\eta_k)_{k=1}^n\sim q$ are each iid then the KL devergence is $KL(p^{(n)},q^{(n)}) = n KL(p,q)$
+	\item[Total variation] Is defined as the maximal discrepancy of probability measures $Q$ and $P$ (with densities $q$ and $p$ respectively)
+	\[D(p,q) = \sup_A\Big\lvert P(A) -  Q(A) \Big\rvert = \sup_A\Big\lvert \int_A p dx -  \int_A q dx \Big\rvert\]
+	Using Scheffe's equivalent representation \[D(p,q) = \frac{1}{2}\int|p-q| dx\]
+	\item[Kullback-Leibler] Is the relative entropy between $P$ and $Q$:
+	\[ KL(p,q) = \int p \log\frac{p}{q} dx = \int \frac{p}{q}\log\bigg(\frac{p}{q}\bigg) q dx = \text{KL}\big( P \lvert \rvert Q\big)\]
+	if the random variables $(\xi_k)_{k=1}^n\sim p$ and $(\eta_k)_{k=1}^n\sim q$ are each iid then the KL devergence is $KL(p^{(n)},q^{(n)}) = n KL(p,q)$.
+	% \[\text{KL}\big( P \lvert \rvert Q\big) = \int \frac{dP}{dQ} \log \frac{dP}{dQ} dQ =  \int \frac{p}{q} \log \frac{p}{q} q dx\]
 \end{description}
 
-Let's show that
-\[K(p,q)\geq 2 D^2(p,q)\]
+Let's show that (Pinsker's inequality)
+\[K(p,q)\geq 2 D(p,q)\]
 Put $A_0 = \{ p \geq q \}$ and $A_0^c = \{p < q\}$. Then 
 \[D(p,q) = \frac{1}{2}\int_{A_0} p-q dx + \frac{1}{2}\int_{A_0^c} q - p dx \]
 using the fact that $p$ and $q$ are densities of $P$ and $Q$ respectively:
@@ -1862,7 +1867,7 @@ whence
 Illustrated for the case of a simple constant and spread estimation.
 
 If $\epsilon\sim \Ncal(0,\sigma^2)$, then 
-\[\hat{L} = -\frac{1}{2\sigma^2}\sum_{i=1}^n - \frac{n}{2}\log(2\pi \sigma^2)\]
+\[\hat{L} = -\frac{1}{2\sigma^2}\sum_{i=1}^n\big(Y_i-\theta\big)^2 - \frac{n}{2}\log(2\pi \sigma^2)\]
 implying that $\hat{\theta} = \frac{1}{n}\sum_{i=1}^n Y_i$.
 If $\epsilon$ are iid with $D(0,\sigma^2)$ then the ML estimate is unbiased $\Ex \hat{\theta} = \theta$.
 Its variance is $\Ex (\hat{\theta}-\theta)^2 = \frac{\sigma^2}{n}$.
