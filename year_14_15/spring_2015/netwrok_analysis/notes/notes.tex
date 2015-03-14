@@ -433,7 +433,7 @@ High centrality means direct contact with many other nodes. Low centrality degre
 
 Calculate how close the node is to any other vertex in the system. This gives us the closeness centrality metric
 \[C_C(u) \defn \frac{1}{\sum_{v\in V} d(u,v)}\]
-It can be normalise by $\tfrac{}{\abs{V}-1}$.
+It can be normalise by $\tfrac{1}{\abs{V}-1}$.
 
 Nodes in the centre can quickly interact with all others, have short communication path to others, and minimal number of steps to reach others.
 
@@ -442,7 +442,7 @@ There are problems for disconnected graphs, where infinite distances emerge. In 
 
 The most interesting definition of centrality is betweenness centrality.
 
-Consider the network as a set of interconnected communication hub. The most important nodes are those, which are indispensable for proper network operation. 
+Consider the network as a set of interconnected communication hubs. The most important nodes are those, which are indispensable for proper network operation. 
 
 Consider a graph $G = \brac{V,E}$.
 The betweenness centrality measure of $G$ is defined as follows:
@@ -455,7 +455,7 @@ It is possible to extend the betweenness centrality to edges.
 
 Probability that a communication from $s$ to $t$ will go through $u$ (geodesics) is given by $\frac{\sigma_{st}(u)}{\sigma_{st}}$.
 
-Usage of these measures greatly depends on what is understood by ``cnetrality''.
+Usage of these measures greatly depends on what is understood by ``centrality''.
 
 \subsection{Eigenvector centrality} % (fold)
 \label{sub:eigenvector_centrality}
@@ -465,10 +465,10 @@ Consider a recursive definition of centrality: An important nodes have important
 Let $\brac{I^{t+1}_u}_{u\in V}$ be the importance vector at some iteration $t\geq1$, with components corresponding to each node. Then define the importance as the limit of the following process
 \begin{align*}
 	\sum_{j\in V} A_{ij} I^t_j \to I^{t+1}_i \\
-	\frac{1}{\lambda}\sum_{j\in V} A_{ij} I_j = I_i \\
+	\frac{1}{\lambda}\sum_{j\in V} A_{ij} I_j = I_i
 \end{align*}
 
-Thus if the iteration converge, then they converge to an eigenvector of the adjacency matrix.
+Thus if the iterations converge, then they converge to an eigenvector of the adjacency matrix.
 
 A node with large centrality will be connected with nodes of large centrality. Thus highly important nodes are likely to have highly important neighbours.
 
@@ -497,7 +497,7 @@ In the matrix form:$c = \alpha A\mathbf{1} + A\mathbf{1} c$.
 
 % subsection katz_centrality (end)
 
-\textbf{Centralization} of the whole network is measure of how ``cnetral'' is the most central node in relation to all other vertices.
+\textbf{Centralization} of the whole network is measure of how ``central'' is the most central node in relation to all other vertices.
 
 %% Slide p.~18
 \[C_x(G) \defn \frac{\sum_{v\in V} C_x(\bar{u}_G) - C_x(v) }{\max_H \sum_{v\in V} C_x(\bar{u}_H) - C_x(v)}\]
@@ -530,5 +530,319 @@ It is insightful to compare the centrality measures between each other and see h
 % subsection web_search_algorithms (end)
 
 % section lecture_6 (end)
+
+\section{Lecture \# 7} % (fold)
+\label{sec:lecture_7}
+
+Assortative mixing and structural equivalence.
+\begin{description}
+	\item[Global] average node degree, average clustering coefficient, average path length;
+	\item[local] $\ldots$;
+\end{description}
+
+Nodes $u, v\in V$ are \textbf{strongly} structurally equivalent if they share neighbours: $N^+(u) = N^+(v)$ and $N^-(u) = N^-(v)$. The problem is the connectivity pattern (directions and number of edges) is almost identical, yet $u\in N^-(v)$ and $v\in N^+(u)$.
+
+In adjacency matrices this means that the $u$ and $v$ columns and rows are identical. However this definition is too strict: it requires \textbf{identical} connectivity.
+
+Structural similarity of nodes
+
+\begin{description}
+	\item[Jaccard] \hfill\\
+	For $u,v/in V$ the metric is defined as \[J(v,u) = \frac{\big\lvert N(v) \cap N(v) \big\rvert}{\big\lvert N(v) \cup N(v) \big\rvert}\] It show how much overlap there is between two nodes.
+	\item[Cosine] \hfill\\
+	Defined as the cosine of the angle between the column-vectors $u,v$ of the adjacency matrix $A$:
+	\[\sigma_{uv} = \frac{ A_v'A_u }{\sqrt{ A_v'A_v }\sqrt{ A_u'A_u }}\]
+	\item[Pearson]\hfill\\
+	The straightforward sample correlation of $A_v$ and $A_u$ in the adjacency matrix $A$.
+	\item[Binary adjacency matrix] \hfill\\
+	Then the degree $k_v = \sum_{u\in V} A_{uv} = \sum_{u\in V} A_{uv}^2$. Furthermore $n_{uv}$ -- the number of shared neighbours is given by 
+	\[n_{uv}\sum_{w\in V} A_{uw}A_{wv}\]
+\end{description}
+
+\noindent\textbf{Regular equivalence}\hfill\\
+Two vertices are regularly equivalent if they are equally related to equivalent others.
+
+In terms of role assignment (colouring): nodes of the same colour have neighbours of similar colours. Only special colourings permit this (slide~10).
+
+
+Requires similar patterns in the vertex connectivity .
+
+Recursive definition:
+\[\sigma_{uv} = \alpha \sum_{s,t\in V} A_{us} A_{vt} \sigma_{st} + \delta_{uv} = \alpha \sum_{s\in V} A_{us} \sum_{t\in V} \sigma_{st} A_{tv}' + \delta_{uv}\]
+where $\sigma_{uv}$ is the similarity score. In the matrix notation $\Sigma = \alpha A\Sigma A' + I$.
+
+Another similarity metric
+\[\sigma_{uv} = \sum_{t\in V} A_{ut}\sigma_{tv} + \delta_{uv}\]
+which in the matrix form is $\Sigma = A \Sigma + I$.
+
+Similarity is extremely important!
+
+\subsection{SimRank} % (fold)
+\label{sub:simrank}
+Let $s(u,v)$ be the similarity metric between two nodes, and $i(\cdot)$ be the set of incoming neighbours. Then $s()$ is defined as 
+\[ s(u,v) = \frac{C}{\abs{i(u)}\abs{i(v)}} \sum_{s\in i(u)} \sum_{t\in i(v)} s(s,t)\]
+with $s(u,u)=1$. In the matrix notation
+\[ S = \brac{\frac{C}{k_u k_v}}_{u,v}\odot A' S A\]
+
+Staring the random walks from nodes $u$ and $v$, which follow the edges in the opposite direction (not to each other!), then $S_{uv}$ is the expected number of steps before the walks meet.
+
+% subsection simrank (end)
+
+\subsection{Mixing} % (fold)
+\label{sub:mixing}
+
+Suppose nodes have certain properties, label, colours of whatever.
+Mixing means patterns in connectivity
+\begin{description}
+	\item[Like-to-like] Assortiative mixing: attributes of connected nodes tend to be more similar rather than disconnected;
+	\item[Opposite-to-opposite] Disassortative mixing: the presentce of an edge between vertices makes attributes more likely to have low similarity.
+\end{description}
+
+Mixing is allowed with respect to any attribute, be it observed or latent., or even vertex degree (as in preferential attachment).
+
+How much more often do attributes match across edges than expected at random? The modularity metric
+\[ Q = \frac{m_c-\brkt{m_c}}{m} = \frac{1}{2m}\sum_{u,v\in V} \Big( A_{u,v} - \frac{k_u k_v}{2m} \Big) \delta(c_u,c_v)\]
+where $c:V\to \mathcal{C}$ is the vertex labelling, class or attributes, and $m_c$ -- number of edges with the same attributes, and $\brkt{m_c} =\Ex(\#_c)$.
+
+The term $\frac{k_u k_v}{2m}$ is responsible to capturing the expected number or connections had the graph been random.
+
+\subsubsection{Mixing with scalars} % (fold)
+\label{ssub:mixing_with_scalars}
+
+Suppose $X:V\to \Real$ is a random variable on the vertices. Average and covariance over edges
+\[\brkt{x} = \frac{\sum_{v\in V}k_v x_v}{\sum_{v\in V}k_v} = \frac{\sum_{v\in V}k_v x_v}{2m} = \frac{1}{2m}\sum_{v,u\in V}A_{uv} x_v\]
+
+%%% Missed some slides~19
+% subsubsection mixing_with_scalars (end)
+
+Node degree as an attribute.
+
+Disassortative mixing -- high degree vertices are connected to low degree nodes, yields a start like structure.
+Assortative mixing -- interconnected high degree nodes -- the core, low degree vertices -- periphery,
+
+% subsection mixing (end)
+
+% section lecture_7 (end)
+
+\section{Lecture \# 8} % (fold)
+\label{sec:lecture_8}
+
+Network communities, Graph cliques, k-plex and k-cores.
+
+What might be a good definition of a ``community'' in a graph?
+
+First run a connected component extraction procedure, and then work with each connected component separately.
+
+Main properties of a community \begin{itemize}
+	\item mutuality of connections (ties);
+	\item compactness: reachability in few number of steps;
+	\item High density of edges within the group;
+	\item Separation of a group from other groups.
+\end{itemize}
+
+A clique a complete fully connected subgraph of $G = (V,E)$.
+Every pair of node connected by an edge is a $2$-clique.
+
+A \textbf{maximal} clique is a complete subgraph which cannot be expanded by adding any adjacent node. A \textbf{maximum} clique is the largest possible clique in a given graph. A clique number of a graph is the size of the maximal clique.
+
+algorithms: \begin{itemize}
+	\item finding a maximal clique of a given size $k$ is $O(n^kk^2)$;
+	\item computing a maximum clique is $O(3^\frac{n}{2})$;
+	\item but for sparse graphs finding a max-clique is easier.
+\end{itemize}
+
+Relaxing the definition of a clique, which does not require complete connectivity (like an $\epsilon$-clique?).
+
+Maximum cliques might overlap, and yet might not provide insightful information on the community structure of the graph.
+
+\subsection{Relaxation} % (fold)
+\label{sub:relaxation}
+
+A $k$-\textbf{plex} of size $n$ is a maximal subset of $n$ vertices such that each vertex is connected at least to $n-k$ other in the subset. The minimum degree is not less than $n-k$.
+
+A $k$-\textbf{core} is a maximal subset of vertices such that each node is connected to at least $k$ other vertex in the subset.
+
+% subsection relaxation (end)
+
+A network community is a group of vertices similar to each other.
+
+In community detection nodes are assigned to communities and the main requirement is assignment of a vertex to at most one community.
+
+Similarity based vertex clustering:
+\begin{itemize}
+	\item Jaccard, cosine, Pearson, Euclidean distance (dissimilairty);
+	\item group together vertices with high similarity.
+\end{itemize}
+
+Hierarchical clustering may be used to cluster graphs using the similarity-adjacency matrix.
+\begin{itemize}
+	\item Assign each node to an individual group;
+	\item Find two groups with the highest similarity and merge them:
+		in order to calculate the similarity (aggregate) between groups it is possible to use: \begin{itemize}
+			\item single-linkage (the most similar);
+			\item complete-linkage (the least similar);
+			\item single-linkage (mean similarity between members).
+		\end{itemize}
+	\item Repeat until all nodes have been joined into a single group.
+\end{itemize}
+This results in a dendrogramm of hierarchical clustering.
+
+With a threshold on the similarity, the hierarchical clustering would produce a bunch of non-overlapping clusters.
+
+nodes $\to$ similarity matrix $\to$ data mining.
+
+\subsection{Graph partitioning} % (fold)
+\label{sub:graph_partitioning}
+
+Edges needed to be removed in order to split the graph in to pieces with as tightly connected subsets as possible
+
+
+Graph partitioning is an NP hard problem: \begin{itemize}
+	\item number of way to divide a network of $n$ nodes into two groups: $C^2_n$;
+	\item Partitioning the graph into $k$ non-empty subgroups: Stirling number of the second kind \[\big[\begin{matrix}n\\k\end{matrix}\big]\];
+	\item the number of all possible partitions is given by the Bell number.
+\end{itemize}
+
+\subsubsection{Heuristic approach} % (fold)
+\label{ssub:heuristic_approach}
+
+Focus on edges that connect communities (briges): use edge betweenness defines as the number of shortest paths $\pi_{st}$ through the edge $\epsilon$
+\[C_b(\epsilon) = \sum_{s\neq t} \frac{\pi_{st}(\epsilon)}{\pi_{st}}\]
+Construct communities by progressively removing edges.
+
+\begin{itemize}
+	\item[input] graph $G=(V,E)$;
+	\item[output] dendrogramm;
+	\item[output] Repeat until the set of edge is nonenpty:
+	for all $e\in E$ compute $C_B(e)$ and remove the edge with the largest $C_B(e)$.
+\end{itemize}
+
+Community quality. Compare the fraction of edges within the cluster to expected fraction had edges been distributed at random:
+\[Q = \frac{1}{2m}\sum_{ij} \big(\A_{ij} - \frac{k_ik_j}{2m} \delta_{c_i,c_j}\big)\]
+
+% subsubsection heuristic_approach (end)
+
+% subsection graph_partitioning (end)
+
+% section lecture_8 (end)
+
+\section{lecture \# 9} % (fold)
+\label{sec:lecture_9}
+
+Mid-term = analyse your own friend's network on the 24th of March.
+
+\subsection{graph partitioning algorithms} % (fold)
+\label{sub:graph_partitioning_algorithms}
+
+A community is a group of nodes coupled between each other tighter that with the rest of the world.
+
+We consider only the sparse graphs with $m<<n^2$ (ie. $m = O(n^\frac{1}{2})$). Community detection is NP-hard.
+Properly designed and correct greedy algorithms approximate the true and correct solution. THe approach is recursive top-down ``divide-and-conquer''.
+
+What is the criteria ofthe best partition?\begin{itemize}
+	\item Minimize the ``communication'' between graphs partitions; Gives rise to the \textbf{Min}imum \textbf{cut}, which is not the best, since it could easily cut out singly connected vertices.
+	\item 
+\end{itemize}
+
+Optimization criteria for a graph $G=(V,E)$ with $V = W\uplus U$:
+\begin{description}
+	\item[graph cut] \[\text{cut}(W, U) = \sum_{i\in U}{j \in W}e_{ij}\]
+	\item[Ration cut] \[\frac{\text{cut}(W, U)}{|W|}  + \frac{\text{cut}(W, U)}{|U|} \]
+	\item[Normalised cut] \[\frac{\text{cut}(W, U)}{\text{vol}(W)}  + \frac{\text{cut}(W, U)}{\text{vol}(U)} \]
+	\item[Quotient cut] also known as \emph{Conductance}: \[\frac{\text{cut}(W, U)}{\min\big\{\text{vol}(W),\text{vol}(U)\big\}} \]
+\end{description}
+where the volume $\text{vol}(W) = \sum_{i\in W} \sum_{i\in V} e_{ij} = \sum_{i\in W} \delta_i$;
+
+Using the linear algebra solve the mincut problem (remember Mirkin?).
+
+Optimization methods:
+\begin{itemize}
+	\item Local search algorithms (greedy);
+	\item Spectral graph partitioning;
+	\item Randomized min cut;
+\end{itemize}
+
+% subsection graph_partitioning_algorithms (end)
+
+\subsection{special clustering} % (fold)
+\label{sub:special_clustering}
+
+Suppose we have two sets of node $U$ and $W$ ($U\uplus W = V$) and let $s_v = 2\cdot1_{v\in W}-1$ the indicator vector of being a member of the either class.
+
+The number of edges crossing the partition $U\vert W$:
+\begin{align*}
+	\text{cut}(U,W)
+	&= \frac{1}{4}\sum_{i,j\in V} (s_i - s_j)^2 1_{(i,j)\in E} \\
+	&= \text{summing each edge twice}
+	&= \frac{1}{8}\sum_{i,j\in V} (s_i - s_j)^2 a_{ij} \\
+	&= \frac{1}{4}\sum_{i,j\in V} (s_i^2 + s_j^2 - 2s_i s_j) a_{ij} \\
+	&= \frac{1}{8}\sum_{i\in V} \sum_{j\in V} (s_i^2 + s_j^2) a_{ij} - \frac{1}{4}\sum_{i,j\in V} s_i s_j a_{ij} \\
+	&= \frac{1}{8}\sum_{i\in V} s_i^2 \sum_{j\in V} a_{ij} + \frac{1}{8}\sum_{j\in V} \sum_{i\in V} s_j^2 a_{ij} - \frac{1}{4} \sum_{i,j\in V} s_i s_j a_{ij} \\ 
+	&= \frac{1}{4}\sum_{i\in V} s_i^2 \delta_i - \frac{1}{4} \sum_{i,j\in V} s_i s_j a_{ij} \\
+	&= \frac{1}{4} s'\Delta s - \frac{1}{4} s'As = \frac{1}{4} s'\big(\Delta - A \big)s
+\end{align*}
+where $\Delta$ is a diagonal matrix of vertex degrees: $\Delta_{ii} = \delta_i$ for $i\in V$.
+
+The matrix $\Delta-A$ is called the Laplacian matrix, and it is the discrete version of the Laplacian operator -- second derivative operation. (The finite difference method).
+
+The graph cut problem is to minimize $Q(s) = \frac{s'Ls}{4}$ with respect to $s\in \{-1,1\}^V$ and subject to $\big \lvert \sum_{i\in V}s_i \big\rvert < B$. Unfortunately this problem is that of integer minimization, which is $NP$-hard. With balancing constraint this requires $\frac{n!}{\big(\frac{n}{2}\big)!}$ (shouldn't this be the number of paired brackets?)
+
+Let's solve an approximation -- a relaxed problem:
+consider $s\in [-1,1]^V$ subject to an $L_2$ penalty, $\nrm{s}_2 = |V|$, and $\sum_{j\in V} s_j = 0$. Finally having some optimal $\hat{s}$ project in onto $\{-1,1\}^V$ with $\text{sign}(s_j)$.
+In fact the original problem necessarily solves this one, but not the other way around.
+
+The optimization problem:
+\[\frac{1}{4} x'Lx - \frac{1}{4}\lambda(x'x - |V|) - \frac{1}{2}\mu x'1 \to \min_{x,\mu,\lambda}\]
+The FOC is $\frac{1}{2}Lx - \frac{1}{2} \lambda x - \frac{1}{2}\mu 1 = 0$, $x'1 = 0$ and $x'x=|V|$, while the SOC is $\frac{1}{2}L - \frac{1}{2}\lambda I_V$.
+
+Therefore $Lx = \lambda x + \mu 1$ and $x'Lx - \lambda x'x = 0$ whence $x'Lx = \lambda |V|$. Also $1'Lx = \lambda 1'x + \mu 1'1 = \mu |V|$. Thus
+\begin{align*}
+	Lx &= x \lambda + 1 \mu\\
+	x'Lx &= x'x \lambda + x'1 \mu = x'x \lambda\\
+	1'Lx &= 1'x \lambda + 1'1 \mu = 1'1 \mu
+\end{align*}
+and the $x=0$ does not work. Hence $\lambda = \frac{x'Lx}{x'x}$ and $\mu = \frac{1'Lx}{1'1} = \frac{x'L1}{1'1}$. Therefore the goal is to find $x$ such that 
+\[Lx = x \frac{x'Lx}{x'x} + 1 \frac{1'Lx}{1'1}\]
+since $x'x = |V|$ and $1'1=|V|$, this reduces to
+\[(|V|I_V - x x' - 1 1' ) Lx = 0\]
+
+% The fiddler vector.
+
+The minimization of the Rayleigh-Ritz quotient
+\[\min_{x\perp x_1}\frac{x'Lx}{x'x}\]
+where $x_1$ is the eigenvector with the least eigenvalue $\lambda = 0$.
+
+The number of zero eigenvalues is the number of connected components.
+
+For a totally connected graph $\lambda_2$ -- the second smallest eigenvalue, is always $1$.
+
+So the basic idea is to find the second least eigenvector of the graph laplacian.
+
+For a min cut solve $Lx = \lambda x$, for the normalised cut solve $Lx=\lambda D x$.
+
+To actually partition, use the zero-thresholding rule.
+
+% subsection special_clustering (end)
+
+another optimality cirterion:
+modularity
+\[\text{mod} = \frac{1}{2m} \sum_{u,v\in V} \Big(A_{u,v} - \frac{k-vk_u}{2m}\Big)\delta_{c_u=c_v}\]
+where $c_v$ is the class of the node $v$. In a two-cluster case 
+\[\delta_{c_u=c_v} = \frac{1}{2}(s_u s_v + 1)\]
+whence the modularity becomes
+\[\text{mod} = \frac{1}{4m}s'Bs\]
+where $s\in \{-1,1\}^V$.
+Relaxation: $s's = |V|$ and therefore we get
+\[\frac{1}{4m} x'Bx - \lambda(x'x - |V|)\]
+with $B=A - K'(2m)^{-1}K$.
+
+Since the modularity metric is maximized, we seek the eigenvector with the largest eigenvalue.
+
+% Critiques of modularity: the 
+
+In application do recursive splitting.
+
+
+% section lecture_9 (end)
 
 \end{document}

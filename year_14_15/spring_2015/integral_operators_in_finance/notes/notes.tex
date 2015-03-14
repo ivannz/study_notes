@@ -368,7 +368,7 @@ The weighting function is ``spices for the axe'', and it does not influence the 
 % If I want to get some files from the lecturer, I should notice him before hand by SMS on Monday.
 
 
-$\detla = y'$ -- the density function.
+$\delta = y'$ -- the density function.
 \[F(y,\delta, x) = \delta \log \delta + \brac{\alpha \brac{x-\mu} + \beta \brac{x-\sigma}^2 + \epsilon \brac{x-\eta}^3 + \zeta \brac{x-\xi}^4} \delta \]
 
 Shannon's entropy is used for emphasizing the localisation of the data.
@@ -469,7 +469,7 @@ The selection of basis is of utter importance in financial analysis.
 The basic idea is to choose the evolution engine by selecting the parametrization function: the drift ($\mu$) and the direction cone around it ($\sigma$).
 
 \noindent\textbf{A good approach}\hfill \\
-Estimate (using the ML) a family of densities defined just above on the learning sample to infer the $\mi(x)$ and $\sigma(x)$.
+Estimate (using the ML) a family of densities defined just above on the learning sample to infer the $\mu(x)$ and $\sigma(x)$.
 
 Diebold's method 
 Make an integral CDF transformation of the data, then back to the normal variate (using the inversion method by normal quantiles). Then select the sample, which is best describe by the normal distribution.
@@ -566,7 +566,7 @@ The density function must be defined on the same domain as the basis function.
 %% Cf. FXCM-long_short.xmcd
 
 Weighting function is $\Real$, while the one, being decomposed, is defined over a finite interval. Thus one needs to transform the domain (probabilistically): random variable transform $Y=G(X)$
-\[f(y) = \induc{\frac{1}{\abs{G_x'(x)}}}_{x=G^{-1}(y)}} h\brac{G^{-1}(y)}\]
+\[f(y) = \induc{ \frac{1}{ \abs{G_x'(x)}} }_{x=G^{-1}(y) } h\brac{G^{-1}(y)}\]
 
 % c.f. transfrom15.xmcd and Malinkevich
 
@@ -657,7 +657,7 @@ where $K(x,\xi)$ is the kernel of the integral operator.
 Consider this equation (Sturm-Liuville when $f = 0$):
 \[\sigma(x) \phi''(x) + \brac{2\sigma'(x) - \mu(x)} \phi'(x) + \brac{\sigma''(x) - \mu'(x) } \phi(x) = f(x)\]
 where $f(x)$ is an \textbf{external loading} and it makes the equation inhomogeneous. The solution in general is given by
-\[\phi(x) = \int G(x,\ix) f(\xi) d\xi\]
+\[\phi(x) = \int G(x,\xi) f(\xi) d\xi\]
 where $G(x,\xi)$ is the Greene function, derived form two linearly independent solution of the homogeneous equation.
 
 If we instead consider the Cauchy problem $f=\lambda \phi$, then it is possible to construct a symmetric integral kernel and get a basis of eigenfunctions on the integral operator:
@@ -701,6 +701,88 @@ we must place the grid knots uniformly on the scale of the cumulative weighting 
 % subsection integral_operators (end)
 
 % section lectire_5 (end)
+
+\section{Lecture \# 6} % (fold)
+\label{sec:lecture_6}
+
+Let's use the following integral operator in order to define a time step translation of the density
+\[f(x) = \int_a^b K(x,\xi) p(\xi) d\xi\]
+
+By Parseval's theorem the euclidean norm of the decomposition vector converges to the norm of a decomposed function with respect to a complete system of basis functions (effective subspace dimension).
+
+Hamburger-Hankel technique to obtain a new basis.
+
+% Rodrigues-kernel.mcd : 
+
+% Integer multiplicity (repeated kernels)
+
+The solution to the Fokker-Planck equation is given by the functional series
+\[p(x,t) = \sum_{k\geq 0} c_k u_k(x) e^{-\lambda_k t}\]
+where $c_k = \int_a^b p(\xi,t_0) u_k(\xi) \omega(\xi) d\xi$.
+If $u_k$ are orthonormal, then the norm
+\[\nrm{p(x,t)}^2 = \int_a^b \Big( \sum_{k\geq1} c_k u_k(x) e^{-\lambda_k t}\Big)^* \sum_{k\geq1} c_k u_k(x) e^{-\lambda_k t} d\xi = \lim_{n\to \infty} \sum_{k=1}^n c_k^2 e^{-2\lambda_k t} \]
+
+
+Markowitz risk premium: risk aversion $U\big(\Ex W\big) > \Ex U(W)$.
+The insurance premium $\pi$ should satisfy :
+\[U\big(W + \Ex Z - \pi) > \Ex U(W) + Z \]
+where $W$ is a given wealth and $Z$ -- is a random loss.
+
+Using Taylor's expansion yields:
+\[U(W) + \mu \to U(W) + U'(W)\mu(x) + \frac{1}{2} U''(W) \sigma(x)\]
+
+and 
+\[U\Big( W + \mu(x) - \pi \Big) \to U(W) + U'(W)\big(\mu(x)-\pi\big) + \frac{1}{2} U''(W) \big(\mu(x)-\pi\big)^2\]
+
+where $\Ex Z = mu(x)$ and $\Ex Z^2 = \sigma(x)$ (?).
+
+Equating yields
+\[ \pi = \frac{1}{2}\sigma(x) \Big(-\frac{U''(x)}{U'(x)}\Big)\]
+Arrow-Pratt's risk premium.
+
+The absolute risk aversion is given by 
+\[\beta(x) = -\frac{U''(x)}{U'(x)}\]
+
+\subsection{Jackwerth - A\"it-Sahalia formalism} % (fold)
+\label{sub:jackwerth_ait_sahalia_formalism}
+
+We identify two different expressions of the same fair price.
+
+% Briedent and Litzenberger
+
+Stochastic pricing kernel :
+\[\int_a^b \frac{1}{1+r} \frac{U'(x)}{U'(C)} x p(x) dx = e^{-r\tau} \int_a^b \omega(x) x dx\]
+where the both fractions together constitute the stochastic pricing kernel and $\omega(\cdot)$ is the density of risk-neutral distribution.
+
+Therefore (Jackwerth's formalism):
+\begin{align*}
+	q(x) &= \frac{U'(x)}{C}p(x)\\
+	\frac{q(x)}{p(x)} &= \frac{U'(x)}{C}\\
+	\frac{\partial}{\partial x}\Big(\frac{q(x)}{p(x)}\Big)\frac{p(x)}{q(x)} &= \frac{\partial}{\partial x}\Big(\frac{U'(x)}{C}\Big) \frac{q(x)}{p(x)}\\
+	\frac{p'(x)}{p(x)} - \frac{q'(x)}{q(x)} &= - \frac{U''(x)}{U'(x)}
+\end{align*}
+
+The density function derived from the utility function in ``RND-13-reconstruction-MSFT.mxcd''
+\[e^{-\eta x^3 - \beta x^2 - \alpha x - \frac{x^{1-\theta}}{\rho+1} }\]
+We minimize the squared error of call option prices $\zeta_n$, where $\xi_n$ are strikes.
+
+$p(x), u(x)$ $\to$ Jackwerth $\to$ density function.
+
+Constraints \begin{enumerate}
+	\item Normalisation of the density;
+	\item the perfect foresight constraint, which underlies the entire formalism; This makes the future discounted price equal to $1$.
+\end{enumerate}
+
+Arrow-Pratt's formalism hinges on the infinitesimally small price volatility, since the Taylor polynomial is truncated at the second term, that is why $\lambda<2$ (see the very same file).
+
+
+We cannot discover any statistical dependencies on he market data, only patterns for the decision making. One thing seems sure is that the volatility increases with time.
+
+
+
+% subsection jackwerth_ait_sahalia_formalism (end)
+
+% section lecture_6 (end)
 
 \end{document}
 

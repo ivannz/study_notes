@@ -23,6 +23,7 @@
 \newcommand{\Cplx}{\mathbb{C}}
 
 \newcommand{\Xcal}{\mathcal{X}}
+\newcommand{\Ical}{\mathfrak{I}}
 \newcommand{\Fcal}{\mathcal{F}}
 \newcommand{\Tcal}{\mathcal{T}}
 \newcommand{\Ncal}{\mathcal{N}}
@@ -63,7 +64,7 @@ Based on the law of large numbers:
 Additional chapters of probability
 
 Elementary probability: Kolmogorov axioms, Measure theoretic approach.
-Bernoulli law or large numbers.
+Bernoulli law of large numbers.
 Stochastic processes require measure theoretic foundations for their definition on some abstract space.
 
 %% \selectlanguage{russian}
@@ -195,7 +196,8 @@ The moment generating function of $X$ is given by \[S_X(t) \defn G(e^t) = \Ex(e^
 Differentiation of the MGF and evaluation at $t=0$ yields moments of $X$.
 Indeed, if the integral converges uniformly, then $S_X^{(k)}(t) = \induc{\Ex X^k e^{tX}}_{t=0} = \Ex X^k$.
 
-\emph{A gentle reminder}\hfill \\ For any pair of independent random variables the expectation of their product equals the product of their expectations.
+\emph{A gentle reminder}\hfill \\
+For any pair of independent random variables the expectation of their product equals the product of their expectations.
 
 Thus the mgf of a sum of independent $X,Y$ results in \[S_{X+Y}(t) = \Ex e^{t(X+Y)} = \Ex e^{tX} e^{tY} = \Ex e^{tX} \Ex e^{tY} = S_X(t) S_Y(t)\]
 
@@ -215,27 +217,6 @@ $\log S_X(t)$ is a polynomial if and only if $X\sim\mathcal{N}(\mu,\sigma)$.
 Solve exercises 1.8, 1.11, 1.12 and 1.13 on pp.~42-43.
 
 % section lecture_2 (end)
-
-% Task 1.8
-Suppose $X$ takes $k$ distinct values at random. 
-
-
-
-The number of partitions of a set of $n$ elements into $k$ classes is given by the Stirling Number of the second kind.
-The $n$-th element can either form an isolated class in $P(n-1,k-1)$different ways,
-or be a member of one of the existing $k$ classes in $P(n-1,k)$ number of ways.
-Therefore \[P(n,k) = P(n-1,k-1) + k P(n-1,k)\]
-
-
-% Task 1.13 -- wrong!!!!
-Suppose each node spawns an $m$-tree and that each edge in any tree in impassable with probability $p$.
-What is the probability $\pi_n$ of a tree with $n$ layers such that there is no paths from the root to leaves.
-
-Since the tree is recursive and independent the following is valid:
-\[\pi_{n+1} = (1 - p^m) \pi_n\]
-
-The exact moment when the main gates closed created a root in the tree structure of chambers.
-
 
 \section{Lecture \# 3} % (fold)
 \label{sec:lecture_3}
@@ -339,30 +320,43 @@ Therefore if $X_n\overset{D}{\to} X$ then characteristic function s converge.
 \noindent\textbf{Proposition} \hfill\\
 If
 \[\phi(s) = \int e^{isx} dF(x)\]
-then for any $b>0$ the following equivalence is true for all $y$:
+then the following equivalence is true for any $\delta>0$ and $y$:
 \[\frac{1}{2\pi}\int e^{-sy} \phi(s) e^{-\frac{\delta^2 s^2}{2}}ds
 =\frac{1}{\sqrt{2\pi\delta^2}}\int e^{-\frac{{(x-y)}^2}{2\delta^2}}dF(x)\]
 for a gaussian smoothing kernel $e^{-\frac{{(x-y)}^2}{2\delta^2}}$.
 
-Indeed, \begin{align*}
-	e^{-isy}\phi(s)e^{-\frac{\delta^2 s^2}{2}} &= e^{-isy}\int e^{isx} e^{-\frac{\delta^2 s^2}{2}} dF(x)\\
-	\frac{1}{2\pi}\int e^{-isy}\phi(s)e^{-\frac{\delta^2 s^2}{2}} ds &= \frac{1}{2\pi}\int e^{-isy}\int e^{isx} e^{-\frac{\delta^2 s^2}{2}} dF(x) ds\\
-	\frac{1}{2\pi}\int e^{-isy}\phi(s)e^{-\frac{\delta^2 s^2}{2}} ds &= \frac{1}{2\pi}\int \int e^{is(x-y)-\frac{\delta^2 s^2}{2}} dF(x) ds\\
-	\frac{1}{2\pi}\int e^{-isy}\phi(s)e^{-\frac{\delta^2 s^2}{2}} ds &= \frac{1}{2\pi}\int \int e^{-\frac{{(x-y)}^2}{2\delta^2}} e^{\frac{\delta^2}{2}\brac{-i\frac{x-y}{\delta^2}+s}^2} dF(x) ds\\
-	\frac{1}{2\pi}\int e^{-isy}\phi(s)e^{-\frac{\delta^2 s^2}{2}} ds &= \frac{1}{2\pi}\int e^{-\frac{{(x-y)}^2}{2\delta^2}} \int e^{\frac{\delta^2}{2}\brac{-i\frac{x-y}{\delta^2}+s}^2} ds dF(x)\\
-	\frac{1}{2\pi}\int e^{-isy}\phi(s)e^{-\frac{\delta^2 s^2}{2}} ds &= \frac{1}{2\pi}\int e^{-\frac{{(x-y)}^2}{2\delta^2}} \frac{\sqrt{2\pi}}{\delta} dF(x)\\
+Indeed,
+\[e^{-isy}\phi(s)e^{-\frac{\delta^2 s^2}{2}}
+= e^{-isy} e^{-\frac{\delta^2 s^2}{2}}\int e^{isx} dF(x)
+ = e^{-isy}\int e^{isx} e^{-\frac{\delta^2 s^2}{2}} dF(x)\]
+whence
+\begin{align*}
+	\frac{1}{2\pi} \int e^{-isy}\phi(s)e^{-\frac{\delta^2 s^2}{2}} ds
+	&= \frac{1}{2\pi} \int e^{-isy} \int e^{isx} e^{-\frac{\delta^2 s^2}{2}} dF(x) ds\\
+	&= \frac{1}{2\pi} \int \int e^{is(x-y)-\frac{\delta^2 s^2}{2}} dF(x) ds
+\end{align*}
+Since
+\[is(x-y)-\frac{\delta^2 s^2}{2}
+= \frac{1}{2}2s\delta \frac{i(x-y)}{\delta}-\frac{\delta^2 s^2}{2} \pm \frac{1}{2}\frac{(x-y)^2}{\delta^2}
+= -\frac{1}{2}\Big( \big( \frac{i(x-y)}{\delta} - s\delta \big)^2 + \frac{(x-y)^2}{\delta^2} \Big)
+\]
+we get
+\begin{align*}
+	\ldots
+	&= \frac{1}{2\pi} \int \int e^{-\frac{{(x-y)}^2}{2\delta^2}} e^{\frac{\delta^2}{2}\brac{-i\frac{x-y}{\delta^2}+s}^2} dF(x) ds\\
+	&= \frac{1}{2\pi} \int e^{-\frac{{(x-y)}^2}{2\delta^2}} \int e^{\frac{\delta^2}{2}\brac{-i\frac{x-y}{\delta^2}+s}^2} ds dF(x)\\
+	&= \frac{1}{2\pi} \int e^{-\frac{{(x-y)}^2}{2\delta^2}} \frac{\sqrt{2\pi}}{\delta} dF(x)
 % Missed some details...
 \end{align*}
 
-
-Another lemma:
-If the characteristic functions of different distributions are never identical.
+\noindent\textbf{Another lemma}\hfill\\
+\noindent The characteristic functions of different distributions are never identical.
 
 Indeed, if characteristic functions coincide, but but distributions differ at least in some point, then there is a contradiction
 
 Suppose $\phi_n(x) = \Ex\brac{e^{isX_n}}$ converges to some $\phi$ -- and $\phi$ is continuous at $x=0$, then there exists a random variable, such that $\phi(s) = \Ex\brac{e^{isX}}$ and $X_n\to X$ weakly.
 
-SupposE $Y_k$ are iid and $X_n = \sum_{k=1}^n Y_k$ with $\Ex\brac{e^{isY}} = \psi(s) = e^{-\abs{s}}$.
+Suppose $Y_k$ are iid and $X_n = \sum_{k=1}^n Y_k$ with $\Ex\brac{e^{isY}} = \psi(s) = e^{-\abs{s}}$.
 
 Then $\phi_n(s) = \Ex\brac{e^{isX}} = \brac{\phi(s)^n}$, but it converges to $1_{s=0}$.
 
@@ -376,17 +370,21 @@ Then $\phi_n(s) = \Ex\brac{e^{isX}} = \brac{\phi(s)^n}$, but it converges to $1_
 Helly's theorem implies that there is a convergent subsequence $F_{n_k}$ that converges to some $F$.
 
 Then analogously to a previously stated proposition
-\[\frac{1}{\sqrt{2\pi\delta^2}}\int e^{-\frac{{(x-y)}^2}{2\delta^2}}dF_n(x) \to \frac{1}{\sqrt{2\pi\delta^2}}\int e^{-\frac{{(x-y)}^2}{2\delta^2}}dF\]
+\[\frac{1}{\sqrt{2\pi\delta^2}}\int e^{-\frac{{(x-y)}^2}{2\delta^2}}dF_n(x)
+\to \frac{1}{\sqrt{2\pi\delta^2}}\int e^{-\frac{{(x-y)}^2}{2\delta^2}}dF\]
 
 Using Lebesgue's Dominated convergence theorem it is true that
-\[\frac{1}{2\pi}\int e^{-sy} \phi_{n_k}(s) e^{-\frac{\delta^2 s^2}{2}}ds \to \frac{1}{2\pi}\int e^{-sy} \phi(s) e^{-\frac{\delta^2 s^2}{2}}ds\]
+\[\frac{1}{2\pi}\int e^{-sy} \phi_{n_k}(s) e^{-\frac{\delta^2 s^2}{2}}ds
+\to \frac{1}{2\pi}\int e^{-sy} \phi(s) e^{-\frac{\delta^2 s^2}{2}}ds\]
 
 Therefore
-\[\frac{1}{2\pi}\int e^{-sy} \phi(s) e^{-\frac{\delta^2 s^2}{2}}ds = \frac{1}{\sqrt{2\pi\delta^2}}\int e^{-\frac{{(x-y)}^2}{2\delta^2}}dF\]
+\[\frac{1}{2\pi}\int e^{-sy} \phi(s) e^{-\frac{\delta^2 s^2}{2}}ds
+= \frac{1}{\sqrt{2\pi\delta^2}}\int e^{-\frac{{(x-y)}^2}{2\delta^2}}dF\]
 Since $F$ is an arbitrary limiting function, this implies that any other convergent subsequence converges to the same $F$, whence $F_n\to F$.
 
 To show that $F$ is a CDF we do the following: think of letting $\delta\to \infty$ and fixing $y=0$. Then
-\[\frac{\delta^2}{\sqrt{2\pi}}\int \phi(s) e^{-\frac{\delta^2 s^2}{2}}ds = \int e^{-\frac{x^2}{2\delta^2}}dF \leq \int dF\]
+\[\frac{\delta^2}{\sqrt{2\pi}}\int \phi(s) e^{-\frac{\delta^2 s^2}{2}}ds
+= \int e^{-\frac{x^2}{2\delta^2}}dF \leq \int dF\]
 
 However as $\delta\to\infty$ it is true that
 \[\int \phi(s) e^{-\frac{\delta^2 s^2}{2}}ds\to \phi(0) = 1\]
@@ -399,7 +397,7 @@ Suppose $X_k$ are i.i.d. with $\Ex X_k = \mu$ and $\Ex X_k^2 = \sigma^2$. Introd
 \[Y_n = \frac{\sum_{k=1}^n X_k - n \mu }{\sqrt{n}}\]
 Then $Y_n\overset{D}{\to}\mathcal{N}(0,1)$
 
-\textbf{Proff}\hfill\\
+\textbf{Proof}\hfill\\
 
 If $Z_n = \sum_{k=1}^n X_k - n\mu$. Then $\Ex Z_n = 0$ and $\Var Z_n = n \sigma^2$ due to independence.
 
@@ -431,7 +429,8 @@ then
 = \brac{\phi_X(\frac{s}{n})}^n = \brac{1+i\mu s + o(s)}^n
 \to e^{is\mu}\]
 
-The necessary and sufficient condition for $\phi(s) = 1+i s\mu+o(s)$ is \[\lim_{R\to\infty} R\cdot \brac{F_X(-R) + 1 - F_X(R)} = 0\]
+The necessary and sufficient condition for $\phi(s) = 1+i s\mu+o(s)$ is
+\[\lim_{R\to\infty} R\cdot \brac{F_X(-R) + 1 - F_X(R)} = 0\]
 % Khinchine's law of large numbers.
 
 % Tutorials
@@ -518,65 +517,76 @@ The integral can be dealt with in the following way: if $\alpha>0$ then \begin{a
 %%  FINISH AT HOME!!!
 
 \begin{align*}
-A \abs{s}^\alpha \int_\abs{s}^\infty \frac{\cos(t)}{t^{\alpha+1}}dt &=  A \abs{s}^\alpha \int_\abs{s}^\infty \frac{1}{t^{\alpha+1}} dt - A \abs{s}^\alpha \int_\abs{s}^\infty \frac{1-\cos(t)}{t^{\alpha+1}}dt
+A \abs{s}^\alpha \int_\abs{s}^\infty \frac{\cos(t)}{t^{\alpha+1}}dt
+&= A \abs{s}^\alpha \int_\abs{s}^\infty \frac{1}{t^{\alpha+1}} dt - A \abs{s}^\alpha \int_\abs{s}^\infty \frac{1-\cos(t)}{t^{\alpha+1}}dt
 \end{align*}
 
 
-It is possible to show that the integral is asymptotically equal to
-\[\int_\abs{s}^\infty \frac{1-\cos(t)}{t^{\alpha+1}}dt \sim I_1(\alpha) + o(\abs{s}^{2-\alpha})\]
-
+It is possible to show (?) that the very last integral in the right hand side is asymptotically equal to
+\[\int_\abs{s}^\infty \frac{1-\cos(t)}{t^{\alpha+1}}dt \sim \Ical_1(\alpha) + o(\abs{s}^{2-\alpha})\]
+which means that
 \begin{align*}
-A \abs{s}^\alpha \int_\abs{s}^\infty \frac{\cos(t)}{t^{\alpha+1}}dt &= \abs{s}^\alpha \frac{1}{\alpha} \abs{s}^{-\alpha} + AI_1(\alpha)\abs{s}^\alpha + o(s^2)
+A \abs{s}^\alpha \int_\abs{s}^\infty \frac{\cos(t)}{t^{\alpha+1}}dt
+&= \abs{s}^\alpha \frac{1}{\alpha} \abs{s}^{-\alpha} + A \Ical_1(\alpha)\abs{s}^\alpha + o(s^2)
 \end{align*}
-
-Thus \[\phi(s) = 1 - A I_1(\alpha) \abs{s}^\alpha + o(s^2)\]
+Thus
+\[\phi(s) = 1 - A \Ical_1(\alpha) \abs{s}^\alpha + o(s^2)\]
 
 Since the variables are independent, then the sum has the product characteristic function
-\[\Ex\brac{e^{-is\frac{S_n}{n^\frac{1}{\alpha}}}} = \brac{1 - A I_1(\alpha) \frac{\abs{s}^\alpha}{n} + o(s^2)}^n \to e^{-AI_1(\alpha)\abs{s}^\alpha}\]
+\[\Ex\brac{ e^{-is\frac{S_n}{n^\frac{1}{\alpha}}} }
+= \brac{1 - A \Ical_1(\alpha) \frac{\abs{s}^\alpha}{n} + o(s^2)}^n \to e^{-A \Ical_1(\alpha)\abs{s}^\alpha}\]
 
-THus it turns out that if $F(x)\underset{x\to\infty}{\sim} \abs{x}^{-\alpha}$,  $F(x)\underset{x\to-\infty}{\sim} 1-\abs{x}^{-\alpha}$ and the tails are symmetric, then \[\frac{\sum_{k=1}^{n}X_k}{n^\frac{1}{\alpha}}\to X\] where the random variable $X$ has the characteristic function given by \[\phi(s) = e^{-\frac{\alpha}{\alpha+1} I_1(\alpha)\abs{s}^\alpha}\] -- the Levy-Pareto characteristic function.
+Thus it turns out that if $F(x)\underset{x\to\infty}{\sim} \abs{x}^{-\alpha}$,
+$F(x)\underset{x\to-\infty}{\sim} 1-\abs{x}^{-\alpha}$ and the tails are symmetric,
+then
+\[\frac{\sum_{k=1}^{n}X_k}{n^\frac{1}{\alpha}}\to X\]
+where the random variable $X$ has the characteristic function given by
+\[\phi(s) = e^{-\frac{\alpha}{\alpha+1} \Ical_1(\alpha)\abs{s}^\alpha}\]
+-- the Levy-Pareto characteristic function.
 
 When $\alpha=2$, then the infinitesimal in the asymptotic expansion balances the major component, and inside there will emerge a divergent integral $\int \frac{dt}{t}$.
-
-Thus the normalisation must have different scaling:
+Thus the normalisation must be different:
 \[\frac{\sum_{k=1}^n X_k}{\sqrt{n\log n}}\sim \mathcal{N}(0,1)\]
 
 The last case is, when the density is asymmetric.
-\[p(x) = 1_\obj{\abs{x}\leq 1}\frac{A}{2} + 1_\obj{x>1}\frac{A(1+\beta)}{2\abs{x}^{\alpha+1}} + 1_\obj{x<-1}\frac{A(\beta-1)}{2\abs{x}^{\alpha+1}}\]
-where the parameter $\beta\in\clo{0,1}$ is the mass defect.
-
+\[p(x) = 1_\obj{\abs{x}\leq 1}\frac{A}{2}
+	+ 1_\obj{x>1}\frac{A(1+\beta)}{2\abs{x}^{\alpha+1}}
+	+ 1_\obj{x<-1}\frac{A(\beta-1)}{2\abs{x}^{\alpha+1}}\]
+where the parameter $\beta \in \clo{0,1}$ is the mass defect.
 \begin{align*}
-	\phi(s) &= \int e^{-isx}p(x)dx &= \int_\clo{-1,1} e^{-isx}\frac{A}{2}dx + \int_1^\infty e^{-isx}\frac{A(1+\beta)}{x^{\alpha+1}}dx + \int_{-\infty}^{-1} e^{-isx}\frac{A(1-\beta)}{x^{\alpha+1}}dx\\
+	\phi(s) &= \int e^{-isx}p(x)dx\\
+	&= \int_\clo{-1,1} e^{-isx}\frac{A}{2}dx
+		+ \int_1^\infty e^{-isx}\frac{A(1+\beta)}{|x|^{\alpha+1}}dx
+		+ \int_{-\infty}^{-1} e^{-isx}\frac{A(1-\beta)}{|x|^{\alpha+1}}dx\\
 	&= \frac{A}{2} \int_\clo{0,1} \cos(sx)dx 
-	+ \frac{A(1+\beta)}{2}\int_1^\infty \frac{e^{-isx}}{x^{\alpha+1}}dx 
-	+ \frac{A(1-\beta)}{2}\int_{-\infty}^{-1} \frac{e^{-isx}}{x^{\alpha+1}}dx\\
+		+ \frac{A(1+\beta)}{2}\int_1^\infty \frac{e^{-isx}}{x^{\alpha+1}}dx 
+		+ \frac{A(1-\beta)}{2}\int_{-\infty}^{-1} \frac{e^{-isx}}{(-x)^{\alpha+1}}dx\\
 	&= \frac{A}{2} \frac{\sin(s)}{s} 
-	+ \frac{A(1+\beta)}{2}
-	\int_1^\infty \frac{\cos(sy) - i\sin(sy)}{y^{\alpha+1}}dy 
-	+ \frac{A(1-\beta)}{2}
-	\int_{-\infty}^{-1} \frac{\cos(sx) - i\sin(sx)}{x^{\alpha+1}}dx\\
+		+ \frac{A(1+\beta)}{2} \int_1^\infty \frac{\cos(sy) - i\sin(sy)}{y^{\alpha+1}}dy \\
+		&\quad + \frac{A(1-\beta)}{2} \int_{-\infty}^{-1} \frac{\cos(sy) - i\sin(sy)}{(-y)^{\alpha+1}}dy\\
 	&= \frac{A}{2} \frac{\sin(s)}{s} 
-	+ A \int_1^\infty \frac{\cos(sy)}{y^{\alpha+1}}dy 
-	- i A\beta \int_1^\infty \frac{\sin(sy)}{y^{\alpha+1}}dy
-	&=\clo{t = \abs{s}x}\\
+		+ A \int_1^\infty \frac{\cos(sy)}{y^{\alpha+1}}dy 
+		- i A\beta \int_1^\infty \frac{\sin(sy)}{y^{\alpha+1}}dy\\
+	&= \Big[ \text{substitution: } t = \abs{s} x; \cos\text{--even function}\Big ]\\
 	&= \frac{A}{2} \frac{\sin\abs{s}}{\abs{s}} 
-	+ A \abs{s}^\alpha \int_{\abs{s}}^\infty \frac{\cos(t)}{t^{\alpha+1}}dt
-	- i A\beta \abs{s} \int_1^\infty \sign(s) \frac{\sin(t)}{t^{\alpha+1}}dt
+		+ A \abs{s}^\alpha \int_{\abs{s}}^\infty \frac{\cos(t)}{t^{\alpha+1}}dt
+		- i A\beta \abs{s} \int_1^\infty \sign(s) \frac{\sin(t)}{t^{\alpha+1}}dt
 \end{align*}
+The integral
+\[\Ical_2(\alpha) = \int_1^\infty \sign(s) \frac{\sin(t)}{t^{\alpha+1}}dt\]
+converges when $\alpha\in\brac{0,1}$. Therefore 
+\[\phi(s) = 1 - A \Ical_1(\alpha)\abs{s}^\alpha \brac{1+i\beta \sign(s) \frac{\Ical_2(\alpha)}{ \Ical_1(\alpha)}} + o(s^2)\]
+From analysis it is known (?) that
+\[\frac{\Ical_2(\alpha)}{ \Ical_1(\alpha)} = \tg\frac{\pi \alpha}{2}\]
+whence the limiting distribution must have the following characteristic function:
+\[\phi(s) = \exp\brac{-\frac{\alpha}{\alpha+1} \Ical_1(\alpha)\abs{s}^\alpha \brac{1+i\beta \sign(s) \tg\frac{\pi \alpha}{2} } }\]
 
-THe integral \[I_2(\alpha) = \int_1^\infty \sign(s) \frac{\sin(t)}{t^{\alpha+1}}dt\] converges when $\alpha\in\brac{0,1}$
-
-Therefore 
-\[\phi(s) = 1 - AI_1(\alpha)\abs{s}^\alpha \brac{1+i\beta \sign(s) \frac{I_2(\alpha)}{I_1(\alpha)}} + o(s^2)\]
-
-From analysis it is known (?) that 
-\[\frac{I_2(\alpha)}{I_1(\alpha)} = \tg\frac{\pi \alpha}{2}\]
-whence the limiting distribution has the following characteristic function:
-\[\phi(s) = \exp\brac{-\frac{\alpha}{\alpha+1}I_1(\alpha)\abs{s}^\alpha \brac{1+i\beta \sign(s) \tg\frac{\pi \alpha}{2} } }\]
-
-No the case when $\alpha=1$.
+Now the case when $\alpha=1$.
 \begin{align*}
-	\phi(s) &= \int e^{-isx}p(x)dx &= \int_\clo{-1,1} e^{-isx}\frac{A}{2}dx + \int_1^\infty e^{-isx}\frac{A(1+\beta)}{x^{\alpha+1}}dx + \int_{-\infty}^{-1} e^{-isx}\frac{A(1-\beta)}{x^{\alpha+1}}dx
+	\phi(s) &= \int e^{-isx}p(x)dx
+	= \int_\clo{-1,1} e^{-isx}\frac{A}{2}dx
+		+ \int_1^\infty e^{-isx}\frac{A(1+\beta)}{x^{\alpha+1}}dx
+		+ \int_{-\infty}^{-1} e^{-isx}\frac{A(1-\beta)}{x^{\alpha+1}}dx
 \end{align*}
 
 % see the lecture notes 5.8, 5.9
@@ -601,27 +611,24 @@ if $0<\alpha<1$ then ...
 \label{sec:lecture_5}
 
 Mathematical statistics.
-
-Probability theory -- we have some understiandingho
-
-We have an experiment, the data is random, and we attmepto to infer something about the underlying physical phenomenon.
+% Probability theory -- we have some understanding
+We have an experiment, the data is random, and we attempt to to infer something about the underlying physical phenomenon.
 
 Suppose $\brac{X_k}_{k=1}^n$ is some sample.
-
 Using the strong law of large numbers \[\frac{\sum_{k=1}^n X_k}{n}\overset{\text{a.s}}{\to}\]
 Does not tell us anything about the speed of convergence.
 
-The model of the data plays very important role. $X_k \sim C+\xi_i$ with $\xi_i\sim \mathcal{D}(0,1)$ iid.
-
-All probabilistic properties are governevd by the noise term.
-The distribution function of the vectore of the noiset rems is gven by 
+The model of the data plays very important role. We consider 
+\[X_k \sim C + \xi_i;\quad \xi_i\sim \mathcal{D}(0,1)\,\text{iid}\]
+Here All probabilistic properties are governed by the noise term.
+The distribution function of the vectors of the noise terms is given by 
 \[F\brac{y_1, \ldots, y_n;\Theta} \Pr\brac{\xi_k\leq y_k;\Theta} = \prod_{k=1}^n F_{\xi_k}(y_k)\]
 
-THe basic properties of distribution funcutions:
+The basic properties of distribution functions:
 \begin{itemize}
 	\item Normalisation: $0\leq F\leq 1$ and $\lim_{x\to -\infty} F(x)=0$ and $\lim_{x\to \infty} F(x)=1$;
-	\item Right-continuous non-decreasing map;
-	\item It has a density if the derivative exists.
+	\item Right-continuous and left-limited non-decreasing map;
+	\item It has a density if the Radon-Nikodym derivative exists.
 \end{itemize}
 
 Multivariate distribution:
@@ -629,11 +636,11 @@ Multivariate distribution:
 	\item \[p(x,y) = \frac{\partial}{\partial x}\frac{\partial}{\partial y} F(x,y)\]
 \end{itemize}
 
-The law of large numbers:
-The central limit theorem:
+% The law of large numbers
+The central limit theorem
 
 Suppose we have $\brac{\xi_k}_{k\geq1}\sim \mathcal{D}(\mu, \sigma^2)$ iid., Then
-\[\sqrt{n}\frac{\frac{1}{n}\sum_{k=1}^n \xi_k - \mu n}{\sigma} \overset{\mathcal{D}}{\to} \mathcal{N}(0,1)\]
+\[\frac{\frac{1}{n}\sum_{k=1}^n \xi_k - \mu}{\sfrac{\sigma}{\sqrt{n}}} \overset{\mathcal{D}}{\to} \mathcal{N}(0,1)\]
 
 \noindent\textbf{The Chebyshev inequality}\hfill\\
 Suppose $\xi$ is some random variable, then 
@@ -670,7 +677,8 @@ The inversion method is not always convenient. Take normally distributed random 
 \label{sub:box_muller_method}
 
 Suppose we need to generate a pair of normally distributed random variates $X,Y$.
-Find the joint distribution of independent $(r,\phi)$ such that the following random vectors have a normal join distribution and are independent
+Find the joint distribution of independent $(r,\phi)$ such that the following random
+vectors have a normal join distribution and are independent
 \[\xi_1 = r \cos\phi\,\text{and}\,\xi_2 = r \sin\phi\]
 
 Consider an infinitesimal patch of a plane

@@ -486,7 +486,7 @@ The best idea is to use SVD decomposition of $X = U\Lambda V'$, with $U$ and $V$
 \subsection*{SVD} % (fold)
 \label{sub:svd}
 
-Suppose there is a martux $X$ with dimensions $n\times p$ with rank $r$.
+Suppose there is a matrix $X$ with dimensions $n\times p$ with rank $r$.
 SVD decomposition claims that there exist square orthogonal matrices $U_{n\times n}$ and $V_{p\times p}$
 and a diagonal matrix $\Lambda_{n\times p}$ of rank $r$, such that $X = U \Lambda V'$.
 Orthogonality of $U$: $U'U = I_{n\times n}$.
@@ -553,27 +553,29 @@ and \[X^c \defn \frac{X-m}{\sigma}\]
 \label{sec:lecture_4}
 Departing from the linearity of the Linear regression.
 
-Transform $\brac{f_m}_{m=1}^M:\Real^p \to \Real$ since there are initially $P$ predictors.
+Transform $\brac{f_m}_{m=1}^M:\Real^p \to \Real$ since there are initially $p$ predictors.
 Sample space is augmented and now has $M$ predictors. The regression function now becomes:
 \[f(X) = \sum_{m=1}^M \theta_m f_m(x)\]
 
 This model generalises the original linear regressions since $f_m(x) = \pi_m(x)$ 
 
-Polynomial regression problem what happens in the tails. It is no t very trustworthy in near the endpoints.
-In this respect Polynomial regression is no a good idea -- use local regression by partitioning the range into regions with different model in each area: $f_m(X) = 1_{\clo{l_m, u_m}}(x_k)$
+Polynomial regression problem: what happens in the tails. It is not very trustworthy near the endpoints.
+In this respect polynomial regression is not a good idea -- use local regression by partitioning the range
+into regions with different model in each area: $f_m(X) = 1_{\clo{l_m, u_m}}(x_k)$
 
 Piecewise polynomials and splines
 
 Suppose that $x$ is unidimensional -- only one feature.
 %%% The following really resembles the dummy variables in ecnometrics.
 
-Divide $x$ in several region with different thresholds(knots since they link the regions). To each region fit the constant.In order to cover the whole range of $x$ in this case one has to have three basis functions:
+Divide $x$ in several regions with different thresholds (knots since they link the regions).
+To each region fit the constant. In order to cover the whole range of $x$ in this case one has to have three basis functions:
 
 $1_{\ploc{-\infty, \xi_1}}$, $1_{\ploc{\xi_1, \xi_2}}$ and $1_{\ploc{\xi_2, \infty}}$.
 
-Consider linear function of each region: fitting something piecewise linear. In this aces we nee 6 basis functions, since we don not only model the piecewise intercept but also the piecewise slope.
+Consider linear function on each region: fitting something piecewise linear. In this aces we nee 6 basis functions, since we do not only model the piecewise intercept but also the piecewise slope.
 
-Enforcing continuity at two knots than four basis functions are only needed.
+Enforcing continuity at two knots then four basis functions are only needed.
 
 $h_1 = 1$ and $h_2 = x$ (no need for the indicator here, since it would introduce discontinuity), $h_3 = \brac{x-\xi_1}^+$ and $h_4 = \brac{x-\xi_2}^+$ -- fix their intercepts.
 
@@ -589,7 +591,7 @@ The set of basis function is $h_1 = 1$, $h_2 = x$, $h_3 = x^2$, $h_4 = x^3$, $h_
 In general Splines are piecewise polynomial regression with smoothness at the binding knots:
 \begin{align*}
 	h_j(x) = x^{j-1}\quad i=1,\ldots, M\\
-	h_{m+k}(x) = \brac{\brac{x-\xi_i}^+}^M \quad k=1,\ldots,K
+	h_{m+k}(x) = \big((x-\xi_i)_+\big)^M \quad k=1,\ldots,K
 \end{align*}
 
 One polynomial -- global and smooth.
@@ -1620,4 +1622,217 @@ Now $\Pr\big(\beta'x+\epsilon > 0\big) = \Pr\big(\epsilon > -\beta'x\big) = 1-\P
 % subsection logistic_regression (end)
 
 % section lecture_8 (end)
+
+\section{Lecture \# 9} % (fold)
+\label{sec:lecture_#_9}
+
+Two approaaches discrimimnative and generative.
+
+Discriminative: modelling the posterior (conditional) distribution of the class given the variable; do not necessarily have probabilistic interpretation.
+Generative: modelling the joint distribution of the class and the variable;
+Direct modelling of the probabilities.
+Linear discriminant (quadratic) analysis.
+Discriminant functions.
+The sample data $(X_k)_{k=1}^n\in \Real^d$ in latent classes $\Ccal$. Want to model the distribution of $X$, conditional on the class to which it belongs.
+Once there is the likelihood, ``flip'' it to get the Bayesian posterior. The Bayesian classifier has the lowest error rate $\Pr(C_k\vert x)$.
+
+The probability that 
+\[\Pr(T = j\vert X = \mathcal{x}) \propto \Pr(X = \mathcal{x}\vert T = j) \Pr( T = j ) = f_j(x) \pi_j\]
+To recover the normalising factor compute $N(x) = \sum_{k=1}^K f_j(x) \pi_j$.
+
+We can model the likelihoods as well as the priors.
+
+Choices for $f_j(x)$: \begin{itemize}
+	\item Gaussian yields the LDA or the QDA (access to analytical expression);
+	\item each data point comes from a mixture if gaussians gives rise to the MDA (only numerical EM algorithms);
+	\item for a large number of predictors assume independence between the components of $X$ within each class (conditionally on the class the features are indepenednent) this results in the na\"ive bayes classifier.
+\end{itemize}
+
+
+\subsection{Linear discriminant analysis} % (fold)
+\label{sub:linear_discriminant_analysis}
+
+Each
+\[f_j(x) = \frac{1}{\sqrt{2\pi}^p \lvert \Sigma_j\rvert^\frac{n}{2}} \text{exp}\bigg(-\frac{1}{2}(x-\mu_j)'\Sigma_j^{-1}(x-\mu_j)\bigg)\]
+
+all classes have the same covariance matrix $\Sigma_j = \Sigma$.
+
+compare the log of the ration of the probability
+\[\log \frac{\Pr\big(T=k\vert X=x\big)}{\Pr\big(T=j\vert X=x\big)} \]
+for the posteriors:
+\[ = \log \frac{\pi_k}{\pi_j} + \log \frac{\Pr\big(X=x\vert T=k\big)}{\Pr\big(X=x\vert T=j\big)} = \log \frac{\pi_k}{\pi_j} + \log \frac{f_k(x)}{f_j(x)} \]
+thus
+\[ = \log \frac{\pi_k}{\pi_j} + \Big( -\frac{1}{2}(x-\mu_k)'\Sigma_k^{-1}(x-\mu_k\Big) + \frac{1}{2}(x-\mu_j)'\Sigma_j^{-1}(x-\mu_j) \Big) + \log\frac{\lvert \Sigma_j\rvert}{\lvert \Sigma_k\rvert} \]
+
+using the covariance matrix constance
+\[ = \log \frac{\pi_k}{\pi_j} + -\frac{1}{2}\big(\mu_k'\Sigma^{-1}\mu_k - \mu_j'\Sigma^{-1}\mu_j \big) + x'\Sigma^{-1}\big( \mu_k - \mu_j\big) \]
+which is linear in $x$ -- the linear discriminant analysis. Define the discriminant function
+\[\delta_k(x) = x'\Sigma^{-1}\mu_k - \frac{1}{2} \mu_k'\Sigma^{-1}\mu_k + \log \pi_k\]
+Then  classify $x$ as $k$ if $\delta_k(x)>\delta_j$ for $k\neq k$.
+
+Since we have a probabilistic model is is sensible to estimate the parameters using the MLE.
+
+\subsection{The MLE} % (fold)
+\label{sub:the_mle}
+
+Summary:
+we have got $K$ classes with probabilities $\big(\pi_j\big)_{j=1}^K$ subject to $\sum_{j=1}^K \pi_j = 1$, and a sample $\big(X,T\big)$.
+
+
+The likelihood of a particular observation $x_i$
+\[\prod_{j=1}^K \pi_j^{t_{ij}} f_j(x_i)^{t_{ij}}\]
+where $t_{ij}$ is the indicator whether the $i$-th observation belongs to the class $j$ in the training sample.
+
+Thus the complete likelihood of the observed data is
+\[L = \prod_{i=1}^n \prod_{j=1}^K \pi_j^{t_{ij}} f_j(x_i)^{t_{ij}}\]
+whence
+\[\mathcal{L} = \sum_{i=1}^n \sum_{j=1}^K t_{ij} \log \pi_j + t_{ij} \log f_j(x_i)\]
+Using teh fact that everything is gaussian and the $\pi_j$ are related:
+\[\mathcal{L} = \sum_{i=1}^n t_{i1} \log \big( 1- \sum_{j=2}^k\pi_j \big) +  \sum_{i=1}^n \sum_{j=2}^K t_{ij} \log \pi_j +  \sum_{i=1}^n \sum_{j=1}^K t_{ij} \log f_j(x_i)\]
+thus the likelihood is separable in terms of the prior probabilities and the parameters of the gaussians.
+Computing the derivatives:
+\begin{align*}
+	\sum_{i=1}^n \frac{-t_{i1}}{\pi_1} +  \sum_{i=1}^n t_{ij} \frac{t_{i1}}{\pi_j} = 0\\
+\end{align*}
+whence for all $j\geq 2$:
+\[\frac{\pi_j}{\pi_1} = \frac{\sum_{i=1}^n t_{ij}}{\sum_{i=1}^n t_{i1}}\]
+thus
+\[\hat{\pi_j} = \frac{\sum_{i=1}^n t_{ij}}{\sum_{i=1}^n \sum_{l=1}^K t_{il}}\]
+
+The parameters of the gaussians: maximize with respect to $\mu_j$ and $\Sigma$. The only contribution is
+\[\ldots + \sum_{i=1}^n \sum_{j=1}^K t_{ij} \log f_j(x_i) \]
+this is equivalent to maximizing
+\[ -\frac{1}{2} \sum_{i=1}^n \sum_{j=1}^K t_{ij} \big(x_i-\mu_j\big)'\Sigma^{-1}\big(x_i-\mu_j\big)\] 
+Thus
+\[\sum_{i=1}^n t_{ij} \big(x_i-\hat{\mu}_j\big)'\Sigma^{-1} = 0\]
+whence
+\[\sum_{i=1}^n t_{ij} x_i = \sum_{i=1}^n t_{ij} \hat{\mu}_j\]
+which leads to
+\[\hat{\mu}_j = \frac{\sum_{i=1}^n t_{ij} x_i }{\sum_{i=1}^n t_{ij}}\]
+the average of the $x_i$ belonging to the class $j$.
+
+And finally the $\Sigma$, which is more tricky.
+Collect the terms that depend on $\Sigma$ which depend on it. We get this to minimize:
+\[ \sum_{i=1}^n \sum_{j=1}^K t_{ij} (x_i-\mu_j)'\Sigma^{-1}(x_i-\mu_j) + t_{ij} \log \lvert\Sigma\rvert \]
+since the trace of a scalar is equal to its trace and $\Tr(ABC) = \Tr(BCA)$:
+\[\sum_{i=1}^n \sum_{j=1}^K t_{ij} \Tr\big( \Sigma^{-1}(x_i-\mu_j)(x_i-\mu_j)'\big) + t_{ij} \log \lvert\Sigma\rvert\] 
+define $S_j = \frac{1}{n_j}\sum_{i=1}^n(x_i-\mu_j)(x_i-\mu_j)'$ with $n_j=\sum_{i=1}^n t_{ij}$. Therefore
+\[\sum_{j=1}^K n_j \Tr\big( \Sigma^{-1} S_j \big) - n \log \lvert\Sigma^{-1}\rvert\] 
+
+Now the following could be proved directly:
+\[\frac{\partial}{\partial A}\Tr(AB) = \frac{\partial}{\partial A}\Tr(BA) = B'\]
+and
+\[\frac{\partial}{\partial A}\log \lvert A\rvert = (A^{-1})'\]
+therefore $\sum_{j=1}^K n_j S_j - n \hat{\Sigma} = 0$.
+
+Remarks: \begin{itemize}
+	\item if $\Sigma\neq\Sigma_j$ then we have quadratic decision boundaries, and 
+	\[\delta_k(x) = - \frac{1}{2} (x-\mu_k)'\Sigma^{-1}(x-\mu_k) + \log \pi_k - \frac{1}{2}\log\lvert\Sigma_k^{-1}\rvert\]
+	\item to get quadratice decision boundaries with LDA enrich the feature space by including functions of the predictors;
+	\itme QDA (and LDA) do not scale well with the number of predictors: use the Na\"ive Bayes;
+	The na\"ive Bayes conditional independence. The na\"ive part
+	\[\Pr\big(X=x\vert T=j\big) = \prod_{m=1}^p \Pr\big(X_m=x_m\vert T=j\big)\]
+
+	the classification rule is using the Bayes part (maximizing the posterior):
+	\[\hat{j}_x = \text{argmax}_{j=1,\ldots, K} \Pr\big(X=x\vert T=j\big) \Pr\big(T=j\big)\]
+	This has nothing to do with Bayesian inference. Thus there are Bayesian Na\"ive Bayes classifiers :).
+	\item The difference between the logistic regression and the LDA. In logistic we looked at
+	the log-ratio of class likelihoods given the data. It also linear in $x$, but the regression
+	does not take the structure of the predictors.
+	LDA is less flexible:
+	\[\delta_k(x) = x'\Sigma^{-1}\mu_k - \frac{1}{2} \mu_k'\Sigma^{-1}\mu_k + \log \pi_k\]
+	whereas the logistic had $\veta_0 + x\beta$ -- more general.
+	If the true $x$ are Gaussian then it is better to use the LDA.
+\end{itemize}
+
+Some bias, but low variance due to simple linear hyper-boundaries.
+
+
+% subsection the_mle (end)
+
+% subsection linear_discriminant_analysis (end)
+
+\subsection{Mixture of gaussians discriminant analysis} % (fold)
+\label{sub:mixture_of_gaussians_discriminant_analysis}
+
+\subsubsection{the Expectation-Maximisation} % (fold)
+\label{ssub:the_expectation_maximisation}
+
+the Expectation Maximization algorithm (Dempster et al. (1977)) is used in the case of latent or missing values.
+
+Suppose the there is a probabilistic model with observed variables $X$ or $X,T$ and a set of latent variables $Z$.
+In the mixture of distributions the latent variable is the mixture component, from which the observation was drawn.
+
+Gaussian mixture is a superposition of Gaussian distributions:
+\[g(x) \sim \sum_{k=1}^K \pi_k \phi_k(x\vert \mu_k, \Sigma_k)\]
+such that $\sum_{k=1}^K \pi_k = 1$. It allows multimodality and greater flexibility.
+The $\pi_k$ are the mixing coefficients and are the prior probabilities that $x$ comes from $k$-th component.
+
+For the MLE we would have to estimate $\theta=(\pi_k,\mu_k,\Sigma_k)_{k=1}^K$ with the complete log-likelihood
+\[l(\theta) = \sum_{i=1}^n \log \big(\sum_{k=1}^K\pi_k \phi_k(x\vert \mu_k, \Sigma_k)\big)\]
+
+A way to get rid of the sum-under-the-log is to add the hidden information (here the original component).
+Other examples include \textbf{H}idden \textbf{M}arkov \textbf{M}odels and the \textbf{M}ixture \textbf{D}iscriminant \textbf{A}nalysis.
+
+we need a joint distribution of $(X,Z)$ governed by some $\theta$
+\[p(X, Z\vert \theta)\]
+hte goal is to maximize the likelihood function
+\[p(X\vert \theta) = \int p(X, Z\vert \theta) dZ = \sum_{z} p(X, Z=z\vert \theta) \]
+This is in general intractable.
+Suppose $q(Z\vert X,\theta)$ is an arbitrary density of $Z$ and proceed backwards from the goal.
+\[l(\theta) = \log p(x\vert \theta) = \log \sum_z q(z\vert x,\theta) \frac{p(x\vert z, \theta)}{q(z\vert x,\theta)} \]
+due to concavity of log, the Jensen's inequality yields:
+\[\ldots \geq \sum_z q(z\vert x,\theta) \log \frac{p(x\vert z, \theta)}{q(z\vert x,\theta)} = F(q,\theta) \]
+
+To maximize the $l(\theta)$, first maximize the lower bound. The process is
+\begin{description}
+	\item[E-step] \[q^{(t+1)} = \text{argmax}_q F(q,\theta^{(t)})\]
+	\item[M-step] \[\theta^{(t+1)} = \text{argmax}_\theta F(q^{(t)},\theta)\]
+\end{description}
+But first we need to initialize the $\theta^{(0)}$ and the EM converges only to a local maximum.
+However even in this setting the problem is intractable. We may find a sufficient condition such that the lower bound becomes the equality.
+
+The sufficient condition on $q$ is when for all $z$
+\[\frac{p(x\vert z, \theta)}{q(z\vert x,\theta)} = \text{const}\]
+whence $q(z\vert x,\theta) \propto p(x\vert z, \theta)$ and 
+\[q(z\vert x,\theta) = \frac{p(x, z\vert \theta)}{\sum_z p(x\vert z, \theta)} = p(z\vert x, \theta)\]
+which leads to 
+\[q^{(t+1)}(z\vert x,\theta) = p(z\vert x, \theta^{(t)})\]
+
+The $M$-step:
+\[l(\theta) \geq F(q,\theta) = \sum_z q(z\vert x,\theta) \log p(x\vert z, \theta) - \sum_z q(z\vert x,\theta) \log q(z\vert x,\theta)\]
+-- the entropy and the cross entropy of $q$.
+Since $q(z\vert x,\theta) = q^{(t+1)}(z\vert x,\theta) = p(z\vert x, \theta^{(t)})$, we have
+\[F(q,\theta) = Q(\theta, \theta^{(t)}) + H(q)\]
+and
+\[Q(\theta, \theta^{(t)}) = \sum_z p(z\vert x, \theta^{(t)} \log p(x\vert z, \theta)
+= \Ex_{p(z\vert x, \theta^{(t)})} \log p(z\vert x, \theta) \]
+
+In summary: \begin{itemize}
+	\item The $E$-step is the computation of $Q(\theta, \theta^{(t)})$;
+	\item The $M$-step return (update) the $\theta^{(t+1)} = \text{argmax}_\theta Q(\theta, \theta^{(t)})$;
+\end{itemize}
+If the density family of the classes is exponential, then it is easy to maximize and compute the $Q$ as well.
+
+\subsubsection{Proof of convergence of EM} % (fold)
+\label{ssub:proof_of_convergence_of_em}
+
+Show that $\theta^{(t)}$ converges and $l(\theta^{(t)})$ does not decrease.
+Look at the values of $l(\theta)$:
+\[l(\theta^{(t)}) = \sum_{i=1}^n \sum_z p(z_i\vert x_i, \theta^{(t)}) \log \frac{p(z_i, x_i\vert \theta^{(t)})}{p(x_i\vert z_i, \theta^{(t)})}\]
+where we used the chosen good $q$ 
+\[\geq \sum_{i=1}^n \sum_z q(z_i\vert x_i, \theta^{(t+1)}) \log \frac{p(z_i, x_i\vert \theta^{(t)})}{p(x_i\vert z_i, \theta)}\]
+thus
+\[\geq \sum_{i=1}^n \sum_z p(z_i\vert x_i, \theta^{(t+1)}) \log \frac{p(z_i, x_i\vert \theta^{(t)})}{p(x_i\vert z_i, \theta^{(t+1)})}\]
+since $Q(\theta^{(t+1)}, \theta^{(t)}) \geq Q(\theta^{(t)}, \theta^{(t)})$ :
+\[\geq \sum_{i=1}^n \sum_z p(z_i\vert x_i, \theta^{(t)}) \log \frac{p(z_i, x_i\vert \theta^{(t)})}{p(x_i\vert z_i, \theta^{(t)})}\]
+In fact $Q(\theta^{(t)}, \theta^{(t)}) = l(\theta^{(t)})$ and $Q(\theta, \theta^{(t)})$ is convex (quadratic in $\theta$).
+
+% subsubsection proof_of_convergence_of_em (end)
+
+% subsubsection the_expectation_maximisation (end)
+
+% subsection mixture_of_gaussians_discriminant_analysis (end)
+
+% section lecture_#_9 (end)
 \end{document}

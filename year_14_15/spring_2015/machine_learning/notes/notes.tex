@@ -84,10 +84,14 @@ The entropy as a function of $\theta$ resembles a bell with zeros at $0,1$. Use 
 
 \textbf{Idea}: Select the successive feature $Q$ to be as informative as possible.
 
+Suppose $A$ elements with a property $S$ are classified by a feature $Q$ with finite number of values then the \textbf{information gain} is
+\[\text{Gain} = H(A,S) - \sum_{q\in Q} \frac{\abs{A_q}}{\abs{A}} H(A_q,S)\]
+where $A_q$ is the partition by $Q$: $A_q = \obj{\induc{\omega \in A} Q(\omega)=q }$.
 
-Suppose $A$ elemnts with a property $S$ are classified by a feature $Q$ with $q$ distinct values then the \textbf{information gain} is
-\[\text{Gain} = H(A,S) = \sum_{k=1}^q \frac{\abs{A_k}}{\abs{A}} H(A_k,S)\]
-where $A_k$ is the partition by $Q$: $A_k = \obj{\induc{\omega \in A} Q(\omega)=k }$.
+The entropy in this case is defined as 
+\[H(X,S) = - \sum_{s\in S} \frac{\abs{X_s}}{\abs{X}} \log \frac{\abs{X_s}}{\abs{X}}\]
+
+The higher the gain, the more informative an attribute is.
 
 The impurity of a class might be defined as
 \[\dot{p} = \frac{p_+}{p_++p_-} = \frac{N_+}{N_+ + N_-}\]
@@ -231,12 +235,245 @@ The associative rules are extracted a frequent itemset $F$ recursively:
 In data mining $A$ is closed if $\text{supp}(A)\leq \alpha$ and there exists no $A\subseteq B$ with $\text{supp}(B)=\text{supp}(A)$.
 
 
-
 % subsection the_apriori_algorithm (end)
 
 % Associative rule document mining.
 
 % section lecture_5 (end)
 
+\section{Lecture \# 6} % (fold)
+\label{sec:lecture_6}
+
+For a graph $G=(V,E)$ computing the sequence of $k$-cores enables detection of communities.
+
+Graph \textbf{cut}:
+\begin{align*}
+	\text{cut}(A,B) &= \sum_{u\in A} \sum_{v\in B} \omega(u, v)\\
+	\text{assoc}(A,V) &= \sum_{v\in A} \sum_{w\in V} \omega(v,w)
+\end{align*}
+Normalised cut criterion
+\[\text{Ncut}(A,B) = \frac{\text{cut}(A,B)}{\text{assoc}(A,V)} + \frac{\text{cut}(A,B)}{\text{assoc}(B,V)}\]
+
+Spectral cut of the graph
+
+Suppose there the nodes are totally ordered $(V,\leq)$ (for convenience). Then the optimal cut criterion: 
+\[ \text{cut} = \frac{1}{4}\sum_{j<i} {(p_i - p_j)}^2 \omega(i,j) \]
+where $\brac{p_v}_{v\in V}\in \obj{-1,+1}^V$ is the vector of binary partition association.
+
+Let's relax the problem by extending the space of the association vector $\brac{p_v}_{v\in V}\in \clo{-1,1}$
+and reduce this problem a problem of quadratic optimisation:
+\[E = \frac{1}{4}\sum_{i<j} {(x_i-x_j)}^2 \omega_{ij} = \frac{x'Lx}{4}\]
+where $L$ is defined below.
+
+Observe that
+\begin{align*}
+	2\sum_{i<j} {(x_i-x_j)}^2 \omega_{ij} &= \sum_{i\neq j} {(x_i-x_j)}^2 \omega_{ij} + \sum_{i=j} {(x_i-x_j)}^2 \omega_{ij} \\
+	&= \sum_i\sum_j (x_i^2 + x_j^2 - 2x_ix_j) \omega_{ij} = 2 \sum_i\sum_j x_i^2 - 2\sum_i\sum_j x_i \omega_{ij} x_j \\
+	&= 2\sum_i x_i^2 \sum_j \omega_{ij} - 2\sum_i\sum_j x_i \omega_{ij} x_j \\
+	&= 2 x' D x - 2 x' W x
+\end{align*}
+where $D\defn \text{diag}\brac{{(\sum_j w_{ij})}_{i\in V}}$ and $W = \brac{\omega_{ij}}_{i,j\in V}$.
+
+Thus the energy functional is reduced to $E = \frac{1}{4} x' ( D - W ) x $.
+
+There are constraints on the optimal vectors: $x'x = N$ and $x'e = 0$. The last restriction means that the optimal distribution ``assigns'' at least one element of each cluster.
+
+The Lagrangian is 
+\[\mathcal{L} = x'Lx - \lambda ( x'x - N )\]
+and the first order conditions are given by
+\begin{align*}
+	\frac{\partial L}{\partial x} \quod:\quod 2Lx - 2\lambda x = \mathbf{0}\\
+	\frac{\partial L}{\partial \lambda} \quod:\quod x'x - N = 0
+\end{align*} 
+
+...
+
+For a rectangular matrix use the following incidence matrix
+\[A = \left(\begin{matrix}
+	0&W\\
+	W'&0\\
+\end{matrix}\right)\]
+
+
+% section lecture_6 (end)
+
+\section{Lecture \# 7} % (fold)
+\label{sec:lecture_7}
+
+\subsection{Page rank} % (fold)
+\label{sub:page_rank}
+
+The main idea is to use links to determine the the importance.
+To rig the search engine spammers used links farms and other techniques.
+
+Assess the importance of a page based on links.
+\noindent \textbf{Recursive definition}\hfill\\
+Measure relative importance of a web page. A page is considered \textbf{important} of many other \textbf{important} pages link to it.
+
+Each link's $\omega = (s,t)\in E$ vote $i_\omega \propto i_s$ -- is proportional to the importance of its source.
+
+Flow model -- a matrix formulation
+
+Suppose $M$ is a columns stochastic matrix $\brac{M_{ts}}_{t,s\in V}$ corresponds to edges $s\leadsto t$.
+$\sum_{t\in V}M_{ts} = 1$.
+
+The goal of the model is to find $r = Mr$ where $r=\brac{r_v}_{v\in V}$.
+
+Power iterations method \begin{description}
+	\item[Initialize] \hfill\\
+		$r_0=\frac{1}{\abs{V}}$;
+	\item[Iteration] \hfill\\
+		$r_{k+1} = M r_k$;
+	\item[Stopping] \hfill\\
+		$\nrm{r_{k+1}-r_k}_1 < \eps$;
+\end{description}
+
+Interpretation
+\begin{enumerate}
+	\item at any time $t$ the surfer is in the node $v\in V$;
+	\item at time $t+1$ the surfer follows an outlink $(v,u)\in E$ chosen uniformly at random;
+	\item at time $t+1$ the surfer is at $u\in V$.
+\end{enumerate}
+
+Thus $p_{t+1} = M p_t$ when $p_{t+1} \approx p_t$ then the distribution is called stationary.
+
+For graphs that satisfy the following conditions, the stationary distribution $\pi$ is unique and for any starting point $p_0$ on the $\abs{V}-1$ dimensional simplex the iterative process converges to $\pi$.
+\begin{description}
+	\item[Stochasticity] the matrix $M$ is stochastic;
+	\item[Acyclicity] the matrix $M$ is acylic;
+	\item[other] 
+\end{description}
+
+The google solution for the traps in cliques: at each time step the random surfer has two options
+\begin{itemize}
+	\item[carry on] continue its random walk with $\beta$;
+	\item[teleport] restart the random walk from a randomly chosen node $V$ with probability $1-\beta$.
+\end{itemize}
+
+Therefore the transition probability matrix becomes $A = \beta M + (1-\beta)U$ where $U = \underset{V\times 1}{1}\frac{1}{1'1}\underset{1\times V}{1'}$ is the uniform transition matrix.
+The matrix $A$ is still stochastic. Find the eigenvectors of $A$ with unit eigenvalues.
+
+What to do with pure sink nodes?
+\begin{itemize}
+	\item immediately teleport from dead-ends;
+	\item eliminate the dead ends: \begin{itemize}
+		\item multiple passes;
+		\item approximate the values for dead-ends by propagating values from the reduced graph.
+	\end{itemize}
+\end{itemize}
+
+Computing the page rank matrix. Use sparsity of the matrix $M$:
+\[r_{t+1} = A r_t = \beta M r_t + (1-\beta) U r_t = \beta M r_t + (1-\beta) \frac{1}{\abs{V}}\]
+then load-multiply-store.
+
+\subsection{Topic specific page rank} % (fold)
+\label{sub:topic_specific_page_rank}
+
+Modify the page rank so that the teleportation happens only to nodes in a specific subset.
+
+% subsection topic_specific_page_rank (end)
+
+% subsection page_rank (end)
+
+\subsection{Hubs and authorities} % (fold)
+\label{sub:hubs_and_authorities}
+
+A bipartite graphs of hubs $H$ and authorities $A$.
+\begin{itemize}
+	\item a hub aggregates links to other nodes;
+	\item 
+\end{itemize}
+A good hub links to many good authorities, while a good authority is linked from many good hubs.
+
+There re two scores for each node the hub score $h$ and the authority score $a$.
+
+We need two matrices $A^+$ and $A^-$ corresponding to inward and outward adjacency respectively.
+In fact $A^+ = \big( A^- \big)'$.
+
+Relationship between scores: \begin{description}
+	\item[The hub score] \hfill\\
+		the score is proportional to the sum of the authority scores of the nods linking to it:
+		$h = \lambda A a$ with $\lambda$ -- hub - scaling factor;
+	\item[The authority score] \hfill\\
+		Similarly this score is derived from the sum of the scores of hubs linking to it:
+		$a = \mu A' h$ with $\mu$ -- authority - scaling factor;
+\end{description}
+
+% subsection hubs_and_authorities (end)
+
+Core-wise scoring: use min-cut to split.
+
+HITS is prone to rigging, which is why PageRank superseded it.
+
+% section lecture_7 (end)
+
+\section{Lecture \# 8} % (fold)
+\label{sec:lecture_8}
+
+\subsection{Recommendation Systems} % (fold)
+\label{sub:recommendation_systems}
+
+The basic idea is that similar object share similar preferences.
+
+User-based
+Suppose we have a relationship $R\subseteq U\times I$ between the users $U$ and the items $I$.
+Assume there is a ``measure'' $\sigma$ of similarity on the set of users $U$ (a pseudo metric on $U\times U$).
+
+Define the set $N_\theta(u) \defn \obj{ u \neq u_0,\, \sigma(u_0, u) \geq \theta}$ -- the users 
+similar to the given one $u_0$.
+
+Item-based (a ``transposed'' problem)
+ see the photos of the slides
+
+Cosine similarity measure reflect the alignment of two vectors, which is good in recommendation systems.
+
+% subsection recommendation_systems (end)
+
+\subsection{Boolean matrix factorisation} % (fold)
+\label{sub:boolean_matrix_factorisation}
+
+Basic Matrix factorisation techniques.
+
+\noindent\textbf{SVD}\hfill \\
+Given a matrix $A\in \Cplx^{m\times n}$ ($m>n$). Then the SVD decomposition is 
+\[A = U \bigg(\begin{matrix}\Sigma \\ 0\end{matrix}\bigg) V'\]
+where $U\in \Real^{m\times m}$, $U'U = I_m$, and $V\in \Real^{n\times n}$, $V'V = I_n$
+and $\Sigma$ -- is the diagonal matrix of non-zero singular values.
+
+\noindent\textbf{NMF}\hfill \\
+Given a matrix $A\in \Real^{m\times n}$ find matrices $W\in \Real^{m\times k}$ and
+$H\in \Real^{k\times n}$ with positive elements such that $A\approx W H$.
+
+\noindent\textbf{BMF}\hfill \\
+Given a boolean matrix $B\in \obj{0,1}^{m\times n}$ find $P\in \obj{0,1}^{m\times k}$ and
+$Q\in \obj{0,1}^{k\times n}$ such that $B = P\circ Q$, where 
+\[(P \circ Q)_{ij} \defn \bigvee_{l=1}^k P_{il}\wedge Q_{lj} \]
+
+% subsection boolean_matrix_factorisation (end)
+
+\subsection{Formal concept analysis (again)} % (fold)
+\label{sub:formal_concept_analysis}
+
+The item set $G$ and the feature set $M$, with a relation $I\subseteq G\times M$
+give a context $(G,M,I)$ with Galois connection $(\cdot)'$ between $(\mathcal{P}(G),\subseteq)$ and $(\mathcal{P}(M),\subseteq)$.
+% \emptyset' = M -- Нитко любит всё, а ничто лиюбимо всеми (\emptyset' = G)
+
+% slide with a theorem.
+
+
+Projecting a new person with a given preferences $u_0\in \obj{0,1}^{1\times n}$ onto the computed factors $I=P\circ Q$ : 
+use boolean multiplication $\underset{k\times 1}{f_0} = Q \circ u_0'$ to get the estimates of the values of the hidden
+factors, and then compute the boolean product $i_0 = P\circ f_0$ of recommendations.
+
+
+
+
+
+
+% subsection formal_concept_analysis (end)
+
+
+
+% section lecture_8 (end)
 
 \end{document}
