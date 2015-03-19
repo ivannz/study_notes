@@ -61,7 +61,7 @@ A stable generalised matching is
 	to the partners assigned by $\mu$.
 \end{description}
 
-The matching algorithm $O\big(|U||V|\big)$:
+The matching (\textbf{deferred acceptance}) algorithm $O\big(|U||V|\big)$:
 \begin{itemize}
 	\item match each $U$ with the most preferred alternative in $V$;
 	\item for each $v\in V$ keep the match with the most preferred among those $u\in U$ with $\mu(u)=v$;
@@ -122,8 +122,25 @@ Real life applications:
 \begin{itemize}
 	\item university acceptance;
 	\item patent-donor matching;
-	\item allocation of medical graduates to internships: UK's National Resident Matching Program.
+	\item allocation of medical graduates to internships: UK's National Resident Match Program.
+	One of the main problems is that the preferences may be changing in time, and thus this matching
+	is dynamically unstable. Also there might be coupled preferences between pairs of future interns
+	(family ties).
 \end{itemize}
+
+Coupled preferences may cause the loss of stability. Roth and Peranson (?) devised a mechanism,
+which minimizes the number of blocking pairs. In practice it turned out, that if there share
+of coupled preferences is low, then the probability of unstable matching is low as well.
+
+How to incorporate the interview process in the matching mechanism. Interviews permit preference
+discovery. Which is more important: to reveal the preferences, or to get a stable match?
+
+School matching is a different problem, since schools (in general) are not allowed to have preferences.
+Also is there an issue of stability? On the one hand it is meaningless, since schools have no preferences.
+However, in practice (Boston), from the point of view of fairness, stability is important so that 
+individual rights are not violated.
+
+
 
 % section applications (end)
 
