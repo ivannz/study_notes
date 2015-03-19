@@ -1,0 +1,120 @@
+Устюжании Андрей Евгениевич
+% Лямбда -- Лаборатория методов анализа больших данных
+LAMBDA -- Laboratory of Methods for Big Data Analysis
+
+What is this laboratory?
+Competence in big data analysis
+Group in the following fields:
+	CERN -- particle physics and big data
+	Computational biology
+
+Other fields of study that require big data algorithms, mathematics and approach
+
+Big data analysis in particle physics? No need for in depth physical background to solve the problems.
+
+The basic process is the same:
+... -> hypothesis -> experiment -> refined hypothesis -> Experiment -> ...
+
+Analysis of particle collision data
+The need for deeper theory spurred the need for finer experiments, which in turn required more precision and yielded more data.
+
+Four particle collision chambers: LHCb CMS ATALS ALICE.
+
+Huge experiments require processing of enormous volumes of data
+% Millennium Falcon
+
+Scientists are interested in what happen in the immediate vicinity of a proton-proton particle collision.
+
+It's like learning how the telephone works by studying the shards and their trajectories from a collision with a rock.
+
+Particle jets, particle tracks
+
+\begin{itemize}
+	\item The standard model;
+	\item the new physics (supper symmetry, strings et c.).
+\end{itemize}
+
+Just compare the probability of a particular particle fission under one hypothesis and another.
+
+An event in particle physics is a photograph of a certain particle collision with tracks, jets, hits and vectors and momenta.
+
+LHCb \underset{10^7 \text{per sec.}}{\to} Farm \underset{<10^4 \text{per sec.}}{\to} GRID
+
+Hypothesis testing: a collection of events with a predefined set of features (further selected for a particular experiment).
+The is a need for splitting the data into signal and background events.
+The goal is to train a model, which could discriminate \emph{the signal from the noise}
+
+The criteria of a decision rule:
+\begin{itemize}
+	\item Efficiency
+	\item Bias
+	\item ... (?)
+\end{itemize}
+
+$X$ o=is extracted from each event
+a clasifier $g(\cdot)$ is trained to discriminate \emph{the signal from the background}
+
+The background is estimated in the selection region
+\[G \defm \obj{\induc{x}\, g(x\geq s)}\]
+
+A \emph{discovery} is made when the number of real events $n$ in $G$ is significantly higher than $b$
+
+Particle collision simulator with particle detector simulators (Monte Carlo methods) are used to generate a training sample for the purposes of classifier training.
+
+
+Simple cuts classifier, later evolves into some more sophisticated discriminative separating hypersurface.
+
+If we measure a new signal sufficiently inconsistent with the background-only hypothesis we can claim a discovery of a new physics phenomenon.
+
+The magnitude is measured in terms of significance.
+
+Analysis Value chain (process)
+
+Data \to Pre-selection \to Pre-processing \to Event selection (cut based / MVA based) \to Counting/fitting \to Systematics estimation \to Significance estimation.
+
+% An outlier can be a signal!!!
+Improvements in big data analysis and algorithms:
+\begin{itemize}
+	\item Newer discrimination (deep learning, binary-decision tree)
+	\item Improved feature
+	\item sophisticated training scenarios
+\end{itemize}
+There is a certain inertia (as usual) in adaptation of newer algorithms.
+
+A too flexible decision boundary too closely conforms to the training sample -- overfitting.
+The need for independent cross validation.
+
+Likelihood
+Misclassification
+False positive Rate
+Punzi measure
+
+Reproducibility is important everywhere, and most importantly in data analysis.
+% iPython <- git <- 
+% Pinball-effect by James Birk
+
+LHCb simulation - Data -> classifier
+
+Its behaviour and compare the distribution of the input data and the manner in which the classifier 
+% arxiv.org/abs/1410.4140v1
+
+% Homomorphic encryption 
+% Privacy encoding
+
+
+Phase space: SVM even with very intricate kernels still are beaten by boosting and binary decision trees.
+Neural Network topology with the trained weights are still uninterpretable black boxes.
+
+Rectangular cuts (rectal cuts)
+
+On interesting goal is how to approximate a classifier by cuts or binary trees?
+
+% Physics and machine learning synergy: Bishop (yes, that one) is a physics to machine learning convert.
+
+
+anaderi@yandex-team.ru
+
+Мотивационное письмо плюс краткое резюме о прослушанных курсах
+
+
+

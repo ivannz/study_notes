@@ -1,0 +1,151 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{xfrac, mathptmx}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Bootstrap confidence sets}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+\begin{document}
+\selectlanguage{english}
+\maketitle
+
+For lecture notes, slides and exercises refer to \url{www.premolab.ru}
+
+\section{Multiplier bootstrap for confidence estimation} % (fold)
+\label{sec:multiplier_bootstrap_for_confidence_estimation}
+
+A popular version of the presentation given elsewhere...
+
+
+Assume $Y=\brac{Y_k}_{k=1}^n$ independent and identically distributed with joint distribution $\Pr = \mathcal{L}(Y)$ absolutely continuous  with respect to $\mu_0$
+
+\textbf{PARAMETRIC ASSUMPTION}\hfill\\ $\Pr \in \brac{\Pr_\theta, \theta\in \Theta}$ yields the log likelihood:
+
+\[L\brac{Y, \theta} = L(\mathbf{\theta}) = \log\frac{d\Pr_\theta(Y)}{d\mu_0} = \sum_{i=1}^n l(\theta)\]
+
+The MLE is
+\[\hat{\theta} = \text{argmax}_{\theta\in \Theta}L(\theta)\]
+
+The maximization of the Kullback - Leibler distance with respect to the true distribution $\Pr$
+\[\theta^* = \text{argmax}_{\theta\in \Theta} \Ex L(\theta)\]
+
+Observed vector $Y_i$ and $\Psi_i\in \Real^p$ of feature. A Generalised Linear Model:
+\[Y_i \sin P_{\Psi_i'\theta}\in P_\nu\]
+
+Parametric approach allows to estimate the parameter and its confidence set:
+\[\theta^* = \text{argmax}_{\theta\in \Theta} \Ex L(\theta)\]
+
+\textbfL{ikelihood} \textbfR{atio} confidence set is given by:
+\[I(\epsilon) = \obj{\induc{\theta\in \Theta} L(\hat{\theta}) - L(\theta) \leq \epsilon }\]
+
+The coverage probability is
+\[\Pr\brac{\theta^*\in I(\epsilon)} = \Pr\brac{ L(\hat{\theta}) - L(\theta) \leq \epsilon }\]
+
+Problem: given the nominal level $\alpha$ pick $\epsilon$ to enusre 
+\[\Pr\brac{\theta^*\in I(\epsilon)}  \approx 1-\alpha\]
+with respect to the true measure.
+
+Suppose the parametric assumption is correct, then asymptotically (iid is not required)
+\[2L(\hat{\theta}) - 2L(\theta) \overset{n\to\infty}{\to} \chi^2_p\]
+so we can pick the $1-\alpha$ quantile and use it to construct the CI.
+
+We know the likelihood and its maximum, so we can construct the interval.
+
+\begin{itemize}
+	\item The LR confidence set id asymptotically pivotal (does not depend on the distributional assumptions);
+	\item The estimate of the variance of $\hat{\theta}$ is not needed;
+	\item Requires the knowledge of the true pa, otherwise the asymptotic pivotal property breaks down;
+	\item Slow convergence. 
+\end{itemize}
+
+Wilks expansion:
+\[\abs{ 2\brac{L(\hat{\theta}) - L(\theta^*) } - \nrm{\xi}^2 } \leq \Delta \propto \sqrt{\frac{p^3}{n}}\]
+where $\xi$ as a centred approximately Gaussian $p$-dimensional vector.
+
+Square root Wilks
+\[\abs{ \sqrt{2}\sqrt{L(\hat{\theta}) - L(\theta^*) } - \nrm{\xi} } \leq \Delta \propto \frac{p}{\sqrt{n}}\]
+
+% section multiplier_bootstrap_for_confidence_estimation (end)
+
+\section{Multiplier bootstrap} % (fold)
+\label{sec:multiplier_bootstrap}
+
+Let $\brac{Y_i}_{i=1}^n$ be some fixed sample data. Introduce some iid random weights $\brac{u_i}_{i=1}^n$.
+
+Bootstrap treats the sample data as deterministic, imposes some distribution $F^\circ = \brac{u_i}_{i=1}^n$.
+
+Bootstrap likelihood
+\[ L^\circ(\theta) \defn \sum_i l_i(\theta)u_i\]
+
+We think that the $L^\circ(\theta)$ approximates well the limiting distribution.
+Observe that $\Ex^\circ L^\circ(\theta) = L(\theta)$.
+
+Therefore 
+\[\text{argmax}_{\theta\in \Theta} \Ex^\circ L^\circ(\theta) = \text{argmax}_{\theta\in \Theta} L(\theta) = \hat{\theta}\]
+
+In bootstrap we now the true distribution, that is its main idea.
+
+The confidence set is constructed similarly to the usual case.
+
+Everything with ${\cdot}^\circ$ as the sample $\brac{Y_i}_{i=1}^n$ in its base.
+% Cf [Chatterjee and Bose, 1999]
+
+The main result is that with high probability
+\[\sup_{\eta^\circ} \abs{ \Pr\brac{T\geq \eta^\circ} -\Pr^\circ\brac{T^\circ\geq \eta^\circ} } \leq \Delta\]
+
+what is the approximation error? how does it depend on the sample size?
+
+%% Slide~13
+%% $\theta^*$ is called the Kullback-Leibler fit
+The sample $\brac{Y_i}_{i=1}^n$ is frozen. And the true theta is actually $\hat{\theta}$.
+
+The proof outline
+\begin{align*}
+	\text{Real world}&\\
+	\sqrt{2L(\hat{\theta}) - 2L(\theta^*) } &\approx \nrm{\xi} \approx \nrm{\bar{\xi}}\\
+	& \text{Gaussian comparison}\\
+	&\approx \nrm{\bar{\xi}^\circ} \approx \nrm{\xi^\circ} \approx \sqrt{2L(\hat{\theta}^\circ) - 2L(\hat{\theta}) }
+	\text{Bootstrap world}&
+\end{align*}
+
+%% Slide~16
+Full cumulative fisher information matrix
+\[D^2 \defn -\nabla^2 \Ex L(\theta^*)\]
+
+%% Slide~27
+\[\text{KL}\brac{\Pr_0,\Pr_1} = - \Ex_0 \frac{d\Pr_1}{d\Pr_0}\]
+
+%% Slide~29
+Real world data are absolutely unrelated to the parametric assumptions.
+
+the second fiser matrix is deterministic while the first one is random (equations 4 and 2 respectively).
+
+% section multiplier_bootstrap (end)
+
+\end{document}
+

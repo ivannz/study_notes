@@ -1,0 +1,55 @@
+Methods of detecting graph similarity.
+
+\begin{itemize}
+	\item Widely used in chemistry to predict toxicity and in social network analysis.
+	\item 3D-object recognition
+	\item conceptual graphs in automatic textual analysis
+\end{itemize}
+
+Regularity principle: similar tasks should have similar solutions.
+Graph similarity is defined in terms of a similarity function
+\[\rho:\Gcal\times \Gcal\ \to \big[0,1\big]\]
+
+\noindent\textbf{Problem statement} \hfill\\
+Minimize the functional on the training sample
+\[\min_\rho \sum_{i,j} \big(1-\rho(G_i,G_j)\big) 1_{c(G_i)=c(G_j)} + \rho(G_i, G_j) 1_{c(G_i)\neq c(G_j)} \]
+where $\big( G_i, c(G_i)\big)_{i=1}^n$ is a class labelled training sample.
+
+Exact methods and approximate methods.
+
+Tree search includes isomorphism
+
+Labelled graph isomorphism $G_1\sim G_2$ iff there exists $\phi:V_1\to V_2$ such that 
+\[ \big(\phi(u),\phi(v)\big)\in E_2 \Leftrightarrow (u,v)\in E_1\]
+and $L_v = L_{\phi(v)}$ for all $v\in V_1$ and conversely.
+
+Graph isomorphism as a boolean function is a poor similarity function.
+Exact isomorphism testing on real world data is not used due to many reasons: \begin{itemize}
+	\item Complexity;
+	\item Missing data;
+	\item Label noise.
+\end{itemize}
+
+Relaxation
+
+Subgraph isomorphism based on the maximal isomorphic subgraph of $G_1$ and $G_2$:
+\[\rho(G_1,G_2) = 1 - \frac{\lvert\text{mcs}(G_1, G_2)\rvert}{\max(|G_1|,|G_2|)}\]
+this is a \textbf{real} metric on the graph space. This problem reduces to maximal clique detection.
+
+Different graph isomorphism algorithms \begin{itemize}
+	\item Ulhman's algorithm;
+	\item VF2;
+	\item Bron-Kerbosch.
+\end{itemize}
+
+Ulhman's algorithm works on undirected unlabelled graphs.
+It is important to notice that a vertex can be mapped to another vertex only if their degrees match.
+The basic idea is to narrow the search space only to the so called candidates.
+
+Graph edit distance is what graph isomorphisms reduce to.
+
+Continuous optimisation. Construct a vector representing a given graph in some space, then run some optimisation procedure and finally reconstruct the graph.
+
+Spectral graph similarity detects the structural similarity.
+
+
