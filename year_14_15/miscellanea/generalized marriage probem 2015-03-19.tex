@@ -1,0 +1,130 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{xfrac, mathptmx}
+
+\newcommand{\obj}[1]{{\left\{ #1 \right \}}}
+\newcommand{\clo}[1]{{\left [ #1 \right ]}}
+\newcommand{\clop}[1]{{\left [ #1 \right )}}
+\newcommand{\ploc}[1]{{\left ( #1 \right ]}}
+
+\newcommand{\brac}[1]{{\left ( #1 \right )}}
+\newcommand{\induc}[1]{{\left . #1 \right \vert}}
+\newcommand{\abs}[1]{{\left | #1 \right |}}
+\newcommand{\nrm}[1]{{\left\| #1 \right \|}}
+\newcommand{\brkt}[1]{{\left\langle #1 \right\rangle}}
+\newcommand{\floor}[1]{{\left\lfloor #1 \right\rfloor}}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+
+\usepackage[russian, english]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{the Generalized marriage problem}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+\begin{document}
+\selectlanguage{english}
+\maketitle
+
+\section{generalised matching problem} % (fold)
+\label{sec:generalised_matching_problem}
+
+the goal of economic mechanism design to devise a system with rules and roles
+to facilitate the interaction of economic agents in achieving a preferred common goal.
+Usually this is based on preferences of agents.
+
+In a bipartite graph $\big((U, V), E\big)$ the marriage is a set of non-adjacent edges
+$H\subseteq E$ such that $(u,v)\in H$ with $u\in U$ and $v\in V$.
+
+In the mechanism design, the central planner might maximize the combined utility of each node (agent).
+
+Generalized matches take into account the matching preferences among $U$ and $V$:
+\begin{itemize}
+	\item $U, V\subseteq A$ -- finite no-overlapping subsets of agents;
+	\item a set $\mu$, a matching map, such that $\mu(u) = v$ if and only if $\mu(v)=u$;
+	\item $\mu(u)\in V\cup \{u\}$ and $\mu(v)\in U\cup \{v\}$ -- it is not prohibited to be forever alone.
+\end{itemize}
+
+A stable generalised matching is 
+\begin{description}
+	\item[Engagement] for all $x\in U\cup V = A$ with $\mu(x) \neq x$ is is true that $\mu(x)\preceq_x x$;
+	\item[Pairwise stability] there is no $x\in U$ and $y\in V$ such that $x\preceq_y \mu(y)$
+	\textbf{and} $y\preceq_x \mu(x)$, meaning that no pair of agents mutually prefer each other
+	to the partners assigned by $\mu$.
+\end{description}
+
+The matching algorithm $O\big(|U||V|\big)$:
+\begin{itemize}
+	\item match each $U$ with the most preferred alternative in $V$;
+	\item for each $v\in V$ keep the match with the most preferred among those $u\in U$ with $\mu(u)=v$;
+	\item for those $u\in U$, whose choices were rejected choose the next best alternative among the remaining $V$;
+	\item the iterations continue until every $u\in U$ has a match, or exhausted the list of admissible preferences.
+\end{itemize}
+
+the $\preceq_x$ for $x\in A$ are linear orders, but in general it is important to ensure that
+the preferences be acyclic.
+
+The algorithm run on $U$ and $V$ provides different results, and in general matching from $U$ 
+produces $\mu$ that is sub-optimal with respect to $V$, but is optimal from the point of view of $U$, and vice versa.
+
+Properties of deferred acceptance mechanism
+\begin{itemize}
+	\item stable matches;
+	\item the agents $u\in U$ have incentive not to distort their preferences $\preceq_u$,
+	whereas $v\in V$ may manipulate their preferences $\preceq_v$ in order to get a better match.
+	The proposing side always has incentives to be honest.
+\end{itemize}
+Preference manipulation is better done in the complete information setting.
+Preference truncation by making some alternatives unacceptable.
+
+% section generalised_matching_problem (end)
+
+\section{One-to-many} % (fold)
+\label{sec:one_to_many}
+
+In practice, a more interesting problem is one to many matching
+\begin{itemize}
+	\item $U, V\subseteq A$ -- finite no-overlapping subsets of agents;
+	\item elements $u$ and $v$ form their preferences and each $v\in V$ sets a quota $q_v$ of matches;
+	\item a set $\mu$, a matching map, such that $\mu(u) = \{v\}$ if and only if $u\in \mu(v)$
+	% \item $\mu(u)\in V\cup \{u\}$ and $\mu(v)\in U\cup \{v\}$ -- it is not prohibited to be forever alone.
+	%% missed the last items..
+\end{itemize}
+
+Constraints on admissible $\mu$: \begin{itemize}
+	\item individual rationality for $U$ and $V$;
+	\item absence of blocking pairs in $U\time V$. A pair $a,b$ is blocking if \begin{description}
+		\item[either] $b\preceq_a\mu(a)$, $a\prec_b b$ and $\lvert\mu(b)\rvert<q_b$;
+		\item[or] $b\preceq_a\mu(a)$ and $\exist a'\in \mu(b)$, such that $a\prec_b a'$.
+	\end{description}
+\end{itemize}
+
+One-to-many deferred choice constructs
+\begin{itemize}
+	\item a stable matching, which is the most preferable Pareto efficient for the \textbf{proposing} side;
+	\item the accepting side may manipulate the preferences.
+\end{itemize}
+
+% section one_to_many (end)
+
+\section{Applications} % (fold)
+\label{sec:applications}
+
+Real life applications:
+\begin{itemize}
+	\item university acceptance;
+	\item patent-donor matching;
+	\item allocation of medical graduates to internships: UK's National Resident Matching Program.
+\end{itemize}
+
+% section applications (end)
+
+\end{document}
