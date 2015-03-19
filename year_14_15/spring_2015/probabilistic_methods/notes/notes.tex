@@ -251,7 +251,7 @@ If $x_k\uparrow$, then CDFs of a deterministic sequence do converge to the CDF o
 $X_k\overset{D}{\to}X$ if and only if $F_{X_n}\to F_X$ at any point of continuity of $F$.
 
 \noindent \textbf{Proposition} 2 (Helly)\hfill \\
-Every sequence of distribution functions $\brac{F_n}_{n\geq1}$ it is possible to select a subsequence, such that $F_{n_k}$ converges to some function $F$ at every point of continuity of $F$ and such that $F$ is monotonous.
+For every sequence of distribution functions $\brac{F_n}_{n\geq1}$ it is possible to select a subsequence, such that $F_{n_k}$ converges to some function $F$ at every point of continuity of $F$ and such that $F$ is monotonous.
 
 Note that the function $F$ is non-normalised.
 
@@ -262,7 +262,7 @@ Proof. Suppose $\brac{q_n}_{n\geq 1}$ enumerates $\mathbb{Q}$.
 The sequence $\brac{F_n(q_1)}_{n\geq1}$ is bounded, hence it has a convergent subsequence, whence exists $\brac{k_n}\uparrow\infty$ such that $F_{k_n}(q_1)$ converges to some $F(q_1)$.
 Consider $\brac{F^1_n}_{n\geq 1}\defn\brac{F_{k_n}}_{n\geq1}$ as a new sequence, and apply the same argument to it recursively.
 
-Finally we get a sequence $\brac{F^m_n}_{n\geq1}$ such that $F^m_n(q_l)$ converges to $F(q_l)$ for all $l\leq m$ as $n\to \infty$, either by being a subsequence or by the choice of the subsequence $n_k$.
+Finally we get a sequence $\brac{F^m_n}_{n\geq1}$ such that $F^m_n(q_l)$ converges to $F(q_l)$ for all $l\leq m$ as $n\to \infty$, either by being itself a subsequence or by the choice of the subsequence $k_n$.
 
 Use Cantor's diagonal argument: form a new sequence $\brac{F^n_n}_{n\geq1}$. This sequence converges at any $q\in\mathbb{Q}$ to $F(q)$.
 
@@ -394,7 +394,7 @@ Thus $1 \leq \int dF$. But $\int dF$ cannot strictly exceed $1$, whence $F$ is a
 
 \noindent\textbf{Lyapunov's Central Limit Theorem} \hfill\\
 Suppose $X_k$ are i.i.d. with $\Ex X_k = \mu$ and $\Ex X_k^2 = \sigma^2$. Introduce the following sequence:
-\[Y_n = \frac{\sum_{k=1}^n X_k - n \mu }{\sqrt{n}}\]
+\[Y_n = \frac{\sum_{k=1}^n X_k - n \mu }{\sqrt{n}\sigma}\]
 Then $Y_n\overset{D}{\to}\mathcal{N}(0,1)$
 
 \textbf{Proof}\hfill\\
@@ -415,7 +415,7 @@ Another way: due to independence of $X_k$ and using the product-independence pro
 
 Therefore
 \[\phi_{Y_n}(s) = \phi_n(\frac{s}{\sqrt{n}\sigma}) = \brac{ 1 - \frac{s^2}{2n} + o(s^2) }^n\]
- where $o(\cdot)$ is uniformly infinitesimal with respect to $n$.
+where $o(\cdot)$ is uniformly infinitesimal with respect to $n$.
 
 Using a well known limit we get the following limit:
 \[\phi_{Y_n}(s) \to e^{-\frac{s^2}{2}}\]
@@ -446,7 +446,7 @@ Gamma distribution.
 
 It has all the moments, since the exponent decays very rapidly, faster than any polynomial.
 
-Some exampls of the $\gamma$ distribution are \begin{description}
+Some examples of the $\gamma$ distribution are \begin{description}
 	\item[$\chi^2_k$] A $\chi^2$ random variable is actually $\gamma\brac{\frac{k}{2},\frac{1}{2}}$;
 	\item[$\text{Exp}(\lambda)$] An exponential distribution is a particular case of the Gamma distribution: $\text{Exp}(\lambda) \sim \gamma(1,\lambda)$.
 \end{description}
@@ -492,26 +492,28 @@ Since $p(x)$ is symmetrical
 \end{align*}
 
 Now the first integral is just \begin{align*}
-	\int_{-1}^1 e^{-isx} dx &= \int_{-1}^1 \cos{sx} -i\sin{sx} dx \\ 
-	&= \int_{-1}^1 \cos{sx} dx - i \int_{-1}^1 \sin{sx} dx \\
+	\int_{-1}^1 e^{-isx} dx &= \int_{-1}^1 \cos{sx} - i\sin{sx} dx \\ 
+	& = \int_{-1}^1 \cos{sx} dx - i \int_{-1}^1 \sin{sx} dx \\
 	& =  \induc{\frac{\sin{sx}}{s}}_{-1}^1 - i \induc{\frac{-\cos{sx}}{s}}_{-1}^1\\
 	& = \frac{\sin{s}}{s}-\frac{\sin{-s}}{s} = 2 \frac{\sin{s}}{s} = 2 \frac{\sin\abs{s}}{\abs{s}}
 \end{align*}
 while the second is a little bit more intricate:
 \begin{align*}
 	\brac{\int_1^\infty + \int_{-\infty}^{-1}} \frac{e^{-isx} }{\abs{x}^{\alpha+1}} dx
-	&= \int_1^\infty \frac{\cos{sx}-i\sin{sx}}{x^{\alpha+1}} dx + \int_{-\infty}^{-1} \frac{\cos{sx}-i\sin{sx}}{\brac{-x}^{\alpha+1}} dx \\
-	&= \int_1^\infty \frac{\cos{sx}-i\sin{sx}}{x^{\alpha+1}} dx + \int_1^\infty \frac{\cos(-sy)-i\sin(-sy)}{y^{\alpha+1}} dy \\
-	&= \int_1^\infty \frac{2\cos{sx}}{x^{\alpha+1}} dx = 2\int_1^\infty \frac{\cos{\abs{s}x}}{x^{\alpha+1}} dx \\
-	& = 2\abs{s}^\alpha \int_1^\infty \frac{\cos{\abs{s}x}}{\brac{\abs{s}x}^{\alpha+1}} \abs{s}dx = \clo{\xi = \abs{s}x} = 2\abs{s}^\alpha \int_{\abs{s}}^\infty \frac{\cos \xi}{\xi^{\alpha+1}} d\xi
+	& = \int_1^\infty \frac{\cos{sx}-i\sin{sx}}{x^{\alpha+1}} dx + \int_{-\infty}^{-1} \frac{\cos{sx}-i\sin{sx}}{\brac{-x}^{\alpha+1}} dx \\
+	& = \int_1^\infty \frac{\cos{sx}-i\sin{sx}}{x^{\alpha+1}} dx + \int_1^\infty \frac{\cos(-sy)-i\sin(-sy)}{y^{\alpha+1}} dy \\
+	& = \int_1^\infty \frac{2\cos{sx}}{x^{\alpha+1}} dx = 2\int_1^\infty \frac{\cos{\abs{s}x}}{x^{\alpha+1}} dx \\
+	& = 2\abs{s}^\alpha \int_1^\infty \frac{\cos{\abs{s}x}}{\brac{\abs{s}x}^{\alpha+1}} \abs{s}dx
+	= \clo{\xi = \abs{s}x}
+	= 2\abs{s}^\alpha \int_{\abs{s}}^\infty \frac{\cos \xi}{\xi^{\alpha+1}} d\xi
 \end{align*}
 
 Thus the characteristic function simplifies to
 \[\phi(s) = A \frac{\sin\abs{s}}{\abs{s}} + A \abs{s}^\alpha \int_{\abs{s}}^\infty \frac{\cos \xi}{\xi^{\alpha+1}} d\xi \]
 
 The integral can be dealt with in the following way: if $\alpha>0$ then \begin{align*}
-	\int_{\abs{s}}^\infty \frac{\cos \xi}{\xi^{\alpha+1}} d\xi & = 
-	\int_{\abs{s}}^\infty \frac{1}{\xi^{\alpha+1}} d\xi - \int_{\abs{s}}^\infty \frac{\xi - \cos\xi}{\xi^{\alpha+1}} d\xi\\
+	\int_{\abs{s}}^\infty \frac{\cos \xi}{\xi^{\alpha+1}} d\xi
+	& = \int_{\abs{s}}^\infty \frac{1}{\xi^{\alpha+1}} d\xi - \int_{\abs{s}}^\infty \frac{\xi - \cos\xi}{\xi^{\alpha+1}} d\xi\\
 	& = \induc{-\frac{\xi^{-\alpha}}{\alpha}}_{\abs{s}}^\infty - \int_{\abs{s}}^\infty \frac{\xi - \cos\xi}{\xi^{\alpha+1}} d\xi
 \end{align*}
 %%  FINISH AT HOME!!!
@@ -1684,7 +1686,7 @@ whence $\log N^*_\epsilon(A) = -\alpha \big(\log \epsilon + o(1)\big)$
 and
 \[N^*_\epsilon(A) = \epsilon^{-\alpha}e^{-\alpha o(1)}\]
 
-thereore
+therefore
 \[H_\alpha(A) = \lim_{\epsilon} \inf_{*} \sum_n \text{diam}(S_n)^\alpha \leq \lim_{\epsilon} \epsilon^{-\alpha}e^{-\alpha o(1)} \epsilon^\alpha \]
 
 
@@ -1903,5 +1905,99 @@ However the estimates $\hat{\sigma}^2$ and $\hat{\theta}$ are independent. It is
 % subsection properties_of_mle (end)
 
 % section lecture_12 (end)
+
+\section{Lecture \# 13} % (fold)
+\label{sec:lecture_13}
+
+The mid-term assessment is the following tasks to be handed due the 1st of April:
+\begin{enumerate}
+	\item None;
+	\item \rus{У2.12, У2.13, У2.14, У2.18};
+	\item None;
+	\item \rus{У4.2, У4.11, У4.12, У4.16};
+	\item \rus{Лекция~2, упр. в разд.~3.1}.
+\end{enumerate}
+
+\subsection{Legendre transform} % (fold)
+\label{sub:legendre_transform}
+
+This would be a small digression into the topic of convex analysis. The main beauty of the
+convex analysis is that the objects studies admit dual representations.
+
+Based on the analysis of functions.
+
+Consider a linear space $L$ over $\Cplx$. A set $M$ is called convex if $x\alpha + y (1-\alpha)\in M$ for all $x,y\in M$ and for every $\alpha\in [0,1]$
+A function $f: L\to \Real$, with $M\subseteq L$ is convex is its supergraph is convex:
+\[\text{epi}(f) = \big\{\big. (x,y)\in \Real^{d+1} \big.\big\lvert y\geq f(x)\big.\big\}\]
+this also requires that $M$ be convex.
+If the function is not defined everywhere, then outside its domain it is extended to a map taking values $+\infty$.
+This enables relaxation of the definition to arbitrary domains.
+
+We will be considering the function with closed supergraph only. The function must be finite on the closure of its support.
+In other terms only lower semi-continuous functions are considered.
+
+If $(\Omega,\Tcal)$ is a topological space, then the function $f:\Omega\to\Real$ is lower semi-continuous at
+$x\in \Omega$, $f(x)<+\infty$ if for every $\epsilon>0$ there exists $U\in \Tcal$ with $x\in U$ such that $f(y)\geq f(x)-\epsilon$.
+
+A convex hull of $S$ is the intersection of all \emph{closed} convex sets $C$ with $S\subseteq C$. A corner point is a point $y$ in $M$ such that it is not an internal point of any closed interval $x\alpha + z(1-\alpha)\in M$ for $\alpha\in(0,1)$. Excluding corner point does not necessarily 
+
+Geometrically, a convex function $f(x)$ is defined via the envelope of tangent hyperplanes:
+\[f(x) = \sup_p \big\{ \brkt{p,x} - \phi(p) \big\}\]
+where $\phi(p)$ is the elevation of the tangent hyperplane with normal $p$.
+
+This expression implies the Young inequality:
+\[f(x) + \phi(p) \geq \brkt{p,x}\]
+since $f$ and $\phi$ are symmetric in this inequality., which begs the question whether it is possible to represent $\phi$ though $f$.
+For example with this expression:
+\[\phi(p) = \sup_x \big\{\brkt{x,p}-f(x)\big\}\]
+which cloud yield a canonical representative of all functions that may generate $f$.
+
+\textbf{A counter example}.\hfill \\
+Consider $f(x) = \lvert x \rvert$. Then $f(x) = \max\{-x,x\}$ and $f(x) = \sup\{-1\cdot x, 1\cdot x\}$
+which means that $\phi(\pm1)=0$. HOw to define $\phi(s)$ for $s\in (-1,1)$, since outside for finite values the tangent hyperplane would not be tanget to $f$ at all. Thus $\phi(p)=\infty$ for $p\notin [-1,1]$. At $p=0$ the function $\phi$ is allowed to take any positive value.
+
+The loss of smoothness at points leads to failure of the dual to be strictly convex.
+Thus a good canonical class is that of smooth strictly convex functions.
+
+\textbf{An example}.\hfill \\
+If $f$ is smooth convex function, $f=\alpha x^2$, then
+\[\phi(x_0) = \alpha x_0^2 + 2\alpha x_0 (x-x_0)\]
+whence 
+\[\phi(x_0) = \alpha x_0^2 - 2\alpha x_0 x = \frac{p^2}{4 \alpha} - p x\]
+for $p = 2\alpha x_0$, which implies that
+\[\alpha x^2 = \sup_{p} \big\{ px - \frac{p^2}{4\alpha}\big\}\]
+which is a canonical representative.
+
+Support hyperplanes of $f$ are such that they lie entirely below $f$.
+A convex function has at least one support hyperplane at any point $x$.
+
+A precise definition:
+Suppose $f$ is convex. The sub-gradient of $f$ at $x_0\in \Real^d$ is such a dual vector
+$p\in\big(\Real^d)^*$ such that $f(x_0)+\brkt{p, x-x_0}\leq f(x)$ for all $x$.
+
+A sub-differential of a convex $f$ at $x_0$ is a collection of all of its sub-gradients:
+\[\partial f(x_0) = \big\{\big. p \big.\big\rvert \forall x f(x_0) + \brkt{p,x-x_0} \leq f(x) \big.\big\}\].
+If $f(x) = \lvert x\rvert$, then
+\[\partial f(x) = \bigg\{\begin{cases}
+	+1, &\text{ if } x>0\\
+	-1, &\text{ if } x<0\\
+	\text{conv}\big(\{-1,+1\}\big) &\text{ otherwise}
+\end{cases}\bigg.\]
+For $f(x) = \alpha x^2$, $\partial f(x) = 2\alpha x$.
+If the $\partial \lvert x\rvert$ is flipped (transposed), then it corresponds to a sub-differential of the Legendre transform of $\lvert x\rvert$.
+Indeed, for $f(x) = \alpha x^2$, $\partial f(x) = 2\alpha x$ and $\phi(p) = \frac{p^2}{4\alpha}$ with $\partial \phi(p) = \frac{p}{2\alpha}$.
+
+The Young's inequality $f(x) + \phi(p) \geq \brkt{p,x}$ yields pairs of adjoint points when the inequality turns into an equality.
+Is this relation invertible? In $d=1$ case the inverse is $p=\partial \phi(x)$ is monotonous in $x$.
+In $d>1$ case this property is called \emph{$k$-cyclical monotonicity}, with $k\geq2$: $x\mapsto p$ is cyclically monotonous if
+\[ \sum_{i=1}^{k-1} \brkt{p_i, x_{i+1}-x_i} + \brkt{p_k, x_1-x_k} \leq 0\]
+for all any $\big(x_i\big)_{i=1}^k$ and $p_i \in p(x_i)$.
+Ordinary monotonicity is $2$-cyclical monotonicity. Indeed, 
+\[\brkt{p_1, x_2-x_1}+\brkt{p_2, x_1- x_2} = \brkt{p_2-p_1, x_1-x_2}\leq 0\]
+
+% subsection legendre_transform (end)
+
+
+% section lecture_13 (end)
 
 \end{document}
