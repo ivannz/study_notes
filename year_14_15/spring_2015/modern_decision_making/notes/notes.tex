@@ -1624,7 +1624,7 @@ Now $\Pr\big(\beta'x+\epsilon > 0\big) = \Pr\big(\epsilon > -\beta'x\big) = 1-\P
 % section lecture_8 (end)
 
 \section{Lecture \# 9} % (fold)
-\label{sec:lecture_#_9}
+\label{sec:lecture_9}
 
 Two approaaches discrimimnative and generative.
 
@@ -1834,5 +1834,164 @@ In fact $Q(\theta^{(t)}, \theta^{(t)}) = l(\theta^{(t)})$ and $Q(\theta, \theta^
 
 % subsection mixture_of_gaussians_discriminant_analysis (end)
 
-% section lecture_#_9 (end)
+% section lecture_9 (end)
+
+\section{Lecture \# 10} % (fold)
+\label{sec:lecture_10}
+
+The EM algorithm is in two steps: \begin{description}
+	\item[E-step] $Q\brac{\theta, \theta^k} = \Ex_{p(z\lvertx, \theta^k) p(x,Z\lvert \theta)}$.
+	\item[M-step] $\theta^{k+1}=\text{argmax}_{\theta} Q\brac{\theta, \theta^k}$.
+\end{description}
+
+We need to show that $l(\theta^{k+1})\geq l(\theta^k)$. Two things. The LHS:
+\[l(\theta^k) = \sum \sum p(z_i\lvertx_i,\theta^k) \log\frac{p(x_i,z_i\lvert\theta^k)}{p(z_i\lvertx_i,\theta^k)}\]
+The RHS:
+\[l(\theta^{k+1}) \geq \sum \sum p(z_i\lvertx_i,\theta^k) \log\frac{p(x_i,z_i\lvert\theta^{k+1})}{p(z_i\lvertx_i,\theta^k)}\]
+whence 
+\[\ldots = Q(\theta^{k+1}, \theta^k) + \text{entropy}\geq Q(\theta^k, \theta^k) + \text{entropy} = l(\theta^k)\]
+since $\theta^k = \text{argmax}Q(\theta, \theta^k)$.
+
+\subsection{A typical application of the EM} % (fold)
+\label{sub:a_typical_application_of_the_em}
+
+\subsubsection{The independent mixture problem} % (fold)
+\label{ssub:the_independent_mixture_problem}
+Consider a binomial response (typically exponential families permit easy maximization). 
+Thus the $i$-th observation is $\text{Bi}(n_i, p_j)$ if it is coming from the $j$-th category.
+
+To use the EM we need to consider the hidden variables as well. Suppose $u_j(i)$ is the unobserved
+indicator of $i$-th observation coming from $j$-th category.
+
+The $\pi_j$ is the prior probability of $j$-th category.
+
+The complete likelihood is
+\[l(\pi, p\lvert x, z) = \log \prod_i \pi_{z_i} p_{z_i}^{x_i}(1-p_{z_i})^{n_i-x_i}\]
+in a more convenient form
+\[l(\pi, p\lvert x, z) = \sum_i \log \prod_j \big(\pi_j p_j^{x_i}(1-p_j)^{n_i-x_i}\big)^{u_j(i)}\]
+whence
+\[l(\pi, p\lvert x, z) = \sum_i\sum_j u_j(i)\log \big(\pi_j p_j^{x_i}(1-p_j)^{n_i-x_i}\big)\]
+and 
+\[l(\pi, p\lvert x, z) = \sum_i \sum_j u_j(i)\log \pi_j + u_j(i)\log p_j^{x_i}(1-p_j)^{n_i-x_i}\]
+leading to 
+\[l(\pi, p\lvert x, z) = \sum_i \sum_j u_j(i)\log \pi_j + \sum_{i,j} u_j(i)\log p_j^{x_i}(1-p_j)^{n_i-x_i}\]
+
+\tebf{The E-step}. Averaging out of the hidden variables:
+\[Q(\theta, \theta^k) =  \Ex_{p(z\lvertx, \theta^k) p(x,Z\lvert \theta)}\]
+define $\hat{u}_j(i) = \Ex u_j(i)$. It is given by 
+\[\Ex u_j(i) = \Pr\big(Z_i=j\,\lvert\,X=x_i\big)\]
+Thus
+\[\hat{u}_j(i) = \frac{\Pr\big(X=x_i\,\lvert\,Z_i=j\big)\Pr\big(Z_i=j\big)}{\Pr\big(X=x_i\big)}
+= \frac{ \pi_j f(x_i\lvert n_i, p_j)}{\sum_c \pi_c f(x_i\lvert n_i, p_c)}\]
+
+\textbf{The M-step}. Consider the likelihood at $\hat{u}_j(i)$:
+\[l(\pi, p\lvert x, z) = \sum_i \sum_j \hat{u}_j(i)\log \pi_j + \sum_{i,j} \hat{u}_j(i)\log p_j^{x_i}(1-p_j)^{n_i-x_i}\]
+
+Maximizing with respect to $\big(\pi_j\big)$ subject to constraint $\sum_j \pi_j = 1$. The First order conditions:
+\[\frac{\partial}{\partial \pi_j} l(\cdot) = \sum_i \hat{u}_j(i)\frac{1}{\pi_j} - \lambda = 0\]
+whence
+\[\sum_i \hat{u}_j(i) = \lambda \pi_j\]
+and the ratio for $j\neq c$
+\[\frac{\sum_i \hat{u}_j(i)}{\sum_i \hat{u}_c(i)} = \frac{\pi_j}{\pi_c}\]
+Therefore
+\[\frac{\sum_i \sum_j \hat{u}_j(i)}{\sum_i \hat{u}_c(i)} = \frac{1}{\pi_c}\]
+and 
+\[\hat{\pi}_c = \frac{\sum_i \hat{u}_c(i)}{\sum_i \sum_j \hat{u}_j(i)} = \frac{1}{n}\sum_i \hat{u}_c(i)\]
+since by construction $\sum_j \hat{u}_j(i)=1$.
+
+Now with respect to $p_j$:
+\[\frac{\partial}{\partial p_j} l(\cdot) = \sum_i \hat{u}_j(i) \Big(\frac{x_i}{p_j} - \frac{n_i-x_i}{1-p_j}\Big) = 0\]
+whence after simplification:
+\[\hat{p}_j = \frac{\sum_i \hat{u}_j(i) x_i }{\sum_i \hat{u}_j(i) n_i}\]
+
+\textbf{Initialisation}. Taking the uniform approach to the probability $p_j$ leads to a disaster.
+Indeed, the E-step yields:
+\[\hat{u}_j(i) = \frac{ \pi_j C_{n_i}^x_i p_j^{x_i}(1-p_j)^{n_i - x_i}}{\sum_c \pi_c C_{n_i}^x_i p_c^{x_i}(1-p_c)^{n_i - x_i}}\]
+whence $\hat{u}_j(i) = \frac{\pi_j}{\sum_c \pi_c}$.
+
+The M-step gives the number of successes:
+\[\hat{p}_j = \frac{\sum_i x_i }{\sum_i n_i}\]
+and no update whatsoever
+\[\hat{\pi}_j = \frac{1}{n}\sum_i \frac{\pi_j}{\sum_c \pi_c} = \frac{\pi_j}{\sum_c \pi_c}\]
+
+% subsubsection the_independent_mixture_problem (end)
+
+% subsection a_typical_application_of_the_em (end)
+
+\subsection{The problem of Mixture Discriminant Analysis} % (fold)
+\label{sub:the_problem_of_mixture_discriminant_analysis}
+
+It is a generalization of LDA and the QDA (1996 by Hastie and Tibshirani) . 
+Assumptions: \begin{itemize}
+	\item $K$ classes with probabilities $\big(\pi_k\big)$ and categories;
+	\item given a $k$-th class the observation $X$ is a mixture:
+	\[f_k(x) = \sum_j^{n_k}\alpha_{kj} \phi(x\,\lvert\,\mu_{kj}, \Sigma)\]
+	\item classes are known in the training data, but the mixture proportion as are latent;
+	\item We estimate $\alpha_{kj}$, $\mu_{kj}$, $\pi_k$ and $\Sigma$ (the latter is estimated on the whole data);
+	\item To classify use the mode of the posterior:
+	\[P(X=x\lvert T=k) \Pr(T=k) = \pi_k \sum_j^{n_k} \hat{\alpha}_{kj} \phi(x\,\lvert\,\hat{\mu}_{kj}, \hat{\Sigma})\]
+\end{itemize}
+
+The log-likelihood is:
+\[l(\pi, \alpha, \mu, \sigma\lver x, t) = \sum_i^n \sum_{k=1}^K \log \pi_k^{t_i(k)} \big[f_k(x_i)\big]^{t_i(k)}\]
+with $t_i(k)$ indicating if the $i$-th observation belongs to class $k$.
+
+Introduce the latent variables for the mixture $u_{kj}(i)$ which indicates whether the $i$-th observation, which
+came from $k$-th class was produced the $j$-th mixture component. Thus
+\[f_k(x_i, u_{k\cdot}(i)) = \prod_j^{n_k} \big[ \alpha_{kj} \phi(x_i\,\lvert\,\mu_{kj}, \Sigma)\big]^{u_{kj}(i)}\]
+
+therefore
+\[l(\pi, \alpha, \mu, \sigma\lver x, t)
+= \sum_i^n \sum_{k=1}^K t_i(k) \log \pi_k + \sum_i^n \sum_{k=1}^K t_i(k) \log f_k(x_i)\]
+
+Pluggin in the product form of the density, with latent variables yields:
+\[l(\pi, \alpha, \mu, \sigma\lver x, t)
+= \sum_i^n \sum_{k=1}^K t_i(k) \log \pi_k
++ \sum_i^n \sum_{k=1}^K \sum_j^{n_k} t_i(k) u_{kj}(i) \log \alpha_{kj}
++ \sum_i^n \sum_j^{n_k} u_{kj}(i) \log \phi(x_i\,\lvert\,\mu_{kj}, \Sigma)\]
+
+The E-step. The optimal prediction of the latent variables is
+\[\hat{u}_{kj}(i) = \Pr(X=x_i\lvert Z_i=j, C_i = k) \Pr(Z_i=j\lvert C_i = k) \Pr(C_i = k)\]
+whence the posterior probability of being in category $j$ of the class $k$:
+\[\hat{u}_{kj}(i) = \frac{\alpha_{kj} \phi(x\,\lvert\,\mu_{kj}, \Sigma)}{\sum_{r=1}^{n_k} \alpha_{kr} \phi(x\,\lvert\,\mu_{kr}, \Sigma) }\]
+
+the M-step. Computing the $\pi_k$ is mundane. Let's compute the $\alpha_{kj}$ and the parameters of the normal density.
+First for every $k$ the sum $\sum_{j=1}^{n_k}\alpha_{kj} = 1$. The first derivative with respect to $\alpha_{kj}$, note the traces of Lagrangian multipliers:
+\[ \sum_i^n t_i(k) u_{kj}(i) \frac{1}{\alpha_{kj}} = \lambda\]
+whence 
+\[\hat{\alpha}_{kj} = \sum_i^n t_i(k) u_{kj}(i) \frac{1}{\lambda} \]
+and the constraint on $\alpha_{kj}$ yields
+\[\sum_{j=1}^{n_k} \sum_i^n t_i(k) u_{kj}(i) = \lambda \]
+therefore
+\[\hat{\alpha}_{kj}
+= \sum_i^n t_i(k) u_{kj}(i) \frac{1}{\sum_i^n t_i(k) \sum_{j=1}^{n_k} u_{kj}(i)}
+= \sum_i^n t_i(k) u_{kj}(i) \frac{1}{ \sum_i^n t_i(k) } \]
+because $\sum_{j=1}^{n_k} u_{kj}(i) = 1$ as any observation comes from just one mixture component
+and $\hat{u}_{jk}(i)$ is the joint posterior probability of category $j$ for observation $i$ in class $k$.
+
+The third term: with respect to $\mu_{jk}$
+\[\sum_j^{n_k} u_{kj}(i) \log \phi(x_i\,\lvert\,\mu_{kj}, \Sigma)
+= - \frac{1}{2} \sum_j^{n_k} u_{kj}(i) \big(x_i - \mu_{jk}\big)'\Sigma^{-1}\big(x_i - \mu_{jk}\big)\]
+which, when differentiating with respect to $\mu_{kj}$, turns into
+\[ \Sigma^{-1}\Big( - \frac{1}{2} \sum_j^{n_k} u_{kj}(i) \big(x_i - \mu_{jk}\big) \Big) = 0\]
+since $\Sigma^{-1}$ is obviously non-singular:
+\[ - \frac{1}{2} \sum_j^{n_k} u_{kj}(i) \big(x_i - \mu_{jk}\big) = 0\]
+whence the expression for $\hat{\mu}_{kj}$ follow.
+
+Estimating the $\Sigma$, using the trace:
+\[\frac{\partial }{\partial \Sigma} \sum_j^{n_k} u_{kj}(i) \log \phi(x_i\,\lvert\,\mu_{kj}, \Sigma)
+= - \frac{1}{2} \sum_i^n \sum_j^{n_k} u_{kj}(i) \big(x_i - \mu_{jk}\big)'\Sigma^{-1}\big(x_i - \mu_{jk}\big)
+-\frac{1}{2} \sum_i^n \sum_j^{n_k} u_{kj}(i) \log \lvert \Sigma\rvert\]
+which yields the estimate of $\Sigma$.
+
+% subsection the_problem_of_mixture_discriminant_analysis (end)
+
+% section lecture_10 (end)
+
+\section{Mid-term test review} % (fold)
+\label{sec:mid_term_test_review}
+Ridge regression protects from the poor estimation in the direction of the least varinance.
+% section mid_term_test_review (end)
+
+
 \end{document}

@@ -556,7 +556,7 @@ Structural similarity of nodes
 	The straightforward sample correlation of $A_v$ and $A_u$ in the adjacency matrix $A$.
 	\item[Binary adjacency matrix] \hfill\\
 	Then the degree $k_v = \sum_{u\in V} A_{uv} = \sum_{u\in V} A_{uv}^2$. Furthermore $n_{uv}$ -- the number of shared neighbours is given by 
-	\[n_{uv}\sum_{w\in V} A_{uw}A_{wv}\]
+	\[n_{uv}\sum_{w\in V} A_{uw}A_{vw}\]
 \end{description}
 
 \noindent\textbf{Regular equivalence}\hfill\\
@@ -739,7 +739,7 @@ A community is a group of nodes coupled between each other tighter that with the
 We consider only the sparse graphs with $m<<n^2$ (ie. $m = O(n^\frac{1}{2})$). Community detection is NP-hard.
 Properly designed and correct greedy algorithms approximate the true and correct solution. THe approach is recursive top-down ``divide-and-conquer''.
 
-What is the criteria ofthe best partition?\begin{itemize}
+What is the criteria of the best partition?\begin{itemize}
 	\item Minimize the ``communication'' between graphs partitions; Gives rise to the \textbf{Min}imum \textbf{cut}, which is not the best, since it could easily cut out singly connected vertices.
 	\item 
 \end{itemize}
@@ -824,7 +824,7 @@ To actually partition, use the zero-thresholding rule.
 
 % subsection special_clustering (end)
 
-another optimality cirterion:
+another optimality criterion:
 modularity
 \[\text{mod} = \frac{1}{2m} \sum_{u,v\in V} \Big(A_{u,v} - \frac{k-vk_u}{2m}\Big)\delta_{c_u=c_v}\]
 where $c_v$ is the class of the node $v$. In a two-cluster case 
@@ -844,5 +844,88 @@ In application do recursive splitting.
 
 
 % section lecture_9 (end)
+
+\section{Lecture \# 10} % (fold)
+\label{sec:lecture_10}
+\subsection{Community detection (continued)} % (fold)
+\label{sub:community_detection_continued}
+
+\begin{itemize}
+	\item vertex clustering method (vertex similarity);
+	\item graph partitioning (sparse cuts).
+\end{itemize}
+
+What about fuzzy clustering? Or overlapping communities (multiple allegiances)? In an egocentric graph, you is the point of community overlap.
+
+One edge overlap, multi-node overlap.
+
+The $k$-clique algorithm.
+
+A $k$-clique is a clique with $\geq k$ nodes. A $k$-clique community is a union of all $k$-cliques which can be reached through a series adjacent $k$-cliques. $k$-cliques are adjacent iff they share $k-1$ nodes (the degree of overlap). Varying the overlap degree allows relaxation of the community detection.
+
+Finding $k$-cliques is NP hard.
+\begin{itemize}
+	\item Find all maximal cliques;
+	\item Create a new meta-graph made from cliques from the clique overlap matrix;
+	\item set a threshold ($k-1$) and select the remaining overlaps.
+\end{itemize}
+
+\textbf{kNN} label propagation
+Decide on the label of a node based on $k$ of its nearest neighbours.
+\begin{itemize}
+	\item Initialize the labels on all nodes randomly;
+	\item Iterate in the order of a random permutation:
+	\item For every node replace its label with the most frequent label among its neighbours with uniform tie-breaking;
+	\item Stop when no relabelling takes place.
+\end{itemize}
+
+Fast community detection
+\begin{itemize}
+	\item Assign every node to its own community;
+	\item Phase I: \begin{itemize}
+		\item For every node evaluate modularity gain from removing this vertex from its community and placing it in the community of its neighbour;
+		\item Place the node in the community with the higherst modularity gain;
+		\item repeat until saturation (impossible to make a node transfer). 
+	\end{itemize}
+	\item Phase II: \begin{itemize}
+		\item Nodes in communities are fused together into ``super-node'' prerequisites;
+		\item
+	\end{itemize}
+	\item Repeat until convergence;
+\end{itemize}
+
+% subsection community_detection_continued (end)
+
+\subsubsection{Random walk community detection} % (fold)
+\label{ssub:random_walk_community_detection}
+
+\noindent\textbf{Walktrap community}. Use the random walk to calculate the similarity between the vertices;
+
+At each time step compute the stochastic transition kernel $P = D^{-1}A'$ with $D=\text{diag}\big(\delta_i\big)$ where $\delta_i = \sum_j A_{ij}$. The probability $P_{ij}$ is the chance of moving from $j$ to $i$. Then $P^t$ is the matrix showing the probability of moving from $i$ to $j$ in $t$ steps.
+
+The main assumption is that for nodes $i$ and $j$ in the same community the probability $P_{ij}^t$ is high and $P_{ik}^t \approx P_{kj}^t$ for all $k$.  
+
+The diffusion distance between the nodes $I$ and $j$ is 
+\[ r_{ij}(t) = \sqrt{\sum_{k=1}^n\frac{(P_{ik}^t - P_{kj}^t)}{\delta_k} } = \nrm{ D^{-\frac{1}{2}}P^t - P^tD^{-\frac{1}{2}} }\]
+
+between communities $A$ and $B$:
+\[ r_{AB}(t) = \sqrt{\sum_{k=1}^n\frac{(P_{Ak}^t - P_{kB}^t)}{\delta_k} } = \nrm{ D^{-\frac{1}{2}} P_A^t  - P_B^t D^{-\frac{1}{2}} }\]
+
+%% Missing 6 slides until the 24th
+
+Local clustering algorithm
+\begin{itemize}
+	\item For $t=1\ldots t_M$ compute $q_t = M r_{t-1}$ and set
+	$r_t(i) = q_t(i)$ if $q_t(i) > \epsilon \delta_i$, and zero otherwise.
+	\item order the nodes according to the ratio $\frac{q_t(i)}{\delta_i}$.
+	\item MISSING from slide 24.
+\end{itemize}
+No need to deal with the entire graph.
+
+
+
+% subsubsection random_walk_community_detection (end)
+
+% section lecture_10 (end)
 
 \end{document}

@@ -466,14 +466,53 @@ use boolean multiplication $\underset{k\times 1}{f_0} = Q \circ u_0'$ to get the
 factors, and then compute the boolean product $i_0 = P\circ f_0$ of recommendations.
 
 
-
-
-
-
 % subsection formal_concept_analysis (end)
 
-
-
 % section lecture_8 (end)
+
+\section{Lecture \# 9} % (fold)
+\label{sec:lecture_9}
+
+\textbf{S}upport \textbf{V}ector \textbf{M}achine.
+The basic problem setting. Discriminative approach.
+Two classes: positive and negative examples. The objective is to find a hyperplane, which separates the classes.
+There might be many hyperplanes, which one to choose? Maximize the gap (margin) between classes!
+
+SVM is a separating hyperplane problem.
+\[\Lcal = \frac{1}{2}\nrm{\beta} + \sum_i \alpha_i \big[y_i(\beta_0 + X_i'\beta) - 1\big]\]
+
+In the case of may classes, the schemes are:
+\begin{itemize}
+	\item one versus many (each classifier discriminates one class from all the rest),
+	\item pairwise classification.
+\end{itemize}
+
+UNderfitting contributes to bias, overfitting to variance.
+
+\subsection{Bagging} % (fold)
+\label{sub:bagging}
+
+This is an acronym of \textbf{B}ootstrap \textbf{agg}regat\textbf{ing}.
+Use sampling with replacement to improve the prediction quality of a classifier.
+Upon each bootstrap sample, train a classifier. But instead of averaging the classifiers,
+use majority voting to classify a new observation. 
+
+% subsection bagging (end)
+
+% Committee machines
+\subsection{Boosting} % (fold)
+\label{sub:boosting}
+
+Is based on the idea of amplifying weak classifiers (with prediction error $\leq\frac{1}{2}$).
+Each classifier might specialize on something specific. Therefore combining them may yields better performance.
+
+Classifier-object matrix of binary indicators whether a classifier makes an error or not on these objects.
+
+\textbf{Ada}ptive \textbf{Boost} (M1 method).
+
+
+% subsection boosting (end)
+
+% section lecture_9 (end)
 
 \end{document}
