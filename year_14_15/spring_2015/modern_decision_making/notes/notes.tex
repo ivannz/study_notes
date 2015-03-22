@@ -22,14 +22,16 @@
 \newcommand{\Cplx}{\mathbb{C}}
 \newcommand{\Pwr}{\mathcal{P}}
 \newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Mcal}{\mathcal{M}}
 \newcommand{\Ccal}{\mathcal{C}}
 \newcommand{\Ncal}{\mathcal{N}}
 \newcommand{\Lcal}{\mathcal{L}}
 \newcommand{\Ex}[0]{{\mathbb{E}}}
 \newcommand{\pr}[0]{{\mathbb{P}}}
 \newcommand{\Var}[0]{{\text{Var}}}
+\newcommand{\var}[0]{{\text{var}}}
 \newcommand{\RSS}{{\text{RSS}}}
-\newcommand{\TR}{{\text{Tr}}}
+\newcommand{\tr}{\text{tr}}
 \newcommand{\one}{\mathbf{1}}
 \newcommand{\rank}{\mathop{\text{rank}}\nolimits}
 
@@ -210,7 +212,7 @@ The goal of LS is to solve the following problem: minimize the \textbf{R}esidual
 The first order conditions on the potential minimizer are in the matrix form:
 \begin{align*}
 	\frac{\partial}{\partial \beta}\RSS &= \frac{\partial}{\partial \beta}\brac{T'T-\beta'X'T - T'X\beta + \beta'X'X\beta}\\
-	&= \frac{\partial}{\partial \beta} T'T - \frac{\partial}{\partial \beta} \beta'X'T - \frac{\partial}{\partial \beta} T'X\beta + \frac{\partial}{\partial \beta} \TR\brac{\beta'X'X\beta}\\
+	&= \frac{\partial}{\partial \beta} T'T - \frac{\partial}{\partial \beta} \beta'X'T - \frac{\partial}{\partial \beta} T'X\beta + \frac{\partial}{\partial \beta} \tr\brac{\beta'X'X\beta}\\
 	&= - 2 \frac{\partial}{\partial \beta} T'X\beta + \beta'\brac{X'X + \brac{X'X}'}\\
 	&= - 2 T'X + 2 \beta'X'X = 0
 \end{align*}
@@ -290,7 +292,7 @@ Indeed, provided the model is specified correctly, \begin{align*}
 	& = \epsilon' \brac{I - X\brac{X'X}^{-1}X'}'\brac{I - X\brac{X'X}^{-1}X'}\epsilon \\
 	& = \epsilon' \brac{ I - X\brac{X'X}^{-1}X' } \epsilon = \epsilon' \brac{ I - \hat{H} } \epsilon
 \end{align*}
-Since the trace of an idempotent matrix equals its rank, $\rank(I - \hat{H}) = \TR(I) - \TR(\hat{H}) = n- (p+1)$, whence by Cochran's theorem $\frac{1}{\sigma}\RSS\sim\chi^2_{n-(p+1)}$.
+Since the trace of an idempotent matrix equals its rank, $\rank(I - \hat{H}) = \tr(I) - \tr(\hat{H}) = n- (p+1)$, whence by Cochran's theorem $\frac{1}{\sigma}\RSS\sim\chi^2_{n-(p+1)}$.
 Furthermore, $\hat{\sigma}^2 \perp \hat{\beta}$.
 
 \subsection{Hypothesis testing} % (fold)
@@ -610,7 +612,7 @@ where $\brac{N_j}_{j=1}^K$ is the set of basis functions for the natural cubic s
 
 Goal: show that it is enough to know the value of the NCS at $K$ knots to know it everywhere.
 
-$K$ -- the number of knots $\brac{\xi_k}_{k=1}^K$. Consider a regression problem on some interval $\clo{a,b}$ with $a<\xi_1\<\ldots<\xi_K<b$.
+$K$ -- the number of knots $\brac{\xi_k}_{k=1}^K$. Consider a regression problem on some interval $\clo{a,b}$ with $a<\xi_1<\ldots<\xi_K<b$.
 
 Let $g$ be the NCS -- piecewise function, cubic in the main region, linear at the ends.
 Let $g_k = g(\xi_k)$ for all $k=1,\ldots K$.
@@ -622,28 +624,35 @@ Let $\gamma_k=g''(\xi_k)$. Due to linearity at the ends $\gamma_K = \gamma_1 = 0
 $g''(x) - \alpha x + \beta$ since $g''$ is linear.
 ...
 thus we get
+\[
 \begin{matrix}
 	\gamma_k = \alpha_k \xi_k + \beta_k \\
 	\gamma_{k+1} = \alpha_k \xi_{k+1} + \beta_k
 \end{matrix}
+\]
 
-
-g(x) = \frac{(x-\xi_k)g_{k+1} + (\xi_k-x)g_k}{\xi_{k+1}-\xi_k} - \frac{1}{6}(x-\xi_k)(\xi_{k+1}-x)
-g(x) = g_1 - (\xi_1-x)g'(\xi_1) & \text{if}\,x\leq \xi_1 \\
-g(x) = g_K - (x-\xi_K)g'(\xi_K) & \text{if}\,x\geq \xi_K \\
-
+\begin{align*}
+g(x) &= \frac{(x-\xi_k)g_{k+1} + (\xi_k-x)g_k}{\xi_{k+1}-\xi_k}
+	- \frac{1}{6}(x-\xi_k)(\xi_{k+1}-x)
+g(x) &= g_1 - (\xi_1-x)g'(\xi_1) & \text{if}\,x\leq \xi_1 \\
+g(x) &= g_K - (x-\xi_K)g'(\xi_K) & \text{if}\,x\geq \xi_K
+\end{align*}
 
 There must be some relation between the coefficients since continuity across the knots is required.
-g'(x) = \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k}
-	-\frac{1}{6} \brac{ \frac{\gamma_{k+1}-\gamma_k}{\xi_{k+1}-\xi_k} (x-\xi_k)(\xi_{k+1}-x) }
-	+ \obj{
+\begin{align*}
+g'(x) &= \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k}
+	-\frac{1}{6} \brac{ \frac{\gamma_{k+1}-\gamma_k}{\xi_{k+1}-\xi_k} (x-\xi_k)(\xi_{k+1}-x) }\\
+	&+ \obj{
 		\brac{1+\frac{x-\xi_k}{\xi_{k+1}-\xi_k}}\gamma_{k+1}
 		+ \brac{1+\frac{\xi_{k+1}-x}{\xi_{k+1}-\xi_k}}\gamma_k
 	} \brac{\xi_{k+1} + \xi_k - 2 x}
+\end{align*}
 
-g'(\xi_k+) = \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} - \frac{1}{6} \brac{\xi_{k+1}-\xi_k}\brac{\gamma_{k+1}+2\gamam_k}
-g'(\xi_{k+1}-) =\frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} + \frac{1}{6} \brac{\xi_{k+1}-\xi_k}\brac{2\gamma_{k+1}+\gamam_k}
+\begin{align*}
+g'(\xi_k+) &= \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} - \frac{1}{6} \brac{\xi_{k+1}-\xi_k}\brac{\gamma_{k+1}+2\gamma_k}
+g'(\xi_{k+1}-) &=\frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} + \frac{1}{6} \brac{\xi_{k+1}-\xi_k}\brac{2\gamma_{k+1}+\gamma_k}
 % g'(\xi_k-) =\frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k}
+\end{align*}
 
 Smoothness condition: for $g$ to be an NCS $g'(\xi_k+)=g'(\xi_{k+1}-)$.
 
@@ -703,9 +712,10 @@ Consider the difference of these integrals.
 	& = - \sum_{k=1}^{K-1}  g'''(\xi_k+) \brac{h(\xi_{k+1})-h(\xi_k)} = 0
 \end{align*}
 
-
+\begin{align*}
 \int_a^b \abs{\bar{g}''}^2 ds &= 
 \int_a^b \abs{g'' + h''}^2 ds = \int_a^b \abs{g''}^2 + \abs{h''}^2 ds + \int_a^b 2h''g'' ds= \int_a^b \abs{g''}^2 + \abs{h''}^2 ds \geq \int_a^b \abs{g''}^2 ds
+\end{align*}
 
 \begin{itemize}
 	\item the NCS on $\clo{a,b}$ is completely determined by the levels and derivatives at the interpolation knots;
@@ -753,7 +763,7 @@ The matrix $\brac{I + \lambda K}^{-1}$ is called the \textbf{smoother matrix} $S
 Where does the smoothing take place? 
 
 Define the effective degree freedom as, again, the trace of $S_\lambda$.
-\[\text{df}(\lambda_ = \tr\brac{S_\lambda}\]
+\[\text{df}(\lambda) = \tr\brac{S_\lambda}\]
 
 Use the SVD of $S_\lambda$ to extract the eigenvalues and eigenvectors.
 
@@ -796,7 +806,7 @@ The higher the $j$ the more smoothing take place:
 	the less principal component is, the more smoothed it is.
 
 \[g = \lambda_1\brkt{u_1, t} u_1 + \lambda_2\brkt{u_2, t} u_2 + \sum_{j=3}^n \lambda_j \brkt{u_j, t} u_j \]
-The nature of the matrix $K$ makes the first $\lambda_1$ and $\lamba_2$ equal to $1$.
+The nature of the matrix $K$ makes the first $\lambda_1$ and $\lambda_2$ equal to $1$.
 
 What is the relationship between $x$ and $u_1$?
 
@@ -843,13 +853,13 @@ Indeed, \begin{align*}
 	& = \sum_{k=1}^n \lambda_k^2 \brkt{g, u_k} u_k
 \end{align*}
 
-The projection matrix is idempotent, hence for any eigenvector-eigenvalue pair $(\lamba, u)$ it is true that $\lamba u = Hu = H^2u = H\lamba u = \lamba Hu = \lamba^2 u$. Thus $\lamba$ is either $\pm1$ or $0$.
+The projection matrix is idempotent, hence for any eigenvector-eigenvalue pair $(\lambda, u)$ it is true that $\lambda u = Hu = H^2u = H\lambda u = \lambda Hu = \lambda^2 u$. Thus $\lambda$ is either $\pm1$ or $0$.
 
 The solution to the weighted problem is the same Natural Cubic spline.
-\[\sum_{i=1}^n \omega_i \brac{t_i - g(x_i)}^2 + \lamba \int \abs{g''(s)}^2 ds \tom \min\]
+\[\sum_{i=1}^n \omega_i \brac{t_i - g(x_i)}^2 + \lambda \int \abs{g''(s)}^2 ds \to \min\]
 Since again, we can take an NCS with the same first sum but with lesser penalty term.
 
-The solution is $\hat{g} = \brac{W+\lamba K}^{-1} Wt$.
+The solution is $\hat{g} = \brac{W+\lambda K}^{-1} Wt$.
 
 \subsection{Model selection} % (fold)
 \label{sub:model_selection}
@@ -863,7 +873,7 @@ Elements of information theory
 Suppose $x$ is a discrete random variable.
 The main question is how much information one gets when one observes a realisation of $X$.
 
-THe amount of information is quantified by the amount of ``'surprise'':\begin{itemize}
+The amount of information is quantified by the amount of ``'surprise'':\begin{itemize}
 	\item very likely -- not surprising;
 	\item very unlikely -- very surprising.
 \end{itemize}
@@ -924,7 +934,7 @@ In order to compute the bias, it is necessary look an the average Kullback-Leibl
 The AIC is given by (up to the terms of the first order):
 \[-2\log \hat{f}\brac{\induc{y}\,\hat{\theta}_k(y)} + 2k\]
 
-%% See the handwritten notes!
+\textbf{ See the handwritten notes! }
 
 % subsection model_selection (end)
 
@@ -941,9 +951,9 @@ By looking at the Kullback-Leibler divergence between the estimated and the true
 
 $g(y\vert \theta_0)$
 
-\[d(\hat{theta}_k) = - 2 \induc{\Ex \ln f\brac{\induc{Y}\theta_k}}_{\theta_k = \hat{\theta}_k(y)}\]
+\[d(\hat{\theta}_k) = - 2 \induc{\Ex \ln f\brac{\induc{Y}\theta_k}}_{\theta_k = \hat{\theta}_k(y)}\]
 
-\[\Ex_{\hat{\theta}_k} d(\hat{theta}_k) = - 2 \induc{\Ex_z \Ex_Y \ln f\brac{\induc{Y}\theta_k}}_{\theta_k = \hat{\theta}_k(z)}\]
+\[\Ex_{\hat{\theta}_k} d(\hat{\theta}_k) = - 2 \induc{\Ex_z \Ex_Y \ln f\brac{\induc{Y}\theta_k}}_{\theta_k = \hat{\theta}_k(z)}\]
 
 The idea is to use the sample twice (law of Large Numbers)
 
@@ -1082,8 +1092,8 @@ where $p$ is the number of parameters in the full model.
 These criteria are asymptotically equivalent.
 
 The AIC for (the biased estimator)
-\[\text{AIC} = - \ln f\brac{\induc{y}\hat{\theta}_k} + 2k \\
-	&= n \ln \hat{\sigma}^2 + n\brac{1 + \ln 2\pi} + 2(p+1)\]
+\[\text{AIC} = - \ln f\brac{\induc{y}\hat{\theta}_k} + 2k 
+	= n \ln \hat{\sigma}^2 + n\brac{1 + \ln 2\pi} + 2(p+1)\]
 
 Return the model with the minimum values of the AIC. For a fixed $n$ it is the same a looking at 
 \[n\ln \hat{\sigma}^2 - n\ln \hat{\sigma}^2_* + 2 p \]
@@ -1113,8 +1123,10 @@ Taking expectations yields
 \[\Ex\brac{\beta_0'X_0'(I-H)X_0\beta_0 + \epsilon'H\epsilon} = \beta_0'X_0'(I-H)X_0\beta_0 + \Ex\brac{\epsilon'H\epsilon}\]
 while at the same time due to linearity of $\Ex$ and $\tr$:
 
-\[\Ex(\epsilon'H\epsilon) &= \tr\Ex(\epsilon'H\epsilon) = \Ex\tr(\epsilon'H\epsilon) \\
-&= \Ex\tr(H\epsilon\epsilon) = \tr(H\Ex\epsilon\epsilon)\]
+\begin{align*}
+\Ex(\epsilon'H\epsilon) &= \tr\Ex(\epsilon'H\epsilon) = \Ex\tr(\epsilon'H\epsilon) \\
+&= \Ex\tr(H\epsilon\epsilon) = \tr(H\Ex\epsilon\epsilon)
+\end{align*}
 
 % subsection comparison_between_cp_and_aicc (end)
 
@@ -1127,7 +1139,7 @@ This looks at the problem from the Bayesian point of view.
 
 Assumptions \begin{description}
 	\item[Data] $\brac{y_k}_{k=1}^n$;
-	\itme[Parametric] The distribution function is fully specified by the vector of parameters $\theta_k\in \Theta_k$.
+	\item[Parametric] The distribution function is fully specified by the vector of parameters $\theta_k\in \Theta_k$.
 	\item[the true model]\hfill\\
 	The true model is $y = \underset{n\times p_0}{X}\underset{p_0\times 1}{\beta_0} + \epsilon$, where $\epsilon \sim \Ncal_n\brac{0,\sigma_0^2 \underset{n\times 1}{E}}$;
 	\item[the candidate model] \hfill\\
@@ -1274,7 +1286,7 @@ Let $\hat{T}_j$ be the prediction of the model fit on $X_{-j}$, then the \textbf
 		\begin{itemize}
 			\item Very general and applicable in many settings;
 			\item It is not variable at all -- yields the same results, since the splitting is deterministic;
-			\itme Compared to validation, the bias of the model error is reduced;
+			\item Compared to validation, the bias of the model error is reduced;
 		\end{itemize}
 	\item[Cons] \hfill\\
 		\begin{itemize}
@@ -1454,7 +1466,7 @@ There is a problem with higher number of classes when using discriminant functio
 	\item[One-on-one] \hfill\\
 		Consider the classes in pairs $C_i$ and $C_j$, neglecting the others. This results in $i-j$ boundaries,
 		but requires $\frac{k(k-1)}{2}$ classifiers to fit. Still this can produce undefined regions;
-	\itme[]
+	\item[]
 	Consider a single $K$-class discrimiminant given by $K$ linear functions $\brac{y_k(\cdot)}_{i=1}^K$.
 	In the $\Real^d$ case these function look like 
 	\[y_k(x) = \beta_{0k} + \beta_k'x\]
@@ -1714,13 +1726,13 @@ the average of the $x_i$ belonging to the class $j$.
 And finally the $\Sigma$, which is more tricky.
 Collect the terms that depend on $\Sigma$ which depend on it. We get this to minimize:
 \[ \sum_{i=1}^n \sum_{j=1}^K t_{ij} (x_i-\mu_j)'\Sigma^{-1}(x_i-\mu_j) + t_{ij} \log \lvert\Sigma\rvert \]
-since the trace of a scalar is equal to its trace and $\Tr(ABC) = \Tr(BCA)$:
-\[\sum_{i=1}^n \sum_{j=1}^K t_{ij} \Tr\big( \Sigma^{-1}(x_i-\mu_j)(x_i-\mu_j)'\big) + t_{ij} \log \lvert\Sigma\rvert\] 
+since the trace of a scalar is equal to its trace and $\tr(ABC) = \tr(BCA)$:
+\[\sum_{i=1}^n \sum_{j=1}^K t_{ij} \tr\big( \Sigma^{-1}(x_i-\mu_j)(x_i-\mu_j)'\big) + t_{ij} \log \lvert\Sigma\rvert\] 
 define $S_j = \frac{1}{n_j}\sum_{i=1}^n(x_i-\mu_j)(x_i-\mu_j)'$ with $n_j=\sum_{i=1}^n t_{ij}$. Therefore
-\[\sum_{j=1}^K n_j \Tr\big( \Sigma^{-1} S_j \big) - n \log \lvert\Sigma^{-1}\rvert\] 
+\[\sum_{j=1}^K n_j \tr\big( \Sigma^{-1} S_j \big) - n \log \lvert\Sigma^{-1}\rvert\] 
 
 Now the following could be proved directly:
-\[\frac{\partial}{\partial A}\Tr(AB) = \frac{\partial}{\partial A}\Tr(BA) = B'\]
+\[\frac{\partial}{\partial A}\tr(AB) = \frac{\partial}{\partial A}\tr(BA) = B'\]
 and
 \[\frac{\partial}{\partial A}\log \lvert A\rvert = (A^{-1})'\]
 therefore $\sum_{j=1}^K n_j S_j - n \hat{\Sigma} = 0$.
@@ -1729,7 +1741,7 @@ Remarks: \begin{itemize}
 	\item if $\Sigma\neq\Sigma_j$ then we have quadratic decision boundaries, and 
 	\[\delta_k(x) = - \frac{1}{2} (x-\mu_k)'\Sigma^{-1}(x-\mu_k) + \log \pi_k - \frac{1}{2}\log\lvert\Sigma_k^{-1}\rvert\]
 	\item to get quadratice decision boundaries with LDA enrich the feature space by including functions of the predictors;
-	\itme QDA (and LDA) do not scale well with the number of predictors: use the Na\"ive Bayes;
+	\item QDA (and LDA) do not scale well with the number of predictors: use the Na\"ive Bayes;
 	The na\"ive Bayes conditional independence. The na\"ive part
 	\[\Pr\big(X=x\vert T=j\big) = \prod_{m=1}^p \Pr\big(X_m=x_m\vert T=j\big)\]
 
@@ -1741,7 +1753,7 @@ Remarks: \begin{itemize}
 	does not take the structure of the predictors.
 	LDA is less flexible:
 	\[\delta_k(x) = x'\Sigma^{-1}\mu_k - \frac{1}{2} \mu_k'\Sigma^{-1}\mu_k + \log \pi_k\]
-	whereas the logistic had $\veta_0 + x\beta$ -- more general.
+	whereas the logistic had $\beta_0 + x\beta$ -- more general.
 	If the true $x$ are Gaussian then it is better to use the LDA.
 \end{itemize}
 
@@ -1840,14 +1852,14 @@ In fact $Q(\theta^{(t)}, \theta^{(t)}) = l(\theta^{(t)})$ and $Q(\theta, \theta^
 \label{sec:lecture_10}
 
 The EM algorithm is in two steps: \begin{description}
-	\item[E-step] $Q\brac{\theta, \theta^k} = \Ex_{p(z\lvertx, \theta^k) p(x,Z\lvert \theta)}$.
+	\item[E-step] $Q\brac{\theta, \theta^k} = \Ex_{p(z\lvert x, \theta^k) p(x,Z\lvert \theta)}$.
 	\item[M-step] $\theta^{k+1}=\text{argmax}_{\theta} Q\brac{\theta, \theta^k}$.
 \end{description}
 
 We need to show that $l(\theta^{k+1})\geq l(\theta^k)$. Two things. The LHS:
-\[l(\theta^k) = \sum \sum p(z_i\lvertx_i,\theta^k) \log\frac{p(x_i,z_i\lvert\theta^k)}{p(z_i\lvertx_i,\theta^k)}\]
+\[l(\theta^k) = \sum \sum p(z_i\lvert x_i,\theta^k) \log\frac{p(x_i,z_i\lvert\theta^k)}{p(z_i\lvert x_i,\theta^k)}\]
 The RHS:
-\[l(\theta^{k+1}) \geq \sum \sum p(z_i\lvertx_i,\theta^k) \log\frac{p(x_i,z_i\lvert\theta^{k+1})}{p(z_i\lvertx_i,\theta^k)}\]
+\[l(\theta^{k+1}) \geq \sum \sum p(z_i\lvert x_i,\theta^k) \log\frac{p(x_i,z_i\lvert\theta^{k+1})}{p(z_i\lvert x_i,\theta^k)}\]
 whence 
 \[\ldots = Q(\theta^{k+1}, \theta^k) + \text{entropy}\geq Q(\theta^k, \theta^k) + \text{entropy} = l(\theta^k)\]
 since $\theta^k = \text{argmax}Q(\theta, \theta^k)$.
@@ -1876,8 +1888,8 @@ and
 leading to 
 \[l(\pi, p\lvert x, z) = \sum_i \sum_j u_j(i)\log \pi_j + \sum_{i,j} u_j(i)\log p_j^{x_i}(1-p_j)^{n_i-x_i}\]
 
-\tebf{The E-step}. Averaging out of the hidden variables:
-\[Q(\theta, \theta^k) =  \Ex_{p(z\lvertx, \theta^k) p(x,Z\lvert \theta)}\]
+\textbf{The E-step}. Averaging out of the hidden variables:
+\[Q(\theta, \theta^k) =  \Ex_{p(z\lvert x, \theta^k) p(x,Z\lvert \theta)}\]
 define $\hat{u}_j(i) = \Ex u_j(i)$. It is given by 
 \[\Ex u_j(i) = \Pr\big(Z_i=j\,\lvert\,X=x_i\big)\]
 Thus
@@ -1906,7 +1918,7 @@ whence after simplification:
 
 \textbf{Initialisation}. Taking the uniform approach to the probability $p_j$ leads to a disaster.
 Indeed, the E-step yields:
-\[\hat{u}_j(i) = \frac{ \pi_j C_{n_i}^x_i p_j^{x_i}(1-p_j)^{n_i - x_i}}{\sum_c \pi_c C_{n_i}^x_i p_c^{x_i}(1-p_c)^{n_i - x_i}}\]
+\[\hat{u}_j(i) = \frac{ \pi_j C_{n_i}^{x_i} p_j^{x_i}(1-p_j)^{n_i - x_i}}{\sum_c \pi_c C_{n_i}^{x_i} p_c^{x_i}(1-p_c)^{n_i - x_i}}\]
 whence $\hat{u}_j(i) = \frac{\pi_j}{\sum_c \pi_c}$.
 
 The M-step gives the number of successes:
@@ -1933,7 +1945,7 @@ Assumptions: \begin{itemize}
 \end{itemize}
 
 The log-likelihood is:
-\[l(\pi, \alpha, \mu, \sigma\lver x, t) = \sum_i^n \sum_{k=1}^K \log \pi_k^{t_i(k)} \big[f_k(x_i)\big]^{t_i(k)}\]
+\[l(\pi, \alpha, \mu, \sigma\lvert x, t) = \sum_i^n \sum_{k=1}^K \log \pi_k^{t_i(k)} \big[f_k(x_i)\big]^{t_i(k)}\]
 with $t_i(k)$ indicating if the $i$-th observation belongs to class $k$.
 
 Introduce the latent variables for the mixture $u_{kj}(i)$ which indicates whether the $i$-th observation, which
@@ -1941,11 +1953,11 @@ came from $k$-th class was produced the $j$-th mixture component. Thus
 \[f_k(x_i, u_{k\cdot}(i)) = \prod_j^{n_k} \big[ \alpha_{kj} \phi(x_i\,\lvert\,\mu_{kj}, \Sigma)\big]^{u_{kj}(i)}\]
 
 therefore
-\[l(\pi, \alpha, \mu, \sigma\lver x, t)
+\[l(\pi, \alpha, \mu, \sigma\lvert x, t)
 = \sum_i^n \sum_{k=1}^K t_i(k) \log \pi_k + \sum_i^n \sum_{k=1}^K t_i(k) \log f_k(x_i)\]
 
 Pluggin in the product form of the density, with latent variables yields:
-\[l(\pi, \alpha, \mu, \sigma\lver x, t)
+\[l(\pi, \alpha, \mu, \sigma\lvert x, t)
 = \sum_i^n \sum_{k=1}^K t_i(k) \log \pi_k
 + \sum_i^n \sum_{k=1}^K \sum_j^{n_k} t_i(k) u_{kj}(i) \log \alpha_{kj}
 + \sum_i^n \sum_j^{n_k} u_{kj}(i) \log \phi(x_i\,\lvert\,\mu_{kj}, \Sigma)\]
@@ -1983,6 +1995,8 @@ Estimating the $\Sigma$, using the trace:
 = - \frac{1}{2} \sum_i^n \sum_j^{n_k} u_{kj}(i) \big(x_i - \mu_{jk}\big)'\Sigma^{-1}\big(x_i - \mu_{jk}\big)
 -\frac{1}{2} \sum_i^n \sum_j^{n_k} u_{kj}(i) \log \lvert \Sigma\rvert\]
 which yields the estimate of $\Sigma$.
+
+\textbf{COPY THE PROBEM FROM THE TUTORIAL SESSION (SEE NOTES)}
 
 % subsection the_problem_of_mixture_discriminant_analysis (end)
 
