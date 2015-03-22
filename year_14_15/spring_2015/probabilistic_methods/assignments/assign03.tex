@@ -1,0 +1,249 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{fullpage}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, xfrac}
+\usepackage{mathtools}
+
+% \usepackage{tikz}
+% \usetikzlibrary{shapes}
+% \colorlet{light blue}{blue!50}
+
+\let\originalleft\left
+\let\originalright\right
+\renewcommand{\left}{\mathopen{}\mathclose\bgroup\originalleft}
+\renewcommand{\right}{\aftergroup\egroup\originalright}
+
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+
+\newcommand{\Ccal}{\mathcal{C}}
+
+\newcommand{\ex}[0]{{\mathbb{E}}}
+\newcommand{\pr}[0]{{\mathbb{P}}}
+\newcommand{\Var}[0]{\text{var}}
+
+\newcommand{\defn}{\overset{\Delta}{=}}
+
+\newcommand{\re}{\operatorname{Re}\nolimits}
+\newcommand{\im}{\operatorname{Im}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{\rus{Зачётная работа по курсу \\ ``Теоретико-вероятностные методы в статистике''}}
+\author{\rus{Назаров Иван,} \rus{101мНОД(ИССА)}}
+
+\begin{document}
+\selectlanguage{russian}
+\maketitle
+
+\section{У2.18} % (fold)
+\label{sec:problem_2_18}
+
+Итак необходимо изучить моменты любого порядка случайной величины с плотностью
+\[
+p(x\rvert a) = C \frac{e^{-\frac{1}{2}\ln^2 x}}{x}\bigl(1 + a\sin(2\pi \ln x)\bigr)
+\]
+при $\lvert a\rvert \leq 1$. Именно при этих $a$ функция $p(x\rvert a)$ всюду неотрицательна.
+
+Итак необходимо вычислить при целых $k$ выражение
+\[
+\ex_{p(x\rvert a)} X^k
+= C \int_0^\infty x^k \frac{e^{-\frac{1}{2}\ln^2 x}}{x}\bigl(1 + a\sin(2\pi \ln x)\bigr) dx
+\]
+
+Проведём замену пременных в интеграле $y = \ln x$ ($x = e^y$, $dy = \frac{dx}{x}$) и получим:
+\[
+\ex_{p(x\rvert a)} X^k
+= C \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2}\bigl(1 + a\sin(2\pi y)\bigr) dy
+\]
+
+Подынтегральное выражение есть сумма
+\[e^{ky} e^{-\frac{1}{2}y^2} + a e^{ky} e^{-\frac{1}{2}y^2}\sin(2\pi y)\]
+в силу линейности, искомый интеграл есть сумма интегралов каждого из слагаемых.
+
+Первое слагаемое (константа $C$ опущена):
+\begin{align*}
+	\int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2}
+	&= \int_{-\infty}^\infty e^{-\frac{1}{2}( y^2 - 2ky + k^2 - k^2)} dy\\
+	&= e^{\frac{1}{2}k^2} \sqrt{2\pi} \int_{-\infty}^\infty \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2}( y-k)^2 } dy\\
+	&= e^{\frac{1}{2}k^2} \sqrt{2\pi}
+\end{align*}
+
+Для работы со вторым слагаемым заменим $2\pi$ под синусом на параметр $t$.
+Также заметим, что для любго $\theta\in \Real$
+\[\sin \theta = \frac{1}{2i} \bigl( e^{i\theta} - e^{-i\theta} \bigr)\]
+Тогда второе слагаемое (опять-таки константа $C$ опущена) принимает вид:
+\begin{align*}
+	a \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} \sin(t y) dy
+	&= a \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} \sin(t y) dy\\
+	&= \frac{a}{2i} \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} \bigl(e^{t i y} - e^{-t i y}\bigr) dy
+\end{align*}
+
+Здесь опять интеграл разбивается на два слагаемых, причём одно отличается
+от другого знаком при $t$ и перед интегралом -- рассмотрев подробнее одно,
+автоматически поличим из него другое. Итак
+\begin{align*}
+	\int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} e^{it y} dy
+	&= \int_{-\infty}^\infty e^{-\frac{1}{2}y^2 + ky - \frac{1}{2}k^2 + \frac{1}{2}k^2 } e^{it (y-k) + it k} dy\\
+	&= e^{\frac{1}{2}k^2} e^{it k} \int_{-\infty}^\infty e^{-\frac{1}{2}(y-k)^2} e^{it (y-k)} dy\\
+	&= \bigl[ x = y-k \bigr] = e^{\frac{1}{2}k^2} e^{it k} \int_{-\infty}^\infty e^{-\frac{1}{2}x^2} e^{it x} dx
+\end{align*}
+
+Исследуем интеграл
+\[\int_{-\infty}^\infty e^{-b x^2} e^{it x} dx\]
+при произвольном $b>0$ и преобразуем его в следующее выражение:
+\begin{align*}
+	\int_{-\infty}^\infty e^{-b x^2} e^{it x} dx
+	&= \int_{-\infty}^\infty e^{-b (x^2 - 2\frac{it}{2b} x - \frac{t^2}{4b^2} + \frac{1}{4b^2}t^2 )} dx\\
+	&= \int_{-\infty}^\infty e^{-b (x - \frac{it}{2b})^2} e^{-\frac{1}{4b}t^2} dx\\
+	&= e^{-\frac{1}{4b}t^2} \int_{-\infty}^\infty e^{-b (x - \frac{it}{2b})^2} dx
+\end{align*}
+
+Для нахождения
+\[\int_{-\infty}^\infty e^{-b (x - \frac{it}{2b})^2} dx\]
+заменим $\frac{t}{2b}$ на параметр $\eta$ и рассмотрим всюду аналитическую функцию
+комплексного аргумета $f(z) = e^{-b (z - i\eta)^2}$, $z\in \Cplx$. Нужно вычислить
+значение 
+\[\int_\Real e^{-b (z - i\eta)^2} dz
+%% сведение к пределу теоремой о доминируемой сходимости
+= \lim_{R\to\infty} \int_{-R}^R e^{-b (z - i\eta)^2} dz \]
+
+По теореме Коши, для любой функции $f(z)$ аналитической в области $R$ и содержащей
+замкнутый контур $\Ccal$, такой что $\Ccal\sim 0$ гомеоморфным преобразованием
+сводящийся к одной точке, справедливо
+\[\oint_\Ccal f(z) dz = 0\]
+
+Возьмём произвольное $R>0$ и рассмотрим прямоугольный контур $\Box$ в $\Cplx$ с
+узлами $\pm R$ и $\pm R+i\eta$. Поскольку $f(z)$ аналитична всюду, то для любого
+$R>0$ внутри контура не содержатся особенности $f(z)$. Поскольку $\Box\sim 0$ в
+$\Cplx$ то
+\[\oint_\Box f(z) dz = 0\]
+Но был специально выбрам так, чтобы состоять из прямых путей в $\Cplx$. Поэтому
+в вольной записи
+\[
+\oint_\Box f(z) dz
+= \Bigl( \int_{-R}^R + \int_R^{R+i\eta} + \int_{R+i\eta}^{-R+i\eta} + \int_{-R+i\eta}^{-R} \Bigr) f(z) dz
+\]
+Искомый интеграл равен
+\[\int_{-R}^R e^{-b (z - i\eta)^2} dz
+= - \Bigl(\int_R^{R+i\eta} + \int_{R+i\eta}^{-R+i\eta} + \int_{-R+i\eta}^{-R} \Bigr) e^{-b (z - i\eta)^2} dz\]
+Итак на ``отрезке'' $[-R+i\eta,R+i\eta]$ функция $f(z)$ легко интегрируется
+\begin{align*}
+	\int_{R+i\eta}^{-R+i\eta} e^{-b (z - i\eta)^2} dz
+	&= \int e^{-b (z - i\eta)^2} 1_{[-R+i\eta,R+i\eta]}(z) dz\\
+	&= \bigl[x = z-i\eta\bigr] = \int_R^{-R} e^{-b x^2} dx = -\int_{-R}^R e^{-b x^2} dx
+\end{align*}
+На $[R,R+i\eta]$ нужен анализ: 
+\begin{align*}
+	\int_R^{R+i\eta} e^{-b (z - i\eta)^2} dz
+	&= \int e^{-b (z - i\eta)^2} 1_{[R,R+i\eta]}(z) dz\\
+	&= \bigl[z = R+is \bigr] = \int e^{-b (R + is - i\eta)^2} 1_{[0,\eta]}(s) ids\\
+	&= \int_0^\eta i e^{-b \bigr(R + i(s - \eta)\bigl)^2} ds\\
+	&= \bigl[\xi = s-\eta \bigr] = \int_{-\eta}^0 i e^{-b(R + i\xi)^2} d\xi\\
+	&= \int_{-\eta}^0 i e^{-b (R^2 - \xi^2 + 2 i R\xi)} d\xi
+	= e^{-bR^2} \int_{-\eta}^0 i e^{b\xi^2} e^{- i 2bR\xi} d\xi
+\end{align*}
+Заметим, что этот интеграл имеет очень хорошее свойство:
+\begin{align*}
+	\biggl\lvert \int_R^{R+i\eta} e^{-b (z - i\eta)^2} dz \biggr\rvert
+	&= e^{-bR^2} \biggl\lvert \int_{-\eta}^0 i e^{b\xi^2} e^{- i 2bR\xi} d\xi \biggr \rvert\\
+	&\leq e^{-bR^2} \int_{-\eta}^0 \Bigl\lvert i e^{b\xi^2} e^{- i 2bR\xi} \Bigr\rvert d\xi\\
+	&= e^{-bR^2} \int_{-\eta}^0 e^{b\xi^2} \Bigl\lvert e^{- i 2bR\xi} \Bigr\rvert d\xi\\
+	&= e^{-bR^2} \int_{-\eta}^0 e^{b\xi^2} d\xi \leq e^{-bR^2} \eta e^{b\eta^2}
+\end{align*}
+поскольку как ни ``крути'' $\theta$ всегда выполняется $\abs{e^{i\theta}} = 1$.
+Поэтому этот интеграл бесонечно мал при $R\to\infty$.
+
+\noindent На $[-R+i\eta, R]$ аналогичные выкладки приводят к
+\[
+\int_{-R+i\eta}^R e^{-b (z - i\eta)^2} dz
+= e^{-bR^2} \int_0^{-\eta} i e^{b\xi^2} e^{i 2bR\xi} d\xi
+\]
+откуда опять-таки 
+\[
+\biggl\lvert \int_{-R+i\eta}^R e^{-b (z - i\eta)^2} dz \biggr\rvert
+\leq e^{-bR^2} \eta e^{b\eta^2}
+\]
+
+\noindent Возвращаясь к интегралу $\int_{-R}^R e^{-b (z - i\eta)^2} dz$ имеем
+\begin{multline*}
+	\biggl\lvert \int_{-R}^R e^{-b (z - i\eta)^2} dz + \int_{R+i\eta}^{-R+i\eta} e^{-b (z - i\eta)^2} dz \biggr\rvert = \\
+	= \biggl\lvert \int_{-R}^R e^{-b (z - i\eta)^2} dz - \int_{-R}^R e^{-b x^2} dx \biggr\rvert \leq 2 e^{-bR^2} \eta e^{b\eta^2}
+\end{multline*}
+Поскольку $\eta$ -- это конечное число, отсюда вытекает 
+\[
+\lim_{R\to\infty}\int_{-R}^R e^{-b (z - i\eta)^2} dz
+= \lim_{R\to\infty} \int_{-R}^R e^{-b x^2} dx
+= \int_{-\infty}^\infty e^{-b x^2} dx
+\]
+Однако
+\[
+\int_{-\infty}^\infty e^{-b x^2} dx
+= \bigl[ x = \frac{1}{\sqrt{2b}}s\bigr]
+= \frac{1}{\sqrt{2b}} \int_{-\infty}^\infty e^{-\frac{s^2}{2}} ds
+= \sqrt{\frac{2\pi}{2b}}
+\]
+Таким образом справедливо, что 
+\[
+\int_{-\infty}^\infty e^{-b (z - i\eta)^2} dz
+= \lim_{R\to\infty} \int_{-R}^R e^{-b (z - i\eta)^2} dz
+= \sqrt{\frac{2\pi}{2b}}
+\]
+
+\noindent Эти рассуждения позволяют получить следующее равенство:
+\[
+\int_{-\infty}^\infty e^{-b x^2} e^{it x} dx
+= e^{-\frac{1}{4b}t^2} \sqrt{\frac{\pi}{b}}
+\]
+В свою очередь, при $b=\frac{1}{2}$ отсюда следует, что
+\[
+\int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} e^{it y} dy
+= e^{\frac{1}{2}k^2} e^{it k} \int_{-\infty}^\infty e^{-\frac{1}{2}x^2} e^{it x} dx
+= e^{\frac{1}{2}k^2} \sqrt{2\pi} e^{-\frac{1}{2}t^2} e^{it k}
+\]
+Заменив $t$ на $-t$, получаем
+\[
+\int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} e^{-it y}
+= e^{\frac{1}{2} k^2} \sqrt{2\pi} e^{-\frac{1}{2}t^2} e^{-it k}
+\]
+
+\noindent Далее
+\begin{multline*}
+	a \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} \sin(t y) dy \\
+	= \frac{a}{2i} \Bigl( \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} e^{it y} dy
+		- \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} e^{-it y} dy \Bigr)\\
+	= a e^{\frac{1}{2}k^2} \sqrt{2\pi} e^{-\frac{1}{2}t^2} \frac{1}{2i} \bigl( e^{it k} - e^{-it k}\bigr)\\
+	= a e^{\frac{1}{2}k^2} \sqrt{2\pi} e^{-\frac{1}{2}t^2} \sin(t k)
+\end{multline*}
+Подставляя $t = 2\pi$ получаем
+\[
+a \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} \sin(2\pi y) dy
+= a e^{\frac{1}{2}k^2} \sqrt{2\pi} e^{-\frac{1}{2}t^2} \sin( 2\pi k)
+= 0
+\]
+поскольку все $k$ -- целые.
+
+Итак $k$-й момент распределения равен
+\begin{align*}
+	\ex_{p(x\rvert a)} X^k
+	&= C \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2}\bigl(1 + a\sin(2\pi y)\bigr) dy\\
+	&= C \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} + C a \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} \sin(2\pi y) dy\\
+	&= C e^{\frac{1}{2}k^2} \sqrt{2\pi} + 0
+\end{align*}
+В частности для $k=0$ из условия $\int p(x\rvert a) dx = 1$ следует, что $C = \frac{1}{\sqrt{2\pi}}$.
+Получается, что моменты распределения не зависят от параметра $a$.
+
+Из проведённого анализа можно сделать вывод, что знания даже счётного числа моментов
+распределения не всегда достаточно для восстановления его параметров.
+
+% section problem_2_18 (end)
+
+% [ВШЭ ТВМММ] Зачётная работа Назаров Иван.pdf
+\end{document}
