@@ -89,7 +89,7 @@ The target variable $T$ is always considered to be a random variable at least du
 The input variable $X$, depending on the approach, may or may not be random.
 
 In the case when it is an rv, the data is characterized by the join probability density (distribution) function $p_{X,T}\brac{x,t}$.
-The joint pdf can be factorized into the density of the response conditional on a particular input and the density (probability) of the input:\[p_{X,T}\brac{x,t} = p_{\induc{T}X}\brac{\induc{t}x} p_X(x) \]
+The joint pdf can be factorized into the density of the response conditional on a particular input and the density (probability) of the input:\[p_{X,T}\brac{x,t} = p_{T\rvert X}(T\rvert X) p_X(x) \]
 The analysis of the problem may now fork:
 \begin{description}
 	\item[Generative model] \hfill \\
@@ -116,21 +116,22 @@ Sidenote: conditional expectation as the projection of $f$ onto a subspace of $g
 % Which approach to use?
 The joint randomness of $(X,T)$ leads to the following problem in the case of $L^2$ loss function:
 \[\Ex_{X,T} \brac{T-y(X)}^2 \to \min_y\]
-Using the tower property of the conditional expectation the optimal $y$ is the conditional expectation $\phi(X)\defn \Ex\brac{\induc{T}X}$.
-Indeed, since $\Ex_{\induc{T}X} \brac{\brac{T-\phi(X)} } = 0$ , the mean squared error is
-\begin{align*}
-	\Ex_{X,T} \brac{T-y(X)}^2 = \Ex_{X} \brac{\Ex_{\induc{T}X} \brac{T-y(X)}^2 } \\
-		= \Ex_X \brac{ \Ex_{\induc{T}X} \brac{ \brac{T-\phi(X)}^2+\brac{\phi(X)-y(X)}^2} + 2 \Ex_{\induc{T}X} \brac{\brac{T-\phi(X)}\brac{\phi(X)-y(X)} }} \\
-		= \Ex_X \brac{ \Ex_{\induc{T}X} \brac{T-\phi(X)}^2+\brac{\phi(X)-y(X)}^2 } + 2 \Ex_X \brac{\brac{\phi(X)-y(X)} \Ex_{\induc{T}X} \brac{T-\phi(X)} } \\
-		= \Ex_X \brac{ \Ex_{\induc{T}X} \brac{T-\phi(X)}^2 + \Ex_{\induc{T}X} \brac{\phi(X)-y(X)}^2 }
+Using the tower property of the conditional expectation the optimal $y$ is the conditional
+expectation $\phi(X)\defn \Ex(T\rvert X)$. Indeed, since $\Ex_{T\rvert X} \bigl(T-\phi(X) \bigr) = 0$,
+the mean squared error is \begin{align*}
+	\Ex_{X,T} \bigl(T-y(X)\bigr)^2 &= \Ex_{X} \Bigl( \Ex_{T\rvert X} \bigl(T-y(X)\bigr)^2 \Bigr) \\
+		&= \Ex_X \brac{ \Ex_{T\rvert X} \brac{ \brac{T-\phi(X)}^2+\brac{\phi(X)-y(X)}^2} +
+		2 \Ex_{T\rvert X} \brac{\brac{T-\phi(X)}\brac{\phi(X)-y(X)} }} \\
+		&= \Ex_X \brac{ \Ex_{T\rvert X} \brac{T-\phi(X)}^2+\brac{\phi(X)-y(X)}^2 } + 2 \Ex_X \brac{\brac{\phi(X)-y(X)} \Ex_{T\rvert X} \brac{T-\phi(X)} } \\
+		&= \Ex_X \brac{ \Ex_{T\rvert X} \brac{T-\phi(X)}^2 + \Ex_{T\rvert X} \brac{\phi(X)-y(X)}^2 }
 \end{align*}
 
 The latter conditional expectation is vanishes whenever $y=\phi$, whilst the first one is independent of $y$ and can be considered as the irreducible variance due to structural variance.
 The mean prediction error is the irreducible variance and the approximation error:
-\[\text{error} \defn \Ex_X \Var\brac{\induc{T}X} + \Ex_x \brac{\brac{\phi(X)-y(X)}^2} \]
+\[\text{error} \defn \Ex_X \Var(T\rvert X) + \Ex_x \brac{\brac{\phi(X)-y(X)}^2} \]
 
 However it is never possible to achieve $y(x) = \Ex\brac{\induc{T}X=x}$.
-Therefore some insight is needed on $\Ex_{\induc{T}X} \brac{\phi(X)-y(X)}^2$.
+Therefore some insight is needed on $\Ex_{T\rvert X} \brac{\phi(X)-y(X)}^2$.
 \begin{description}
 	\item[Frequentist] $\pr\brac{\induc{\Dcal}\Theta}$ -- uncertainty is due to dataset
 	\item[Bayesian] $\pr\brac{\induc{\Dcal}\Theta} \pi(\Theta)$ -- uncertainty is due parameters, where $\pi(\Theta)$ is the prior distribution.
@@ -140,7 +141,7 @@ Therefore some insight is needed on $\Ex_{\induc{T}X} \brac{\phi(X)-y(X)}^2$.
 
 Error is for a particular training dataset, on which the $y$ is estimated. In effect the functional form of $y$ depends on the data set $D$:
 \[\Ex_\Dcal\brac{\text{Error}_\Dcal} = \text{Noise} + \Ex_\Dcal \Ex_X \brac{ y(x,D)-\phi(x) }^2\]
-where noise is defined as $\Ex_X \Var\brac{\induc{T}X}$.
+where noise is defined as $\Ex_X \Var(T\rvert X)$.
 
 Now put $f(x) \defn \Ex_\Dcal y(x,D)$.
 \begin{align*}
@@ -153,15 +154,15 @@ Now put $f(x) \defn \Ex_\Dcal y(x,D)$.
 Therefore the expected value of the loss is 
 \[\Ex_\Dcal\brac{\text{Error}_\Dcal} = \text{Noise} + \text{Variance} + \text{Bias}^2\]
 with the variance is due to the fact that the instance of $y$ is not static with varying dataset $D$,
-and the bias is the measure of average closeness of the approximation $y(\cdot)$ to the real conditional expectation $\Ex\brac{\induc{T}X}$.
+and the bias is the measure of average closeness of the approximation $y(\cdot)$ to the real conditional expectation $\Ex(T\rvert X)$.
 This is the decomposition of the loss into systemic noise, bias and variance.
 
 % Non-parametric approach + low dimension: smoothing local data (kNN -- $k$ nearest neighbours).
 
-Parametric approach would require a parametric expression of $y(\cdot)$ as an approximation of $\Ex\brac{\induc{T}X}$ at every $x$ (or at most almost all).
+Parametric approach would require a parametric expression of $y(\cdot)$ as an approximation of $\Ex(T\rvert X)$ at every $x$ (or at most almost all).
 
 Suppose $\Lcal^2$ is the space in which the best approximation of $\phi(X)$ is searched for.
-Projecting $\Ex\brac{\induc{T}X}$ onto $\Lcal^2$ yields $\phi(X) = h^\perp(X) + h(X)$, where $h^\perp \perp \Lcal^2$ (i.e. $\brkt{h^\perp,g} = 0$ for all $g\in \Lcal$) and $h\in \Lcal^2$.
+Projecting $\Ex(T\rvert X)$ onto $\Lcal^2$ yields $\phi(X) = h^\perp(X) + h(X)$, where $h^\perp \perp \Lcal^2$ (i.e. $\brkt{h^\perp,g} = 0$ for all $g\in \Lcal$) and $h\in \Lcal^2$.
 
 % Here should be a picture of the projection: the conditional expectation is projected onto the subspace of square integrable functions.
 
@@ -176,14 +177,14 @@ whence the following decomposition must hold:
 		& = \Ex_X \brac{ f(X) - h }^2 + \Ex_X \brac{ h^\perp(X) }^2 + \Ex_X \brac{ f(X) - h(X) } h^\perp(X) \\
 		& = \Ex_X \brac{ f(X) - h(X) }^2 + \Ex_X \brac{ h^\perp(X) }^2
 \end{align*}
-This means that the squared bias is the sum of how close the model is to the projection of $\Ex\brac{\induc{T}X}$ onto $\Lcal^2$, and how well the projection approximates the conditional expectation itself.
+This means that the squared bias is the sum of how close the model is to the projection of $\Ex(T\rvert X)$ onto $\Lcal^2$, and how well the projection approximates the conditional expectation itself.
 
 In linear regression problems the space $\Lcal^2$ is taken to be the set of all linear functions of $X$.
 
 \subsection*{Linear regression} % (fold)
 \label{sub:linear_regression}
 
-Suppose $X$ is a $p$-dimensional vector of features and that we attempt to approximate the $\Ex\brac{\induc{T}X}$ with $y(x) \defn \beta_0 + \sum_{k=1}^p \beta_k x_k$.
+Suppose $X$ is a $p$-dimensional vector of features and that we attempt to approximate the $\Ex(T\rvert X)$ with $y(x) \defn \beta_0 + \sum_{k=1}^p \beta_k x_k$.
 
 In effect we suppose the following econometric model
 \[T = \beta_0 + \sum_{k=1}^p \beta_k X_p + \epsilon;\,\epsilon\sim\Ncal(0,\sigma^2)\]
@@ -218,7 +219,7 @@ The first order conditions on the potential minimizer are in the matrix form:
 If the matrix $X$ is full rank, then the matrix $X'X$ is invertible, and is positive-semidefinite.
 Therefore $\frac{\partial^2}{\partial \beta\partial \beta}\RSS = 2 X'X \geq 0$, whence the Least Squares solution $\hat{\beta} \defn \brac{X'X}^{-1} X'T$ is indeed the minimizer of the RSS.
 
-The best linear approximation to $\Ex\brac{\induc{T}X}$ is the projection of $T$ onto the space of linear functionals of $X$.
+The best linear approximation to $\Ex(T\rvert X)$ is the projection of $T$ onto the space of linear functionals of $X$.
 
 The matrix $\hat{H} \defn X\brac{X'X}^{-1}X'$ is called the \textbf{hat matrix} and is in fact a projector onto the linear subspace spanned by the column vectors of $X$.
 
@@ -390,11 +391,13 @@ The optimal coefficients are given by
 \label{sec:lecture_3}
 
 Limiting the size of the coefficients. Modified RSS with a tuning parameter $\lambda$.
-\[\RSS\defn \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij}}^2 + \lambda \sum_{j=1}^k \beta_j^2\]
+\[
+\RSS \defn \sum_{i=1}^n \bigl( t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij} \bigr)^2 + \lambda \sum_{j=1}^k \beta_j^2
+\]
 important: \begin{itemize}
 	\item Consider dimensionless inputs (standardized by standard deviation) -- comparable $\beta_j$.
 	\[x_{ij}\]
-	\item If the input vectors are centred, then the estimation is separable.
+	\item If the input vectors are centred, then the estimation is separable in $\beta_0$ and $\beta_j$ for $j\geq 1$.
 \end{itemize}
 Consider \begin{align*}
 	\RSS &= \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j \brac{x_{ij}-\bar{x}_j} - \sum_{j=1}^k \beta_j \bar{x}_j}  + \lambda \sum_{j=1}^k \beta_j^2 \\
