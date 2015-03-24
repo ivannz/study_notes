@@ -105,10 +105,9 @@ This way the incorrect estimation of $t$ by $y(x)$ given $x$ is penalized.
 
 Among the possible loss functions the most frequently used is the quadratic
 loss function $L(t,y) \defn \brac{t-y}^2$, which has its roots in the $L^p$ norm
-\[\nrm{f}_p = \brac{\int \abs{f}^p d\mu}^\frac{1}{p}\] for $p = 2$.
-
-Another possible loss function is the so called Minkowski cost, defined as $L(t,y) \defn \abs{t-y}$,
-which is the $L^p$ norm with $p=1$.
+\[\nrm{f}_p = \brac{\int \abs{f}^p d\mu}^\frac{1}{p}\]
+for $p = 2$. Another possible loss function is the so called Minkowski cost,
+defined as $L(t,y) \defn \abs{t-y}$, which is the $L^p$ norm with $p=1$.
 
 Sidenote: conditional expectation as the projection of $f$ onto a subspace of $g$ measurable functions in the Hilbert space of square integrable functions with the usual $\int f\bar{g} d\mu$ inner product.
 
@@ -316,9 +315,15 @@ To test for simultaneous insignificance of $\brac{\beta_j}_{j=1}^p = 0$ one shou
 To gauge the model accuracy one can use both the RSS as a measure of lack of fit and the $R^2$ as a measure of goodness-of-fit.
 
 If $\one\in \clo{X}$ then
-\[ \text{TSS} = T' \brac{I - \one\brac{\one'\one}^{-1}\one'} T = T' \brac{I - X\brac{X'X}^{-1}X'} T + T' \brac{ X\brac{X'X}^{-1}X' - \one\brac{\one'\one}^{-1}\one'} T = \RSS + \text{ESS}\]
+\begin{align*}
+	\text{TSS} &= T' \bigr(I - \one(\one'\one)^{-1}\one'\bigl) T \\
+	&= T' \bigl(I - X(X'X)^{-1}X'\bigr) T + T' \bigl( X(X'X)^{-1}X' - \one(\one'\one)^{-1}\one'\bigr) T \\
+	&= \RSS + \text{ESS}
+\end{align*}
+since in this case
+\[\bigl(I - X(X'X)^{-1}X'\bigr)\bigl( X(X'X)^{-1}X' - \one(\one'\one)^{-1}\one'\bigr) = 0\]
 
-the goodness-of-fit measure $R^2$ is the ratio of the explained variance to the total variance
+The goodness-of-fit measure $R^2$ is the ratio of the explained variance to the total variance
 \[R^2 \defn \frac{\text{ESS}}{\text{TSS}} = 1 - \frac{\RSS}{\text{TSS}} \]
 For a simple case of a bivariate regression
 \[R^2 = \rho^2 = \frac{\abs{\text{corr}(x,t)}^2}{\Var(x)\Var(t)} = \beta^2 \frac{\Var(x)}{\Var(t)}\]
@@ -491,9 +496,8 @@ The best idea is to use SVD decomposition of $X = U\Lambda V'$, with $U$ and $V$
 Suppose there is a matrix $X$ with dimensions $n\times p$ with rank $r$.
 SVD decomposition claims that there exist square orthogonal matrices $U_{n\times n}$ and $V_{p\times p}$
 and a diagonal matrix $\Lambda_{n\times p}$ of rank $r$, such that $X = U \Lambda V'$.
-Orthogonality of $U$: $U'U = I_{n\times n}$.
-
-Orthogonality greatly simplifies the projectors onto the column space of $X$: $\hat{T} = U U' T$.
+Orthogonality of $U$: $U'U = I_{n\times n}$. Orthogonality greatly simplifies the projectors onto the column space of $X$: 
+\[\hat{T} = U U' T\]
 
 % subsection* svd (end)
 
@@ -630,13 +634,16 @@ thus we get
 	\gamma_{k+1} = \alpha_k \xi_{k+1} + \beta_k
 \end{matrix}
 \]
+Finally the NCS is given by:
+\[
+g(x) = \begin{cases}
+	g_1 - (\xi_1-x)g'(\xi_1), &\text{ if } x\leq \xi_1\\
+	g_K - (x-\xi_K)g'(\xi_K), &\text{ if } x\geq \xi_K\\
+	\frac{(x-\xi_k)g_{k+1} + (\xi_k-x)g_k}{\xi_{k+1}-\xi_k}
+		- \frac{1}{6}(x-\xi_k)(\xi_{k+1}-x), &\text{ oherwise }
+\end{cases}
+\]
 
-\begin{align*}
-g(x) &= \frac{(x-\xi_k)g_{k+1} + (\xi_k-x)g_k}{\xi_{k+1}-\xi_k}
-	- \frac{1}{6}(x-\xi_k)(\xi_{k+1}-x)
-g(x) &= g_1 - (\xi_1-x)g'(\xi_1) & \text{if}\,x\leq \xi_1 \\
-g(x) &= g_K - (x-\xi_K)g'(\xi_K) & \text{if}\,x\geq \xi_K
-\end{align*}
 
 There must be some relation between the coefficients since continuity across the knots is required.
 \begin{align*}
@@ -649,7 +656,7 @@ g'(x) &= \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k}
 \end{align*}
 
 \begin{align*}
-g'(\xi_k+) &= \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} - \frac{1}{6} \brac{\xi_{k+1}-\xi_k}\brac{\gamma_{k+1}+2\gamma_k}
+g'(\xi_k+) &= \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} - \frac{1}{6} \brac{\xi_{k+1}-\xi_k}\brac{\gamma_{k+1}+2\gamma_k}\\
 g'(\xi_{k+1}-) &=\frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} + \frac{1}{6} \brac{\xi_{k+1}-\xi_k}\brac{2\gamma_{k+1}+\gamma_k}
 % g'(\xi_k-) =\frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k}
 \end{align*}
@@ -713,8 +720,9 @@ Consider the difference of these integrals.
 \end{align*}
 
 \begin{align*}
-\int_a^b \abs{\bar{g}''}^2 ds &= 
-\int_a^b \abs{g'' + h''}^2 ds = \int_a^b \abs{g''}^2 + \abs{h''}^2 ds + \int_a^b 2h''g'' ds= \int_a^b \abs{g''}^2 + \abs{h''}^2 ds \geq \int_a^b \abs{g''}^2 ds
+\int_a^b \abs{\bar{g}''}^2 ds
+	&= \int_a^b \abs{g'' + h''}^2 ds = \int_a^b \abs{g''}^2 + \abs{h''}^2 ds + \int_a^b 2h''g'' ds\\
+	&= \int_a^b \abs{g''}^2 + \abs{h''}^2 ds \geq \int_a^b \abs{g''}^2 ds
 \end{align*}
 
 \begin{itemize}
@@ -880,8 +888,10 @@ The amount of information is quantified by the amount of ``'surprise'':\begin{it
 
 $H$ the measure of information has the following properties: \begin{description}
 	\item[Monotonicity] $H$ is a monotonic functional of the probability measure function;
-	\item[Independence] If events are independent or unrelated, then the information gained from both must be poled together: in the case of densities this means that $H(X,Y) = H(X)+H(Y)$ when $p_{X,Y}(x,y) = p_X(x) p_Y(y)$;
-	\item[]
+	\item[Independence] If events are independent or unrelated, then the information gained from both must be poled together: in the case of densities this means that
+\[H(X,Y) = H(X)+H(Y)\]
+when $p_{X,Y}(x,y) = p_X(x) p_Y(y)$;
+	\item[MISSING]
 \end{description}
 
 Average amount of information for a discrete random variable
@@ -1111,12 +1121,13 @@ Hence
 Prove the expected Gauss discrepancy
 \[\Ex C_p^0 = \Ex \frac{1}{\sigma^2_0}\brac{X_0\beta_0 -X \beta}'\brac{X_0\beta_0 -X \beta}\]
 Indeed, take a look at the Gauss discrepancy:
-\begin{align*}
-	\brac{X_0\beta_0 -X \beta}'\brac{X_0\beta_0 -X \beta} &= \brac{X_0\beta_0 - X \brac{X'X}^{-1}X'X_0\beta_0 - X \brac{X'X}^{-1}X'\epsilon }'\brac{ \ldots }\\
-	&= \brac{ (I - H )X_0\beta_0 - H \epsilon }'\brac{ (I - H )X_0\beta_0 - H \epsilon }\\
-	&= \beta_0'X_0'(I-H)X_0\beta_0 - \epsilon'H(I-H)X_0\beta_0 - \beta_0'X_0'(I-H)H \epsilon + \epsilon'H\epsilon\\
-	&= \beta_0'X_0'(I-H)X_0\beta_0 + \epsilon'H\epsilon
-\end{align*}
+\begin{multline*}
+	\brac{X_0\beta_0 -X \beta}'\brac{X_0\beta_0 -X \beta} = \\
+	= \brac{X_0\beta_0 - X \brac{X'X}^{-1}X'X_0\beta_0 - X \brac{X'X}^{-1}X'\epsilon }'\brac{ \ldots }\\
+	= \brac{ (I - H )X_0\beta_0 - H \epsilon }'\brac{ (I - H )X_0\beta_0 - H \epsilon }\\
+	= \beta_0'X_0'(I-H)X_0\beta_0 - \epsilon'H(I-H)X_0\beta_0 - \beta_0'X_0'(I-H)H \epsilon + \epsilon'H\epsilon\\
+	= \beta_0'X_0'(I-H)X_0\beta_0 + \epsilon'H\epsilon
+\end{multline*}
 Since $I-H$ and $H$ are projectors onto orthogonal subspaces of $\Real^n$.
 
 Taking expectations yields
@@ -1158,10 +1169,12 @@ The bayes formula yields the following posterior distribution of $\Mcal_k$ given
 up to the factor $\frac{1}{f(\mathbf{y})}$.
 
 Also
-\[p\brac{\induc{\mathbf{y}}\Mcal_k}
+\begin{multline*}
+p\brac{\induc{\mathbf{y}}\Mcal_k}
 = \int p\brac{\induc{\mathbf{y}, \theta_k}\Mcal_k} d\theta_k
-= \int p\brac{\induc{\mathbf{y}}\theta_k, \Mcal_k} p\brac{\induc{\theta_k}\Mcal_k}d\theta_k
-= \int \induc{L}_{\Mcal_k}(\theta_k;\mathbf{y}) g_k(\theta_k) d\theta_k\]
+= \int p\brac{\induc{\mathbf{y}}\theta_k, \Mcal_k} p\brac{\induc{\theta_k}\Mcal_k}d\theta_k\\
+= \int \induc{L}_{\Mcal_k}(\theta_k;\mathbf{y}) g_k(\theta_k) d\theta_k
+\end{multline*}
 
 \subsection{Laplace approximation} % (fold)
 \label{sub:laplace_approximation}
@@ -1415,10 +1428,10 @@ Minimize the misclassification, by looking at the probability of a mistake:
 observe that this is a generative approach.
 
 The loss function is
-\begin{align*}
-	\Pr\big(\big. y(X) = C_1\big.\big\rvert X\in C_2\big.\big) + \Pr\big(\big. y(X) = C_2\big.\big\rvert X\in C_1\big.\big) = \\
-	&= \int_{R_1} p(x, C_2) dx + \int_{R_2} p(x, C_1) dx \to \min_{R_i}
-\end{align*}
+\begin{multline*}
+	\Pr\big(\big. y(X) = C_1\big.\big\rvert X\in C_2\big.\big) + \Pr\big(\big. y(X) = C_2\big.\big\rvert X\in C_1\big.\big)\\
+	= \int_{R_1} p(x, C_2) dx + \int_{R_2} p(x, C_1) dx \to \min_{R_i}
+\end{multline*}
 
 If $p(x, C_2) > p(x, C_1)$ then classify $x$ in $C_2$, otherwise in $C_1$.
 This is known as the Bayes classifier, and it is the best possible classification in this setting.
@@ -1786,9 +1799,9 @@ For the MLE we would have to estimate $\theta=(\pi_k,\mu_k,\Sigma_k)_{k=1}^K$ wi
 A way to get rid of the sum-under-the-log is to add the hidden information (here the original component).
 Other examples include \textbf{H}idden \textbf{M}arkov \textbf{M}odels and the \textbf{M}ixture \textbf{D}iscriminant \textbf{A}nalysis.
 
-we need a joint distribution of $(X,Z)$ governed by some $\theta$
+We need a joint distribution of $(X,Z)$ governed by some $\theta$
 \[p(X, Z\vert \theta)\]
-hte goal is to maximize the likelihood function
+the goal is to maximize the likelihood function
 \[p(X\vert \theta) = \int p(X, Z\vert \theta) dZ = \sum_{z} p(X, Z=z\vert \theta) \]
 This is in general intractable.
 Suppose $q(Z\vert X,\theta)$ is an arbitrary density of $Z$ and proceed backwards from the goal.
@@ -1957,10 +1970,12 @@ therefore
 = \sum_i^n \sum_{k=1}^K t_i(k) \log \pi_k + \sum_i^n \sum_{k=1}^K t_i(k) \log f_k(x_i)\]
 
 Pluggin in the product form of the density, with latent variables yields:
-\[l(\pi, \alpha, \mu, \sigma\lvert x, t)
-= \sum_i^n \sum_{k=1}^K t_i(k) \log \pi_k
-+ \sum_i^n \sum_{k=1}^K \sum_j^{n_k} t_i(k) u_{kj}(i) \log \alpha_{kj}
-+ \sum_i^n \sum_j^{n_k} u_{kj}(i) \log \phi(x_i\,\lvert\,\mu_{kj}, \Sigma)\]
+\begin{align*}
+l(\pi, \alpha, \mu, \sigma\lvert x, t)
+&= \sum_i^n \sum_{k=1}^K t_i(k) \log \pi_k\\
+&+ \sum_i^n \sum_{k=1}^K \sum_j^{n_k} t_i(k) u_{kj}(i) \log \alpha_{kj}\\
+&+ \sum_i^n \sum_j^{n_k} u_{kj}(i) \log \phi(x_i\,\lvert\,\mu_{kj}, \Sigma)
+\end{align*}
 
 The E-step. The optimal prediction of the latent variables is
 \[\hat{u}_{kj}(i) = \Pr(X=x_i\lvert Z_i=j, C_i = k) \Pr(Z_i=j\lvert C_i = k) \Pr(C_i = k)\]
@@ -1991,11 +2006,11 @@ since $\Sigma^{-1}$ is obviously non-singular:
 whence the expression for $\hat{\mu}_{kj}$ follow.
 
 Estimating the $\Sigma$, using the trace:
-\[
-\frac{\partial }{\partial \Sigma} \sum_j^{n_k} u_{kj}(i) \log \phi(x_i\,\lvert\,\mu_{kj}, \Sigma)
-= - \frac{1}{2} \sum_i^n \sum_j^{n_k} u_{kj}(i) \big(x_i - \mu_{jk}\big)'\Sigma^{-1}\big(x_i - \mu_{jk}\big)
-	-\frac{1}{2} \sum_i^n \sum_j^{n_k} u_{kj}(i) \log \lvert \Sigma\rvert
-\]
+\begin{multline*}
+\frac{\partial }{\partial \Sigma} \sum_j^{n_k} u_{kj}(i) \log \phi(x_i\,\lvert\,\mu_{kj}, \Sigma) = \\
+	- \frac{1}{2} \sum_i^n \sum_j^{n_k} u_{kj}(i) \big(x_i - \mu_{jk}\big)'\Sigma^{-1}\big(x_i - \mu_{jk}\big)
+	- \frac{1}{2} \sum_i^n \sum_j^{n_k} u_{kj}(i) \log \lvert \Sigma\rvert
+\end{multline*}
 which yields the estimate of $\Sigma$.
 
 % subsection the_problem_of_mixture_discriminant_analysis (end)
@@ -2029,7 +2044,7 @@ l(\pi, \mu, \Sigma\lvert x, u)
 of the latent states $\hat{u}_k(i)$. Note that the likelihood is additively separable in $\pi$ and the $\mu$-$\Sigma$ group
 \[
 l(\pi, \mu, \Sigma\lvert x, \hat{u})
-= \sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i) \log \pi_k + \sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i)\log \phi(x_i\lvert \m\hat{u}_k, \Sigma_k)
+= \sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i) \log \pi_k + \sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i)\log \phi(x_i\lvert \mu_k, \Sigma_k)
 \]
 whence maximisation with respect to $\pi$ can be done separately.
 
@@ -2057,7 +2072,7 @@ Because $\sum_{k=1}^K \hat{u}_k(i) = 1$it must be true that $\lambda > 0$ which 
 \label{sub:_mu_sigma_}
 
 Consider the right half of $l(\pi, \mu, \Sigma\lvert x, \hat{u})$:
-\[\sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i)\log \phi(x_i\lvert \m\hat{u}_k, \Sigma_k)\]
+\[\sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i)\log \phi(x_i\lvert \mu_k, \Sigma_k)\]
 if fact since $\phi$ is multivariate Gaussian
 \[
 \phi(x\lvert \mu_k, \Sigma_k)
@@ -2086,7 +2101,7 @@ By assumption $\Sigma_k$ is non-singular (otherwise how would have its inverse e
 \[\sum_{i=1}^N \hat{u}_k(i) (x_i-\mu_k) = 0\]
 and
 \[
-\hat{mu}_k = \frac{\sum_{i=1}^N \hat{u}_k(i) x_i }{\sum_{i=1}^N \hat{u}_k(i)}
+\hat{\mu}_k = \frac{\sum_{i=1}^N \hat{u}_k(i) x_i }{\sum_{i=1}^N \hat{u}_k(i)}
 \]
 
 % subsubsection* _mu_ (end)
@@ -2128,7 +2143,7 @@ with respect to an element $A_{ij}$ is given by
 \]
 whence $\frac{\partial \tr(AB)}{A} = B'$.
 
-Finally, there is the cyclical property of traces $\tr(ABC) = \tr(BCA) = \tr(CAB)$.
+Finally, there is the cyclical property of traces: $\tr(ABC) = \tr(BCA) = \tr(CAB)$.
 
 % subsubsection* some_matrix_calculus (end)
 
@@ -2144,7 +2159,7 @@ property one may get
 Therefore
 \[
 \frac{\partial }{\partial \Sigma_k^{-1}} (x_i-\mu_k)' \Sigma_k^{-1} (x_i-\mu_k)
-= (x_i-\mu_k) (x_i-\mu_k)'
+= \bigl((x_i-\mu_k) (x_i-\mu_k)'\bigr)'
 \]
 
 Using all these observations one gets
@@ -2153,7 +2168,7 @@ Using all these observations one gets
 = \frac{1}{2} \sum_{i=1}^N \hat{u}_k(i) \Bigl(\bigl(\Sigma_k^{-1}\bigr)^{-1}\Bigr)'
 - \frac{1}{2} \sum_{i=1}^N \hat{u}_k(i) (x_i-\mu_k) (x_i-\mu_k)' = 0
 \]
-Since $\Sigma_k$ is a symmetric matrix, this expression is equivalent to
+Since $\Sigma_k$ is a symmetric non-singular matrix, this expression is equivalent to
 \[
 \Sigma_k \sum_{i=1}^N \hat{u}_k(i) = \sum_{i=1}^N \hat{u}_k(i) (x_i-\mu_k) (x_i-\mu_k)'
 \]
@@ -2162,7 +2177,7 @@ whence
 \hat{\Sigma}_k = \frac{1}{\sum_{i=1}^N \hat{u}_k(i)} \sum_{i=1}^N \hat{u}_k(i) \Gamma_{ik}
 \]
 where $\Gamma_{ik} = (x_i-\mu_k) (x_i-\mu_k)'$ is an $d\times d$ matrix of
-``intra-observation'' covariance.
+``intra-cluster covariance''.
 
 % subsubsection* back_to_the_problem (end)
 
@@ -2178,11 +2193,11 @@ The E-step gives:
 the M-step:
 \begin{align*}
 	\hat{\pi}_k^{t+1}
-		&= \frac{1}{n} \sum_{i=1}^N \hat{u}_k^{t+1}(i)
-	\hat{mu}_k^{t+1}
-		&= \frac{1}{\sum_{i=1}^N \hat{u}_k^{t+1}(i)} \sum_{i=1}^N \hat{u}_k^{t+1}(i) x_i
+		&= \frac{1}{n} \sum_{i=1}^N \hat{u}_k^{t+1}(i)\\
+	\hat{\mu}_k^{t+1}
+		&= \frac{1}{\sum_{i=1}^N \hat{u}_k^{t+1}(i)} \sum_{i=1}^N \hat{u}_k^{t+1}(i) x_i\\
 	\hat{\Sigma}_k^{t+1}
-		&= \frac{1}{\sum_{i=1}^N \hat{u}_k^{t+1}(i)} \sum_{i=1}^N \hat{u}_k^{t+1}(i) \Gamma_{ik}^{t+1}
+		&= \frac{1}{\sum_{i=1}^N \hat{u}_k^{t+1}(i)} \sum_{i=1}^N \hat{u}_k^{t+1}(i) \Gamma_{ik}^{t+1}\\
 \end{align*}
 where $\Gamma_{ik}^{t+1} = (x_i-\mu_k^{t+1}) (x_i-\mu_k^{t+1})'$
 % subsubsection* altogether (end)
@@ -2253,7 +2268,7 @@ whence $\Lcal$ indeed decreases with the number of iterations $t$.
 %% 
 %% \hat{\pi}_k^{t+1}
 %% 	&= \frac{1}{n} \sum_{i=1}^N \hat{u}_k^{t+1}(i)
-%% \hat{mu}_k^{t+1}
+%% \hat{\mu}_k^{t+1}
 %% 	&= \frac{1}{\sum_{i=1}^N \hat{u}_k^{t+1}(i)} \sum_{i=1}^N \hat{u}_k^{t+1}(i) x_i
 %% \hat{\Sigma}_k^{t+1}
 %% 	&= \frac{1}{\sum_{i=1}^N \hat{u}_k^{t+1}(i)} \sum_{i=1}^N \hat{u}_k^{t+1}(i) \Gamma_{ik}^{t+1}
