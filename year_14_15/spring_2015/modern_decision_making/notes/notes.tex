@@ -119,63 +119,71 @@ The joint randomness of $(X,T)$ leads to the following problem in the case of $L
 Using the tower property of the conditional expectation the optimal $y$ is the conditional
 expectation $\phi(X)\defn \Ex(T\rvert X)$. Indeed, since $\Ex_{T\rvert X} \bigl(T-\phi(X) \bigr) = 0$,
 the mean squared error is \begin{align*}
-	\Ex_{X,T} \bigl(T-y(X)\bigr)^2 &= \Ex_{X} \Bigl( \Ex_{T\rvert X} \bigl(T-y(X)\bigr)^2 \Bigr) \\
-		&= \Ex_X \brac{ \Ex_{T\rvert X} \brac{ \brac{T-\phi(X)}^2+\brac{\phi(X)-y(X)}^2} +
-		2 \Ex_{T\rvert X} \brac{\brac{T-\phi(X)}\brac{\phi(X)-y(X)} }} \\
-		&= \Ex_X \brac{ \Ex_{T\rvert X} \brac{T-\phi(X)}^2+\brac{\phi(X)-y(X)}^2 } + 2 \Ex_X \brac{\brac{\phi(X)-y(X)} \Ex_{T\rvert X} \brac{T-\phi(X)} } \\
-		&= \Ex_X \brac{ \Ex_{T\rvert X} \brac{T-\phi(X)}^2 + \Ex_{T\rvert X} \brac{\phi(X)-y(X)}^2 }
+	\Ex_{X,T} \bigl(T-y(X)\bigr)^2 &= \Ex_{X} \Bigl( \Ex_{T\rvert X} (T-y(X))^2 \Bigr) \\
+		&= \Ex_X \Bigl( \Ex_{T\rvert X} \bigl( (T-\phi(X))^2+(\phi(X)-y(X))^2 \bigr) + \\
+			&\quad + 2 \Ex_{T\rvert X} (T-\phi(X))(\phi(X)-y(X)) \Bigr) \\
+		&= \Ex_X \bigl( (\phi(X)-y(X))^2 + \Ex_{T\rvert X} (T-\phi(X))^2 \bigr) + \\
+			&\quad + 2 \Ex_X \bigl((\phi(X)-y(X)) \Ex_{T\rvert X} (T-\phi(X)) \bigr) \\
+		&= \Ex_X \bigl( \Ex_{T\rvert X} (T-\phi(X))^2 + \Ex_{T\rvert X} (\phi(X)-y(X))^2 \bigr)
 \end{align*}
 
-The latter conditional expectation is vanishes whenever $y=\phi$, whilst the first one is independent of $y$ and can be considered as the irreducible variance due to structural variance.
+The latter conditional expectation is vanishes whenever $y=\phi$, whilst the first one is
+independent of $y$ and can be considered as the irreducible variance due to structural variance.
 The mean prediction error is the irreducible variance and the approximation error:
-\[\text{error} \defn \Ex_X \Var(T\rvert X) + \Ex_x \brac{\brac{\phi(X)-y(X)}^2} \]
+\[\text{error} \defn \Ex_X \Var(T\rvert X) + \Ex_x (\phi(X)-y(X))^2 \]
 
-However it is never possible to achieve $y(x) = \Ex\brac{\induc{T}X=x}$.
-Therefore some insight is needed on $\Ex_{T\rvert X} \brac{\phi(X)-y(X)}^2$.
+However it is never possible to achieve $y(x) = \Ex(T\rvert X=x)$.
+Therefore some insight is needed on $\Ex_{T\rvert X} (\phi(X)-y(X))^2$.
 \begin{description}
-	\item[Frequentist] $\pr\brac{\induc{\Dcal}\Theta}$ -- uncertainty is due to dataset
-	\item[Bayesian] $\pr\brac{\induc{\Dcal}\Theta} \pi(\Theta)$ -- uncertainty is due parameters, where $\pi(\Theta)$ is the prior distribution.
+	\item[Frequentist] $\pr\bigl(\Dcal\rvert \Theta\bigr)$ -- uncertainty is due to dataset
+	\item[Bayesian] $\pr\bigl(\Dcal\rvert \Theta\bigr) \pi(\Theta)$ -- uncertainty is due
+	parameters, where $\pi(\Theta)$ is the prior distribution.
 	The posterior distribution is proportional to
-		\[\pr\brac{\induc{\Theta}\Dcal} \sim \pr\brac{\induc{\Dcal}\Theta} \pi(\Theta)\]
+		\[\pr\bigl(\Theta\rvert \Dcal\bigr) \sim \pr\bigl(\Dcal\rvert \Theta\bigr) \pi(\Theta)\]
 \end{description}
 
-Error is for a particular training dataset, on which the $y$ is estimated. In effect the functional form of $y$ depends on the data set $D$:
-\[\Ex_\Dcal\brac{\text{Error}_\Dcal} = \text{Noise} + \Ex_\Dcal \Ex_X \brac{ y(x,D)-\phi(x) }^2\]
+Error is for a particular training dataset, on which the $y$ is estimated. In effect the
+functional form of $y$ depends on the data set $D$:
+\[\Ex_\Dcal(\text{Error}_\Dcal) = \text{Noise} + \Ex_\Dcal \Ex_X \bigl( y(x,D)-\phi(x) \bigr)^2\]
 where noise is defined as $\Ex_X \Var(T\rvert X)$.
-
 Now put $f(x) \defn \Ex_\Dcal y(x,D)$.
 \begin{align*}
-	\Ex_\Dcal\brac{ y(x,D)-\phi(x)\pm f(x) }^2 &
-		= \Ex_\Dcal\brac{ y(x,D) - f(x) }^2 + \Ex_\Dcal\brac{ f(x) - \phi(x) }^2 \\ &+ 2 \Ex_\Dcal\brac{ y(x,D) - f(x) }\brac{ f(x) - \phi(x) } \\
-		& = \Ex_\Dcal\brac{ y(x,D) - f(x) }^2 + \brac{ f(x) - \phi(x) }^2 \\&+ 2\brac{ f(x) - \phi(x) } \Ex_\Dcal\brac{ y(x,D) - f(x) } \\
-		& = \Ex_\Dcal\brac{ y(x,D) - f(x) }^2 + \brac{ f(x) - \phi(x) }^2 \\
+	\Ex_\Dcal( y(x,D)-\phi(x) \pm f(x) )^2
+		& = \Ex_\Dcal( y(x,D) - f(x) )^2 + \Ex_\Dcal( f(x) - \phi(x) )^2 \\
+			&\quad + 2 \Ex_\Dcal( y(x,D) - f(x) )( f(x) - \phi(x) ) \\
+		& = \Ex_\Dcal( y(x,D) - f(x) )^2 + ( f(x) - \phi(x) )^2 \\
+			&\quad + 2( f(x) - \phi(x) ) \Ex_\Dcal( y(x,D) - f(x) ) \\
+		& = \Ex_\Dcal( y(x,D) - f(x) )^2 + ( f(x) - \phi(x) )^2 \\
 \end{align*}
 
 Therefore the expected value of the loss is 
-\[\Ex_\Dcal\brac{\text{Error}_\Dcal} = \text{Noise} + \text{Variance} + \text{Bias}^2\]
-with the variance is due to the fact that the instance of $y$ is not static with varying dataset $D$,
-and the bias is the measure of average closeness of the approximation $y(\cdot)$ to the real conditional expectation $\Ex(T\rvert X)$.
+\[\Ex_\Dcal(\text{Error}_\Dcal) = \text{Noise} + \text{Variance} + \text{Bias}^2\]
+with the variance is due to the fact that the instance of $y$ is not static with
+varying dataset $D$, and the bias is the measure of average closeness of the
+approximation $y(\cdot)$ to the real conditional expectation $\Ex(T\rvert X)$.
 This is the decomposition of the loss into systemic noise, bias and variance.
 
 % Non-parametric approach + low dimension: smoothing local data (kNN -- $k$ nearest neighbours).
 
-Parametric approach would require a parametric expression of $y(\cdot)$ as an approximation of $\Ex(T\rvert X)$ at every $x$ (or at most almost all).
+Parametric approach would require a parametric expression of $y(\cdot)$ as an
+approximation of $\Ex(T\rvert X)$ at every $x$ (or at most almost all).
 
 Suppose $\Lcal^2$ is the space in which the best approximation of $\phi(X)$ is searched for.
-Projecting $\Ex(T\rvert X)$ onto $\Lcal^2$ yields $\phi(X) = h^\perp(X) + h(X)$, where $h^\perp \perp \Lcal^2$ (i.e. $\brkt{h^\perp,g} = 0$ for all $g\in \Lcal$) and $h\in \Lcal^2$.
+Projecting $\Ex(T\rvert X)$ onto $\Lcal^2$ yields $\phi(X) = h^\perp(X) + h(X)$, where
+$h^\perp \perp \Lcal^2$ (i.e. $\langle h^\perp,g\rangle = 0$ for all $g\in \Lcal$) and $h\in \Lcal^2$.
 
 % Here should be a picture of the projection: the conditional expectation is projected onto the subspace of square integrable functions.
 
 % \Ex_\Dcal y(X,D) -- is an element of the 
 
 Since $f-h\in\Lcal^2$ it must be true that
-\[\Ex_X \brac{ f(X) - h(X) } h^\perp(X) = \brkt{f-h, h^\perp} = 0 \]
+\[\Ex_X (f(X) - h(X)) h^\perp(X) = \langle f-h, h^\perp\rangle = 0 \]
 whence the following decomposition must hold:
 \begin{align*}
-	\text{Bias}^2 &= \Ex_X \brac{ \Ex_\Dcal y(X,D) - \phi(X) }^2 
-		= \Ex_X \brac{ f(X) - h^\perp(X) - h(X) }^2 \\
-		& = \Ex_X \brac{ f(X) - h }^2 + \Ex_X \brac{ h^\perp(X) }^2 + \Ex_X \brac{ f(X) - h(X) } h^\perp(X) \\
-		& = \Ex_X \brac{ f(X) - h(X) }^2 + \Ex_X \brac{ h^\perp(X) }^2
+	\text{Bias}^2 &= \Ex_X \bigl( \Ex_\Dcal y(X,D) - \phi(X) \bigr)^2 
+		= \Ex_X (f(X) - h^\perp(X) - h(X))^2 \\
+		& = \Ex_X (f(X) - h)^2 + \Ex_X (h^\perp(X))^2 + \Ex_X (f(X) - h(X)) h^\perp(X) \\
+		& = \Ex_X (f(X) - h(X))^2 + \Ex_X (h^\perp(X))^2
 \end{align*}
 This means that the squared bias is the sum of how close the model is to the projection of $\Ex(T\rvert X)$ onto $\Lcal^2$, and how well the projection approximates the conditional expectation itself.
 
