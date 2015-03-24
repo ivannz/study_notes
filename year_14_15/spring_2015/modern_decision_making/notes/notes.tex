@@ -1991,16 +1991,275 @@ since $\Sigma^{-1}$ is obviously non-singular:
 whence the expression for $\hat{\mu}_{kj}$ follow.
 
 Estimating the $\Sigma$, using the trace:
-\[\frac{\partial }{\partial \Sigma} \sum_j^{n_k} u_{kj}(i) \log \phi(x_i\,\lvert\,\mu_{kj}, \Sigma)
+\[
+\frac{\partial }{\partial \Sigma} \sum_j^{n_k} u_{kj}(i) \log \phi(x_i\,\lvert\,\mu_{kj}, \Sigma)
 = - \frac{1}{2} \sum_i^n \sum_j^{n_k} u_{kj}(i) \big(x_i - \mu_{jk}\big)'\Sigma^{-1}\big(x_i - \mu_{jk}\big)
--\frac{1}{2} \sum_i^n \sum_j^{n_k} u_{kj}(i) \log \lvert \Sigma\rvert\]
+	-\frac{1}{2} \sum_i^n \sum_j^{n_k} u_{kj}(i) \log \lvert \Sigma\rvert
+\]
 which yields the estimate of $\Sigma$.
-
-\textbf{COPY THE PROBEM FROM THE TUTORIAL SESSION (SEE NOTES)}
 
 % subsection the_problem_of_mixture_discriminant_analysis (end)
 
 % section lecture_10 (end)
+
+\section{Tutorial prob \# 7} % (fold)
+\label{sec:tutorial_prob_7}
+
+The Gaussian mixture density is 
+\[p(x) = \sum_{k=1}^K \pi_k \phi(x\lvert \mu_k, \Sigma_k)\]
+where $\phi$ is the $\Ncal_d$ density, $\mu_k\in \Real^d$ is the mean and
+$\Sigma_k\in\Real^{d\times d}$ -- a positive definite symmetric covariance matrix.
+
+The log-likelihood of the model with unobserved variable $u_k(i)$ denoting
+if the $i$-th observation came form the $k$-th mixture component.
+\[
+l(\pi, \mu, \Sigma\lvert x, u)
+= \sum_{i=1}^N \sum_{k=1}^K u_k(i) \bigl(\log \pi_k + \log \phi(x\lvert \mu_k, \Sigma_k)\bigr)
+\]
+
+\textbf{E-step}: find the expectation of the posterior distribution of $u_k(i)$ given $\pi$, $\mu$ and $\Sigma$:
+\[
+\hat{u}_k(i)
+= \pr(C_i=k\lvert X=x_i)
+= \pr(X=x_i\lvert C_i=k)\frac{\pr(C_i=k)}{\pr(X=x_i)}
+= \frac{\phi(x_i\lvert \mu_k, \Sigma_k) \pi_k}{\sum_{r=1}^K \phi(x_i\lvert \mu_r, \Sigma_r) \pi_r}
+\]
+
+\textbf{M-step}: maximize the likelihood with respect to $\pi$, $\mu$ and $\Sigma$ given the estimates
+of the latent states $\hat{u}_k(i)$. Note that the likelihood is additively separable in $\pi$ and the $\mu$-$\Sigma$ group
+\[
+l(\pi, \mu, \Sigma\lvert x, \hat{u})
+= \sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i) \log \pi_k + \sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i)\log \phi(x_i\lvert \m\hat{u}_k, \Sigma_k)
+\]
+whence maximisation with respect to $\pi$ can be done separately.
+
+\subsection*{$\pi$} % (fold)
+\label{sub:_pi_}
+
+Construct the Lagrangian
+\[\Lcal = \sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i) \log \pi_k - \lambda\bigl( \sum_{k=1}^K \pi_k - 1\bigr)\]
+The first order condition is
+\[\frac{\partial \Lcal}{\partial \pi_k} = \sum_{i=1}^N \hat{u}_k(i) \frac{1}{\pi_k} - \lambda = 0\]
+from which it follows that
+\[\sum_{i=1}^N \hat{u}_k(i) = \lambda \pi_k\]
+since $\sum_{k=1}^K \pi_k - 1$, we must have
+\[\sum_{k=1}^K \sum_{i=1}^N \hat{u}_k(i) = \lambda\]
+Because $\sum_{k=1}^K \hat{u}_k(i) = 1$it must be true that $\lambda > 0$ which means that
+\[
+\hat{\pi}_k
+= \frac{ \sum_{i=1}^N \hat{u}_k(i) }{ \sum_{k=1}^K \sum_{i=1}^N \hat{u}_k(i) }
+= \frac{1}{n} \sum_{i=1}^N \hat{u}_k(i)
+\]
+
+% subsection* _pi_ (end)
+
+\subsection*{$\mu$, $\Sigma$} % (fold)
+\label{sub:_mu_sigma_}
+
+Consider the right half of $l(\pi, \mu, \Sigma\lvert x, \hat{u})$:
+\[\sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i)\log \phi(x_i\lvert \m\hat{u}_k, \Sigma_k)\]
+if fact since $\phi$ is multivariate Gaussian
+\[
+\phi(x\lvert \mu_k, \Sigma_k)
+= \frac{1}{(2\pi)^\frac{d}{2} \lvert \Sigma_k\rvert^\frac{1}{2} } e^{ -\frac{1}{2} (x-\mu_k)' \Sigma_k^{-1} (x-\mu_k) }
+\]
+its log-density provides the following expression for the is partial log-likelihood
+\[
+\sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i) \frac{1}{2} \log\lvert\Sigma_k^{-1}\rvert 
+	- \frac{d}{2} \sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i) \log2\pi 
+	- \frac{1}{2} \sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i) (x_i-\mu_k)' \Sigma_k^{-1} (x_i-\mu_k)
+\]
+
+\subsubsection*{$\mu$} % (fold)
+\label{ssub:_mu_}
+
+The part of log-likelihood with $\mu$ is
+\[
+l(\pi, \mu, \Sigma\lvert x, \hat{u})
+= \ldots - \frac{1}{2} \sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i) (x_i-\mu_k)' \Sigma_k^{-1} (x_i-\mu_k) + \ldots
+\]
+The FOC:
+\[
+\frac{\partial l}{\partial \mu_k} = - \frac{1}{2} \sum_{i=1}^N \hat{u}_k(i) \Sigma_k^{-1} (x_i-\mu_k) = 0
+\]
+By assumption $\Sigma_k$ is non-singular (otherwise how would have its inverse existed). Hence
+\[\sum_{i=1}^N \hat{u}_k(i) (x_i-\mu_k) = 0\]
+and
+\[
+\hat{mu}_k = \frac{\sum_{i=1}^N \hat{u}_k(i) x_i }{\sum_{i=1}^N \hat{u}_k(i)}
+\]
+
+% subsubsection* _mu_ (end)
+
+\subsubsection*{$\Sigma$} % (fold)
+\label{ssub:_sigma_}
+
+$\Sigma$: It is impractical to find the $\Sigma$ directly by brute force differentiation, at least
+because the expression involving $\Sigma$ actually depends on its inverse. Thus let's peruse $\Sigma^{-1}$
+\[
+l(\pi, \mu, \Sigma\lvert x, \hat{u})
+= \ldots + \sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i) \frac{1}{2} \log\lvert\Sigma_k^{-1}\rvert 
+	- \frac{1}{2} \sum_{i=1}^N \sum_{k=1}^K \hat{u}_k(i) (x_i-\mu_k)' \Sigma_k^{-1} (x_i-\mu_k)
+\]
+
+% subsubsection* _sigma_ (end)
+
+\subsubsection*{Some matrix calculus} % (fold)
+\label{ssub:some_matrix_calculus}
+
+First, using Laplace determinant expansion theorem, it is very easy to show that
+\[\frac{\partial \lvert A\rvert}{\partial A} = \lvert A\rvert \bigl(A^{-1}\bigr)'\]
+Indeed, expanding by $i$-th row
+\[
+\frac{\partial \lvert A\rvert}{\partial A_{ij}}
+= \frac{\partial }{\partial A_{ij}} \sum_{k=1}^n A_{ik} \tilde{A}_{ik}
+= \tilde{A}_{ij}
+\]
+where $\tilde{A_{ik}}$ is the cofactor (\rus{алгебраическое дополнение}) of
+the element $A_{ij}$ in the square matrix $A$, and no element of the cofactor
+depends on $A_{ij}$, as it basically the $i$,$j$ minor of $A$.
+
+Second, the derivative of a trace of a product $AB$ ($n\times m$,$m\times n$)
+with respect to an element $A_{ij}$ is given by
+\[
+\frac{\partial \tr(AB)}{A_{ij}}
+= \frac{\partial }{A_{ij}} \sum_{s=1}^m A_{is} B_{si}
+= B_{si}
+\]
+whence $\frac{\partial \tr(AB)}{A} = B'$.
+
+Finally, there is the cyclical property of traces $\tr(ABC) = \tr(BCA) = \tr(CAB)$.
+
+% subsubsection* some_matrix_calculus (end)
+
+\subsubsection*{back to the problem} % (fold)
+\label{ssub:back_to_the_problem}
+Notice that the term $(x_i-\mu_k)' \Sigma_k^{-1} (x_i-\mu_k)$ in the log-likelihood
+is in fact a scalar. This means that it is equal to its own trace. Using the cyclical
+property one may get
+\[
+\tr \bigl((x_i-\mu_k)' \Sigma_k^{-1} (x_i-\mu_k)\bigr)
+= \tr \bigl(\Sigma_k^{-1} (x_i-\mu_k) (x_i-\mu_k)'\bigr)
+\]
+Therefore
+\[
+\frac{\partial }{\partial \Sigma_k^{-1}} (x_i-\mu_k)' \Sigma_k^{-1} (x_i-\mu_k)
+= (x_i-\mu_k) (x_i-\mu_k)'
+\]
+
+Using all these observations one gets
+\[
+\frac{\partial }{\partial \Sigma_k^{-1}} l(\pi, \mu, \Sigma\lvert x, \hat{u})
+= \frac{1}{2} \sum_{i=1}^N \hat{u}_k(i) \Bigl(\bigl(\Sigma_k^{-1}\bigr)^{-1}\Bigr)'
+- \frac{1}{2} \sum_{i=1}^N \hat{u}_k(i) (x_i-\mu_k) (x_i-\mu_k)' = 0
+\]
+Since $\Sigma_k$ is a symmetric matrix, this expression is equivalent to
+\[
+\Sigma_k \sum_{i=1}^N \hat{u}_k(i) = \sum_{i=1}^N \hat{u}_k(i) (x_i-\mu_k) (x_i-\mu_k)'
+\]
+whence
+\[
+\hat{\Sigma}_k = \frac{1}{\sum_{i=1}^N \hat{u}_k(i)} \sum_{i=1}^N \hat{u}_k(i) \Gamma_{ik}
+\]
+where $\Gamma_{ik} = (x_i-\mu_k) (x_i-\mu_k)'$ is an $d\times d$ matrix of
+``intra-observation'' covariance.
+
+% subsubsection* back_to_the_problem (end)
+
+\subsubsection*{Altogether} % (fold)
+\label{ssub:altogether}
+
+The E-step gives:
+\[
+\hat{u}_k^{t+1}(i)
+= \frac{\phi(x_i\lvert \hat{\mu}_k^t, \hat{\Sigma}_k^t) \hat{\pi}_k^t}
+	{\sum_{r=1}^K \phi(x_i\lvert \hat{\mu}_r^t, \hat{\Sigma}_r^t) \hat{\pi}_r^t}
+\]
+the M-step:
+\begin{align*}
+	\hat{\pi}_k^{t+1}
+		&= \frac{1}{n} \sum_{i=1}^N \hat{u}_k^{t+1}(i)
+	\hat{mu}_k^{t+1}
+		&= \frac{1}{\sum_{i=1}^N \hat{u}_k^{t+1}(i)} \sum_{i=1}^N \hat{u}_k^{t+1}(i) x_i
+	\hat{\Sigma}_k^{t+1}
+		&= \frac{1}{\sum_{i=1}^N \hat{u}_k^{t+1}(i)} \sum_{i=1}^N \hat{u}_k^{t+1}(i) \Gamma_{ik}^{t+1}
+\end{align*}
+where $\Gamma_{ik}^{t+1} = (x_i-\mu_k^{t+1}) (x_i-\mu_k^{t+1})'$
+% subsubsection* altogether (end)
+
+% subsection* _mu_sigma_ (end)
+
+\subsection*{$k$-means clustering} % (fold)
+\label{sub:k_means_clustering}
+
+Consider the minimization problem of the functional
+\[ \Lcal = \sum_{i=1}^N \sum_{k=1}^K r_k(i) (x_i-\mu_k)' (x_i-\mu_k) \to \min_{r, \mu} \]
+where $r_k(i) = 1_{C_i=k}$ the $0-1$ indicator if the $i$-th observation belongs
+to the $k$-th class.
+
+First, suppose the $\mu=\bigl(\mu_k\bigr)_{k=1}^k$ are fixed and it is necessary
+to optimize with respect to $r_k(i)$ for some particular observation $i$. The
+functional can be rewritten in the following way
+\[\Lcal = \ldots + \sum_{k=1}^K r_k(i) (x_i-\mu_k)' (x_i-\mu_k) \to \min_{r, \mu} + \ldots \]
+where the dotted parts are independent of $r_k(i)$ for \textbf{this} $i$
+provided $\mu$ is fixed.
+In order to minimize this partial expression one must set $r_k(i)=0$ for all $k$
+but the one which corresponds to the smallest value of $(x_i-\mu_k)' (x_i-\mu_k)$.
+Thus, in effect the $i$-th observation is assigned to a class to the centroid $\mu_k$
+of which it is the nearest.
+
+Second, given fixed values of $r_k(i)$ for all $k$ and $i$, the minimization of
+$\Lcal$ with respect to $\mu_k$ is a trivial exercise in optimization:
+\[\frac{\partial \Lcal}{\partial \mu_k} = 2 \sum_{i=1}^N r_k(i) (x_i-\mu_k)\]
+whence
+\[\mu_k = \frac{\sum_{i=1}^N r_k(i) x_i}{\sum_{i=1}^N r_k(i)}\]
+
+In, conclusion, the two-step maximization procedure must be the following one \begin{description}
+	\item[find] Set $r_k(i)=0$ for $k\neq k_i$ and $r_{k_i}(i)=1$ otherwise, where
+	$k_i = \text{argmin}_k (x_i-\mu_k)'(x_i-\mu_k)$;
+	\item[update] Compute the new centroids with
+	\[\mu_k = \frac{\sum_{i=1}^N r_k(i) x_i}{\sum_{i=1}^N r_k(i)}\]
+\end{description}
+Given $\mu^t = \bigl(\mu_k^t\bigr)_{k=1}^K$, $r_k^{t+1}(i)$ are computed,
+and afterwards $\mu^t$ is updated to get $\mu_k^{t+1}$. The stopping criterion
+is the stabilization of $r_k(i)$.
+
+Actually one needs to show that this iterative procedure does not increase
+the functional $\Lcal$ by the end of each iteration. Indeed, by construction
+of $r^t$ and $\mu^t$
+\[\Lcal(r^{t+1}, \mu^t) = \min_r \Lcal(r, \mu^t) \leq \Lcal(r^t, \mu^t)\]
+and
+\[\Lcal(r^{t+1}, \mu^{t+1}) = \min_\mu \Lcal(r^{t+1}, \mu) \leq \Lcal(r^{t+1}, \mu^t)\]
+whence $\Lcal$ indeed decreases with the number of iterations $t$.
+
+% subsection* k_means_clustering (end)
+
+%% \subsection*{Equivalence} % (fold)
+%% \label{ssub:equivalence}
+%% 
+%% Consider the Gaussian mixture model with restriction $\Sigma_k = \epsilon I_d$ for $\epsilon>0$.
+%% Therefore $\lvert \Sigma_k \rvert = \epsilo ^d$ and the density becomes
+%% \[
+%% \phi(x\lvert \mu_k, \Sigma_k)
+%% = (2\pi \epsilon)^{-\frac{d}{2}} e^{-\frac{1}{2\epsilon} (x-\mu_k)'(x-\mu_k)}
+%% \]
+%% 
+%% Thus
+%% \[
+%% \hat{u}_k^{t+1}(i)
+%% = \frac{ e^{-\frac{1}{2\epsilon} (x-\mu_k)'(x-\mu_k)} \hat{\pi}_k^t}
+%% 	{\sum_{r=1}^K e^{-\frac{1}{2\epsilon} (x-\mu_r)'(x-\mu_r)} \hat{\pi}_r^t}
+%% \]
+%% 
+%% \hat{\pi}_k^{t+1}
+%% 	&= \frac{1}{n} \sum_{i=1}^N \hat{u}_k^{t+1}(i)
+%% \hat{mu}_k^{t+1}
+%% 	&= \frac{1}{\sum_{i=1}^N \hat{u}_k^{t+1}(i)} \sum_{i=1}^N \hat{u}_k^{t+1}(i) x_i
+%% \hat{\Sigma}_k^{t+1}
+%% 	&= \frac{1}{\sum_{i=1}^N \hat{u}_k^{t+1}(i)} \sum_{i=1}^N \hat{u}_k^{t+1}(i) \Gamma_{ik}^{t+1}
+%%% subsection* equivalence (end)
+
+% section tutorial_prob_7 (end)
 
 \section{Mid-term test review} % (fold)
 \label{sec:mid_term_test_review}
