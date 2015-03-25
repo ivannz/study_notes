@@ -366,17 +366,48 @@ F_{X,Y}(x,y)
 \section{У2.14} % (fold)
 \label{sec:problem_2_14}
 
-
-
 % section problem_2_14 (end)
 
 \section{У4.2} % (fold)
 \label{sec:problem_4_2}
 
+Пусть $X=(X_k)_{k=1}^n$ независимые случайные величины распределённые согласно
+нормальному закону со средними $\mu = (\mu_k)_{k=1}^n$ и дисперсиями $(\sigma^2_k)_{k=1}^n$.
+Тогда совместная функция плотности равна
+\[p_X(x) = \prod_{k=1}^n \frac{1}{\sqrt{2\pi \sigma_k^2}} e^{-\frac{(x_k-\mu_k)^2}{2\sigma^2_k}}\]
+На самом деле вектор $X$ можно рассматривать как случайный вектор многомерного
+нормального распределения $\Ncal_n\bigl(\mu,\Sigma\bigr)$, где
+$\Sigma = \text{diag}\bigl((\sigma^2_k)_{k=1}^n\bigr)$.
+Плотность $\Ncal_n(\mu,\Sigma)$:
+\[
+p_X(x)
+= \frac{1}{(2\pi)^\frac{n}{2} \lvert \Sigma \rvert^\frac{1}{2}}
+	e^{-\frac{1}{2}(x-\mu)'\Sigma^{-1}(x-\mu)}
+\]
+
+
 % section problem_4_2 (end)
 
 \section{У4.11} % (fold)
 \label{sec:problem_4_11}
+
+Рассмотрим $X\in \Real{n\times 1}$ с $n$-мерным нормальным распределением со
+средним $\mu\in \Real^{n\times 1}$ и положительно определённой ковариационной
+матрицей $\Sigma \in \Real{n\times n}$
+\[
+p_X(x;\mu,\Sigma)
+= \frac{1}{(2\pi)^\frac{n}{2} \lvert \Sigma \rvert^\frac{1}{2}}
+	e^{-\frac{1}{2}(x-\mu)'\Sigma^{-1}(x-\mu)}
+\]
+
+Выделим в матрице $\Sigma$ следующую блочную структуру
+\[
+\Sigma
+= \biggl(\begin{matrix}\Sigma_{11} & \Sigma_{12}\\\Sigma_{21} & \Sigma_{22}\end{matrix}\biggr)
+\sim \biggl(\begin{matrix}p\times p & p\times (n-p)\\(n-p)\times p & (n-p)\times (n-p)\end{matrix}\biggr)
+\]
+причём $\Sigma_{12} = \Sigma_{21}'$. Поскольку $\Sigma$ положительно определена,
+то ...
 
 % section problem_4_11 (end)
 
