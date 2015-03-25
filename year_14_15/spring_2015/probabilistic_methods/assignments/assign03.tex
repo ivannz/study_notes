@@ -59,7 +59,7 @@ p(x\rvert a) = C \frac{e^{-\frac{1}{2}\ln^2 x}}{x}\bigl(1 + a\sin(2\pi \ln x)\bi
 = C \int_0^\infty x^k \frac{e^{-\frac{1}{2}\ln^2 x}}{x}\bigl(1 + a\sin(2\pi \ln x)\bigr) dx
 \]
 
-Проведём замену пременных в интеграле $y = \ln x$ ($x = e^y$, $dy = \frac{dx}{x}$) и получим:
+Проведём замену переменных в интеграле $y = \ln x$ ($x = e^y$, $dy = \frac{dx}{x}$) и получим:
 \[
 \ex_{p(x\rvert a)} X^k
 = C \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2}\bigl(1 + a\sin(2\pi y)\bigr) dy
@@ -78,7 +78,7 @@ p(x\rvert a) = C \frac{e^{-\frac{1}{2}\ln^2 x}}{x}\bigl(1 + a\sin(2\pi \ln x)\bi
 \end{align*}
 
 Для работы со вторым слагаемым заменим $2\pi$ под синусом на параметр $t$.
-Также заметим, что для любго $\theta\in \Real$
+Также заметим, что для любого $\theta\in \Real$
 \[\sin \theta = \frac{1}{2i} \bigl( e^{i\theta} - e^{-i\theta} \bigr)\]
 Тогда второе слагаемое (опять-таки константа $C$ опущена) принимает вид:
 \begin{align*}
@@ -89,7 +89,7 @@ p(x\rvert a) = C \frac{e^{-\frac{1}{2}\ln^2 x}}{x}\bigl(1 + a\sin(2\pi \ln x)\bi
 
 Здесь опять интеграл разбивается на два слагаемых, причём одно отличается
 от другого знаком при $t$ и перед интегралом -- рассмотрев подробнее одно,
-автоматически поличим из него другое. Итак
+автоматически получим из него другое. Итак
 \begin{align*}
 	\int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} e^{it y} dy
 	&= \int_{-\infty}^\infty e^{-\frac{1}{2}y^2 + ky - \frac{1}{2}k^2 + \frac{1}{2}k^2 } e^{it (y-k) + it k} dy\\
@@ -110,7 +110,7 @@ p(x\rvert a) = C \frac{e^{-\frac{1}{2}\ln^2 x}}{x}\bigl(1 + a\sin(2\pi \ln x)\bi
 Для нахождения
 \[\int_{-\infty}^\infty e^{-b (x - \frac{it}{2b})^2} dx\]
 заменим $\frac{t}{2b}$ на параметр $\eta$ и рассмотрим всюду аналитическую функцию
-комплексного аргумета $f(z) = e^{-b (z - i\eta)^2}$, $z\in \Cplx$. Нужно вычислить
+комплексного аргумента $f(z) = e^{-b (z - i\eta)^2}$, $z\in \Cplx$. Нужно вычислить
 значение 
 \[\int_\Real e^{-b (z - i\eta)^2} dz
 %% сведение к пределу теоремой о доминируемой сходимости
@@ -126,7 +126,7 @@ p(x\rvert a) = C \frac{e^{-\frac{1}{2}\ln^2 x}}{x}\bigl(1 + a\sin(2\pi \ln x)\bi
 $R>0$ внутри контура не содержатся особенности $f(z)$. Поскольку $\Box\sim 0$ в
 $\Cplx$ то
 \[\oint_\Box f(z) dz = 0\]
-Но был специально выбрам так, чтобы состоять из прямых путей в $\Cplx$. Поэтому
+Но был специально выбран так, чтобы состоять из прямых путей в $\Cplx$. Поэтому
 в вольной записи
 \[
 \oint_\Box f(z) dz
@@ -160,7 +160,7 @@ $\Cplx$ то
 	&= e^{-bR^2} \int_{-\eta}^0 e^{b\xi^2} d\xi \leq e^{-bR^2} \eta e^{b\eta^2}
 \end{align*}
 поскольку как ни ``крути'' $\theta$ всегда выполняется $\abs{e^{i\theta}} = 1$.
-Поэтому этот интеграл бесонечно мал при $R\to\infty$.
+Поэтому этот интеграл бесконечно мал при $R\to\infty$.
 
 \noindent На $[-R+i\eta, R]$ аналогичные выкладки приводят к
 \[
@@ -255,7 +255,7 @@ a \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} \sin(2\pi y) dy
 Итоговая случайная величина $X$ при известном $D$ имеет нормальное распределение
 с плотностью
 \[p_{X\rvert D}(x\rvert d) = \frac{1}{\sqrt{ 2\pi d}} e^{-\frac{x^2}{2d}} \]
-Совметсная функция плотности $(X,D)$ может быть разложена в следующее произведение
+Совместная функция плотности $(X,D)$ может быть разложена в следующее произведение
 \[p_{X,D}(x,d) = p_{X\rvert D}(x\rvert d) p_D(d)\]
 Отсюда следует, что 
 \[
@@ -266,7 +266,7 @@ p_X(x)
 
 Рассмотрим подробнее случайную величину $D$ с плотностью
 \[p_D(x) = \frac{\lambda}{\sqrt{2\pi x^3}} e^{-\frac{\lambda^2}{2x}}\]
-Пусть случайная величина $Z = \frac{\lambda^2}{D}$. Тогжа её плотность равна
+Пусть случайная величина $Z = \frac{\lambda^2}{D}$. Тогда её плотность равна
 \[p_Z(z) = p_D(d) \frac{1}{\lvert -\frac{\lambda^2}{d^2}\rvert}\big\rvert_{d=\frac{\lambda^2}{z}}\]
 откуда получается
 \[
@@ -274,21 +274,21 @@ p_Z(z)
 = \frac{\lambda z^\frac{3}{2}}{\sqrt{2\pi \lambda^6}} e^{-\frac{1}{2}z} \frac{\lambda^2}{z^2}
 = \frac{1}{\sqrt{2\pi}} z^{\frac{1}{2}-1} e^{-\frac{1}{2}z}
 \]
-Таким образом $Z$ имеет распределение $\Gamma\bigl(\frac{1}{2},\frac{1}{2}\bigr)$ котрое на
+Таким образом $Z$ имеет распределение $\Gamma\bigl(\frac{1}{2},\frac{1}{2}\bigr)$, которое на
 самом деле есть $\chi^2_1$.
 
-Учитывая данное наблдение модель итоговой случайной величины принимает вид:
+Учитывая данное наблюдение, модель итоговой случайной величины принимает вид:
 \[X\rvert Z\sim \Ncal\bigl(0,\frac{\lambda^2}{Z}\bigr)\text{ где } Z\sim \Gamma\bigl(\frac{1}{2},\frac{1}{2}\bigr)\]
-Замтеим, что условная плотность $X$ при заданном $Z=z$ равна
+Заметим, что условная плотность $X$ при заданном $Z=z$ равна
 \[p_{X\rvert Z}(x\rvert z) = \frac{z^\frac{1}{2}}{\sqrt{ 2\pi \lambda^2}} e^{-\frac{x^2}{2\lambda^2}z}\]
-Тогда искомая беузсловная плотность $X$ равна
+Тогда искомая безусловная плотность $X$ равна
 \[
 p_X(x)
 = \int_0^\infty p_{X\rvert Z}(x\rvert z) p_Z(z) dz
 = \int_0^\infty \frac{z^\frac{1}{2}}{\sqrt{ 2\pi \lambda^2}} e^{-\frac{x^2}{2\lambda^2}z}
 	\frac{1}{\sqrt{2\pi}} z^{\frac{1}{2}-1} e^{-\frac{1}{2}z} dz
 \]
-Интерал упрощается следующим образом:
+Интеграл упрощается следующим образом:
 \begin{align*}
 	p_X(x)
 	&= \int_0^\infty \frac{z^\frac{1}{2}}{\sqrt{ 2\pi \lambda^2}} e^{-\frac{x^2}{2\lambda^2}z}
@@ -296,7 +296,7 @@ p_X(x)
 	&= \frac{1}{2\pi \lambda} \int_0^\infty z^\frac{1}{2} e^{-\frac{x^2}{2\lambda^2}z}
 		z^{\frac{1}{2}-1} e^{-\frac{1}{2}z} dz \\
 	&= \frac{1}{2\pi \lambda} \int_0^\infty e^{-\frac{1}{2} \bigl(\frac{x^2}{\lambda^2}+1\bigr)z} dz \\
-	&=\Bigl[ \beta = \frac{1}{2} \bigl(\frac{x^2}{\lambda^2}+1\bigr) \Bigr]\\
+	&=\Bigl[ \text{заменим }\beta = \frac{1}{2} \bigl(\frac{x^2}{\lambda^2}+1\bigr) \Bigr]\\
 	&= \frac{1}{2\pi \lambda} \int_0^\infty e^{-\beta z} dz = \frac{1}{2\pi \lambda} \frac{1}{\beta}
 \end{align*}
 Итак искомая плотность имеет вид:
@@ -305,14 +305,14 @@ p_X(x)
 = \frac{1}{2\pi \lambda} \frac{2 \lambda^2}{x^2+\lambda^2}
 = \frac{1}{\pi} \frac{\lambda}{x^2+\lambda^2}
 \]
-Фнукция распределения данной случайной величины задаётся
+Функция распределения данной случайной величины задаётся
 \[
 P_X(x)
 = \frac{1}{\pi}\int_{-\infty}^x\frac{\lambda}{t^2+\lambda^2} dt
 = \frac{1}{\pi}\int_{-\infty}^\frac{x}{\lambda}\frac{1}{z^2+1} dt
 = \frac{1}{\pi} \mathop{\text{arctg}}\bigl(\sfrac{x}{\lambda}\bigr)+\frac{1}{2}
 \]
-Таким образом, случайная величина $X$ распределена согласно распределнию Коши
+Таким образом, случайная величина $X$ распределена согласно распределению Коши
 с параметром масштаба $\lambda$.
 
 % section problem_2_18 (end)
@@ -320,10 +320,53 @@ P_X(x)
 \section{У2.13} % (fold)
 \label{sec:problem_2_13}
 
+Пусть $F_{X,Y}(x,y)$ совместная функция распределения пары случайных величин $(X,Y)$
+с частными функциями распределения $F_X(x)$ и $F_Y(y)$ соответственно. Тогда
+справедливо следующее
+\[
+F_{X,Y}(x,y)
+= \Pr\bigl(X\leq x, Y\leq y\bigr)
+= \Pr\bigl((X,Y)\in (-\infty,x]\times (-\infty,y]\bigr)
+\]
+Следует заметить, что $\Pr\bigl((X,Y)\in (-\infty,x]\times \Real\bigr) = \Pr(X\leq x) = F_X(x)$,
+и аналогично для $Y$. При этом выполняется
+\[(-\infty,x]\times (-\infty,y]\subseteq (-\infty,x]\times \Real,\Real\times (-\infty,y]\]
+Таким образом, поскольку $\Pr$ есть вероятностная мера на $\Real\times \Real$, то
+\[F_{X,Y}(x,y)\leq F_X(x), F_Y(y)\]
+откуда следует верхняя граница Фреше-Хёфдинга.
+\[F_{X,Y}(x,y)\leq \min\bigl\{F_X(x), F_Y(y)\bigr\}\]
+
+Нижняя граница выводится их похожих соображений. Действительно несложно заметить,
+что
+\[
+\Real\times \Real \setminus (-\infty,x]\times (-\infty,y]
+\subseteq \bigl((x,+\infty)\times\Real\bigr) \cup \bigl(\Real\times(y,+\infty)\bigr)
+\]
+откуда в силу субаддитивности мер вытекает, что
+\begin{align*}
+	\Pr\bigl( \Real\times \Real \setminus (-\infty,x]\times (-\infty,y] \bigr)
+	&\leq \Pr\Bigl( \bigl((x,+\infty)\times\Real\bigr) \cup \bigl(\Real\times(y,+\infty)\bigr) \Bigr)\\
+	&\leq \Pr\bigl( (x,+\infty)\times \Real \bigr) + \Pr\bigl( \Real\times (y,+\infty) \bigr)
+\end{align*}
+При этом, поскольку $F_{X,Y}$ -- совместная функция распределения, то
+\begin{align*}
+	1-F_{X,Y}(x,y) &= \Pr\bigl( \Real\times \Real \setminus (-\infty,x]\times (-\infty,y] \bigr)\\
+	1-F_X(x) &= \Pr\bigl( (x,+\infty)\times \Real \bigr)\\
+	1-F_Y(y) &= \Pr\bigl( \Real\times (y,+\infty) \bigr)
+\end{align*}
+Таким образом справедливо неравенство
+\begin{multline*}
+	1-F_{X,Y}(x,y) \leq 1-F_X(x) + 1-F_Y(y) \\ \Leftrightarrow F_X(x) + F_Y(y) - 1 \leq F_{X,Y}(x,y)
+\end{multline*}
+Из неотрицательности распределения получается нижняя граница Фреше-Хёфдинга
+\[ \max\bigl\{0,F_X(x) + F_Y(y) - 1\bigr\} \leq F_{X,Y}(x,y) \]
+
 % section problem_2_13 (end)
 
 \section{У2.14} % (fold)
 \label{sec:problem_2_14}
+
+
 
 % section problem_2_14 (end)
 
