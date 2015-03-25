@@ -31,6 +31,7 @@
 \newcommand{\Var}[0]{{\text{Var}}}
 \newcommand{\var}[0]{{\text{var}}}
 \newcommand{\RSS}{\text{RSS}}
+\newcommand{\argmin}{\mathop{\text{argmin}}}
 \newcommand{\tr}{\text{tr}}
 \newcommand{\one}{\mathbf{1}}
 \newcommand{\rank}{\mathop{\text{rank}}\nolimits}
@@ -60,7 +61,8 @@ The folowing topics would be covered in the course:
 	\item Shrinkage methods (Ridge regression, Lasso, elastic net)
 	\item Polynomial regression, splines
 	\item Model selection techniques, validation methods
-	\item Classification problems (the Support Vector Machine, decision trees, bagging and boosting)
+	\item Classification problems (the Support Vector Machine, decision trees,
+	bagging and boosting)
 	\item Neural networks (flexible regression and classification)
 \end{itemize}
 
@@ -76,20 +78,28 @@ Main books:
 
 % section* preliminaries (end)
 
+\clearpage
 \section{Lecture \# 1} % (fold)
 \label{sec:lecture_1}
 
 Linear regression lies in the class of supervised learning problems.
-Such problems work with paired data of arbitrary nature: univariate, multivariate, categorical, numerical, abstract (like graphs in chemical classification problems) et c.
-In general there is a learning (training) sample $\brac{x_i, T_i}_{i=1}^N$ of a pairs of an input variable $X$ and the associated output target $T$.
+Such problems work with paired data of arbitrary nature: univariate, multivariate,
+categorical, numerical, abstract (like graphs in chemical classification problems) et c.
+In general there is a learning (training) sample $(x_i, T_i)_{i=1}^n$ of pairs
+of an input variable $X$ and the associated output target $T$.
 
-The goal is to construct a function $y(\cdot)$ of the input that predicts, forecasts, estimates or otherwise returns the target, associated with the given input.
+The goal is to construct a function $y(\cdot)$ of the input that predicts, forecasts,
+estimates or otherwise returns the target, associated with the given input.
 
-The target variable $T$ is always considered to be a random variable at least due to measurement or other irreducible uncertainty, that is present in any system.
+The target variable $T$ is always considered to be a random variable at least due
+to measurement or other irreducible uncertainty, that is present in any system.
 The input variable $X$, depending on the approach, may or may not be random.
 
-In the case when it is an rv, the data is characterized by the join probability density (distribution) function $p_{X,T}\brac{x,t}$.
-The joint pdf can be factorized into the density of the response conditional on a particular input and the density (probability) of the input:\[p_{X,T}\brac{x,t} = p_{T\rvert X}(T\rvert X) p_X(x) \]
+In the case when it is an rv, the data is characterized by the join probability
+density (distribution) function $p_{X,T}(x,t)$.
+The joint pdf can be factorized into the density of the response conditional on
+a particular input and the density (probability) of the input:
+\[p_{X,T}(x,t) = p_{T\rvert X}(T\rvert X) p_X(x) \]
 The analysis of the problem may now fork:
 \begin{description}
 	\item[Generative model] \hfill \\
@@ -99,26 +109,30 @@ The analysis of the problem may now fork:
 \end{description}
 
 Statistical decision theory helps decide on a functional form of $y(\cdot)$:
-choose $y(\cdot)$ so a to minimize the expected loss functional $\Ex_{X,T} L\brac{T,y(X)}$
+choose $y(\cdot)$ so a to minimize the expected loss functional $\Ex_{X,T} L(T,y(X))$
 over the bivariate distribution of the input data.
 This way the incorrect estimation of $t$ by $y(x)$ given $x$ is penalized.
 
 Among the possible loss functions the most frequently used is the quadratic
-loss function $L(t,y) \defn \brac{t-y}^2$, which has its roots in the $L^p$ norm
-\[\nrm{f}_p = \brac{\int \abs{f}^p d\mu}^\frac{1}{p}\]
+loss function $L(t,y) \defn (t-y)^2$, which has its roots in the $L^p$ norm
+\[\nrm{f}_p = \Bigl(\int \lvert f\rvert^p d\mu\Bigr)^\frac{1}{p}\]
 for $p = 2$. Another possible loss function is the so called Minkowski cost,
 defined as $L(t,y) \defn \abs{t-y}$, which is the $L^p$ norm with $p=1$.
 
-Sidenote: conditional expectation as the projection of $f$ onto a subspace of $g$ measurable functions in the Hilbert space of square integrable functions with the usual $\int f\bar{g} d\mu$ inner product.
+Sidenote: conditional expectation as the projection of $f$ onto a subspace of $g$
+measurable functions in the Hilbert space of square integrable functions with the
+usual $\int f\bar{g} d\mu$ inner product.
 
 % Remember the measure theory? with its sigma-finite measure \mu with respect to which another measure \nu is absolutely continuous, and there is f\in L^1(\mu) such that \nu=\int f d\mu and \int gd\nu = \int fg d\mu.
 
 % Which approach to use?
-The joint randomness of $(X,T)$ leads to the following problem in the case of $L^2$ loss function:
-\[\Ex_{X,T} \brac{T-y(X)}^2 \to \min_y\]
-Using the tower property of the conditional expectation the optimal $y$ is the conditional
-expectation $\phi(X)\defn \Ex(T\rvert X)$. Indeed, since $\Ex_{T\rvert X} \bigl(T-\phi(X) \bigr) = 0$,
-the mean squared error is \begin{align*}
+The joint randomness of $(X,T)$ leads to the following problem in the case of
+$L^2$ loss function:
+\[\Ex_{X,T} (T-y(X))^2 \to \min_y\]
+Using the tower property of the conditional expectation the optimal $y$ is the
+conditional expectation $\phi(X)\defn \Ex(T\rvert X)$. Indeed, since
+$\Ex_{T\rvert X} \bigl(T-\phi(X) \bigr) = 0$, the mean squared error is
+\begin{align*}
 	\Ex_{X,T} \bigl(T-y(X)\bigr)^2 &= \Ex_{X} \Bigl( \Ex_{T\rvert X} (T-y(X))^2 \Bigr) \\
 		&= \Ex_X \Bigl( \Ex_{T\rvert X} \bigl( (T-\phi(X))^2+(\phi(X)-y(X))^2 \bigr) + \\
 			&\quad + 2 \Ex_{T\rvert X} (T-\phi(X))(\phi(X)-y(X)) \Bigr) \\
@@ -127,23 +141,25 @@ the mean squared error is \begin{align*}
 		&= \Ex_X \bigl( \Ex_{T\rvert X} (T-\phi(X))^2 + \Ex_{T\rvert X} (\phi(X)-y(X))^2 \bigr)
 \end{align*}
 
-The latter conditional expectation is vanishes whenever $y=\phi$, whilst the first one is
-independent of $y$ and can be considered as the irreducible variance due to structural variance.
-The mean prediction error is the irreducible variance and the approximation error:
+The latter conditional expectation is vanishes whenever $y=\phi$, whilst the first
+one is independent of $y$ and can be considered as the irreducible variance due
+to structural variance. The mean prediction error is the irreducible variance and
+the approximation error:
 \[\text{error} \defn \Ex_X \Var(T\rvert X) + \Ex_x (\phi(X)-y(X))^2 \]
 
 However it is never possible to achieve $y(x) = \Ex(T\rvert X=x)$.
 Therefore some insight is needed on $\Ex_{T\rvert X} (\phi(X)-y(X))^2$.
 \begin{description}
-	\item[Frequentist] $\pr\bigl(\Dcal\rvert \Theta\bigr)$ -- uncertainty is due to dataset
-	\item[Bayesian] $\pr\bigl(\Dcal\rvert \Theta\bigr) \pi(\Theta)$ -- uncertainty is due
-	parameters, where $\pi(\Theta)$ is the prior distribution.
-	The posterior distribution is proportional to
+	\item[Frequentist] $\pr\bigl(\Dcal\rvert \Theta\bigr)$ -- uncertainty is due
+	to dataset;
+	\item[Bayesian] $\pr\bigl(\Dcal\rvert \Theta\bigr) \pi(\Theta)$ -- uncertainty
+	is due to parameters, where $\pi(\Theta)$ is the prior distribution. The posterior
+	distribution is proportional to
 		\[\pr\bigl(\Theta\rvert \Dcal\bigr) \sim \pr\bigl(\Dcal\rvert \Theta\bigr) \pi(\Theta)\]
 \end{description}
 
-Error is for a particular training dataset, on which the $y$ is estimated. In effect the
-functional form of $y$ depends on the data set $D$:
+Error is for a particular training dataset, on which the $y$ is estimated. In effect
+the functional form of $y$ depends on the data set $D$:
 \[\Ex_\Dcal(\text{Error}_\Dcal) = \text{Noise} + \Ex_\Dcal \Ex_X \bigl( y(x,D)-\phi(x) \bigr)^2\]
 where noise is defined as $\Ex_X \Var(T\rvert X)$.
 Now put $f(x) \defn \Ex_\Dcal y(x,D)$.
@@ -168,9 +184,10 @@ This is the decomposition of the loss into systemic noise, bias and variance.
 Parametric approach would require a parametric expression of $y(\cdot)$ as an
 approximation of $\Ex(T\rvert X)$ at every $x$ (or at most almost all).
 
-Suppose $\Lcal^2$ is the space in which the best approximation of $\phi(X)$ is searched for.
-Projecting $\Ex(T\rvert X)$ onto $\Lcal^2$ yields $\phi(X) = h^\perp(X) + h(X)$, where
-$h^\perp \perp \Lcal^2$ (i.e. $\langle h^\perp,g\rangle = 0$ for all $g\in \Lcal$) and $h\in \Lcal^2$.
+Suppose $\Lcal^2$ is the space in which the best approximation of $\phi(X)$ is
+searched for. Projecting $\Ex(T\rvert X)$ onto $\Lcal^2$ yields $\phi(X) = h^\perp(X) + h(X)$,
+where $h^\perp \perp \Lcal^2$ (i.e. $\langle h^\perp,g\rangle = 0$ for all
+$g\in \Lcal$) and $h\in \Lcal^2$.
 
 % Here should be a picture of the projection: the conditional expectation is projected onto the subspace of square integrable functions.
 
@@ -185,16 +202,20 @@ whence the following decomposition must hold:
 		& = \Ex_X (f(X) - h)^2 + \Ex_X (h^\perp(X))^2 + \Ex_X (f(X) - h(X)) h^\perp(X) \\
 		& = \Ex_X (f(X) - h(X))^2 + \Ex_X (h^\perp(X))^2
 \end{align*}
-This means that the squared bias is the sum of how close the model is to the projection of $\Ex(T\rvert X)$ onto $\Lcal^2$, and how well the projection approximates the conditional expectation itself.
+This means that the squared bias is the sum of how close the model is to the projection
+of $\Ex(T\rvert X)$ onto $\Lcal^2$, and how well the projection approximates the
+conditional expectation itself.
 
-In linear regression problems the space $\Lcal^2$ is taken to be the set of all linear functions of $X$.
+In linear regression problems the space $\Lcal^2$ is taken to be the set of all
+linear functions of $X$.
 
 \subsection*{Linear regression} % (fold)
 \label{sub:linear_regression}
 
-Suppose $X$ is a $p$-dimensional vector of features and that we attempt to approximate the $\Ex(T\rvert X)$ with $y(x) \defn \beta_0 + \sum_{k=1}^p \beta_k x_k$.
+Suppose $X$ is a $p$-dimensional vector of features and that we attempt to approximate
+the $\Ex(T\rvert X)$ with $y(x) \defn \beta_0 + \sum_{k=1}^p \beta_k x_k$.
 
-In effect we suppose the following econometric model
+In effect we suppose the following statistical model
 \[T = \beta_0 + \sum_{k=1}^p \beta_k X_p + \epsilon;\,\epsilon\sim\Ncal(0,\sigma^2)\]
 Therefore conditional upon $X$ the target $T$ is distributed like \[\induc{T}X\sim \Ncal(y(X),\sigma^2)\]
 
@@ -205,17 +226,28 @@ In this setting the following questions arise: \begin{itemize}
 \end{itemize}
 
 In the matrix form, the linear regression problem is stated as follows:
-\[\underset{n\times 1}{T} = \underset{n\times (1+p)}{X}\underset{(1+p)\times 1}{\beta} + \underset{n\times 1}{\epsilon}\]
-where the vector $X$ of the predictors of the training set has been altered by adding a constant term -- the intercept. The predictors now look like this
-\[X = \brac{ \one \defn \underset{n\times 1}{1}, \underset{n\times 1}{x_1}, \ldots, \underset{n\times 1}{x_p} }\]
+\[
+\underset{n\times 1}{T}
+= \underset{n\times (1+p)}{X}\underset{(1+p)\times 1}{\beta}
++ \underset{n\times 1}{\epsilon}
+\]
+where the vector $X$ of the predictors of the training set has been altered by
+adding a constant term -- the intercept. The predictors now look like this
+\[
+X = \Bigl( \one \defn \underset{n\times 1}{1}, \underset{n\times 1}{x_1}, \ldots, \underset{n\times 1}{x_p} \Bigr)
+\]
 
-Two approachs to estimating $\beta$ is possible: the \textbf{L}east \textbf{S}quares\footnotemark  and the \textbf{M}aximum \textbf{L}ikelihood.
+Two approaches to estimating $\beta$ is possible:
+the \textbf{L}east \textbf{S}quares and the \textbf{M}aximum \textbf{L}ikelihood.
 Effectively the LS approach to parameter estimation is non-probabilistic.
-There are different flavours of least squares: the ordinary, the generalised (with a weighting matrix), two-stage least squares (2SLS), to name a few, and others.
+There are different flavours of least squares: the ordinary, the generalised
+(with a weighting matrix), two-stage least squares (2SLS), to name a few, and others.
 The 2SLS is an extension of the GLS that attempts to battle heteroskedasticity:
-first run OLS to get the squared residuals, then GLS with weights that standardise the residuals.
+first run OLS to get the squared residuals, then GLS with weights that standardise
+the residuals.
 
-The goal of LS is to solve the following problem: minimize the \textbf{R}esidual \textbf{S}um of \textbf{S}squares
+The goal of LS is to solve the following problem:
+minimize the \textbf{R}esidual \textbf{S}um of \textbf{S}squares
 \[\RSS \defn \brac{T-X\beta}'\brac{T-X\beta} \to \min_\beta\]
 The first order conditions on the potential minimizer are in the matrix form:
 \begin{align*}
@@ -225,26 +257,34 @@ The first order conditions on the potential minimizer are in the matrix form:
 	&= - 2 T'X + 2 \beta'X'X = 0
 \end{align*}
 If the matrix $X$ is full rank, then the matrix $X'X$ is invertible, and is positive-semidefinite.
-Therefore $\frac{\partial^2}{\partial \beta\partial \beta}\RSS = 2 X'X \geq 0$, whence the Least Squares solution $\hat{\beta} \defn \brac{X'X}^{-1} X'T$ is indeed the minimizer of the RSS.
+Therefore $\frac{\partial^2}{\partial \beta\partial \beta}\RSS = 2 X'X \geq 0$,
+whence the Least Squares solution $\hat{\beta} \defn \brac{X'X}^{-1} X'T$ is indeed
+the minimizer of the RSS.
 
-The best linear approximation to $\Ex(T\rvert X)$ is the projection of $T$ onto the space of linear functionals of $X$.
+The best linear approximation to $\Ex(T\rvert X)$ is the projection of $T$ onto
+the space of linear functionals of $X$.
 
-The matrix $\hat{H} \defn X\brac{X'X}^{-1}X'$ is called the \textbf{hat matrix} and is in fact a projector onto the linear subspace spanned by the column vectors of $X$.
+The matrix $\hat{H} \defn X\brac{X'X}^{-1}X'$ is called the \textbf{hat matrix} and
+is in fact a projector onto the linear subspace spanned by the column vectors of $X$.
 
-Every projector matrix has the following property: if $v$ is in the spanned linear subspace, then $\hat{H}v = v$.
-Indeed, since $v\in \clo{X}$, there must exist $\underset{(p+1)\times 1}{\alpha}\in \Real^{(p+1)}$ such that $v = X\alpha$.
+Every projector matrix has the following property: if $v$ is in the spanned linear
+subspace, then $\hat{H}v = v$. Indeed, since $v\in \clo{X}$, there must exist
+$\underset{(p+1)\times 1}{\alpha}\in \Real^{(p+1)}$ such that $v = X\alpha$.
 Therefore
 \[X\brac{X'X}^{-1}X'v = X\brac{X'X}^{-1}X'X\alpha = X\alpha = v\]
 
-If the columns of $X$ are orthogonal, then $X'X$ is in fact a diagonal matrix with the squared Euclidean norms of columns of $X$ on the diagonal.
-In this case each of $\brac{\beta_k}_{k=0}^n$ is the coefficient in the projection of $T$ onto th respective column of $X$.
+If the columns of $X$ are orthogonal, then $X'X$ is in fact a diagonal matrix
+with the squared Euclidean norms of columns of $X$ on the diagonal. In this case
+each of $\brac{\beta_k}_{k=0}^n$ is the coefficient in the projection of $T$ onto
+the respective column of $X$.
 
 % subsection* linear_regression (end)
 
 \subsection*{Gram-Schmidt orthogonalisation} % (fold)
 \label{sub:gram_schmidt_orthogonalisation}
 
-Suppose there is a set of linearly independent vectors $\brac{f_i}_{i=1}^m$ in some Euclidean space $V$.
+Suppose there is a set of linearly independent vectors $\brac{f_i}_{i=1}^m$ in
+some Euclidean space $V$.
 \begin{description}
 	\item[Initialisation] \hfill \\
 		Set $e_1 \defn \frac{1}{\nrm{f_1}} f_1$;
@@ -265,18 +305,24 @@ since $\one'\one = n$ and $x'\one = \one'x = n\bar{x}$.
 
 %% p-predictors
 
-Set $\hat{z}_0 \defn \one$. For each $j=1,\ldots,p$ regressing $x_k$ onto $\brac{\hat{z}_j}_{j=0}^{k-1}$ to get the LS coefficients $\brac{\alpha_{jk}}_{j=0}^{k-1}$.
+Set $\hat{z}_0 \defn \one$. For each $j=1,\ldots,p$ regressing $x_k$ onto
+$\brac{\hat{z}_j}_{j=0}^{k-1}$ to get the LS coefficients $\brac{\alpha_{jk}}_{j=0}^{k-1}$.
 Construct $\hat{z}_k$ as the residuals of $x_k$ from projecting onto $\brac{\hat{z}_j}_{j=0}^{k-1}$ :
 \[\hat{z}_k = x_k - \sum_{j=0}^{k-1} \alpha_{jk} \hat{z}_j\]
 This is similar to the Gram-Schmidt procedure described previously.
 
-Regressing $t$ on $z_k$ yields the coefficient $\hat{\beta}_k$ which is not the OLS coefficient, but shows new information gained from the $k^\text{th}$ predictor.
+Regressing $t$ on $z_k$ yields the coefficient $\hat{\beta}_k$ which is not the
+OLS coefficient, but shows new information gained from the $k^\text{th}$ predictor.
 
 Discriminative approach.
-Since $\hat{\beta}$ is a linear transformation of $T$ and $\hat{\beta} = \beta + \brac{X'X}^{-1}X'\epsilon$, \textbf{provided the model is specified correctly}, it is therefore true that
+Since $\hat{\beta}$ is a linear transformation of $T$ and $\hat{\beta} = \beta + \brac{X'X}^{-1}X'\epsilon$,
+\textbf{provided the model is specified correctly}, it is therefore true that
 \[\hat{\beta}\sim\Ncal\brac{\beta,\brac{X'X}^{-1} \sigma^2}\]
 
-In fact if $\epsilon\sim \Ncal\brac{0,\Sigma}$ -- i.e the noise has some other covariance structure, then $\Var(\hat{\beta}) = \brac{X'X}^{-1}X'\Sigma X\brac{X'X}^{-1}$ -- this is useful in GLS, mentioned above, especially if $\Sigma$ is decomposed into $C'C$ with $C$ -- non-singular lower triangular matrix (Cholesky).
+In fact if $\epsilon\sim \Ncal\brac{0,\Sigma}$ -- i.e the noise has some other
+covariance structure, then $\Var(\hat{\beta}) = \brac{X'X}^{-1}X'\Sigma X\brac{X'X}^{-1}$
+-- this is useful in GLS, mentioned above, especially if $\Sigma$ is decomposed
+into $C'C$ with $C$ -- non-singular lower triangular matrix (Cholesky).
 
 Indeed, if we transform (weigh) the observations according to matrix $W$ with $W'W = \Sigma^{-1}$, then the LS model becomes $WT=WX\beta + W\epsilon$, whence
 \[\hat{\beta} = \brac{X'W'WX}^{-1}X'W'WT = \brac{X'\Sigma^{-1}X}^{-1}X'\Sigma^{-1}T\]
@@ -300,28 +346,34 @@ Indeed, provided the model is specified correctly, \begin{align*}
 	& = \epsilon' \brac{I - X\brac{X'X}^{-1}X'}'\brac{I - X\brac{X'X}^{-1}X'}\epsilon \\
 	& = \epsilon' \brac{ I - X\brac{X'X}^{-1}X' } \epsilon = \epsilon' \brac{ I - \hat{H} } \epsilon
 \end{align*}
-Since the trace of an idempotent matrix equals its rank, $\rank(I - \hat{H}) = \tr(I) - \tr(\hat{H}) = n- (p+1)$, whence by Cochran's theorem $\frac{1}{\sigma}\RSS\sim\chi^2_{n-(p+1)}$.
+Since the trace of an idempotent matrix equals its rank
+\[\rank(I - \hat{H}) = \tr(I) - \tr(\hat{H}) = n- (p+1)\]
+whence by Cochran's theorem $\frac{1}{\sigma}\RSS\sim\chi^2_{n-(p+1)}$.
 Furthermore, $\hat{\sigma}^2 \perp \hat{\beta}$.
 
 \subsection{Hypothesis testing} % (fold)
 \label{sub:hypothesis_testing}
 
-If $V_j \defn \brac{\brac{X'X}^{-1}}_{jj}$ -- the $j^\text{th}$ diagonal element of $\brac{X'X}^{-1}$,
-whence $\Var\hat{\beta}_j\defn \sigma^2 V_j$.
+If $V_j \defn \brac{\brac{X'X}^{-1}}_{jj}$ -- the $j^\text{th}$ diagonal element
+of $\brac{X'X}^{-1}$, whence $\Var\hat{\beta}_j\defn \sigma^2 V_j$.
 
-To test $H_0:\beta_j=0$ versus $H_1:\beta_j\neq 0$, one should use the following statistic, which under the null is distributed as follows:
+To test $H_0:\beta_j=0$ versus $H_1:\beta_j\neq 0$, one should use the following
+statistic, which under the null is distributed as follows:
 \[\frac{\sfrac{\hat{\beta}_j}{\sqrt{\sigma^2 V_j}}}{\sqrt{ \frac{\sfrac{n-p-1}{\sigma^2} \hat{\sigma}^2 }{ n-p-1 } }} \sim \frac{\Ncal(0, 1)}{\sqrt{\chi^2_{n-p-1}}} = t_{n-p-1}\]
 
 The $\alpha$-level confidence interval for $\beta_j$ is defined as
 \[\clo{ \hat{\beta}_j - \hat{\sigma} \sqrt{ V_j },  \hat{\beta}_j + \hat{\sigma} \sqrt{ V_j } }\]
 
-For the false rejection rate of the t-test $\alpha = 0.05$, on average $5\%$ of statistically significant results would be false positives.
+For the false rejection rate of the t-test $\alpha = 0.05$, on average $5\%$ of
+statistically significant results would be false positives.
 
-To test for simultaneous insignificance of $\brac{\beta_j}_{j=1}^p = 0$ one should use the F-test
-(more generally an F-test for linear restriction). The following takes place under the null hypothesis that the simpler model is correct :
+To test for simultaneous insignificance of $\brac{\beta_j}_{j=1}^p = 0$ one should
+use the F-test (more generally an F-test for linear restriction). The following
+takes place under the null hypothesis that the simpler model is correct :
 \[F = \frac{\sfrac{\RSS_0-\RSS_1}{p_1-p_0}}{\sfrac{\RSS_1}{n-p_1-1}}\sim F(p_1-p_0, n-p_1-1)\]
 
-To gauge the model accuracy one can use both the RSS as a measure of lack of fit and the $R^2$ as a measure of goodness-of-fit.
+To gauge the model accuracy one can use both the RSS as a measure of lack of fit
+and the $R^2$ as a measure of goodness-of-fit.
 
 If $\one\in \clo{X}$ then
 \begin{align*}
@@ -332,7 +384,8 @@ If $\one\in \clo{X}$ then
 since in this case
 \[\bigl(I - X(X'X)^{-1}X'\bigr)\bigl( X(X'X)^{-1}X' - \one(\one'\one)^{-1}\one'\bigr) = 0\]
 
-The goodness-of-fit measure $R^2$ is the ratio of the explained variance to the total variance
+The goodness-of-fit measure $R^2$ is the ratio of the explained variance to the
+total variance
 \[R^2 \defn \frac{\text{ESS}}{\text{TSS}} = 1 - \frac{\RSS}{\text{TSS}} \]
 For a simple case of a bivariate regression
 \[R^2 = \rho^2 = \frac{\abs{\text{corr}(x,t)}^2}{\Var(x)\Var(t)} = \beta^2 \frac{\Var(x)}{\Var(t)}\]
@@ -342,17 +395,23 @@ For a simple case of a bivariate regression
 
 % section lecture_1 (end)
 
+\clearpage
 \section{Lecture \# 2} % (fold)
 \label{sec:lecture_2}
 % 2015-01-20
 
 The uncertainty on the model for a new input $x_0$ 
 
-Prediction of the value of $T$ at a new input $x_0$ has two sources of uncertainty: \begin{enumerate}
-	\item Uncertainty of the first type -- due to the estimation of $y(\cdot)$ ($\hat{\beta}$) in $\Lcal^2_X$;
-	\item Uncertainty of the second type -- due to the additive noise term. Even if the true $\beta$ were known, the true values of the response $T$ at $x_0$ would still be unknown.
+Prediction of the value of $T$ at a new input $x_0$ has two sources of uncertainty:
+\begin{enumerate}
+	\item Uncertainty of the first type -- due to the estimation of $y(\cdot)$
+	($\hat{\beta}$) in $\Lcal^2_X$;
+	\item Uncertainty of the second type -- due to the additive noise term. Even
+	if the true $\beta$ were known, the true values of the response $T$ at $x_0$
+	would still be unknown.
 \end{enumerate}
-Predictive intervals incorporate the noise as well as uncertainty due to imprecise estimation of the coefficients.
+Predictive intervals incorporate the noise as well as uncertainty due to imprecise
+estimation of the coefficients.
 
 Variability due to estimation of an approximate model.
 
@@ -360,13 +419,13 @@ Variability due to estimation of an approximate model.
 \label{sub:shrinkage_models}
 
 In the ordinary linear squares method we minimized the following fitness function:
-\[\text{min} \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij}}^2\]
+\[\text{min} \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij}}^2\]
 
 \subsubsection{Ridge regression} % (fold)
 \label{ssub:ridge_regression}
 
 Minimize the following penalized Residual Sum of Squares as:
-\[\RSS_\text{ridge} \defn \sum_{i=1}^n \bigl(t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij}\bigr)^2 + \lambda \sum_{j=1}^k \beta_j^2\]
+\[\RSS_\text{ridge} \defn \sum_{i=1}^n \bigl(t_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij}\bigr)^2 + \lambda \sum_{j=1}^p \beta_j^2\]
 the $\lambda>0$ is called the tuning parameter and it controls the amount of shrinkage.
 If $\lambda = 0$ then there is absolutely no shrinkage, and the optimal $\hat{beta}$
 coincides with the OLS. But if $\lambda\to \infty$ then the optimal coefficient
@@ -374,11 +433,11 @@ vector tends to zero (that is why it is called \textbf{shrinkage}). This adjustm
 effectively regularizes the parameter estimates.
 
 In contrast to the ordinary linear regression, for this sort of shrinkage the scale
-of each predictor $\brac{x_j}_{j=0}^k\in \Real^n$ matter! Thus the first step is to
-standardize the variables before fitting the Ridge regression.
+of each predictor $\brac{x_j}_{j=1}^p\in \Real^n$ matters! Thus the first step is
+to standardize the variables before fitting the Ridge regression.
 
-Next observation: the intercept $\beta_0$ is indeed excluded from the shrinkage term
-so as no to penalize for the \emph{base} level of the target.
+Next observation: the intercept $\beta_0$ is indeed excluded from the shrinkage
+term so as no to penalize for the \emph{base} level of the target.
 
 Suppose the $t$ and $X$ are standardized (mean and centre), which means that $\beta_0 \equiv 0$
 Then in the matrix form the problem is equivalent to minimizing the following:
@@ -394,16 +453,19 @@ whence the optimal coefficients are given by
 
 % section lecture_2 (end)
 
+\clearpage
 \section{Lecture \# 3} % (fold)
 \label{sec:lecture_3}
 The ridge regression problem can actually be rewrtiten as the following constrained
-optimization problem (centred and scaled): minimize $(t-X\beta)'(t-X\beta)$ subject to
-the ``budget'' $\beta'\beta\leq L$ where $L\geq0$ effectively limits the size of the
-coefficients.
+optimization problem (centred and scaled): minimize $(t-X\beta)'(t-X\beta)$ subject
+to the ``budget'' $\beta'\beta\leq L$ where $L\geq0$ effectively limits the size
+of the coefficients.
 
 The modified ridge RSS with a tuning parameter $\lambda$ is defined as
 \[
-\RSS_\text{ridge} \defn \sum_{i=1}^n \bigl( t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij} \bigr)^2 + \lambda \sum_{j=1}^k \beta_j^2
+\RSS_\text{ridge}
+\defn \sum_{i=1}^n \bigl( t_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij} \bigr)^2
+	+ \lambda \sum_{j=1}^p \beta_j^2
 \]
 Important to note: \begin{itemize}
 	\item Inputs must be either standardized by standard deviation or altogether
@@ -413,13 +475,13 @@ Important to note: \begin{itemize}
 	\item If the input vectors are centred, then the estimation is separable in
 	$\beta_0$ and $\beta_j$ for $j\geq 1$.
 \end{itemize}
-The latter can be shown rigorously. The residual values for a given
-$\beta_0$ and $beta$:
-\[
+The latter can be shown rigorously. The residual values for a given $\beta_0$
+and $\beta$:
+\begin{align*}
 t-(\one\beta_0 + X\beta)
-= t-\bigl(\one\beta_0 + X\beta \pm \one(\one'\one)^{-1}\one'X\beta \bigr)
-= t-\bigl(\one\beta_0 + \pi X\beta + (I_n-\pi)X\beta \bigr)
-\]
+&= t-\bigl(\one\beta_0 + X\beta \pm \one(\one'\one)^{-1}\one'X\beta \bigr)\\
+&= t-\bigl(\one\beta_0 + \pi X\beta + (I_n-\pi)X\beta \bigr)
+\end{align*}
 where $\pi = \one(\one'\one)^{-1}\one'$ is in fact a projection matrix onto a
 linear subspace $[\one]$ spanned by one vector $\one$. Now define the following
 centred variables:
@@ -428,11 +490,11 @@ where $\pi_\perp = I_n-\pi$ -- the projector onto space orthogonal to $[\one]$.
 Variables are indeed centred, because $\bar{x} = (\one'\one)^{-1}\one'X$ is in
 fact a row vector of sample means of each feature in $X$, and similarly
 $\bar{t} = (\one'\one)^{-1}\one't$ is the sample mean of $t$. Therefore
-\[
+\begin{align*}
 t-(\one\beta_0 + X\beta)
-= t^c + \pi t - \one\beta_0 - \pi X\beta - X^c \beta
-= t^c - X^c \beta + (\pi t - \pi X\beta - \one\beta_0)
-\]
+&= t^c + \pi t - \one\beta_0 - \pi X\beta - X^c \beta\\
+&= t^c - X^c \beta + (\pi t - \pi X\beta - \one\beta_0)
+\end{align*}
 Since it is true that $\one\beta_0 = \pi \one\beta_0$, we have
 \[
 \ldots
@@ -448,163 +510,180 @@ where the intermediate products with $\pi_\perp \pi$ or $\pi \pi_\perp$ vanish
 since $[\one]^\perp \perp [\one]$. Furthermore the term
 \begin{align*}
 (t - X\beta - \one\beta_0)'\pi'
-&= (t - X\beta - \one\beta_0)'\one(\one'\one)^{-1}\one'\\
-&= ((\one'\one)^{-1}\one't - (\one'\one)^{-1}\one'X\beta - (\one'\one)^{-1}\one'\one\beta_0)'\one'\\
-&= (\bar{t} - \bar{X}\beta - \beta_0)'\one'
+	&= (t - X\beta - \one\beta_0)'\one(\one'\one)^{-1}\one'\\
+	&= ((\one'\one)^{-1}\one't - (\one'\one)^{-1}\one'X\beta - (\one'\one)^{-1}\one'\one\beta_0)'\one'\\
+	&= (\bar{t} - \bar{X}\beta - \beta_0)'\one'
 \end{align*}
-Since $(\bar{t} - \bar{X}\beta - \beta_0)$ is a scalar and $\one'\one = n$, the main
-part of the ridge RSS turns out to be
+Since $(\bar{t} - \bar{X}\beta - \beta_0)$ is a scalar and $\one'\one = n$, the
+main part of the ridge RSS turns out to be
 \[
 (t^c - X^c\beta)'(t^c - X^c\beta) + n (\bar{t} - \bar{X}\beta - \beta_0)^2
 \]
 This means that, provided the estimates of $\beta$ on the centred data, the estimate
 of $\beta_0$ can easily be inferred: $\hat{\beta}_0 = \bar{t} - \bar{X}\hat{\beta}$.
-Furthermore these manipulations are true for any penalized regression model
-with the (regularization) penalty term explicitly ignoring the intercept.
+Furthermore these manipulations are true for any penalized regression model with
+the (regularization) penalty term explicitly ignoring the intercept.
 
-Consider \begin{align*}
-	\RSS &= \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j \brac{x_{ij}-\bar{x}_j} - \sum_{j=1}^k \beta_j \bar{x}_j}  + \lambda \sum_{j=1}^k \beta_j^2 \\
-	\RSS' &= \sum_{i=1}^n \brac{t_i - \beta_0^c - \sum_{j=1}^k \beta_j^c \brac{x_{ij}-\bar{x}_j}}  + \lambda \sum_{j=1}^k {\beta_j^c}^2
-\end{align*}
-Notice that $\beta_j^c = \beta_j$ for all $j=1,\ldots,n$ and $\RSS=\RSS'$.
-\begin{align*}
-	\RSS' &= \lambda \sum_{j=1}^k {\beta_j^c}^2 + \sum_{i=1}^n \brac{t_i - \beta_0^c}^2 \\
-	& + \sum_{i=1}^n \brac{\sum_{j=1}^k \beta_j^c \brac{x_{ij}-\bar{x}_j}}^2 \\
-	& - 2 \sum_{i=1}^n \brac{t_i - \beta_0^c} \sum_{j=1}^k \beta_j^c \brac{x_{ij}-\bar{x}_j}
-\end{align*}
-Notice that the last term is zero. Indeed \begin{align*}
-	\sum_{i=1}^n \brac{t_i - \beta_0^c} \brac{\sum_{j=1}^k \beta_j^c \brac{x_{ij}-\bar{x}_j}}
-	& = \sum_{j=1}^k \beta_j^c \sum_{i=1}^n \brac{t_i - \beta_0^c} \brac{x_{ij}-\bar{x}_j}
-\end{align*}
-The problem of ridge regression in the matrix form, where $X$ the $n\times k$
-is matrix of centred standardized independent variables with no intercept:
-\[\RSS = (t-X\beta)'(t-X\beta) + \lambda \beta'\beta\]
-
+The problem of penalized (ridge) regression in the matrix form, where $X$ is the
+$n\times k$ matrix of centred standardized independent variables with no intercept:
+\[\RSS_\text{ridge} = (t-X\beta)'(t-X\beta) + \lambda \beta'\beta\]
 The solution is
 \[\hat{\beta}_{\text{ridge}}\defn \brac{X'X + \lambda I}^{-1} X'T\]
 
 An equivalent optimization problem:
-\begin{align*}
-	\hat{\beta}_{\text{ridge}} = \text{argmin}_{\beta} \sum_{i=1}^n \brac{t_i - \sum_{j=1}^k \beta_j x_{ij}^c}
-	\text{subject to } \sum_{j=1}^k \beta_j^2 \leq \eta
-\end{align*}
+\[
+\hat{\beta}_{\text{ridge}}
+= \argmin_{\beta} \sum_{i=1}^n \bigl(t_i - \sum_{j=1}^k \beta_j x_{ij}^c\bigr)^2
+\text{ subject to } \sum_{j=1}^k \beta_j^2 \leq \eta
+\]
 $\eta$ -- the budget, $\lambda$ -- the complementary slackness coefficient.
-
-There is a certain universality of the statement of the regression problem in this form:
-it is possible to plug in different constraints ($L^1$ constraints -- LASSO).
+There is a certain universality of the statement of the regression problem in
+this form: it is possible to plug in different constraints ($L^1$ constraints -- LASSO).
 LASSO is automatically performing feature selection due to $L^1$ norm.
 
-% How to tune $\lambda$? Wait until model selection and cross-validation.
-
-How does the shrinkage work?
-Consider two cases of columns of $X$ \begin{itemize}
-	\item orthogonal
-	\item correlated
-\end{itemize}
+How to tune $\lambda$? Wait until model selection and cross-validation. How does
+the shrinkage work? Consider two cases of columns of $X$: orthogonal and correlated.
 
 \subsection*{Orthogonal columns} % (fold)
 \label{sub:orthogonal_columns}
 
-Suppose $X$ are orthogonal, in which case $X'X = I$. Therefore
-the OLS solution is $\hat{\beta}_{\text{OLS}} = {X'X}^{-1}X'T = X'T$.
+Suppose $X$ are orthogonal, in which case $X'X = I_p$. The OLS solution is
+\[\hat{\beta}_\text{OLS} = (X'X)^{-1}X't = X't\]
 The ridge regression solution is given by 
-\[\hat{\beta}_{\text{ridge}} = \brac{X'X + \lambda I}^{-1} X'T = \frac{1}{1+\lambda} \hat{\beta}_{\text{OLS}}\]
-Hence the shrinkage!
+\[
+\hat{\beta}_\text{ridge}
+= \brac{X'X + \lambda I_p}^{-1} X't
+= \frac{1}{1+\lambda} \hat{\beta}_{\text{OLS}}
+\]
+Voil\`a -- shrinkage!
+
+\subsubsection*{LASSO} % (fold)
+\label{ssub:lasso}
 
 The lasso solution:
-\[\text{argmin}_\beta \brac{T - X\beta}'\brac{T - X\beta} + \lambda \sum_{j=1}^k \abs{\beta_j}\]
+\[
+\hat{\beta}_\text{LASSO}
+= \argmin_\beta (t-X\beta)'(t-X\beta) + \lambda \sum_{j=1}^k \lvert \beta_j\rvert
+\]
+Rewriting
 \begin{align*}
-	\brac{T - X\beta}'\brac{T - X\beta} + \lambda \sum_{j=1}^k \abs{\beta_j}
-	& = T'T - 2 \beta'X'T + \beta'X'X\beta + \lambda \sum_{j=1}^k \abs{\beta_j}\\
-	& = T'T - 2 \beta'\hat{\beta}_{\text{OLS}} + \beta'X'X\beta + \lambda \sum_{j=1}^k \abs{\beta_j}
+	(t-X\beta)'(t-X\beta) + \lambda \sum_{j=1}^k \lvert \beta_j\rvert
+	&= t't - 2 \beta'X't + \beta'X'X\beta  + \lambda \sum_{j=1}^k \lvert \beta_j\rvert \\
+	&= t't - 2 \beta'\hat{\beta}_\text{OLS} + \beta'\beta  + \lambda \sum_{j=1}^k \lvert \beta_j\rvert
 \end{align*}
-The minimization problem is equivalent to the following (in this orthogonal case):
-\[\text{argmin}_\beta \sum_{i=1}^k -2 \beta_i \beta_{\text{OLS}\,i}+ \beta)i^2 + \lambda \abs{\beta_i}\]
-The problem is additively separable. Thus \begin{align*}
-	\text{argmin}_{\beta_i\geq 0} -2 \beta_i \beta_{\text{OLS}\,i}+ \beta)i^2 + \lambda \abs{\beta_i}\\
-	\text{argmin}_{\beta_i\geq 0} -2 \beta_i \beta_{\text{OLS}\,i}+ \beta)i^2 + \lambda \abs{\beta_i}
-\end{align*}
-The FOC for the first problem is given by:
-\[\frac{\partial}{\partial \beta_i} = - \beta_{\text{OLS}\,i} + \beta_i + \frac{\lambda}{2}\]
+Thus in this orthogonal case the LASSO minimization solution is equivalent to
+the following:
+\[
+\hat{\beta}_\text{LASSO}
+= \argmin_\beta \sum_{j=1}^k \beta_j^2 - 2 \beta_j \beta_{\text{OLS}\,j} + \lambda \lvert \beta_j\rvert
+\]
+The problem is additively separable in $\beta_j$'s, whence:
+\[
+\hat{\beta}_{\text{LASSO}\,j}
+= \argmin_{\beta_j} \beta_j^2 - 2 \beta_j \beta_{\text{OLS}\,j} + \lambda \lvert \beta_j\rvert
+\]
+The FOC for a problem with $\beta_j\geq0$ is given by:
+\[- \beta_{\text{OLS}\,j} + \beta_j + \frac{\lambda}{2} = 0\]
 whence the optimal value is given by:
-\[\hat{\beta}_{\text{LASSO}\,i} \defn \brac{ \beta_{\text{OLS}\,i} - \frac{\lambda}{2} }^+\]
-
+\[\hat{\beta}_{\text{LASSO}\,j} = \bigl(\beta_{\text{OLS}\,j} - \frac{\lambda}{2}\bigr)_+\]
+For $\beta_j\leq 0$:
+\[\hat{\beta}_{\text{LASSO}\,j} = \bigl(\beta_{\text{OLS}\,j} + \frac{\lambda}{2}\bigr)_-\]
 Due to soft thresholding in the case of the LASSO there is feature selection.
 
-% subsection* orthogonal_columns (end)
+% subsubsection* lasso (end)
 
-\subsection*{The best subset selection} % (fold)
-\label{sub:the_best_subset_selection}
-Suppose we have a set of $p$ predictors. Chose the subset with the least
-residual sum of squares.
-
-For each $k = 1,\ldots, p$ pick the model with the lowest RSS.
-\begin{align*}
-\min_{\beta} \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij}}^2 \\
-\text{subject to} \sum_{j=1}^p 1_\obj{\beta_j\neq 0} \leq k
-\end{align*}
-
+\subsubsection*{The best subset selection} % (fold)
+\label{ssub:the_best_subset_selection}
+Suppose we have a set of $p$ predictors. Choose the subset with the least residual
+sum of squares: for each $K = 1,\ldots, p$ pick the model with the lowest RSS:
+\[
+\min_\beta \sum_{i=1}^n \bigl(t_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij}\bigr)^2
+\text{ subject to} \sum_{j=1}^p 1_{\beta_j \neq 0} \leq K
+\]
 This is equivalent to the following problem:
-\[\min_{\beta} \sum_{i=1}^n \brac{ - 2 \beta_j \hat{\beta}_{\text{OLS}\,j} + \beta_j^2 }\]
-subject to keeping at most $k$ coefficients nonzero.
-\[\hat{\beta}_{\text{BSS}\,i} \defn \beta_{\text{OLS}\,i} 1_{\clop{\hat{\beta}, \infty}}\brac{ \abs{\beta_{\text{OLS}\,i}} }\]
-where $\hat{\beta}$ is the $n-k$ th order statistic. This given hard thresholding.
+\[\min_{\beta} \sum_{j=1}^n \beta_j^2 - 2 \beta_j \beta_{\text{OLS}\,j} \]
+subject to keeping at most $K$ coefficients non-zero.
+\[
+\hat{\beta}_{\text{BSS}\,i}
+= \beta_{\text{OLS}\,i} 1_{[\hat{\beta}_{n-K}, \infty]}\bigl(\lvert \beta_{\text{OLS}\,i}\rvert\bigr)\]
+where $\hat{\beta}$ is the $n-K$-th order statistic. This given hard thresholding.
 
-Gram-Schmidt orthogonalization is equivalent to the QR decomposition.
+% subsubsection* the_best_subset_selection (end)
 
-The best idea is to use SVD decomposition of $X = U\Lambda V'$, with $U$ and $V$ orthogonal matrices.
+% subsection* orthogonal_columns (end)
+\subsection*{Correlated columns} % (fold)
+\label{sub:correlated_columns}
 
-% subsection* the_best_subset_selection (end)
+Gram-Schmidt orthogonalization is similar to the QR decomposition. The best idea
+is to use SVD decomposition of $X = U\Lambda V'$, with $U$ and $V$ orthogonal
+matrices.
 
 \subsection*{SVD} % (fold)
 \label{sub:svd}
 
 Suppose there is a matrix $X$ with dimensions $n\times p$ with rank $r$.
-SVD decomposition claims that there exist square orthogonal matrices $U_{n\times n}$ and $V_{p\times p}$
-and a diagonal matrix $\Lambda_{n\times p}$ of rank $r$, such that $X = U \Lambda V'$.
-Orthogonality of $U$: $U'U = I_{n\times n}$. Orthogonality greatly simplifies the projectors onto the column space of $X$: 
-\[\hat{T} = U U' T\]
+SVD decomposition claims that there exist square orthogonal matrices $U_{n\times n}$
+and $V_{p\times p}$ and a diagonal matrix $\Sigma_{n\times p}$ of rank $r$, such
+that $X = U \Sigma V'$:
+\[X = U \Bigl(\begin{smallmatrix} \Lambda & 0\\ 0 & 0 \end{smallmatrix}\Bigr) V'\]
+
+Orthogonality of $U$: $U'U = I_n$. Orthogonality greatly simplifies projectors
+onto the column space of $X$: $\hat{t} = U U' t$ (?).
 
 % subsection* svd (end)
 
-\subsection*{Ridge regression and the SVD} % (fold)
-\label{sub:ridge_regression_and_the_svd}
+\subsection*{Ridge regression} % (fold)
+\label{sub:ridge_regression}
 
-Begin with the expression of the solution:
-\[\hat{\beta}_{\text{ridge}} \defn \brac{X'X + \lambda I}^{-1} X'T\]
-
-Since $X'X = V\Lambda U' U \Lambda V' = V\Lambda^2 V'$, it is true that 
+Suppose $X$ is full rank ($\rank(X) = p$) centred and scaled. Recall the expression
+of the ridge regression solution:
+\[\hat{\beta}_\text{ridge} = (X'X + \lambda I_p)^{-1} X't\]
+The SVD of $X$ in this case is $U\Sigma V'$ where $\Sigma$ is a $n\times p$ 
+matrix and $V \in \Real^{p\times p}$ and $U \in \Real^{n\times n}$ are orthogonal.
+Furthermore $\Lambda'\Lambda = \Sigma^2$. Then $X'X = V\Sigma' U' U \Sigma V' = V\Lambda^2 V'$
+and it must be true that 
 \begin{align*}
-	\hat{\beta}_{\text{ridge}} & = \brac{X'X + \lambda I}^{-1} X'T\\
-	& = \brac{V\Lambda^2 V' + \lambda VV'}^{-1} X'T\\
-	& = V \brac{\Lambda^2 + \lambda I}^{-1} V' V\Lambda U' T \\
-	& = V \brac{\Lambda^2 + \lambda I}^{-1} \Lambda U' T
+	\hat{\beta}_{\text{ridge}}
+	& = (V\Lambda^2 V' + \lambda VV')^{-1} X't\\
+	& = V (\Lambda^2 + \lambda I_p)^{-1} V' V\Lambda U't \\
+	& = V (\Lambda^2 + \lambda I_p)^{-1} \Lambda U't
 \end{align*}
-
-Therefore the ridge regression shrinks the coefficients over the tiniest principal directions.
+Therefore the ridge regression shrinks the coefficients over the tiniest principal
+directions of $X$.
 
 The sample correlation matrix
 \[\frac{1}{n} X'X = \frac{1}{n} V'\Lambda^2 V\]
-The principal components are in $V$
-the eigenvalue-eigenvector pair for the sample correlation is given by the $\brac{\frac{\lambda_i^2}{n}, V_\clo{i}}$.
+The principal components are in $V$ and the eigenvalue-eigenvector pair for the
+sample correlation is given by the $\bigl(\frac{1}{n}\lambda_i^2, V_i\bigr)$
+where $V_i$ is the $i$-th column of $V$. The $i$ th principal component is given
+by $Z_i = X V_i = U_i \lambda_i$ and $\text{var}(z_i) = \lambda_i^2$. The ridge
+regression shrinks the coefficients corresponding to the principal directions in
+the column space of $X$ having the smallest variance.
 
-The $i$ th principal component is given by $Z_i = X V_\clo{i}$ and $\text{var}(z_i) = \lambda_i^2$
+% subsection* ridge_regression (end)
 
-The ridge regression shrinks the coefficients corresponding to the principal directions in the column space of $X$ having the smallest variance.
+% subsection* correlated_columns (end)
 
-% subsection* ridge_regression_and_the_svd (end)
+\subsection*{The effective degrees of freedom} % (fold)
+\label{sub:the_effective_degrees_of_freedom}
 
-\subsection*{The effective degree of freedom} % (fold)
-\label{sub:the_effective_degree_of_freedom}
-
-It is a function of the tuning parameter $\lambda$ which governs the complexity of the model.
-
-Complexity id the trace of the hat matrix (the projector) of the ridge regression:
-\[\text{df}(\lambda) \defn \text{tr}\brac{X\brac{X'X + \lambda I}^{-1}X'}\]
+Should be a function of the tuning parameter $\lambda$ which governs the complexity
+of the model. Complexity is the trace of the hat matrix (the projector) of the ridge regression:
+\[\text{df}(\lambda) \defn \tr\bigl(X (X'X + \lambda I_p)^{-1} X'\bigr)\]
 Using the SVD of $X$ gives us:
-\[\text{tr}\brac{X\brac{X'X + \lambda I}^{-1}X'} = \sum_{j=1}^p \frac{\lambda_i^2}{\lambda_i^2 + \lambda^2}\]
+\begin{multline*}
+\tr\bigl(X (X'X + \lambda I_p)^{-1} X'\bigr)
+= \tr\bigl((X'X + \lambda I_p)^{-1} X'X \bigr) \\
+= \tr\bigl( (\Lambda^2 + \lambda I_p)^{-1} V'V\Lambda' U'U\Lambda V'V\bigr)
+= \sum_{j=1}^p \frac{\lambda_i^2}{\lambda_i^2 + \lambda^2}
+\end{multline*}
+If $\lambda = 0$ then $\text{df}(\lambda) = p$, and when $\lambda\to +\infty$,
+then $\text{df}(\lambda) \to 0$.
 
-If $\lambda = 0$ then $\text{df}(\lambda) = p$, and $\lambda\to +\infty$, then $\text{df}(\lambda) \to 0$.
+% subsection* the_effective_degrees_of_freedom (end)
+
+\subsubsection*{Not sure what this is about} % (fold)
+\label{ssub:not_sure_what_this_is_about}
 
 Correlation between this and this (?)
 \begin{align*}
@@ -612,68 +691,79 @@ Correlation between this and this (?)
 \end{align*}
 Covariance of $\hat{T}$ and $T$.
 % \[\ex(T, \hat{T}) = T' T\] 
-
-% subsection* the_effective_degree_of_freedom (end)
-
-Take a matrix of predictors $X$, its standardized version \[X^\sigma \defn \frac{X}{\sigma}\]
+Take a matrix of predictors $X$, its standardized version
+\[X^\sigma \defn \frac{X}{\sigma}\]
 and \[X^c \defn \frac{X-m}{\sigma}\]
 
+% subsubsection* not_sure_what_this_is_about (end)
 
 % section lecture_3 (end)
 
+\clearpage
 \section{Lecture \# 4} % (fold)
 \label{sec:lecture_4}
 Departing from the linearity of the Linear regression.
 
 Transform $\brac{f_m}_{m=1}^M:\Real^p \to \Real$ since there are initially $p$ predictors.
-Sample space is augmented and now has $M$ predictors. The regression function now becomes:
+Sample space is augmented and now has $M$ predictors. The regression function becomes:
 \[f(X) = \sum_{m=1}^M \theta_m f_m(x)\]
-
 This model generalises the original linear regressions since $f_m(x) = \pi_m(x)$ 
 
-Polynomial regression problem: what happens in the tails. It is not very trustworthy near the endpoints.
-In this respect polynomial regression is not a good idea -- use local regression by partitioning the range
-into regions with different model in each area: $f_m(X) = 1_{\clo{l_m, u_m}}(x_k)$
+Polynomial regression problem: what happens in the tails? It is not very trustworthy
+near the endpoints. In this respect polynomial regression is not a good idea. Why
+not use local regression by partitioning the range into regions with different model
+in each area: $f_m(X) = 1_{\clo{l_m, u_m}}(x_k)$
 
-Piecewise polynomials and splines
+\subsection{Piecewise polynomials and splines} % (fold)
+\label{sub:piecewise_polynomials_and_splines}
+%% The following really resembles the dummy variables in econometrics.
 
 Suppose that $x$ is unidimensional -- only one feature.
-%%% The following really resembles the dummy variables in ecnometrics.
 
-Divide $x$ in several regions with different thresholds (knots since they link the regions).
-To each region fit the constant. In order to cover the whole range of $x$ in this case one has to have three basis functions:
+Divide $x$ in several regions by different thresholds -- \textbf{(binding) knots},
+since they link the regions ,and then fit a constant level within each region.
+In order to cover the whole range of $x$ in this case one has to have three
+``basis'' functions:
+$1_{(-\infty, \xi_1]}$, $1_{(\xi_1, \xi_2]}$ and $1_{(\xi_2, \infty)}$.
 
-$1_{\ploc{-\infty, \xi_1}}$, $1_{\ploc{\xi_1, \xi_2}}$ and $1_{\ploc{\xi_2, \infty}}$.
+Consider linear function on each region: we will be fitting something piecewise
+linear. In this case we need $6$ basis functions, since we do not only model the
+piecewise intercept, but also the piecewise slope.
 
-Consider linear function on each region: fitting something piecewise linear. In this aces we nee 6 basis functions, since we do not only model the piecewise intercept but also the piecewise slope.
+Continuity requirement at each knot reduces the number of basis functions to four:
+$h_1 = 1$, $h_2 = x$ (an indicator would introduce discontinuity),
+$h_3 = (x-\xi_1)_+$ and $h_4 = (x-\xi_2)_+$ -- fix their intercepts.
 
-Enforcing continuity at two knots then four basis functions are only needed.
+In general overlapping regions are refined into a partition, on which a proper
+piecewise is later estimated. Then linear restriction tests could be run on the
+estimated coefficients.
 
-$h_1 = 1$ and $h_2 = x$ (no need for the indicator here, since it would introduce discontinuity), $h_3 = \brac{x-\xi_1}^+$ and $h_4 = \brac{x-\xi_2}^+$ -- fix their intercepts.
+To add smoothness, one has to impose continuity of the derivatives at the knots.
+and fit a smooth function within each region.
 
-Overlapping region are refined into a partition, which is then estimated and the test on linear constraints of coefficients on the estimated coefficients.
+Consider three regions and two knots and require continuity up to the second
+derivative at the first knot. The remaining degrees of ``freedom'' at this knot
+are just the convexity of the fitted curve. The set of basis function is:
+$h_1 = 1$, $h_2 = x$, $h_3 = x^2$, $h_4 = x^3$,
+$h_5 = (x-\xi_1)_+^3$ and $h_6 = (x-\xi_2)_+^3$ (the ``piecewiseness'' is shifted
+to the polynomial terms of higher order).
 
-To add smoothness at the knots, one has to impose continuity of the derivatives at the knots.
-
-Three regions and two knots, require continuity up to the second derivative at the first knot.
-The remaining degree of ``freedom'' at this knot is the convexity of the fitted line.
-The set of basis function is $h_1 = 1$, $h_2 = x$, $h_3 = x^2$, $h_4 = x^3$, $h_5 = \brac{\brac{x-\xi_1}^+}^3$ and $h_6 = \brac{\brac{x-\xi_2}^+}^3$.
-
-
-In general Splines are piecewise polynomial regression with smoothness at the binding knots:
+In general $M$-\textbf{splines} are piecewise polynomial regression curves with $M$-
+smoothness restriction at binding knots:
 \begin{align*}
-	h_j(x) = x^{j-1}\quad i=1,\ldots, M\\
-	h_{m+k}(x) = \big((x-\xi_i)_+\big)^M \quad k=1,\ldots,K
+	h_j(x) &= x^{j-1}&\text{for }j=1,\ldots, M\\
+	h_{M+j}(x) &= (x-\xi_j)_+^M &\text{for }j=1,\ldots,K
 \end{align*}
 
-One polynomial -- global and smooth.
-More polynomials with a local regression are not necessarily smooth.
-Splines are local and smooth!
+One polynomial -- global and smooth. More polynomials with a local regression are
+not necessarily smooth. Splines are local and smooth!
 
-What to do with the endpoints?
-Problems with the values out the common region of $x$.
+What to do with the endpoints? Problems with the values out the common region of $x$.
 
-Natural cubic splines: fit a linear model in the ends to achieve robustness and get more trustworthy prediction
+\subsubsection{Natural Cubic Spline} % (fold)
+\label{ssub:natural_cubic_spline}
+Within the range of the univariate data fit a spline, but to achieve robustness
+at the ends and get more trustworthy predictions fit a linear model!
 
 Order-4-spline (cubic spline) $\to$ 6 basis functions ($K+4$ functions).
 Natural cubic spline $\to$ 2 basis functions ($K$ basis functions):
@@ -801,8 +891,11 @@ Consider the difference of these integrals.
 Cubic spline with $K$ knots
 \[f(x) = \sum_{k=1}^3 \beta_k x^k + \sum_{k=1}^K \theta_k \brac{\brac{x-\xi_k}^+}^3\]
 
-% See the handwritten notes 
+\textbf{See the handwritten notes}
 
+% subsubsection natural_cubic_spline (end)
+
+% subsection piecewise_polynomials_and_splines (end)
 
 \subsection{Smoothing spline} % (fold)
 \label{sub:smoothing_spline}
@@ -890,15 +983,11 @@ Higher $u_j$ correspond to more and more oscillating functions of $x$.
 
 % Reproducing Hilbert spaces
 
-
-
-\begin{itemize}
-	\item
-\end{itemize}
-
 % subsection smoothing_spline (end)
+
 % section lecture_4 (end)
 
+\clearpage
 \section{Lecture \# 5} % (fold)
 \label{sec:lecture_5}
 
@@ -919,12 +1008,11 @@ In the case of a linear regression we get the same output.
 Re-applying the smoother to $\hat{g}$ yields a more linear fit, since the first pair of eigenvalues are unit, thus preserving the linear components, while other higher degree polynomial components diminish.
 
 Indeed, \begin{align*}
-	\hat{g}_2 & = \sum_{k=1}^n \lambda_k \brkt{\hat{g}, u_k} u_k \\
-	& = \sum_{k=1}^n \lambda_k \brkt{\sum_{j=1}^n \lambda_j \brkt{g, u_j} u_j, u_k} u_k \\
-	& = \sum_{k=1}^n \sum_{j=1}^n \lambda_j \lambda_k \brkt{g, u_j} \brkt{u_j, u_k} u_k \\
-	& = \sum_{k=1}^n \sum_{j=1}^n \lambda_j \lambda_k \brkt{g, u_j} \delta_{kj} u_k \\
-	& = \sum_{k=1}^n \lambda_k^2 \brkt{g, u_k} u_k \\
-	& = \sum_{k=1}^n \lambda_k^2 \brkt{g, u_k} u_k
+	\hat{g}_2 & = \sum_{k=1}^n \lambda_k \langle\hat{g}, u_k\rangle u_k \\
+	& = \sum_{k=1}^n \lambda_k \Bigl\langle \sum_{j=1}^n \lambda_j \langle g, u_j\rangle u_j, u_k\Bigr\rangle u_k \\
+	& = \sum_{k=1}^n \sum_{j=1}^n \lambda_j \lambda_k \langle g, u_j\rangle \langle u_j, u_k\rangle u_k \\
+	& = \sum_{k=1}^n \sum_{j=1}^n \lambda_j \lambda_k \langle g, u_j\rangle \delta_{kj} u_k \\
+	& = \sum_{k=1}^n \lambda_k^2 \langle g, u_k\rangle u_k
 \end{align*}
 
 The projection matrix is idempotent, hence for any eigenvector-eigenvalue pair $(\lambda, u)$ it is true that $\lambda u = Hu = H^2u = H\lambda u = \lambda Hu = \lambda^2 u$. Thus $\lambda$ is either $\pm1$ or $0$.
@@ -1016,6 +1104,7 @@ The AIC is given by (up to the terms of the first order):
 
 % section lecture_5 (end)
 
+\clearpage
 \section{Lecture \# 6} % (fold)
 \label{sec:lecture_6}
 
@@ -1331,6 +1420,7 @@ Heuristics on the values of BIC $\text{BIC}-\text{BIC}_{\min}$
 
 % section lecture_6 (end)
 
+\clearpage
 \section{Lecture \# 7} % (fold)
 \label{sec:lecture_7}
 
@@ -1460,6 +1550,7 @@ Classification procedures
 
 % section lecture_7 (end)
 
+\clearpage
 \section{Lecture \# 8} % (fold)
 \label{sec:lecture_8}
 
@@ -1714,6 +1805,7 @@ Now $\Pr\big(\beta'x+\epsilon > 0\big) = \Pr\big(\epsilon > -\beta'x\big) = 1-\P
 
 % section lecture_8 (end)
 
+\clearpage
 \section{Lecture \# 9} % (fold)
 \label{sec:lecture_9}
 
@@ -1927,6 +2019,7 @@ In fact $Q(\theta^{(t)}, \theta^{(t)}) = l(\theta^{(t)})$ and $Q(\theta, \theta^
 
 % section lecture_9 (end)
 
+\clearpage
 \section{Lecture \# 10} % (fold)
 \label{sec:lecture_10}
 
@@ -2083,7 +2176,8 @@ which yields the estimate of $\Sigma$.
 
 % section lecture_10 (end)
 
-\section{Tutorial prob \# 7} % (fold)
+\clearpage
+\section*{Tutorial prob \# 7} % (fold)
 \label{sec:tutorial_prob_7}
 
 The Gaussian mixture density is 
@@ -2297,7 +2391,7 @@ whence
 
 In, conclusion, the two-step maximization procedure must be the following one \begin{description}
 	\item[find] Set $r_k(i)=0$ for $k\neq k_i$ and $r_{k_i}(i)=1$ otherwise, where
-	$k_i = \text{argmin}_k (x_i-\mu_k)'(x_i-\mu_k)$;
+	$k_i = \argmin_k (x_i-\mu_k)'(x_i-\mu_k)$;
 	\item[update] Compute the new centroids with
 	\[\mu_k = \frac{\sum_{i=1}^N r_k(i) x_i}{\sum_{i=1}^N r_k(i)}\]
 \end{description}
@@ -2340,12 +2434,13 @@ whence $\Lcal$ indeed decreases with the number of iterations $t$.
 %% 	&= \frac{1}{\sum_{i=1}^N \hat{u}_k^{t+1}(i)} \sum_{i=1}^N \hat{u}_k^{t+1}(i) \Gamma_{ik}^{t+1}
 %%% subsection* equivalence (end)
 
-% section tutorial_prob_7 (end)
+% section* tutorial_prob_7 (end)
 
-\section{Mid-term test review} % (fold)
+\clearpage
+\section*{Mid-term test review} % (fold)
 \label{sec:mid_term_test_review}
 Ridge regression protects from the poor estimation in the direction of the least varinance.
-% section mid_term_test_review (end)
+% section* mid_term_test_review (end)
 
 
 \end{document}
