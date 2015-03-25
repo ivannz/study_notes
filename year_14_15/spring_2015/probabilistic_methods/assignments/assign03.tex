@@ -22,6 +22,7 @@
 \newcommand{\Cplx}{\mathbb{C}}
 
 \newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\Ncal}{\mathcal{N}}
 
 \newcommand{\ex}[0]{{\mathbb{E}}}
 \newcommand{\pr}[0]{{\mathbb{P}}}
@@ -43,8 +44,8 @@
 \selectlanguage{russian}
 \maketitle
 
-\section{У2.18} % (fold)
-\label{sec:problem_2_18}
+\section{У2.12} % (fold)
+\label{sec:problem_2_12}
 
 Итак необходимо изучить моменты любого порядка случайной величины с плотностью
 \[
@@ -174,8 +175,10 @@ $\Cplx$ то
 
 \noindent Возвращаясь к интегралу $\int_{-R}^R e^{-b (z - i\eta)^2} dz$ имеем
 \begin{multline*}
-	\biggl\lvert \int_{-R}^R e^{-b (z - i\eta)^2} dz + \int_{R+i\eta}^{-R+i\eta} e^{-b (z - i\eta)^2} dz \biggr\rvert = \\
-	= \biggl\lvert \int_{-R}^R e^{-b (z - i\eta)^2} dz - \int_{-R}^R e^{-b x^2} dx \biggr\rvert \leq 2 e^{-bR^2} \eta e^{b\eta^2}
+	\biggl\lvert \int_{-R}^R e^{-b (z - i\eta)^2} dz +
+		\int_{R+i\eta}^{-R+i\eta} e^{-b (z - i\eta)^2} dz \biggr\rvert = \\
+	= \biggl\lvert \int_{-R}^R e^{-b (z - i\eta)^2} dz -
+		\int_{-R}^R e^{-b x^2} dx \biggr\rvert \leq 2 e^{-bR^2} \eta e^{b\eta^2}
 \end{multline*}
 Поскольку $\eta$ -- это конечное число, отсюда вытекает 
 \[
@@ -234,7 +237,8 @@ a \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} \sin(2\pi y) dy
 \begin{align*}
 	\ex_{p(x\rvert a)} X^k
 	&= C \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2}\bigl(1 + a\sin(2\pi y)\bigr) dy\\
-	&= C \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} + C a \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} \sin(2\pi y) dy\\
+	&= C \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2}
+		+ C a \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} \sin(2\pi y) dy\\
 	&= C e^{\frac{1}{2}k^2} \sqrt{2\pi} + 0
 \end{align*}
 В частности для $k=0$ из условия $\int p(x\rvert a) dx = 1$ следует, что $C = \frac{1}{\sqrt{2\pi}}$.
@@ -243,7 +247,105 @@ a \int_{-\infty}^\infty e^{ky} e^{-\frac{1}{2}y^2} \sin(2\pi y) dy
 Из проведённого анализа можно сделать вывод, что знания даже счётного числа моментов
 распределения не всегда достаточно для восстановления его параметров.
 
+% section problem_2_12 (end)
+
+\section{У2.18} % (fold)
+\label{sec:problem_2_18}
+
+Итоговая случайная величина $X$ при известном $D$ имеет нормальное распределение
+с плотностью
+\[p_{X\rvert D}(x\rvert d) = \frac{1}{\sqrt{ 2\pi d}} e^{-\frac{x^2}{2d}} \]
+Совметсная функция плотности $(X,D)$ может быть разложена в следующее произведение
+\[p_{X,D}(x,d) = p_{X\rvert D}(x\rvert d) p_D(d)\]
+Отсюда следует, что 
+\[
+p_X(x)
+= \int_0^\infty p_{X,D}(x,t) dt
+= \int_0^\infty p_{X\rvert D}(x\rvert t) p_D(t) dt
+\]
+
+Рассмотрим подробнее случайную величину $D$ с плотностью
+\[p_D(x) = \frac{\lambda}{\sqrt{2\pi x^3}} e^{-\frac{\lambda^2}{2x}}\]
+Пусть случайная величина $Z = \frac{\lambda^2}{D}$. Тогжа её плотность равна
+\[p_Z(z) = p_D(d) \frac{1}{\lvert -\frac{\lambda^2}{d^2}\rvert}\big\rvert_{d=\frac{\lambda^2}{z}}\]
+откуда получается
+\[
+p_Z(z)
+= \frac{\lambda z^\frac{3}{2}}{\sqrt{2\pi \lambda^6}} e^{-\frac{1}{2}z} \frac{\lambda^2}{z^2}
+= \frac{1}{\sqrt{2\pi}} z^{\frac{1}{2}-1} e^{-\frac{1}{2}z}
+\]
+Таким образом $Z$ имеет распределение $\Gamma\bigl(\frac{1}{2},\frac{1}{2}\bigr)$ котрое на
+самом деле есть $\chi^2_1$.
+
+Учитывая данное наблдение модель итоговой случайной величины принимает вид:
+\[X\rvert Z\sim \Ncal\bigl(0,\frac{\lambda^2}{Z}\bigr)\text{ где } Z\sim \Gamma\bigl(\frac{1}{2},\frac{1}{2}\bigr)\]
+Замтеим, что условная плотность $X$ при заданном $Z=z$ равна
+\[p_{X\rvert Z}(x\rvert z) = \frac{z^\frac{1}{2}}{\sqrt{ 2\pi \lambda^2}} e^{-\frac{x^2}{2\lambda^2}z}\]
+Тогда искомая беузсловная плотность $X$ равна
+\[
+p_X(x)
+= \int_0^\infty p_{X\rvert Z}(x\rvert z) p_Z(z) dz
+= \int_0^\infty \frac{z^\frac{1}{2}}{\sqrt{ 2\pi \lambda^2}} e^{-\frac{x^2}{2\lambda^2}z}
+	\frac{1}{\sqrt{2\pi}} z^{\frac{1}{2}-1} e^{-\frac{1}{2}z} dz
+\]
+Интерал упрощается следующим образом:
+\begin{align*}
+	p_X(x)
+	&= \int_0^\infty \frac{z^\frac{1}{2}}{\sqrt{ 2\pi \lambda^2}} e^{-\frac{x^2}{2\lambda^2}z}
+		\frac{1}{\sqrt{2\pi}} z^{\frac{1}{2}-1} e^{-\frac{1}{2}z} dz \\
+	&= \frac{1}{2\pi \lambda} \int_0^\infty z^\frac{1}{2} e^{-\frac{x^2}{2\lambda^2}z}
+		z^{\frac{1}{2}-1} e^{-\frac{1}{2}z} dz \\
+	&= \frac{1}{2\pi \lambda} \int_0^\infty e^{-\frac{1}{2} \bigl(\frac{x^2}{\lambda^2}+1\bigr)z} dz \\
+	&=\Bigl[ \beta = \frac{1}{2} \bigl(\frac{x^2}{\lambda^2}+1\bigr) \Bigr]\\
+	&= \frac{1}{2\pi \lambda} \int_0^\infty e^{-\beta z} dz = \frac{1}{2\pi \lambda} \frac{1}{\beta}
+\end{align*}
+Итак искомая плотность имеет вид:
+\[
+p_X(x)
+= \frac{1}{2\pi \lambda} \frac{2 \lambda^2}{x^2+\lambda^2}
+= \frac{1}{\pi} \frac{\lambda}{x^2+\lambda^2}
+\]
+Фнукция распределения данной случайной величины задаётся
+\[
+P_X(x)
+= \frac{1}{\pi}\int_{-\infty}^x\frac{\lambda}{t^2+\lambda^2} dt
+= \frac{1}{\pi}\int_{-\infty}^\frac{x}{\lambda}\frac{1}{z^2+1} dt
+= \frac{1}{\pi} \mathop{\text{arctg}}\bigl(\sfrac{x}{\lambda}\bigr)+\frac{1}{2}
+\]
+Таким образом, случайная величина $X$ распределена согласно распределнию Коши
+с параметром масштаба $\lambda$.
+
 % section problem_2_18 (end)
+
+\section{У2.13} % (fold)
+\label{sec:problem_2_13}
+
+% section problem_2_13 (end)
+
+\section{У2.14} % (fold)
+\label{sec:problem_2_14}
+
+% section problem_2_14 (end)
+
+\section{У4.2} % (fold)
+\label{sec:problem_4_2}
+
+% section problem_4_2 (end)
+
+\section{У4.11} % (fold)
+\label{sec:problem_4_11}
+
+% section problem_4_11 (end)
+
+\section{У4.12} % (fold)
+\label{sec:problem_4_12}
+
+% section problem_4_12 (end)
+
+\section{У4.16} % (fold)
+\label{sec:problem_4_16}
+
+% section problem_4_16 (end)
 
 % [ВШЭ ТВМММ] Зачётная работа Назаров Иван.pdf
 \end{document}
