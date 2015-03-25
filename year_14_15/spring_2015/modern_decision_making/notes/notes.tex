@@ -370,7 +370,7 @@ Minimize the following penalized Residual Sum of Squares as:
 the $\lambda>0$ is called the tuning parameter and it controls the amount of shrinkage.
 If $\lambda = 0$ then there is absolutely no shrinkage, and the optimal $\hat{beta}$
 coincides with the OLS. But if $\lambda\to \infty$ then the optimal coefficient
-vector tends to zero (that is why it is called \textbf(shrinkage}). This adjustment
+vector tends to zero (that is why it is called \textbf{shrinkage}). This adjustment
 effectively regularizes the parameter estimates.
 
 In contrast to the ordinary linear regression, for this sort of shrinkage the scale
@@ -427,37 +427,40 @@ centred variables:
 where $\pi_\perp = I_n-\pi$ -- the projector onto space orthogonal to $[\one]$.
 Variables are indeed centred, because $\bar{x} = (\one'\one)^{-1}\one'X$ is in
 fact a row vector of sample means of each feature in $X$, and similarly
-$\bar{t} = (\one'\one)^{-1}\one't$ is the sample of $t$. Therefore
+$\bar{t} = (\one'\one)^{-1}\one't$ is the sample mean of $t$. Therefore
 \[
 t-(\one\beta_0 + X\beta)
-= t^c + \pi t - \one\beta_0 - \pi X\beta - X^с\beta
-= t^c - X^с\beta + (\pi t - \pi X\beta - \one\beta_0)
+= t^c + \pi t - \one\beta_0 - \pi X\beta - X^c \beta
+= t^c - X^c \beta + (\pi t - \pi X\beta - \one\beta_0)
 \]
 Since it is true that $\one\beta_0 = \pi \one\beta_0$, we have
 \[
-t-(\one\beta_0 + X\beta)
-= \bigl(t^c - X^с\beta\bigr) + \pi\bigl( t - X\beta - \one\beta_0\bigr)
+\ldots
+= \bigl(t^c - X^c\beta\bigr) + \pi\bigl( t - X\beta - \one\beta_0\bigr)
 = \pi_\perp(t - X\beta) + \pi\bigl( t - X\beta - \one\beta_0\bigr)
 \]
 Taking the inner product of $t-(\one\beta_0 + X\beta)$ with itself:
-\[
-\bigl(t-(\one\beta_0 + X\beta)\bigr)'\bigl(t-(\one\beta_0 + X\beta)\bigr) 
-= (t - X\beta)'\pi_\perp'\pi_\perp(t - X\beta) + (t - X\beta - \one\beta_0)'\pi(t - X\beta - \one\beta_0)
-\]
+\begin{multline*}
+\bigl(t-(\one\beta_0 + X\beta)\bigr)'\bigl(t-(\one\beta_0 + X\beta)\bigr) \\
+= (t - X\beta)'\pi_\perp'\pi_\perp(t - X\beta) + (t - X\beta - \one\beta_0)'\pi'\pi(t - X\beta - \one\beta_0)
+\end{multline*}
 where the intermediate products with $\pi_\perp \pi$ or $\pi \pi_\perp$ vanish
-since $[\one]^\perp \prep [\one]$. Furthermore the term
+since $[\one]^\perp \perp [\one]$. Furthermore the term
 \begin{align*}
-(t - X\beta - \one\beta_0)'\pi
+(t - X\beta - \one\beta_0)'\pi'
 &= (t - X\beta - \one\beta_0)'\one(\one'\one)^{-1}\one'\\
 &= ((\one'\one)^{-1}\one't - (\one'\one)^{-1}\one'X\beta - (\one'\one)^{-1}\one'\one\beta_0)'\one'\\
 &= (\bar{t} - \bar{X}\beta - \beta_0)'\one'
 \end{align*}
-Thus the main part of the ridge RSS turns out to be
+Since $(\bar{t} - \bar{X}\beta - \beta_0)$ is a scalar and $\one'\one = n$, the main
+part of the ridge RSS turns out to be
 \[
-(t^c - X^c\beta)'(t^c - X^c\beta) + (\bar{t} - \bar{X}\beta - \beta_0)'\one'\one(\bar{t} - \bar{X}\beta - \beta_0)
+(t^c - X^c\beta)'(t^c - X^c\beta) + n (\bar{t} - \bar{X}\beta - \beta_0)^2
 \]
-this means that, provided the estimates of $\beta$ on the centred data, the estimate
+This means that, provided the estimates of $\beta$ on the centred data, the estimate
 of $\beta_0$ can easily be inferred: $\hat{\beta}_0 = \bar{t} - \bar{X}\hat{\beta}$.
+Furthermore these manipulations are true for any penalized regression model
+with the (regularization) penalty term explicitly ignoring the intercept.
 
 Consider \begin{align*}
 	\RSS &= \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j \brac{x_{ij}-\bar{x}_j} - \sum_{j=1}^k \beta_j \bar{x}_j}  + \lambda \sum_{j=1}^k \beta_j^2 \\
