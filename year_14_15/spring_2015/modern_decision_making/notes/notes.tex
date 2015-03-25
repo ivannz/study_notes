@@ -30,7 +30,7 @@
 \newcommand{\pr}[0]{{\mathbb{P}}}
 \newcommand{\Var}[0]{{\text{Var}}}
 \newcommand{\var}[0]{{\text{var}}}
-\newcommand{\RSS}{{\text{RSS}}}
+\newcommand{\RSS}{\text{RSS}}
 \newcommand{\tr}{\text{tr}}
 \newcommand{\one}{\mathbf{1}}
 \newcommand{\rank}{\mathop{\text{rank}}\nolimits}
@@ -362,34 +362,33 @@ Variability due to estimation of an approximate model.
 In the ordinary linear squares method we minimized the following fitness function:
 \[\text{min} \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij}}^2\]
 
-Ridge regression
+\subsubsection{Ridge regression} % (fold)
+\label{ssub:ridge_regression}
+
 Minimize the following penalized Residual Sum of Squares as:
-\[\RSS\defn \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij}}^2 + \lambda \sum_{j=1}^k \beta_j^2\]
-the $\lambda>0$ is called the tuning parameter.
-It controls the amount of shrinkage:
-if $\lambda = 0$ then there is absolutely no shrinkage, and the optimal beta coincide with the OLS.
-But if $\lambda\to \infty$ then the optimal coefficient vector tends to zero. 
+\[\RSS_\text{ridge} \defn \sum_{i=1}^n \bigl(t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij}\bigr)^2 + \lambda \sum_{j=1}^k \beta_j^2\]
+the $\lambda>0$ is called the tuning parameter and it controls the amount of shrinkage.
+If $\lambda = 0$ then there is absolutely no shrinkage, and the optimal $\hat{beta}$
+coincides with the OLS. But if $\lambda\to \infty$ then the optimal coefficient
+vector tends to zero (that is why it is called \textbf(shrinkage}). This adjustment
+effectively regularizes the parameter estimates.
 
-However with shrinkage, the scale of each predictor $\brac{x_j}_{j=0}^k\in \Real^n$ matter!
+In contrast to the ordinary linear regression, for this sort of shrinkage the scale
+of each predictor $\brac{x_j}_{j=0}^k\in \Real^n$ matter! Thus the first step is to
+standardize the variables before fitting the Ridge regression.
 
-Thus the first step is to standardize the variables before fitting the Ridge regression.
-
-Next observation: the intercept $\beta_0$ is indeed excluded from the shrinkage term.
+Next observation: the intercept $\beta_0$ is indeed excluded from the shrinkage term
+so as no to penalize for the \emph{base} level of the target.
 
 Suppose the $t$ and $X$ are standardized (mean and centre), which means that $\beta_0 \equiv 0$
-Then in the matrix form the following is minimized:
-\[\brac{t-X\beta}'\brac{t- X\beta} + \lambda \beta'\beta \to \text{min}\]
+Then in the matrix form the problem is equivalent to minimizing the following:
+\[(t-X\beta)'(t-X\beta) + \lambda \beta'\beta \to \min_\beta\]
+The first order conditions are given by just one equation:
+\[\frac{\partial}{\partial \beta} \RSS_\text{ridge} = - 2 X'(t-X\beta) + 2 \lambda \beta\]
+whence the optimal coefficients are given by
+\[\hat{\beta}_\text{ridge} \defn (X'X + \lambda I_p)^{-1}X't\]
 
-The first order conditions are:
-\begin{align*}
-	\frac{\partial \RSS}{\partial \beta } &= -2 X\brac{t-X\beta}+2\lambda \beta\\
-	% \frac{\partial \RSS}{\partial \lambda } = \beta'\beta = 0
-\end{align*}
-
-The optimal coefficients are given by
-\[\hat{\beta}_\text{ridge}\defn \brac{X'X + \lambda I}^{-1}X't\]
-
-% revise matrix derivatives.
+% subsubsection ridge_regression (end)
 
 % subsection shrinkage_models (end)
 
@@ -397,16 +396,69 @@ The optimal coefficients are given by
 
 \section{Lecture \# 3} % (fold)
 \label{sec:lecture_3}
+The ridge regression problem can actually be rewrtiten as the following constrained
+optimization problem (centred and scaled): minimize $(t-X\beta)'(t-X\beta)$ subject to
+the ``budget'' $\beta'\beta\leq L$ where $L\geq0$ effectively limits the size of the
+coefficients.
 
-Limiting the size of the coefficients. Modified RSS with a tuning parameter $\lambda$.
+The modified ridge RSS with a tuning parameter $\lambda$ is defined as
 \[
-\RSS \defn \sum_{i=1}^n \bigl( t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij} \bigr)^2 + \lambda \sum_{j=1}^k \beta_j^2
+\RSS_\text{ridge} \defn \sum_{i=1}^n \bigl( t_i - \beta_0 - \sum_{j=1}^k \beta_j x_{ij} \bigr)^2 + \lambda \sum_{j=1}^k \beta_j^2
 \]
-important: \begin{itemize}
-	\item Consider dimensionless inputs (standardized by standard deviation) -- comparable $\beta_j$.
-	\[x_{ij}\]
-	\item If the input vectors are centred, then the estimation is separable in $\beta_0$ and $\beta_j$ for $j\geq 1$.
+Important to note: \begin{itemize}
+	\item Inputs must be either standardized by standard deviation or altogether
+	dimensionless inputs. This would make elements of $\beta$ comparable and would
+	protect against artificial enhancement of importance of any particular explanatory
+	variable: the scale of $(x_{ij})_i$ inversely affects the magnitude of $\beta_j$.
+	\item If the input vectors are centred, then the estimation is separable in
+	$\beta_0$ and $\beta_j$ for $j\geq 1$.
 \end{itemize}
+The latter can be shown rigorously. The residual values for a given
+$\beta_0$ and $beta$:
+\[
+t-(\one\beta_0 + X\beta)
+= t-\bigl(\one\beta_0 + X\beta \pm \one(\one'\one)^{-1}\one'X\beta \bigr)
+= t-\bigl(\one\beta_0 + \pi X\beta + (I_n-\pi)X\beta \bigr)
+\]
+where $\pi = \one(\one'\one)^{-1}\one'$ is in fact a projection matrix onto a
+linear subspace $[\one]$ spanned by one vector $\one$. Now define the following
+centred variables:
+\[X^c = X - \pi X = \pi_\perp X \text{ and } t^c = \pi_\perp t\]
+where $\pi_\perp = I_n-\pi$ -- the projector onto space orthogonal to $[\one]$.
+Variables are indeed centred, because $\bar{x} = (\one'\one)^{-1}\one'X$ is in
+fact a row vector of sample means of each feature in $X$, and similarly
+$\bar{t} = (\one'\one)^{-1}\one't$ is the sample of $t$. Therefore
+\[
+t-(\one\beta_0 + X\beta)
+= t^c + \pi t - \one\beta_0 - \pi X\beta - X^с\beta
+= t^c - X^с\beta + (\pi t - \pi X\beta - \one\beta_0)
+\]
+Since it is true that $\one\beta_0 = \pi \one\beta_0$, we have
+\[
+t-(\one\beta_0 + X\beta)
+= \bigl(t^c - X^с\beta\bigr) + \pi\bigl( t - X\beta - \one\beta_0\bigr)
+= \pi_\perp(t - X\beta) + \pi\bigl( t - X\beta - \one\beta_0\bigr)
+\]
+Taking the inner product of $t-(\one\beta_0 + X\beta)$ with itself:
+\[
+\bigl(t-(\one\beta_0 + X\beta)\bigr)'\bigl(t-(\one\beta_0 + X\beta)\bigr) 
+= (t - X\beta)'\pi_\perp'\pi_\perp(t - X\beta) + (t - X\beta - \one\beta_0)'\pi(t - X\beta - \one\beta_0)
+\]
+where the intermediate products with $\pi_\perp \pi$ or $\pi \pi_\perp$ vanish
+since $[\one]^\perp \prep [\one]$. Furthermore the term
+\begin{align*}
+(t - X\beta - \one\beta_0)'\pi
+&= (t - X\beta - \one\beta_0)'\one(\one'\one)^{-1}\one'\\
+&= ((\one'\one)^{-1}\one't - (\one'\one)^{-1}\one'X\beta - (\one'\one)^{-1}\one'\one\beta_0)'\one'\\
+&= (\bar{t} - \bar{X}\beta - \beta_0)'\one'
+\end{align*}
+Thus the main part of the ridge RSS turns out to be
+\[
+(t^c - X^c\beta)'(t^c - X^c\beta) + (\bar{t} - \bar{X}\beta - \beta_0)'\one'\one(\bar{t} - \bar{X}\beta - \beta_0)
+\]
+this means that, provided the estimates of $\beta$ on the centred data, the estimate
+of $\beta_0$ can easily be inferred: $\hat{\beta}_0 = \bar{t} - \bar{X}\hat{\beta}$.
+
 Consider \begin{align*}
 	\RSS &= \sum_{i=1}^n \brac{t_i - \beta_0 - \sum_{j=1}^k \beta_j \brac{x_{ij}-\bar{x}_j} - \sum_{j=1}^k \beta_j \bar{x}_j}  + \lambda \sum_{j=1}^k \beta_j^2 \\
 	\RSS' &= \sum_{i=1}^n \brac{t_i - \beta_0^c - \sum_{j=1}^k \beta_j^c \brac{x_{ij}-\bar{x}_j}}  + \lambda \sum_{j=1}^k {\beta_j^c}^2
@@ -423,7 +475,7 @@ Notice that the last term is zero. Indeed \begin{align*}
 \end{align*}
 The problem of ridge regression in the matrix form, where $X$ the $n\times k$
 is matrix of centred standardized independent variables with no intercept:
-\[\RSS = \brac{t-X\beta}'\brac{t-X\beta} + \lambda \beta'\beta\]
+\[\RSS = (t-X\beta)'(t-X\beta) + \lambda \beta'\beta\]
 
 The solution is
 \[\hat{\beta}_{\text{ridge}}\defn \brac{X'X + \lambda I}^{-1} X'T\]
