@@ -784,5 +784,77 @@ We cannot discover any statistical dependencies on he market data, only patterns
 
 % section lecture_6 (end)
 
+\section{Revision} % (fold)
+\label{sec:revision}
+
+The Fokker-Planck equation
+\[
+\frac{\partial}{\partial t} p(x,t)
+= \frac{\partial^2}{\partial x^2} \bigl(\sigma(x) p(x,t) \bigr) 
+- \frac{\partial}{\partial x} \bigl(\mu(x) p(x,t) \bigr) 
+\]
+where $\mu$ and $\sigma$ are instantaneous drift and volatility respectively,
+can be transformed into
+\[
+\frac{\partial}{\partial t} p(x,t)
+= \sigma''(x) p(x,t)
+	+ 2 \sigma'(x) \frac{\partial}{\partial x} p(x,t)
+	+ \sigma(x) \frac{\partial^2}{\partial x^2} p(x,t) 
+	- \mu'(x) p(x,t) - \mu(x) \frac{\partial}{\partial x} p(x,t) 
+\]
+whence
+\[
+\frac{\partial}{\partial t} p(x,t)
+= \Bigl[\sigma(x) \frac{\partial^2}{\partial x^2}
+	+ ( 2 \sigma'(x) - \mu(x) ) \frac{\partial}{\partial x}
+	+ ( \sigma''(x) - \mu'(x) ) \Bigr] p(x,t)
+\]
+If one uses the separation of vairiables: $p(x,t) = X(x) T(t)$, then
+the equation becomes
+\[
+\frac{T'}{T} = \sigma \frac{X''}{X} + ( 2 \sigma' - \mu ) \frac{X'}{X} + ( \sigma'' - \mu' )
+\]
+whence $T$and $X$ satisfy
+\begin{align*}
+	\lambda T &= \frac{d}{dt} T\\
+	\lambda X &= \sigma \frac{d^2}{dx^2} X + (2\sigma'-\mu) \frac{d}{dx} X + (\sigma''-\mu')
+\end{align*}
+The last equation is known as Cauch equation and the equation for a stationary solution
+$\frac{\partial}{\partial t}p(x,t) = 0$ is given by the Sturm-Liuville equation:
+\[
+\sigma \frac{d^2}{dx^2} X + (2\sigma'-\mu) \frac{d}{dx} X + (\sigma''-\mu') = 0
+\]
+
+This last equation is hard to solve, but we have solution given to us transcendetally. It is
+\[
+\omega(x) = N e^{\inf \frac{\sigma'(s)-\mu(s)}{\sigma(s)} ds}
+\]
+
+
+\subsection*{Rodrigues} % (fold)
+\label{sub:rodrigues}
+Consider the Sturm-Liuville equation. For values of $W$ and $R$ could it be reduced to
+\[\frac{d}{dx} \bigl(R X'\bigr) + W X = 0\]
+First expand the derivative and divide by $\frac{R}{Q}$:
+\[QX'' + Q\frac{R'}{R}X' + \frac{Q}{R} W X = 0\]
+For $Q = \sigma$ the expression in front of $X'$ is given by
+\[\frac{R'}{R} \sigma = 2\sigma'-\mu\]
+whence
+\[
+\log R
+= \int \frac{2\sigma(s)'-\mu(s)}{\sigma(s)} ds + C
+= \int \frac{L(s)}{Q(s)} ds + C\]
+where $L(s) = 2 \sigma'(s) - \mu(s)$. Now $\frac{Q}{R} W = \sigma''-\mu'$ implies
+that
+\[W(x) = N \frac{\sigma''(x)-\mu'(x)}{Q(x)} e^{\int \frac{L(s)}{Q(s)} ds} \]
+
+Consider the weighting function
+\[w(x) = \frac{N}{\sigma(x)} e^{\int \frac{2\frac{d}{dx}\sigma(x) - \mu(x)}{\sigma(x)}dx}\]
+
+% subsection* rodrigues (end)
+
+
+
+% section revision (end)
 \end{document}
 
