@@ -1682,16 +1682,40 @@ where the infimum is taken over the coverings of diameter at most $\epsilon$.
 
 On the other hand $\alpha = \text{dim}_B(A)$:
 \[\alpha = \lim_{\epsilon\to 0}\frac{\log N^*_\epsilon(A)}{-\log \epsilon}\]
-whence $\log N^*_\epsilon(A) = -\alpha \big(\log \epsilon + o(1)\big)$
-and
+whence $\log N^*_\epsilon(A) = -\alpha \big(\log \epsilon + o(1)\big)$ and
 \[N^*_\epsilon(A) = \epsilon^{-\alpha}e^{-\alpha o(1)}\]
 
 therefore
 \[H_\alpha(A) = \lim_{\epsilon} \inf_{*} \sum_n \text{diam}(S_n)^\alpha \leq \lim_{\epsilon} \epsilon^{-\alpha}e^{-\alpha o(1)} \epsilon^\alpha \]
 
+Once again: $\alpha = \text{dim}_B(A)$ implies that for sufficiently small $\epsilon>0$
+\[\log N_\epsilon^*(M) = -\alpha \log \epsilon (1 - o(1)) \]
+where $N_\epsilon^*$ is the number of templates of diameter $\epsilon$ in the most
+efficient covering of $M$ by $(B_k)$. For any $\epsilon>0$ sufficiently close
+to zero:
+\[ N_\epsilon^*(M) = \epsilon^{-\alpha} \epsilon^{o(1)}\]
+where $f\in o(1)$ if and only if $f(\epsilon)\to 0$ as $\epsilon\to0$.
+Now for any $\beta>\alpha$ we have
+\[
+\inf_* \sum_k\text{diam}{S_k}^\beta
+\leq \sum_k\text{diam}{B_k}^\beta
+= N_\epsilon^* \epsilon^\beta
+\]
+Thus
+\[
+H_\beta(M)
+= \lim_{\epsilon\downarrow0} \inf_* \sum_k\text{diam}{S_k}^\beta
+\leq \lim_{\epsilon\downarrow0} N_\epsilon^* \epsilon^\beta
+= \lim_{\epsilon\downarrow0} \epsilon^{\beta-\alpha} \epsilon^{o(1)}
+= \lim_{\epsilon\downarrow0} \epsilon^{\beta-\alpha}
+\]
+because $\lim_{\epsilon\downarrow0} \epsilon^{o(1)} = 1$.
+Thus for any $\beta > \text{dim}_B(M)$ the Hausdorff outer measure of $M$ must be
+zero. Hence $\text{dim}_H(M)\leq \text{dim}_B(M)$.
+
 
 \noindent\textbf{Frostman's lemma}\hfill\\
-Consider a metric space $(X,d)$ with a finite measure $\mu$ on $\mathcal{B}(X)$. Let $M\subseteq X$ be such that $\mu(M) > 0$. Suppose $\alpha\geq 0$ is such that $\mu(S) \leq c \text{diam}(S)^\alpha$ for any measurable template $S\subseteq M$ with sufficiently small diameter. Then $H_\alpha(M)>0$ implies that $\text{dim}_H(M) \geq \alpha$.
+Consider a metric space $(X,d)$ with a finite measure $\mu$ on $\mathcal{B}(X)$. Let $M\subseteq X$ be such that $\mu(M) > 0$. Suppose $\alpha\geq 0$ is such that $\mu(S) \leq c \text{diam}(S)^\alpha$ for any measurable template $S\subseteq M$ with sufficiently small diameter. Then $\text{dim}_H(M) \geq \alpha$.
 
 Indeed, consider the sum for this $\alpha$:
 \[\sum_n \text{diam}(S_n)^\alpha \geq \sum_k \frac{1}{c} \mu(S_k) \geq \frac{1}{c} \mu(M)\]
@@ -1717,7 +1741,7 @@ where $B_\epsilon(x) = \obj{\induc{y\in \Xcal}d(x,y)\leq\epsilon}$ is a closed b
 Let $(\Omega, \Tcal)$ be a metrizable topological space and $\mu$ a finite measure on $\big(\Omega, \borel(\Omega)\big)$. Then for all measurable $B$ and every $\epsilon>0$ there exist $F$ closed and $G$ open in $(\Omega, \Tcal)$ with $F\subseteq B \subseteq G$ such that $\mu(G\setminus F) < \epsilon$.
 
 A multifractal spectrum is a function $f$ such that 
-\[f(\alpha) = \text{dim}_H\Big(\big\{\big. x\in \text{supp}\mu\big.\big\rvert \big.\big\} \mu \text{ has singularity order } \alpha \text{ at } x\Big)\]
+\[f(\alpha) = \text{dim}_H\Big(\big\{\big. x\in \text{supp}\mu\big.\big\rvert \mu \text{ has singularity order } \alpha \text{ at } x \big.\big\}\Big)\]
 
 For any covering $(S_k)$ of the support of $\mu$ with $\text{diam}(S_k)\leq \epsilon$ let
 \[R_{\mu,\epsilon}(q) = \inf_* \sum_k \big(\mu(S_k)\big)^q\]
