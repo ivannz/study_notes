@@ -7,9 +7,9 @@
 \usepackage{amsmath, amsfonts, xfrac}
 \usepackage{mathtools}
 
-% \usepackage{tikz}
-% \usetikzlibrary{shapes}
-% \colorlet{light blue}{blue!50}
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\colorlet{light blue}{blue!50}
 
 \let\originalleft\left
 \let\originalright\right
@@ -23,6 +23,8 @@
 
 \newcommand{\Ccal}{\mathcal{C}}
 \newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Ical}{\mathcal{I}}
 
 \newcommand{\ex}[0]{{\mathbb{E}}}
 \newcommand{\pr}[0]{{\mathbb{P}}}
@@ -497,6 +499,98 @@ p_X(x)
 	e^{-\frac{1}{2}(x-\mu)'\Sigma^{-1}(x-\mu)}
 \]
 
+Итак рассмотрим квадрат длины вектора $X\sim \Ncal_n(\mu,D)$ :
+\[L = \sum_{k=1}^n X_k^2\]
+Характеристическая функция $L$ задаётся выражением
+\[
+\phi_L(s)
+= \ex\bigl(e^{itL}\bigr)
+= \ex\Bigl(\prod_{k=1}^n e^{i t X_k^2}\Bigr)
+\]
+Поскольку ковариационная матрица нормального вектора $X$ диагональна, то компоненты
+$X_k$ вектора являются независимыми случайными величинами с распределением
+$\Ncal(\mu_k,\sigma_k^2)$. Поэтому характеристическая функция $L$ есть произведение
+характеристических функций квадратов независимых нормально распределённых
+случайных величин
+\[\phi_{X_k^2}(t) = \ex\bigl(e^{it X_k^2}\bigr)\]
+Итак
+\[
+\int_{-\infty}^\infty e^{itx^2} \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{1}{2\sigma^2}(x-\mu)^2} dx
+	= \frac{1}{\sqrt{2\pi}} \int_{-\infty}^\infty e^{it(z\sigma+\mu)^2} e^{-\frac{1}{2}z^2} dz
+\]
+В показателе степени можно выделить полный квадрат по $z$ :
+\begin{align*}
+it(z\sigma+\mu)^2 - \frac{1}{2}x^2
+	&= it z^2\sigma^2 + 2itz\sigma\mu + it\mu^2 -\frac{1}{2}z^2 \\
+	&=  -\frac{1}{2}\bigl(z^2(1 - 2 it \sigma^2) - 4itz\sigma\mu\bigr) + it\mu^2\\
+	&=  -\frac{1}{2}(1 - 2 it \sigma^2)\bigl(z^2 - 2z\frac{2it\sigma\mu}{1 - 2 it \sigma^2}\bigr) + it\mu^2\\
+	&=  -\frac{1}{2}(1 - 2 it \sigma^2)\Bigl(
+			z^2 - 2z\frac{2it\sigma\mu}{1 - 2it\sigma^2} -\frac{4t^2\sigma^2\mu^2}{(1 - 2it\sigma^2)^2}
+		\Bigr) \\
+	&\quad\quad- \frac{2t^2\sigma^2\mu^2}{1 - 2it\sigma^2} + it\mu^2\\
+	&=  -\frac{1}{2}(1 - 2it\sigma^2)\bigl(z - \frac{2it\sigma\mu}{1 - 2it\sigma^2}\bigr)^2
+		+ \frac{it\mu^2}{1 - 2it\sigma^2}
+\end{align*}
+Из этого вытекает, что 
+\[
+\phi_{X_k^2}(t)
+= e^\frac{it\mu^2}{1 - 2it\sigma^2} \frac{1}{\sqrt{2\pi}}
+	\int_{-\infty}^\infty e^{-\frac{1}{2}(1 - 2it\sigma^2)\bigl(z - \frac{2it\sigma\mu}{1 - 2it\sigma^2}\bigr)^2} dz
+= \frac{e^\frac{it\mu^2}{1 - 2it\sigma^2}}{\sqrt{1 - 2it\sigma^2}}
+\]
+Таким образом характеристическая функция квадрата длины нормального вектора равнв
+\[\phi_L(s) = \prod_{k=1}^n \frac{e^\frac{it\mu_k^2}{1 - 2it\sigma_k^2}}{\sqrt{1 - 2it\sigma_k^2}}\]
+
+Если рассматривать длину не исходного вектора, а вектора с элементами нормированными
+до характерного масштаба каждой компоненты (по сути безразмерных), то вид
+характеристической функции упрощается. Действительно, если
+$L = \sum_{k=1}^n \Bigl(\frac{X_k}{\sigma_k}\Bigr)^2$, то
+\[\phi_L(s) = \prod_{k=1}^n \frac{e^\frac{it\frac{\mu_k^2}{\sigma^2_k}}{1 - 2it}}{\sqrt{1 - 2it}}\]
+поскольку $\frac{X_k}{\sigma_k} \overset{\Dcal}{=} Z_k$ где
+\[Z_k \sim\Ncal\bigl(\frac{\mu_k}{\sigma_k},1\bigr)\]
+а в этом случае
+\[
+\phi_{Z_k^2}(t) = \frac{e^\frac{it\frac{\mu^2}{\sigma^2}}{1 - 2it}}{\sqrt{1 - 2it}}
+\]
+
+Итак в изменённых условиях задачи 
+\[\phi_L(s) = e^\frac{it \lambda}{1 - 2it} \bigl(1 - 2it\bigr)^{-\frac{n}{2}}\]
+где $\lambda = \sum_{k=1}^n \bigl(\frac{\mu_k}{\sigma_k}\bigr)^2$. Согласно справочника
+характеристических функций полученное выражение соответствует характеристической
+функции $\chi^2_n$ распределения с параметром нецентральности $\lambda$. Функция
+плотности такого распределения равна
+\[
+f(x;n,\lambda)
+= \sum_{j\geq 0} \frac{e^\frac{\lambda}{2}}{ \bigl(\frac{\lambda}{2}\bigr)^j}{j!} f_{n+2j}(x)
+\]
+где $f_m(x)$ -- функция плотности $\chi^2_m$ c $m$ степенями свободы:
+\[f_m(x) = \frac{2^{-\frac{m}{2}}}{\Gamma(\frac{m}{2})} e^{-\frac{1}{2}x} x^{\frac{m}{2}-1}\]
+Стоит заметить, что если $\lambda = 0$, что возможно только в случае если средние
+значения вектора $X$ равны нулю, то распределение квадрата длины вектора
+нормированных компонент вырождается в обычное $\chi^2$ распределение с $n$ степенями
+свободы.
+
+Итак что касается функции плотности распределения длины $l$ (квадратного корня из $L$)
+вектора $(\bigl(\frac{x_k}{\sigma_k}\bigr)$, то она через плотность $L$ следующим
+образом: поскольку $l = \sqrt{L} = g(L)$, то
+\[f_l(y) = f_L\bigl(g^{-1}(y)\bigr) \frac{1}{\bigl\lvert g'(L)\bigr\rvert_{L=g^{-1}(y)}}\]
+Таким образом длина вектора безразмерных компонент распределена согласно
+\[f_l(y) = \sum_{j\geq 0} \frac{e^\frac{\lambda}{2}}{ \bigl(\frac{\lambda}{2}\bigr)^j}{j!} 2 f_{n+2j}(y^2) y\]
+В случае $\lambda = 0$ распределение вырождается в 
+\[
+f_l(y)
+= 2 f_{n+2j}(y^2) y
+= \frac{2^{1-\frac{n}{2}}}{\Gamma\bigl(\frac{n}{2}\bigr)} y^{n-1} e^{-\frac{y^2}{2}}
+\]
+так называемое $\chi_n$ распределение (без квадрата).
+
+При наличии линейных ограничений компоненты нормального вектора перестают быть
+независимыми поскольку одну можно выразить через другие. Действительно, если наложено
+ограничение вида $AX = 0$, где матрица $A\in \Real^{m\times n}$ ранга $r>0$, то
+$X$ удовлетворяющий данному условию имеет $n-r$ свободных переменных и $r$
+определяемых через систему вида $X_1 = -A_{11}^{-1} A_{12} X_2$, где $A_{11}$
+невырожденная $r\times r$ подматрица $A$ и $A_{12}$ блок $r\times (n-r)$ на тех же
+строках что и $A_{11}$.
 
 % section problem_4_2 (end)
 
@@ -571,8 +665,6 @@ B_{11}
 	\Sigma_{21}\Sigma_{11}^{-1}
 \]
 
-
-
 % section problem_4_11 (end)
 
 \section{У4.12} % (fold)
@@ -585,5 +677,128 @@ B_{11}
 
 % section problem_4_16 (end)
 
+\section{Упражнение из лекции 2 раздела 3} % (fold)
+\label{sec:problem_l2_s3}
+
+Пусть $d\geq 2$ -- некоторое целое число и $\bigl(p_j\bigr)_{j=0}^{d-1}\in[0,1]$
+набор чисел таких, что $\sum_{j=0}^{d-1} p_j = 1$.
+Рассмотрим детерминированный каскад, образованный следующей рекурсивной процедурой:
+\begin{enumerate}
+	\item 
+\end{enumerate}
+Построим набор разбиений отрезка $[0,1]$ со следующей структурой:
+\begin{itemize}
+	\item $I^0_0 = (0,1]$;
+	\item $I^l_j\cap I^l_k = \emptyset$ для любы $j,k=0,\ldots,d^l-1$, $j\neq k$;
+	\item $I^l_k = \biguplus_{j=0}^{d-1} I^{l+1}_{dk+j}$ для $k=0,\ldots,d^l-1$;
+\end{itemize}
+Определим меру $\mu^l$ при$l\geq 0$ на коллекции множеств
+\[
+\Ical^l = \{\{0\}\} \cup \Bigl\{I^l_k\Big\rvert k=0,\ldots, d^l-1\Bigr\}
+\]
+в предположении, что $I^l_k = \bigl(\frac{k}{d^l},\frac{k+1}{d^l}\bigr]$, 
+следующим образом: \begin{itemize}
+	\item $\mu^l(\{0\}) = 0$ и $\mu^0((0,1]) = 1$;
+	\item при $m<l$ для каждого $k=0,\ldots, d^m-1$ определим $\mu^l(I^m_k)$
+	равной $\mu^m(I^m_k)$;
+	\item $\mu^l(I^l_k) = \mu^{l-1}(I^{l-1}_{\lfloor\frac{k}{d}\rfloor}) \cdot p_j$,
+	где $j=0,\ldots,d-1$.
+\end{itemize}
+
+%% Рисуем структуру интервалов
+\begin{figure}[htb]\begin{center}
+	\tikzstyle{part} = [fill = none, draw, minimum height = 2em, minimum width = 1cm]
+	\begin{tikzpicture}[level/.style={sibling distance = 20mm, level distance = 25mm }]
+	\node [part] (root) {$I^{l-1}_k$} [child anchor = north]
+		child { node [part] (s1) {$I^l_{d\cdot k}$} }
+		child { node [part] (s2) {$I^l_{d\cdot k+1}$}
+			child { node [part] (s21) {$I^{l+1}_{d\cdot(d\cdot k+1)}$}  }
+			child { node [part] (s22) {$I^{l+1}_{d\cdot(d\cdot k+1)+1}$} }
+			child { node[draw=none] (hidden) {} edge from parent[draw=none] }
+			child { node [part] (s2d) {$I^{l+1}_{d\cdot(d\cdot k+1)+d-1}$} } }
+		child { node[draw=none] (hidden) {} edge from parent[draw=none] }
+		child { node [part] (sd) {$I^l_{d\cdot (k+1)-1}$} };
+	\path (s2) -- (sd) node [midway, above] {$\cdots$};
+	\path (s22) -- (s2d) node [midway, above] {$\cdots$};
+	\end{tikzpicture}
+	\caption{Каскад разбиения произвольного множества $I^{l-1}_k$, $k=0,\ldots,d^{l-1}-1$
+	на $d$ произвольных непересекающихся частей.}
+\label{fig:cascade_structure}
+\end{center}\end{figure}
+
+Рассмотрим
+\[
+R_{\mu,\epsilon}(q)
+= \inf\Bigl\{ \sum_k \mu(S_k)^q \Big\rvert (S_k)_k\,\text{-- счётное }\epsilon\text{-покрытие }\text{supp}(\mu)\Bigr\}
+\]
+Под $\epsilon$-покрытием множества $M$ понимается набор измеримых множеств
+$(S_k)_k$ в $[0,1]$ таких, что $\lvert S_k\rvert = \epsilon$ для любого $k$.
+В общем случае рассматривается сепарабельное метрическое пространство $(X,d)$,
+оснащённое Борелевской $\sigma$–алгеброй, где под$\lvert F\rvert$ понимается
+диаметр множества $F$:
+\[\lvert F\rvert = \sup\bigl\{ d(x,y) \big\rvert x,y\in F\bigr\}\]
+Известно, что на тех множествах, на которых Хаусдорфова и Боксова размерности
+совпадают, справедлива асимптотика
+\[ R_{\mu,\epsilon}(q)\approx \epsilon^{\tau(q)} \]
+причём $\tau(q) = \inf_\alpha \{\alpha q - f(\alpha)\}$, где $f(\alpha)$
+-- мультифрактальный спектр меры $\mu$.
+
+При любом $\epsilon>0$ нетрудно найти такой $l\geq 0$, что $\frac{1}{\epsilon}\leq d^l$.
+Отсюда получается, что для $l_* = \rceil -\log_d \epsilon \lceil$ выполнено
+\[\lvert I^{l_*}_k \rvert = \frac{1}{d^{l_*}} \leq \epsilon\]
+Тогда для любого $k=0,\ldots,d^{l_*}-1$ значение мера $\mu(I^{l_*}_k)$ равна
+\[\mu(I^{l_*}_k) = \prod_{m=0}^{d-1} p_m^{n_m}\]
+где $n_m$ -- количество множителей $m$ в разложении $k$ по $d$-ичной базе:
+\[k = \sum_{j=0}^{l_*-1} k_j d^j\]
+Таким образом, степенная сумма в $R_{\mu,\epsilon}(q)$ равна
+\[
+\sum_{k=0}^{d^l-1} \mu(I^{l_*}_k)^q
+= \sum_{j=0}^{l_*-1} \frac{l_*!}{\prod_{m=0}^{d-1} n_m!} \prod_{m=0}^{d-1} p_m^{q n_m}
+= \Bigl(\sum_{m=0}^{d-1} p_m^q\Bigr)^{l_*}
+\]
+Итак
+\[
+\tau(q)
+= \lim_{\epsilon\downarrow0}\frac{\ln R_{\mu,\epsilon}(q)}{\ln \epsilon}
+= \lim_{l\to\infty}\frac{\ln \Bigl(\sum_{m=0}^{d-1} p_m^q\Bigr)^l }{\ln d^{-l}}
+= \log_d \sum_{m=0}^{d-1} p_m^q
+\]
+
+В случае если $n$ значений из $(p_m)_{m=0}^{d-1}$ равны нулю, а остальные равны
+константе $p$ ($\frac{1}{d-n}$), выполняется следующее :
+\[
+\tau(q)
+= \log_d (d-n) + q\log_d p
+% = \log_d (d-n) - q\log_d (d-n)
+= (1 - q)\log_d (d-n)
+\]
+Например, мера Кантора (``канторова пыль'') на $[0,1]$ соответствует каскаду
+с $d=3$ и $p_1=0$.
+
+Чтобы вычислить мультифрактальный спектр меры необходимо вычислить обратное
+преобразование Лежандра $\tau(q)$ : такую $f^*:I^*\to\Real$, что
+\[f(\alpha) = \inf_q\bigl(\alpha q - \tau(q)\bigr)\]
+где область определения задана
+\[I^* = \bigl\{ \alpha\in\Real \big\rvert \rvert\inf_q\bigl(\alpha q - \tau(q)\bigr)\rvert <\infty\bigr\}\]
+
+Поскольку $\tau(q) = (1 - q)\log_d (d-n)$, то разность в преобразовании Лежандра
+\[
+\alpha q - \tau(q)
+= \alpha q - \log_d (d-n) + q\log_d (d-n)
+= q \bigl(\alpha + \log_d (d-n)\bigr) - \log_d (d-n)
+\]
+является линейной по $q$. Следовательно, $\inf_q \alpha q - \tau(q) = -\infty$ для любых
+$\alpha\neq \log_d (d-n)$, откуда вытекает, что $I^* = \{-\log_d (d-n)\}$ и
+\[
+f(\alpha)
+= - \log_d (d-n)
+= \log_d p
+\]
+Итак мера Кантора монофрактальна, поскольку $f$ определена только в одной точке
+и в этой точке $f(\alpha) = \log_d p$.
+
+% section problem_l2_s3 (end)
+
 % [ВШЭ ТВМММ] Зачётная работа Назаров Иван.pdf
+
 \end{document}
