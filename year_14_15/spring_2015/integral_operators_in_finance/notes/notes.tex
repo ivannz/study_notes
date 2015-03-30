@@ -778,11 +778,88 @@ Arrow-Pratt's formalism hinges on the infinitesimally small price volatility, si
 
 We cannot discover any statistical dependencies on he market data, only patterns for the decision making. One thing seems sure is that the volatility increases with time.
 
-
-
 % subsection jackwerth_ait_sahalia_formalism (end)
 
 % section lecture_6 (end)
+
+\section{Lecture \# 7} % (fold)
+\label{sec:lecture_#_7}
+
+% section lecture_#_7 (end)
+
+\section{Lecture \# 8} % (fold)
+\label{sec:lecture_#_8}
+
+% section lecture_#_8 (end)
+
+\section{Lecture \# 9} % (fold)
+\label{sec:lecture_#_9}
+
+% section lecture_#_9 (end)
+
+\section{Lecture \# 10} % (fold)
+\label{sec:lecture_10}
+
+The conditions when it is possible to limit the number of initial forms of immediate diffusion.
+
+How to get the specification get immediate diffusion?
+
+Another more analytically fundamental approach: reduce the possible $\sigma$ to a solution of the Riccatti-type differential equation.
+
+\subsection{Optimal control problem} % (fold)
+\label{sub:optimal_control_problem}
+
+An explicit solution to this problem would allow us to discriminate between the system behaviour from the controlling agent's.
+
+Consider a dynamical system for $A\in \Real^{n\times n}$ and $B\in \Real^{n\times m}$. The control $u_t\in\Real^{m\times 1}$ and $x\in \Real^{n\times 1}$:
+\[\dot{x} = Ax + Bu\]
+How would a system have behaved had there been no control?
+
+Now what is the functional with respect to which choose the optimal control? A quadratic control problem:
+\[J = \int_a^b x_t'Qx_t + u_t'Ru_t + \ldots dt \to \min_{x,u}\]
+The $x$ are understood as the deviations form the equilibrium. The elements of $Q$ are the costs of each individual divergence. And the matrix $R$ represents the control costs. The $\ldots$ are the constraints.
+
+The optimal control problem becomes:
+\[J = \int_a^b x_t'Qx_t + u_t'Ru_t + \lambda_t' \big(\dot{x}  - Ax_t - Bu_t\big) dt \to \min_{x,u}\]
+
+Using the exact solution on some historical data, yields estimates of the matrices $A$ and $B$. Afterwards, these estimates may be used for counterfactual modelling.
+
+Briedent-Litzenberger theorems
+\[C(x)= \int_x^\infty r^{r\tau} (s-x) f(s) ds\]
+
+Differentiating with respect to $x$:
+\[C(x)' = -\int_x^\infty r^{r\tau} f(s) ds + r^{r\tau} (s-x) f(s)\Big.\Big\rvert_x^\infty = -r^{r\tau} \big( 1 - F(x) \big) \]
+and taking the second derivative: $C(x)'' = r^{r\tau} f(x)$.
+
+Guaranteed risk free return is not the goal of investing, whence hedging might not be optimal.
+
+An objective function: $\Fcal(x, \dot{x}, t)$
+Now the Euler-Lagrange equations are
+\[\frac{d}{dt}\frac{\partial}{\partial \dot{x}} \Fcal - \frac{\partial}{\partial x} \Fcal = 0\]
+
+% subsection optimal_control_problem (end)
+
+\subsection{Defining the density function} % (fold)
+\label{sub:defining_the_density_function}
+
+Construct a density function from scratch, and not from the heat diffusion kernel.
+
+Set up the variational problem
+\[\Fcal = p\log p + \alpha (x-\mu) p + \lambda (\dot{\mu} + \xi \mu) + \text{constraints on higher moments} \]
+
+%% See gleb-forever-13.xmcd
+
+Fredholm equation of the $1$-st kind:
+\[p(x) = \int_a^b K(x,\xi) f(\xi) d\xi \]
+the particular kernel depends on the problem itself.
+
+Merser's theorem yields:
+\[K = \sum_i \frac{u_i(\xi) u_i(x)}{\lambda_i}\]
+How to estimate the spectrum: chapter singular kernels (Tikhonov, Vasileva)
+
+% subsection defining_the_density_function (end)
+
+% section lecture_10 (end)
 
 \section{Revision} % (fold)
 \label{sec:revision}
@@ -829,7 +906,6 @@ This last equation is hard to solve, but we have solution given to us transcende
 \[
 \omega(x) = N e^{\inf \frac{\sigma'(s)-\mu(s)}{\sigma(s)} ds}
 \]
-
 
 \subsection*{Rodrigues} % (fold)
 \label{sub:rodrigues}
