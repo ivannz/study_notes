@@ -28,7 +28,7 @@
 
 \newcommand{\ex}[0]{{\mathbb{E}}}
 \newcommand{\pr}[0]{{\mathbb{P}}}
-\newcommand{\Var}[0]{\text{var}}
+\newcommand{\var}[0]{\text{var}}
 
 \newcommand{\defn}{\overset{\Delta}{=}}
 
@@ -592,6 +592,18 @@ $X$ удовлетворяющий данному условию имеет $n-r
 невырожденная $r\times r$ подматрица $A$ и $A_{12}$ блок $r\times (n-r)$ на тех же
 строках что и $A_{11}$.
 
+\[
+L^2 = X'D^{-1}X
+= X_2'A_{12}'A_{11}^{-1}'D_{11}^{-1}A_{11}^{-1} A_{12} X_2 + X_2'D_{22}^{-1}X_2
+\]
+
+\[
+X_2'\bigl(
+A_{12}'A_{11}^{-1}'D_{11}^{-1}A_{11}^{-1} A_{12} + D_{22}^{-1}
+\bigr)X_2
+
+\]
+
 % section problem_4_2 (end)
 
 \section{У4.11} % (fold)
@@ -670,10 +682,265 @@ B_{11}
 \section{У4.12} % (fold)
 \label{sec:problem_4_12}
 
+В общем случае условная дисперсия $X_1$ по $X_2$ равна
+\begin{align*}
+	\var(X_1 \lvert X2)
+	&= \ex\bigl( (X_1 - \ex(X_1 \lvert X_2))^2 \big\lvert X_2\bigr) \\
+	&= \ex\bigl( X_1^2 - 2 X_1\ex(X_1 \lvert X_2) + \ex(X_1 \lvert X_2)^2 \big\lvert X_2\bigr) \\
+	&= \ex( X_1^2 \lvert X_2) - 2 \ex\bigl( X_1 \ex(X_1 \lvert X_2) \big\lvert X_2\bigr) \\
+		&+ \ex\bigl( \ex(X_1 \lvert X_2)^2 \big\lvert X_2\bigr) \\
+	&= \ex( X_1^2 \lvert X_2) - 2 \ex(X_1 \lvert X_2)^2 + \ex(X_1 \lvert X_2)^2 \\
+	&= \ex( X_1^2 \lvert X_2) - \ex(X_1 \lvert X_2)^2
+\end{align*}
+Следовательно
+\[
+\ex \var(X_1 \lvert X2)
+= \ex\bigl( \ex( X_1^2 \lvert X_2) - \ex(X_1 \lvert X_2)^2 \bigr)
+= \ex(X_1^2) - \ex \ex(X_1 \lvert X_2)^2
+\]
+Однако с другой стороны в силу $\var{Y} = \ex Y^2 - (\ex y )^2$:
+\[
+\var \ex(X_1 \lvert X_2)
+= \ex \ex(X_1 \lvert X_2)^2 - \bigl(\ex \ex(X_1 \lvert X_2)\bigr)^2
+= \ex \ex(X_1 \lvert X_2)^2 - \ex(X_1)^2
+\]
+Выразив матожидание квадрата условного матожидания из последнего выражения, получаем
+\[
+\ex \var(X_1 \lvert X2)
+= \ex(X_1^2) - \ex(X_1)^2 - \var \ex(X_1 \lvert X_2)
+= \var(X_1) - \var \ex(X_1 \lvert X_2)
+\]
+Отсюда следует, что
+\[\var(X_1) = \ex \var(X_1 \lvert X2) + \var \ex(X_1 \lvert X_2)\]
+при условии, что у случайной величины $X_1$ существует хотя бы второй момент.
+
 % section problem_4_12 (end)
 
 \section{У4.16} % (fold)
 \label{sec:problem_4_16}
+
+Пусть $X^n = (X_i)_{i=1}^n$ выборка независимых и одинаково распределённых случайных
+величин с законом $F(x)$. Известно, что если $U_i = F(X_i)$, то
+$(U_i)_{i=1}^n\sim\mathcal(U)[0,1]$, и при этом в силу неубывания $F$ выполняется
+$X_{(i)} = F^{-1}(U_{(i)})$ для всех $i=1,\ldots,n$, где $X_{(i)}$ есть $i$-я
+порядковая статистика.
+
+Согласно теореме Пайка произвольная порядковая статистика равномерного распределения
+совпадает по распределению с отношением накопленных сумм независимых экспоненциально
+распределённых случайных величин:
+\[U_{(i)}\sim \frac{\sum_{k=1}^i \xi_k}{\sum_{k=1}^{n+1} \xi_k}\]
+где $(\xi_k)_{k=1}^{n+1} \sim \text{Exp}(1)$ независимые случайные величины. При
+этом несложно показать, что для любого $m\geq 1$
+\[G_m = \sum_{k=1}^m \xi_k \sim \Gamma(1, m)\]
+где $\Gamma(\beta,n)$ -- Гамма распределение с плотностью 
+\[f(x) = \frac{\beta^n}{\Gamma(n)} x^{n-1} e^{-\beta x}\]
+Более того известно, что 
+\[\frac{g_m}{g_m+g_{n-m+1}} \sim B(m, n-m+1)\]
+где $B(\alpha,\beta)$ -- бета распределение с параметрами $\alpha$ и $\beta$, чья
+функция плотности задана
+\[f(x) = \frac{\Gamma(\alpha)\Gamma(\beta)}{\Gamma(\alpha+\beta)} x^{\alpha-1}(1-x)^{\beta-1}\]
+Отмечу, что 
+\begin{align*}
+	\ex\bigl(B(\alpha,\beta)\bigr) &= \frac{\alpha}{\alpha+\beta}\\
+	\var\bigl(B(\alpha,\beta)\bigr) &= \frac{\alpha \beta}{(\alpha+\beta)^2(\alpha+\beta+1)}
+\end{align*}
+Таким образом для любого $i$ справедливо, что
+\[U_{(i)} \sim B(i,n+1-i)}\]
+
+Действительно
+\[
+\phi_{G_m}(t)
+= \ex\bigl( e^{itG_m} \bigr)
+= \ex\bigl( e^{it\sum_{k=1}^m \xi_k} \bigr)
+= \prod_{k=1}^m \ex\bigl( e^{it \xi_k} \bigr)
+= \ex\bigl( e^{it \xi_1} \bigr)^m
+\]
+В свою очередь для $\xi \sim \text{Exp}(\lambda)$
+\[
+\ex\bigl( e^{it \xi} \bigr)
+= \int_0^\infty \lambda e^{itx} e^{-\lambda x} dx
+= \lambda\int_0^\infty e^{-(\lambda-it)x} dx
+= \frac{\lambda}{\lambda-it}
+\]
+Таким образом при $\lambda=1$
+\[
+\phi_{G_m}(t)
+= \ex\bigl( e^{it \xi_1} \bigr)^m
+= \frac{1}{(1-it)^m}
+\]
+что совпадает с характеристической функцией гамма распределения.
+
+Итак выберем некоторый $p\in (0,1)$ и рассмотрим вопрос сходимости
+\[U_{([np])} - p \overset{\pr}{\to} 0\]
+где $[np]$ -- ближайшее целое к $np$. Наблюдения выше позволяют сделать вывод о том,
+что $U_{([np])}\sim B([np], n+1-[np])$ и
+\begin{align*}
+	\ex\bigl(U_{([np])}\bigr)
+		&= \frac{[np]}{n+1}\\
+	\var\bigl(U_{([np])}\bigr)
+		&= \frac{[np](n+1-[np])}{(n+1)^2(n+2)}
+		= \frac{\frac{[np]}{n+1}(1-\frac{[np]}{n+1})}{n+2}
+\end{align*}
+Таким образом ожидание квадрата разности $U_{([np])} - p$:
+\begin{align*}
+	\ex\bigl(U_{([np])} - p\bigr)^2
+	&= \ex\bigl(U_{([np])} - \frac{[np]}{n+1}\bigr)^2 + \bigl(\frac{[np]}{n+1}-p\bigr)^2 \\
+	&\quad\quad + \ex\bigl(\frac{[np]}{n+1}-p\bigr)\bigl(U_{([np])} - \frac{[np]}{n+1}\bigr)\\
+	&= \var\bigl(U_{([np])}\bigr) + \bigl(\frac{[np]}{n+1}-p\bigr)^2 \\
+	&= \frac{\frac{[np]}{n+1}(1-\frac{[np]}{n+1})}{n+2} + \bigl(\frac{[np]}{n+1}-p\bigr)^2
+\end{align*}
+Используя неравенство Маркова получаем, что для любого $\epsilon>0$ выполнено
+\[
+\pr\bigl( \lvert U_{([np])} - p\rvert > \epsilon \bigr)
+\leq \frac{\mu_n(1-\mu_n)}{\epsilon^2(n+2)} + \frac{(\mu_n-p)^2}{\epsilon^2}
+\]
+где $\mu_n = \frac{[np]}{n+1}$. Однако по определению ближайшего целого
+\[\lvert[np]-np\rvert \leq \frac{1}{2}\]
+\[
+\lvert \mu_n-p \rvert
+= \Bigl\lvert \frac{[np]}{n+1}-p \Bigr\rvert
+= \Bigl\lvert \frac{[np]-np}{n+1}-\frac{p}{n+1} \Bigr\rvert
+\leq \frac{\lvert[np]-np\rvert}{n+1}+\frac{p}{n+1}
+\leq \frac{1+2p}{2(n+1)}
+\]
+Отсюда следует, что $\mu_n - p = o(\frac{1}{n})$ при $n\to\infty$. Теперь
+\[
+\limsup_{n\to \infty} \pr\bigl( \lvert U_{([np])} - p\rvert > \epsilon \bigr)
+\leq \limsup_{n\to \infty} \bigl(\frac{\mu_n(1-\mu_n)}{\epsilon^2(n+2)}
+	+ \frac{(\mu_n-p)^2}{\epsilon^2}\bigr)
+= 0
+\]
+Следовательно,
+\[U_{([np])} - p \overset{\pr}{\to} 0\]
+
+Рассмотрим вопрос предельного распределения $\sqrt{n}(U_{([np])} - p)$.
+\begin{align*}
+	\sqrt{n} \bigl( U_{([np])} - p \bigr)
+	&= \frac{\frac{1}{\sqrt{n}}}{\frac{1}{n}}\Bigl(
+		\frac{\sum_{k=1}^{[np]} \xi_k}{\sum_{k=1}^{[np]} \xi_k + \sum_{k=[np]+1}^{n+1} \xi_k} - p \Bigr)\\
+	&= \frac{1}{\sqrt{n}}\frac{(1-p)\sum_{k=1}^{[np]} \xi_k - p \sum_{k=[np]+1}^{n+1} \xi_k}{\frac{\sum_{k=1}^{n+1} \xi_k}{n}}\\
+
+	&= \frac{\frac{1-p}{\sqrt{n}}\bigl(\sum_{k=1}^{[np]} \xi_k - [np]\bigr)
+			- \frac{p}{\sqrt{n}}\bigl(\sum_{k=1}^{n+1-[np]} \xi_{k+[np]} - (n+1-[np])\bigr)}{\frac{\sum_{k=1}^{n+1} \xi_k}{n}}
+		+ \frac{1}{\sqrt{n}}\frac{(1-p)[np] - p(n+1-[np])}{\frac{\sum_{k=1}^{n+1} \xi_k}{n}}
+\end{align*}
+Во-первых
+\[
+\frac{\lvert(1-p)[np] - p(n+1-[np])\rvert}{\sqrt{n}}
+= \frac{\lvert ([np] - np) - p\rvert}{\sqrt{n}}
+= o\bigl(\frac{1}{\sqrt{n}}\bigr)
+\]
+Во-вторых, по Закону Больших Чисел справедливо, что
+\[\frac{\sum_{k=1}^{n+1} \xi_k}{n} \overset{\pr}{\to} 1\]
+В-третьих, по Центральной Предельной Теореме при $m\to \infty$ выполнено
+\[
+\frac{1}{\sqrt{m}}\bigl(\sum_{k=1}^m \xi_k - m\bigr)
+= \sqrt{m}\bigl(\frac{1}{m}\sum_{k=1}^m \xi_k - 1\bigr)
+\overset{D}{\to} \Ncal(0,1)
+\]
+Поэтому по теореме Слутского
+\begin{align*}
+	\frac{1}{\sqrt{n}}\bigl(\sum_{k=1}^{[np]} \xi_k - [np]\bigr)
+	&= \frac{\sqrt{[np]}}{\sqrt{n}}
+		\sqrt{[np]}\bigl(\frac{1}{[np]}\sum_{k=1}^{[np]} \xi_k - 1\bigr)
+		\overset{D}{\to} \Ncal(0,p)\\
+	\frac{1}{\sqrt{n}}\bigl(\sum_{k=[np]+1}^{n+1} \xi_k - (n+1-[np])\bigr)
+	&= \frac{\sqrt{n+1-[np]}}{\sqrt{n}}
+		\sqrt{n+1-[np]}\bigl(\frac{1}{n+1-[np]}\sum_{k=1}^{n+1-[np]} \xi_k - 1\bigr)
+		\overset{D}{\to} \Ncal(0,1-p)
+\end{align*}
+поскольку
+\begin{align*}
+	\frac{\sqrt{[np]}}{\sqrt{n}}
+	&= \sqrt{p} \frac{\sqrt{[np]}}{\sqrt{np}}
+		\to \sqrt{p}\\
+	\frac{\sqrt{n+1-[np]}}{\sqrt{n}}
+	&= \sqrt{1+\frac{1}{n}} \sqrt{1-\frac{[np]}{n+1}}
+		\to \sqrt{1-p}
+\end{align*}
+Теперь, в силу того, что для любого $n$ сумм 
+\[\sum_{k=1}^{[np]} \xi_k\text{ и }\sum_{k=[np]+1}^{n+1} \xi_k\]
+независимости, справедливо следующая асимптотическая оценка:
+\[
+(1-p)\frac{1}{\sqrt{n}}\bigl(\sum_{k=1}^{[np]} \xi_k - [np]\bigr)
+- p\frac{1}{\sqrt{n}}\bigl(\sum_{k=[np]+1}^{n+1} \xi_k - (n+1-[np])\bigr)
+\overset{D}{\to} \Ncal(0, p(1-p)^2 + (1-p)p^2)
+= \Ncal(0, p(1-p))
+\]
+Очередное применение теоремы Слуцкого приводит следующему результату:
+\begin{align*}
+	\sqrt{n} \bigl( U_{([np])} - p \bigr)
+	&= \frac{1}{\frac{\sum_{k=1}^{n+1} \xi_k}{n}}
+		\Bigl( \frac{1-p}{\sqrt{n}}\bigl(\sum_{k=1}^{[np]} \xi_k - [np]\bigr)
+			- \frac{p}{\sqrt{n}}\bigl(\sum_{k=1}^{n+1-[np]} \xi_{k+[np]} - (n+1-[np])\bigr)
+			+ \frac{(1-p)[np] - p(n+1-[np])}{\sqrt{n}} \Bigr) \\
+	& \overset{D}{\to} 1 \cdot \Ncal(0, p(1-p)) + 0
+\end{align*}
+Таким образом, теперь очевидно, что
+\[\sqrt{n} \frac{U_{([np])} - p}{\sqrt{p(1-p)}} \sim \Ncal(0, 1)\]
+
+Перейдём к изучению вопроса об асимптотических свойствах $\sqrt{n}\bigl(X_{([np])} - F^{-1}(p)\bigr)$.
+Предположим, что $F^{-1}$ дифференцируема в точке $x = F^{-1}(p)$ и вспомним, что
+$X_{([np])} = F^{-1}(U_{([np])})$. Тогда из $U_{([np])} - p \overset{\pr}{\to} 0$,
+вытекает
+\[
+\frac{F^{-1}(U_{([np])}) - F^{-1}(p)}{U_{([np])} - p}
+\overset{\pr}{\to}
+\frac{1}{f\bigl(F^{-1}(p)\bigr)}
+\]
+Следовательно, по теореме Слуцкого
+\[
+\sqrt{n} \bigl(X_{([np])} - F^{-1}(p)\bigr)
+= \sqrt{n} \bigl(F^{-1}(U_{([np])}) - F^{-1}(p)\bigr)
+= \frac{F^{-1}(U_{([np])}) - F^{-1}(p)}{U_{([np])} - p}
+	\sqrt{n} \bigl(U_{([np])} - p\bigr)
+\overset{D}{\to} \frac{1}{f\bigl(F^{-1}(p)\bigr)} \Ncal(0, p(1-p))
+= \Ncal\Bigl(0, \frac{p(1-p)}{f\bigl(F^{-1}(p)\bigr)^2} \Bigr)
+\]
+
+Исследуем вопрос равномерной интегрируемости последовательности эмпирических
+$p$-квантилей $\bigl(X_{([np])}\bigr)_{n\geq1}$.
+Последовательность случайных величин $(Y_n)_{n\geq1}$ называется равномерно
+интрегрируемой, если
+\[
+\lim_{\lambda \to \infty}
+	\limsup_{n\to \infty}
+		\ex\bigl(\lvert Y_n \rvert 1_{\lvert Y_n \rvert \geq \lambda}\bigr)
+= 0
+\]
+
+\[
+\pr\bigl(\lvert Y_n \rvert 1_{\lvert Y_n \rvert \geq \lambda}\bigr)
+= \pr\bigl(\lvert X_{([np])} - F^{-1}(p) \rvert
+	1_{\lvert X_{([np])} - F^{-1}(p) \rvert \geq \lambda}\bigr)
+\]
+
+
+
+Пусть $0<p_1<p_2<1$. Для дисперсии разности эмпирических квантилей справедливо:
+\[
+\var\bigl(X_{([np_2])}-X_{([np_1])}\bigr)
+= \var\bigl(X_{([np_2])}\bigr) +\var\bigl(X_{([np_1])}\bigr)
+	+2 \text{cov}\bigl(X_{([np_2])},X_{([np_1])}\bigr)
+\]
+Согласно неравенства Коши-Буняковского-Шварца, ковариация случайных величин не превышает
+\[
+\Bigl\lvert \text{cov}\bigl(X_{([np_2])},X_{([np_1])}\bigr)\Bigr\rvert^2
+\leq \var\bigl(X_{([np_2])}\bigr)\var\bigl(X_{([np_1])}\bigr)
+\]
+Отсюда следует, что
+\[
+\var\bigl(X_{([np_2])}-X_{([np_1])}\bigr)
+\leq \Bigl( \sqrt{\var(X_{([np_2])})} + \sqrt{\var(X_{([np_1])})} \Bigr)^2
+\]
+Поскольку
+\[
+X_{([np])}
+\overset{D}{\to}
+\Ncal\bigl(F^{-1}(p),\frac{p(1-p)}{f\bigl(F^{-1}(p)\bigr)^2}\bigr)
+\]
+то
+
 
 % section problem_4_16 (end)
 
