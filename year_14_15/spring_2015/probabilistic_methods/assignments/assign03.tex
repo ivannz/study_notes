@@ -479,7 +479,6 @@ $u_1,u_2\in[0,1]$ разность
 случайных величин, каждая из которых имеет частное равномерное распределение,
 вытекает, что $H=C\circ(F_X,F_Y)$ -- совместное распределение.
 
-
 % section problem_2_14 (end)
 
 \section{У4.2} % (fold)
@@ -589,18 +588,17 @@ f_l(y)
 \section{У4.11} % (fold)
 \label{sec:problem_4_11}
 
-Рассмотрим $X\in \Real{n\times 1}$ с $n$-мерным нормальным распределением со
-средним $\mu\in \Real^{n\times 1}$ и положительно определённой ковариационной
-матрицей $\Sigma \in \Real{n\times n}$
+Рассмотрим $X\in \Real{n\times 1}$ с $n$-мерным нормальным распределением со средним
+$\mu\in \Real^{n\times 1}$ и положительно определённой ковариационной матрицей
+$\Sigma \in \Real{n\times n}$
 \[
-p_X(x;\mu,\Sigma)
-= \frac{1}{(2\pi)^\frac{n}{2} \lvert \Sigma \rvert^\frac{1}{2}}
-	e^{-\frac{1}{2}(x-\mu)'\Sigma^{-1}(x-\mu)}
+p(X;\mu,\Sigma)
+= (2\pi)^{-\frac{n}{2}} \lvert \Sigma \rvert^{-\frac{1}{2}}
+	\text{exp}\bigl\{-\frac{1}{2}(X-\mu)'\Sigma^{-1}(X-\mu)\bigr\}
 \]
-
 Пусть вектор $X$ разбит на два подвектора $X_1\in \Real^{p\times 1}$ и $X_2\in \Real^{(n-p)\times 1}$:
 \[X = \Bigl(\begin{smallmatrix} X_1 \\ X_2 \end{smallmatrix}\Bigr)\]
-Выделим в матрице $\Sigma$ следующую блочную структуру
+а в матрице $\Sigma$ выделена следующая блочная структура:
 \[
 \Sigma
 = \biggl(\begin{matrix}\Sigma_{11} & \Sigma_{12}\\\Sigma_{21} & \Sigma_{22}\end{matrix}\biggr)
@@ -615,52 +613,153 @@ p_X(x;\mu,\Sigma)
 =
 \biggl(\begin{matrix}I_p & 0\\0 & I_{n-p}\end{matrix}\biggr)
 \]
-Из этого уравнения относительно $B$ можно получить следующее:
+Поскольку $\Sigma B = I_n$, то $B'\Sigma' = I_n'$ и $B'\Sigma = I_n$. Из этого следует,
+что обратная к симметричной матрице симметрична:
+\[B' = B' I_n = B' \Sigma B = I_n B = B\]
+
+Поскольку ковариационная матрица является положительно определенной, то блоки
+$\Sigma_{11}$ и $\Sigma_{22}$ являются положительно определёнными. Это означает,
+что каждый диагональный блок $\Sigma$ невырожден.
+
+\subsection*{условное распределение $X_1$ по $X_2$} % (fold)
+\label{sub:conditional_x_1_x_2}
+
+Для блоков обратной матрицы $B$ можно получить следующие уравнения:
 \[
 \biggl(\begin{matrix}
-\Sigma_{11}B_{11} + \Sigma_{12}B_{21} & \Sigma_{11}B_{12} + \Sigma_{12}B_{22} \\
-\Sigma_{21}B_{11} + \Sigma_{22}B_{21} & \Sigma_{21}B_{12} + \Sigma_{22}B_{22}
+	\Sigma_{11}B_{11} + \Sigma_{12}B_{21} & \Sigma_{11}B_{12} + \Sigma_{12}B_{22} \\
+	\Sigma_{21}B_{11} + \Sigma_{22}B_{21} & \Sigma_{21}B_{12} + \Sigma_{22}B_{22}
 \end{matrix}\biggr)
 = \biggl(\begin{matrix}I_p & 0\\0 & I_{n-p}\end{matrix}\biggr)
 \]
-Поскольку ковариационная матрица является положительно определенной матрицей,
-то блок $\Sigma_{11}$ также является положительно определённым. Из этого следует,
-что из $\Sigma_{11}B_{12} + \Sigma_{12}B_{22}=0$ можно получить следующее выражение
-\[B_{12} = -\Sigma_{11}^{-1} \Sigma_{12}B_{22}\]
-Подставив его в $\Sigma_{21}B_{12} + \Sigma_{22}B_{22} = I_{n-p}$ получаем
+Это равенство эквивалентно следующим уравнениям
+\begin{align*}
+	\Sigma_{11}B_{11} + \Sigma_{12}B_{21} &= I_p \\
+	\Sigma_{21}B_{11} + \Sigma_{22}B_{21} &= 0 \\
+	\Sigma_{11}B_{12} + \Sigma_{12}B_{22} &= 0 \\
+	\Sigma_{21}B_{12} + \Sigma_{22}B_{22} &= I_{n-p}
+\end{align*}
+В силу обратимости диагональных блоков $\Sigma$ справедливо
+\begin{align*}
+	B_{21} &= - \Sigma_{22}^{-1} \Sigma_{21}B_{11} \\
+	B_{11}^{-1} &= \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1} \Sigma_{21}
+\end{align*}
+
+Рассмотрим выражение в экспоненте в плотности многомерного нормального распределения
+$Y'\Sigma^{-1}Y$, где для удобства выполнена замена $Y = X-\mu$. Данное скалярное
+произведение с учётом выделенной блочной структуры принимает вид
+\[ Y_1'B_{11}Y_1 + Y_2'B_{21}Y_1 + Y_1'B_{12}Y_2 + Y_2'B_{22}Y_2 \]
+Поскольку $B_{11}$ обратима, то в этом выражении можно выделить ``квадратичную
+форму'' (которая в общем случае находится методом ``пристального вглядывания'')
+\begin{multline*}
+  Y_1'B_{11}\bigl( Y_1 + B_{11}^{-1}B_{12}Y_2 \bigr)\\
+	+ Y_2'B_{21}B_{11}^{-1} B_{11} \bigl( Y_1 + B_{11}^{-1} B_{12} Y_2\bigr)\\
+	+ Y_2'\bigl( B_{22} - B_{21}B_{11}^{-1} B_{12} \bigr)Y_2
+\end{multline*}
+Данное выражение упрощается в 
 \[
-( \Sigma_{22} - \Sigma_{21}\Sigma_{11}^{-1} \Sigma_{12} ) B_{22} = I_{n-p}
+  \bigl( Y_1 + B_{11}^{-1}B_{21}'Y_2 \bigr)' B_{11} \bigl( Y_1 + B_{11}^{-1}B_{12}Y_2 \bigr)\\
+	+ Y_2'\bigl( B_{22} - B_{21}B_{11}^{-1} B_{12} \bigr)Y_2
 \]
-В силу того, что определитель произведения есть произведение определителей
-и согласно обратимости $\Sigma$ матрица $B$ вообще существует, квадратные
-матрицы в левой части должны быть невырожденными. Отсюда следует
+Заметим, что во-первых, выражение $B_{22} - B_{21}B_{11}^{-1} B_{12}$ можно упростить:
+\begin{align*}
+	B_{22} - B_{21}B_{11}^{-1} B_{12}
+	&= \Sigma_{22}^{-1}\bigl( \Sigma_{22} B_{22} - \Sigma_{22} B_{21}B_{11}^{-1} B_{12} \bigr)\\
+	&= \Bigl[ B_{21} = - \Sigma_{22}^{-1} \Sigma_{21}B_{11} \Bigr]\\
+	&= \Sigma_{22}^{-1}\bigl( \Sigma_{22} B_{22} + \Sigma_{22} \Sigma_{22}^{-1} \Sigma_{21} B_{11} B_{11}^{-1} B_{12} \bigr)\\
+	&= \Sigma_{22}^{-1}\bigl( \Sigma_{22} B_{22} + \Sigma_{21} B_{12} \bigr)\\
+	&= \Bigl[ \Sigma_{21}B_{12} + \Sigma_{22}B_{22} = I_{n-p} \Bigr]\\
+	&= \Sigma_{22}^{-1}
+\end{align*}
+Во-вторых, благодаря симметрии $B$ справедливо, что
+\begin{align*}
+	B_{11}^{-1}B_{21}' &= - B_{11}^{-1} B_{11} \Sigma_{12}\Sigma_{22}^{-1} = - \Sigma_{12}\Sigma_{22}^{-1}\\
+	B_{11}^{-1}B_{12}  &= B_{11}^{-1}B_{21}' = - \Sigma_{12}\Sigma_{22}^{-1}
+\end{align*}
+откуда получается
 \[
-B_{22} = \bigl( \Sigma_{22} - \Sigma_{21}\Sigma_{11}^{-1} \Sigma_{12} \bigr)^{-1}
+Y'\Sigma^{-1}Y
+= \bigl( Y_1 - \Sigma_{12}\Sigma_{22}^{-1}Y_2 \bigr)' B_{11} \bigl( Y_1 - \Sigma_{12}\Sigma_{22}^{-1} Y_2 \bigr)
+	+ Y_2'\Sigma_{22}^{-1}Y_2
 \]
-и
+где $B_{11} = \bigl(\Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1} \Sigma_{21}\bigr)^{-1}$.
+
+В-третьих, поскольку $\Sigma_{22}$ невырождена, то определитель $\lvert \Sigma\rvert$
+равен произведению
 \[
-B_{12} = -\Sigma_{11}^{-1} \Sigma_{12} \bigl( \Sigma_{22} - \Sigma_{21}\Sigma_{11}^{-1} \Sigma_{12} \bigr)^{-1}
+\lvert \Sigma\rvert
+= \lvert \Sigma_{22}\rvert \cdot \lvert \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1} \Sigma_{21}\rvert
 \]
-Далее из $\Sigma_{11}B_{11} + \Sigma_{12}B_{21} = I_p$ получается выражение для $B_{11}$:
-\[ B_{11} = \Sigma_{11}^{-1} - \Sigma_{11}^{-1}\Sigma_{12}B_{21}\]
-подставив которое в $\Sigma_{21}B_{11} + \Sigma_{22}B_{21}=0$ можно получить
-\[ 
-B_{21}
-= - \bigl(\Sigma_{22} - \Sigma_{21}\Sigma_{11}^{-1}\Sigma_{12} \bigr)^{-1} \Sigma_{21}\Sigma_{11}^{-1}
-= B_{12}'
-\]
-В конце концов
+
+Таким образом,
+\begin{multline*}
+p(X;\mu,\Sigma)
+= (2\pi)^{-\frac{p}{2}} \lvert \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1} \Sigma_{21} \rvert^{-\frac{1}{2}}
+	\text{exp}\Bigl\{-\frac{1}{2}\bigl( (X_1-\mu_1) - \Sigma_{12}\Sigma_{22}^{-1}(X_2-\mu_2) \bigr)'\\
+		\bigl(\Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1} \Sigma_{21}\bigr)^{-1}
+		\bigl( (X_1-\mu_1) - \Sigma_{12}\Sigma_{22}^{-1} (X_2-\mu_2) \bigr)\Bigr\}\\
+	\times (2\pi)^{-\frac{n-p}{2}} \lvert \Sigma_{22} \rvert^{-\frac{1}{2}}
+	\text{exp}\bigl\{-\frac{1}{2}(X_2-\mu_2)'\Sigma_{22}^{-1}(X_2-\mu_2)\bigr\}
+\end{multline*}
+Откуда по формуле Байеса получается, что 
 \[
-B_{11}
-= \Sigma_{11}^{-1} + \Sigma_{11}^{-1}\Sigma_{12}
-		\bigl(\Sigma_{22} - \Sigma_{21}\Sigma_{11}^{-1}\Sigma_{12} \bigr)^{-1}
-	\Sigma_{21}\Sigma_{11}^{-1}
+X_1\rvert X_2
+\sim \Ncal_p\bigl(
+	\mu_1+\Sigma_{12}\Sigma_{22}^{-1} (X_2-\mu_2),
+	\Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1} \Sigma_{21}
+\bigr)
 \]
+
+Теперь, в двумерном случае согласно данной формуле, получается, что
+\begin{multline*}
+x_1\rvert x_2
+\sim \Ncal_p\bigl(
+	\mu_1+\rho\sigma_1\sigma_2\frac{1}{\sigma^2_2} (x_2-\mu_2),
+	\sigma^2_1 - \rho\sigma_1\sigma_2 \frac{1}{\sigma^2_2} \rho\sigma_1\sigma_2
+\bigr)\\
+= \Ncal_p\bigl(
+	\mu_1+\rho\frac{\sigma_1}{\sigma_2} (x_2-\mu_2),
+	\sigma^2_1(1 - \rho^2)
+\bigr)
+\end{multline*}
+
+% subsection* conditional_x_1_x_2 (end)
 
 % section problem_4_11 (end)
 
 \section{У4.12} % (fold)
 \label{sec:problem_4_12}
+
+Если $X\sim \Ncal_n(\mu,\Sigma)$, то условное распределение $X_1$ при $X_2$ равно
+\[
+X_1\rvert X_2
+\sim \Ncal_p\bigl(
+	\mu_1+\Sigma_{12}\Sigma_{22}^{-1} (X_2-\mu_2),
+	\Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1} \Sigma_{21}
+\bigr)
+\]
+Отсюда, частности следует, что 
+\[\ex\bigl( X_1 \rvert X_2 \bigr) = \mu_1 + \Sigma_{12}\Sigma_{22}^{-1} (X_2-\mu_2)\]
+Безусловная дисперсия условного математического ожидания равна
+\begin{multline*}
+\var\Bigl(\ex\bigl( X_1 \rvert X_2 \bigr)\Bigr)
+= \var\Bigl(\Sigma_{12}\Sigma_{22}^{-1} (X_2-\mu_2)\Bigr)\\
+= \Sigma_{12}\Sigma_{22}^{-1} \var\Bigl((X_2-\mu_2)\Bigr) \Sigma_{22}^{-1} \Sigma_{21}
+= \Sigma_{12}\Sigma_{22}^{-1} \Sigma_{22} \Sigma_{22}^{-1} \Sigma_{21}
+= \Sigma_{12} \Sigma_{22}^{-1} \Sigma_{21}
+\end{multline*}
+
+С другой стороны, условная дисперсия $X_1 \rvert X_2$ равна
+\[\var\bigl( X_1 \rvert X_2 \bigr) = \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1} \Sigma_{21}\]
+которое совпадает с безусловным математическим ожиданием.
+
+Сложив рассчитанные выражения получаем:
+\begin{multline*}
+\var\Bigl(\ex\bigl( X_1 \rvert X_2 \bigr)\Bigr) + \var\bigl( X_1 \rvert X_2 \bigr)\\
+= \Sigma_{12} \Sigma_{22}^{-1} \Sigma_{21} + \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1} \Sigma_{21}
+= \Sigma_{11}
+= \var(X_1)
+\end{multline*}
 
 В общем случае условная дисперсия $X_1$ по $X_2$ равна
 \begin{align*}
@@ -677,11 +776,11 @@ B_{11}
 = \ex\bigl( \ex( X_1^2 \lvert X_2) - \ex(X_1 \lvert X_2)^2 \bigr)
 = \ex(X_1^2) - \ex \ex(X_1 \lvert X_2)^2
 \]
-Однако с другой стороны в силу $\var{Y} = \ex Y^2 - (\ex y )^2$:
+Однако с другой стороны в силу $\var{Y} = \ex Y^2 - (\ex Y )^2$:
 \[
 \var \ex(X_1 \lvert X_2)
-= \ex \ex(X_1 \lvert X_2)^2 - \bigl(\ex \ex(X_1 \lvert X_2)\bigr)^2
-= \ex \ex(X_1 \lvert X_2)^2 - \ex(X_1)^2
+= \ex \bigl(\ex(X_1 \lvert X_2)^2\bigr) - \Bigl(\ex \bigl(\ex(X_1 \lvert X_2)\bigr)\Bigr)^2
+= \ex \bigl(\ex(X_1 \lvert X_2)^2\bigr) - \ex(X_1)^2
 \]
 Выразив матожидание квадрата условного матожидания из последнего выражения, получаем
 \[
