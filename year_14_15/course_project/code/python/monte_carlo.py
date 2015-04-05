@@ -77,7 +77,7 @@ def __mp_mc_setup( generator, kernel, M = 100, **kwargs ) :
 ##  some entropy for each child process.
 ##  http://stackoverflow.com/questions/2396209/best-seed-for-parallel-process
 ## Generate 32bit values uniformly at random.
-	seeds = np.random.randint( 0xFFFFFFFF, size = len( cli ) )
+	seeds = np.random.randint( 0x7FFFFFFF, size = len( cli ) )
 ## Alternative way for UNIX systems is to read from /dev/random.
 ##	with open( "/dev/random", "rb" ) as dev :
 ##		seeds = [ struct.unpack( 'I', dev.read( 4 ) )[ 0 ] for c in cli ]

@@ -162,7 +162,7 @@ def xtree_integer_crossings_fast( T, X ) :
 ## Preemptively round the process values down to minimize the overhead.
 	X_floor = np.floor( X, np.empty_like( X, np.int ) )
 ## Note that floor(x) + 1 = ceil(x) for non-integer x only, and for
-##  integers by definitions floor(x) = ceil(x).
+##  integers by definition floor(x) = ceil(x).
 	X_ceil = np.ceil( X, np.empty_like( X, np.int ) )
 ## If it was an upcrossing find the smallest integer, larger than the starting
 ##  point, and the largest integer, smaller than the final point. For a
@@ -181,9 +181,9 @@ def xtree_integer_crossings_fast( T, X ) :
 ##  stopping times until the first leave of the current grid band:
 ##    T^n_{k+1} \defn \inf\{ t > T^n_k\,: \, \abs{ X_t - X_{T^n_k} } \geq \delta 2^{-n} \}
 ##  where T^n_0 = 0.
-	for t in xrange( len( X ) - 1 ) :
-		if cross_d[ t ] == 0 : continue
-## Usually X_begin and X_final are ordered or reversed with respec to the
+	tau = np.arange( len( X ) - 1, dtype = np.int )[ cross_d != 0 ]
+	for t in tau :
+## Usually X_begin and X_final are ordered or reversed with respect to the
 ##  crossing direction, but if the process didn't move enough to cross a grid
 ##  line, i.e. that is the endpoints are between two levels but within one
 ##  band, then these integers would be inverted, when corrected for the
@@ -213,7 +213,7 @@ def xtree_integer_crossings_fast( T, X ) :
 ################################# CODE REVIEW! #################################
 ################################################################################
 ### Checking the original code by Decrouez and Owen:
-### Results identical!! Checked through monet-carlo assertions of indenity.
+### Results identical!! Checked through monte-carlo assertions of identity.
 def f_get_w_int( T, X, deleteFirst = False ) :
 #    if deleteFirst
 	if deleteFirst :
