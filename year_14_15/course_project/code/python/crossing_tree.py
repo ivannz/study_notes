@@ -181,7 +181,12 @@ def xtree_integer_crossings_fast( T, X ) :
 ##  stopping times until the first leave of the current grid band:
 ##    T^n_{k+1} \defn \inf\{ t > T^n_k\,: \, \abs{ X_t - X_{T^n_k} } \geq \delta 2^{-n} \}
 ##  where T^n_0 = 0.
-	tau = np.arange( len( X ) - 1, dtype = np.int )[ cross_d != 0 ]
+## Within-band excursions and sideways movements are ignored.
+	mask = np.logical_and( cross_d != 0, X_begin != X_final )
+## Using a X_final[t-1]== X_final[t] rule to eliminate excursions is bad,
+##  since sequential small within-band movements may add up to a crossing.
+	tau = np.arange( len( X ) - 1, dtype = np.int )[ mask ]
+	del mask
 	for t in tau :
 ## Usually X_begin and X_final are ordered or reversed with respect to the
 ##  crossing direction, but if the process didn't move enough to cross a grid
