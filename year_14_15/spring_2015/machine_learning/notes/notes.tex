@@ -510,9 +510,48 @@ Classifier-object matrix of binary indicators whether a classifier makes an erro
 
 \textbf{Ada}ptive \textbf{Boost} (M1 method).
 
-
 % subsection boosting (end)
 
+\subsection{Random forest} % (fold)
+\label{sub:random_forest}
+
+The idea is to supplement bagging with sub-samples of features.
+
+% subsection random_forest (end)
+
 % section lecture_9 (end)
+
+\section{Lecture \# 10} % (fold)
+\label{sec:lecture_#_10}
+
+Ensemble clustering methods
+The goal is to make the results robust by combining weak classifiers.
+Build consensus clustering upon FCA.
+
+We got data, which we feed into collection of models, and then aggregate the results.
+
+Using simple majority rule for binary classification.
+
+The significant problem is the synchronisation of the partitions, induced by different classifiers.
+The solution is to represent the classification as a binary vector -- one for each cluster within 
+each partition of each individual classifier. This way even incomplete classifications (a partition
+but not exhaustive) can be incorporated.
+\begin{tabular}{c|c|c||c|c|c||c|c|}
+$x_1$ & $1$ & $0$ & $0$ & $1$ & $1$ \\
+$x_2$ & $1$ & $0$ & $0$ & $1$ & $0$ \\
+$x_3$ & $0$ & $1$ & $1$ & $0$ & $0$ \\
+$x_4$ & $0$ & $1$ & $1$ & $0$ & $1$
+\end{tabular}
+
+Consensus matrix: count the number of partitions voting for each object.
+
+Using FCA: mine for association rules with some lower bound on support, but on extents.
+The context $(G,C,I)$ and find within cluster association rules: $A,B\subseteq G$ such
+that their support is larger than a threshold.
+
+Another idea is to use a partition lattice. Each classifier produces a partition, which
+altogether form a basis of the lattice. 
+
+% section lecture_#_10 (end)
 
 \end{document}
