@@ -427,7 +427,7 @@ In the ordinary linear squares method we minimized the following fitness functio
 Minimize the following penalized Residual Sum of Squares as:
 \[\RSS_\text{ridge} \defn \sum_{i=1}^n \bigl(t_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij}\bigr)^2 + \lambda \sum_{j=1}^p \beta_j^2\]
 the $\lambda>0$ is called the tuning parameter and it controls the amount of shrinkage.
-If $\lambda = 0$ then there is absolutely no shrinkage, and the optimal $\hat{beta}$
+If $\lambda = 0$ then there is absolutely no shrinkage, and the optimal $\hat{\beta}$
 coincides with the OLS. But if $\lambda\to \infty$ then the optimal coefficient
 vector tends to zero (that is why it is called \textbf{shrinkage}). This adjustment
 effectively regularizes the parameter estimates.
@@ -704,8 +704,9 @@ and \[X^c \defn \frac{X-m}{\sigma}\]
 \label{sec:lecture_4}
 Departing from the linearity of the Linear regression.
 
-Transform $\brac{f_m}_{m=1}^M:\Real^p \to \Real$ since there are initially $p$ predictors.
-Sample space is augmented and now has $M$ predictors. The regression function becomes:
+Transform $\brac{f_m}_{m=1}^M:\Real^p \to \Real$ since there are initially $p$
+predictors. Sample space is augmented and now has $M$ predictors. The regression
+function becomes:
 \[f(X) = \sum_{m=1}^M \theta_m f_m(x)\]
 This model generalises the original linear regressions since $f_m(x) = \pi_m(x)$ 
 
@@ -713,6 +714,9 @@ Polynomial regression problem: what happens in the tails? It is not very trustwo
 near the endpoints. In this respect polynomial regression is not a good idea. Why
 not use local regression by partitioning the range into regions with different model
 in each area: $f_m(X) = 1_{\clo{l_m, u_m}}(x_k)$
+
+The behaviour of polynomial fit to data tends to be erratic near the boundaries.
+And extrapolation can be dangerous!
 
 \subsection{Piecewise polynomials and splines} % (fold)
 \label{sub:piecewise_polynomials_and_splines}
@@ -733,6 +737,7 @@ piecewise intercept, but also the piecewise slope.
 Continuity requirement at each knot reduces the number of basis functions to four:
 $h_1 = 1$, $h_2 = x$ (an indicator would introduce discontinuity),
 $h_3 = (x-\xi_1)_+$ and $h_4 = (x-\xi_2)_+$ -- fix their intercepts.
+This basis is known as the \textbf{truncated power basis}.
 
 In general overlapping regions are refined into a partition, on which a proper
 piecewise is later estimated. Then linear restriction tests could be run on the
@@ -748,38 +753,67 @@ $h_1 = 1$, $h_2 = x$, $h_3 = x^2$, $h_4 = x^3$,
 $h_5 = (x-\xi_1)_+^3$ and $h_6 = (x-\xi_2)_+^3$ (the ``piecewiseness'' is shifted
 to the polynomial terms of higher order).
 
-In general $M$-\textbf{splines} are piecewise polynomial regression curves with $M$-
-smoothness restriction at binding knots:
+In general $M$-\textbf{splines} are piecewise $M$-degree polynomial regression
+curves with $M-1$-smoothness restriction at binding knots (continuity with $M-1$
+continuous derivatives). The basis functions for this kind of curve are
 \begin{align*}
 	h_j(x) &= x^{j-1}&\text{for }j=1,\ldots, M\\
 	h_{M+j}(x) &= (x-\xi_j)_+^M &\text{for }j=1,\ldots,K
 \end{align*}
+For weirder piecewise $d$-degree polynomial curves, which are $C^{m-1}$ ($m\leq d$),
+the basis might look like this:
+\begin{align*}
+	b_j(x) &= x^{j-1}&\text{for }j=1,\ldots, d\\
+	h_{ij}(x) &= (x-\xi_j)_+^i &\text{for } j=1,\ldots,K\text{ and } i=m,\ldots,d
+\end{align*}
 
-One polynomial -- global and smooth. More polynomials with a local regression are
-not necessarily smooth. Splines are local and smooth!
+Generally speaking, if there are $K$ knots then there are $K+1$ ``pieces'' in the
+piecewise polynomial curve. If over each region a $d$-degree polynomial is to be
+fit, then there are $(d+1)(K+1)$ parameters. If continuity of the curve is to be
+desired, one needs to add one constraint on the parameters per each knot, since only
+of the piece boundaries the curve is discontinuous. Requiring the curve to be $C^m$
+with $m\leq d$ adds one constraint per knot per degree of smoothness which add up
+to $(m+1) K$. Thus there are $(d-m)K + (d+1)$ free parameters left. For a cubic
+spline with continuous $2$-nd derivative, $d=3$ and $m=2$, the number of ``degrees
+of freedom'' is $K+4$.
+
+One polynomial is global and smooth, but the higher the order the more oscillating
+the behaviour a the ends (the Runge's phenomenon). More polynomials with a local
+regression are not necessarily continuous. Splines are local and smooth!
 
 What to do with the endpoints? Problems with the values out the common region of $x$.
 
 \subsubsection{Natural Cubic Spline} % (fold)
 \label{ssub:natural_cubic_spline}
-Within the range of the univariate data fit a spline, but to achieve robustness
-at the ends and get more trustworthy predictions fit a linear model!
+An idea: within the range of the univariate data fit an $M$-spline, but to achieve
+robustness beyond $[a,b]$ and get more trustworthy predictions require a linear
+model. Thus for a \textbf{n}atural \textbf{c}ubic \textbf{s}pline within the main
+region $[a,b]$ a $3$-spline is fit, whereas beyond the boundaries the function is
+required to be linear (with continuity and all smoothness constraints).
 
-Order-4-spline (cubic spline) $\to$ 6 basis functions ($K+4$ functions).
-Natural cubic spline $\to$ 2 basis functions ($K$ basis functions):
+With this kind of additional regularization the number of parameters for the NCS
+is further reduced. The $3$-spline had $K+4$ basis functions, and the NCS has $K$
+basis functions, sine beyond knots $\xi_1$ and $\xi_K$ the derivatives higher than
+the first must be zero. Example: $3$-spline (cubic spline) has $K+4$ functions,
+and the NCS has $K$ basis functions.
 \[G(x) = \sum_{j=1}^K \theta_j N_j(x)\]
-where $\brac{N_j}_{j=1}^K$ is the set of basis functions for the natural cubic spline.
+where $(N_j(\cdot))_{j=1}^K$ is the set of basis functions for the Natural Cubic
+Spline.
 
-Goal: show that it is enough to know the value of the NCS at $K$ knots to know it everywhere.
+Goal: show that it is enough to know the value of the NCS at $K$ knots to know it
+everywhere. Consider a regression problem on some interval $[a,b]$. Let $K$ be the
+number of knots $(\xi_k)_{k=1}^K\in [a,b]$ with
+\[a < \xi_1<\ldots<\xi_k<\ldots<\xi_K<b\]
 
-$K$ -- the number of knots $\brac{\xi_k}_{k=1}^K$. Consider a regression problem on some interval $\clo{a,b}$ with $a<\xi_1<\ldots<\xi_K<b$.
-
-Let $g$ be the NCS -- piecewise function, cubic in the main region, linear at the ends.
-Let $g_k = g(\xi_k)$ for all $k=1,\ldots K$.
-
-Since NCS is cubic, the second derivative must be linear in $x$ between any two consecutive knots.
-
-Let $\gamma_k=g''(\xi_k)$. Due to linearity at the ends $\gamma_K = \gamma_1 = 0$.
+Suppose $g$ is the NCS on $[a,b]$ -- a piecewise polynomial curve, cubic within
+the main region and linear beyond $[a,b]$ (?). For all $k=1,\ldots K$ let
+$g_k = g(\xi_k)$.
+Since NCS is cubic, the second derivative must be linear in $x$ between any two
+consecutive knots: for $x\in (\xi_k,\xi_{k+1}]$
+\[g''(x) = \alpha_kx + \beta_k\]
+Introduce a set of extra parameters $(\gamma_k)_{k=1}^K$ which are defined as the
+value of the second derivative of $g$ at each knot: $\gamma_k=g''(\xi_k)$.
+Obviously, due to linearity at the ends $\gamma_K = \gamma_1 = 0$.
 
 $g''(x) - \alpha x + \beta$ since $g''$ is linear.
 ...
@@ -805,7 +839,7 @@ There must be some relation between the coefficients since continuity across the
 \begin{align*}
 g'(x) &= \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k}
 	-\frac{1}{6} \brac{ \frac{\gamma_{k+1}-\gamma_k}{\xi_{k+1}-\xi_k} (x-\xi_k)(\xi_{k+1}-x) }\\
-	&+ \obj{
+	&+ \frac{1}{6}\obj{
 		\brac{1+\frac{x-\xi_k}{\xi_{k+1}-\xi_k}}\gamma_{k+1}
 		+ \brac{1+\frac{\xi_{k+1}-x}{\xi_{k+1}-\xi_k}}\gamma_k
 	} \brac{\xi_{k+1} + \xi_k - 2 x}
@@ -825,11 +859,23 @@ Which yields:
 
 
 All of the above in the matrix notation:
-\[\underset{(K-2)\times K}{Q}'\underset{K\times1}{g} = \underset{(K-2)\times(K-2)}{R}\underset{(K-2)\times1}{\gamma}\]
-
-the matrix $R$ is invertible whence its inverse exists.
+\[\underset{(K-2)\times K}{Q'}\underset{K\times1}{g} = \underset{(K-2)\times(K-2)}{R}\underset{(K-2)\times1}{\gamma}\]
+the matrix $R$ is invertible.
 
 % the structure of $R$ and $Q$ is on the sheet.
+The matrix $Q\in \Real^{K\times (K-2)}$ has the following structure:
+\[
+\begin{pmatrix}
+q_{11} 	& 0 		& 0 		& \cdots & 0 \\
+q_{21} 	& q_{22} 	& 0 		& \cdots & 0 \\
+q_{31} 	& q_{32} 	& q_{33} 	& \cdots & 0 \\
+0 		& q_{43} 	& q_{44} 	& \cdots & 0 \\
+% 0 		& 0 		& q_{54} 	& \cdots & 0 \\
+\vdots 	& \vdots	& \vdots 	& \ddots & \vdots \\
+0 		& 0			& 0 		& \cdots & q_{K(K-2)}
+\end{pmatrix}
+\]
+where (\textbf{CHECK THIS!}) $q_{ii} = -\frac{1}{h_{i-1}}-\frac{1}{h_i}$
 
 \noindent\textbf{Theorem}\hfill \\
 The vectors $g$ and $\gamma$ fully specify the NCS if and only if $Q'g = R'\gamma$.
@@ -906,7 +952,6 @@ Trying to make $g$ fit the data s much as possible and yet penalizing if it vari
 
 $\lambda\to \infty$ then the optimal solution is linear $g$
 $\lambda = 0$ then the optimal solution is some ``wild'' function, matching all the points, with no structure known beforehand.
-
 
 This seems to be a problem of functional analysis.
 
@@ -1099,6 +1144,8 @@ The AIC is given by (up to the terms of the first order):
 \[-2\log \hat{f}\brac{\induc{y}\,\hat{\theta}_k(y)} + 2k\]
 
 \textbf{ See the handwritten notes! }
+
+
 
 % subsection model_selection (end)
 
@@ -2442,5 +2489,28 @@ whence $\Lcal$ indeed decreases with the number of iterations $t$.
 Ridge regression protects from the poor estimation in the direction of the least varinance.
 % section* mid_term_test_review (end)
 
+\section{Revision} % (fold)
+\label{sec:revision}
+
+\subsection{EM-algorithm} % (fold)
+\label{sub:em_algorithm}
+
+Consider a model with $X$ observable variables and $Z$ -- latent described by
+the likelihood function $L(X,Z;\theta)$.
+
+For all $\theta$ it is true that 
+\[\log p(X\;\theta) = \log p(X,Z;\theta) - \log p(Z\lvert X;\theta)\]
+Let $q$ be some distribution of the latent variables $Z$, then
+\[ \Ex_q\log p(X\;\theta) = \Ex_q\log p(X,Z;\theta) - \Ex_q \log q + \Ex_q\log {q}{p(Z\lvert X;\theta)} \]
+whence 
+\[
+\Ex_q\log p(X,Z;\theta)
+= \log p(X\;\theta) + \Ex_q \log q - \Ex_q\log {q}{p(Z\lvert X;\theta)}
+= - KL\bigl(q\lvert\rvert p(Z\lvert X;\theta)\bigr) + \Ex_q \log q + \log p(X\;\theta)
+\]
+
+% subsection em_algorithm (end)
+
+% section revision (end)
 
 \end{document}
