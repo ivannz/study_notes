@@ -809,30 +809,44 @@ Suppose $g$ is the NCS on $[a,b]$ -- a piecewise polynomial curve, cubic within
 the main region and linear beyond $[a,b]$ (?). For all $k=1,\ldots K$ let
 $g_k = g(\xi_k)$.
 Since NCS is cubic, the second derivative must be linear in $x$ between any two
-consecutive knots: for $x\in (\xi_k,\xi_{k+1}]$
-\[g''(x) = \alpha_kx + \beta_k\]
+consecutive knots: for $x\in (\xi_k,\xi_{k+1}]$, $k=1,\ldots, K-1$
+\[g''(x) = \alpha_k x + \beta_k\]
+
 Introduce a set of extra parameters $(\gamma_k)_{k=1}^K$ which are defined as the
 value of the second derivative of $g$ at each knot: $\gamma_k=g''(\xi_k)$.
 Obviously, due to linearity at the ends $\gamma_K = \gamma_1 = 0$.
-
-$g''(x) - \alpha x + \beta$ since $g''$ is linear.
-...
-thus we get
-\[
-\begin{matrix}
-	\gamma_k = \alpha_k \xi_k + \beta_k \\
-	\gamma_{k+1} = \alpha_k \xi_{k+1} + \beta_k
-\end{matrix}
-\]
+Given these 
+For $k=1,\ldots, K-1$ the continuity of $g''$ is equivalent to $g''(\xi_k+0) = g''(\xi_k-0)$
+which in terms of $\gamma_k$ is identical to
+\begin{align*}
+	\gamma_k &= \alpha_k \xi_k + \beta_k\\
+	\gamma_{k+1} &= \alpha_k \xi_{k+1} + \beta_k
+\end{align*}
+for all $k=1,\ldots,K-1$. Since $\xi_k<\xi_{k+1}$ this system of linear equation
+resolves into
+\begin{align*}
+	\alpha_k &= \frac{\gamma_{k+1}-\gamma_k}{\xi_{k+1}-\xi_k}\\
+	\beta_k &= \frac{\xi_{k+1}\gamma_k - \xi_k\gamma_{k+1}}{\xi_{k+1}-\xi_k}
+\end{align*}
+Therefore $g''(x)$ on $x\in (\xi_k, \xi_{k+1}]$ for $k=1,\ldots, K-1$ is defined as
+\[g''(x) = \frac{\gamma_{k+1}(x-\xi_k)+\gamma_k(\xi_{k+1}-x)}{\xi_{k+1}-\xi_k}\]
+Integrating on $x\in (\xi_k,\xi_{k+1}]$ yields
+\[g'(x) = c_k + \frac{1}{2}\frac{\gamma_{k+1}(x-\xi_k)^2-\gamma_k(x-\xi_{k+1})^2}{\xi_{k+1}-\xi_k}\]
+(?)...
+%% See 20150405_184027.jpg
 Finally the NCS is given by:
 \[
 g(x) = \begin{cases}
 	g_1 - (\xi_1-x)g'(\xi_1), &\text{ if } x\leq \xi_1\\
 	g_K - (x-\xi_K)g'(\xi_K), &\text{ if } x\geq \xi_K\\
-	\frac{(x-\xi_k)g_{k+1} + (\xi_k-x)g_k}{\xi_{k+1}-\xi_k}
-		- \frac{1}{6}(x-\xi_k)(\xi_{k+1}-x), &\text{ oherwise }
+	% \frac{(x-\xi_k)g_{k+1} + (\xi_k-x)g_k}{h_k}
+	\frac{1}{h_k}\bigl(g_{k+1}(x-\xi_k) + g_k(\xi_{k+1}-x)\bigr)
+		- \frac{1}{6}(x-\xi_k)(\xi_{k+1}-x) \cdot \\
+		\quad\cdot\Bigl\{ g_{k+1}\bigl( 1+\frac{x-\xi_k}{h_k}\bigr)
+			+ g_k\bigl( 1+\frac{\xi_{k+1}-x}{h_k}\bigr) \Bigr\}, &\text{otherwise}
 \end{cases}
 \]
+where $h_k = \xi_{k+1}-\xi_k$.
 
 
 There must be some relation between the coefficients since continuity across the knots is required.
