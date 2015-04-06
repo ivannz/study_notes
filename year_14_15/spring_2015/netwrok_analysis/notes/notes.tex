@@ -922,10 +922,193 @@ Local clustering algorithm
 \end{itemize}
 No need to deal with the entire graph.
 
-
-
 % subsubsection random_walk_community_detection (end)
 
 % section lecture_10 (end)
+
+\section{Lecture \# 11} % (fold)
+\label{sec:lecture_11}
+
+Two large home assignments, or, equivalently, two small projects.
+Problems: network processes -- how to chose the nodes so as to maximize some
+values functional.
+All topics are active research.
+
+\subsection{Diffusion and random walks on graphs} % (fold)
+\label{sub:diffusion_and_random_walks_on_graphs}
+
+Today's lecture is mostly technical, but it is
+
+A random walk on a graph $G = (V,E)$ is a sequences of vertices with each one
+being a neighbour of the other chosen according to some transition probability
+\[\Pr(x_{t+1} = u \lvert x_t = v) = \Pr(v\to u)\]
+given by a stochastic matrix $P_{uv}$ with $\sum_{v\in V} P_{uv} = 1$
+
+Undirected connected unweighted graphs without loops: all vertices are
+reachable from one another.
+
+A simple stochastic is uniform transition from a node to its neighbours:
+\[
+\Pr(u\to v)
+= P_{uv}
+= \frac{1}{\delta_u} 1_{\{u,v\}\in E}
+\]
+there is no opportunity to linger at $u$. Such stochastic matrix can be easily
+computed: for $A$ -- $V\times V$ adjacency matrix and $D = \text{diag}(\delta_u)_{u\in V}$
+\[P = D^{-1} A\]
+
+Let $\pi_u(t)$ be a probability of being at a node $u$ at time $t$. Then for
+$\pi(t) = \bigl(\pi_u(t)\bigr)_{u\in V}$ -- a row vector, the probability at the next point in
+time is (left action of the transition kernel $P$)
+\[
+\pi_v(t+1)
+= \pi(t) P
+= \pi(t) D^{-1} A
+\]
+
+The initial distribution can be anything $\pi(0)$, even a degenerate with a
+singularity at some vertex. What then will be the long term probability of
+ending up at some vertex? Does there exist $\pi = \lim_{t\to \infty}\pi(t)$?
+
+Since the linearity of the transition operator and its boundedness imply continuity, if such limit exists then it should be equal to
+\[
+\pi
+= \lim_{t\to\infty}\pi(t+1)
+= \lim_{t\to\infty}(\pi(t)P)
+= (\lim_{t\to\infty}\pi(t)) P
+= \pi P
+\]
+Therefore the limiting distribution must be a left eigenvector of $P$
+corresponding to a unit eigenvalue.
+
+The conditions for existence are : the graph must be connected, not be a bipartite or cyclical, 
+
+A random walk is reversible if
+\[
+\pi_i P_{ij} 
+= \pi_i \Pr(i\to j)
+= \pi_j \Pr(j\to i)
+= \pi_j P_{ji}
+\]
+For a random walk on a undirected graph with the adjacency matrix $A$, which is symmetric, the reversibility condition is automatically satisfied:
+\[\pi_i \frac{A_{ij}}{\delta_i} = \pi_j \frac{A_{ji}}{\delta_j}\]
+whence $\pi_i\delta_j = \pi_j \delta_i$ for all $i,j\in V$.
+Therefore $\frac{\pi_i}{\delta_i} = C$ and $\pi_i = C\delta_i$, whence
+\[\pi_i = \frac{\delta_i}{\sum_i \delta_i}\]
+because $\sum_i \pi_i = 1$.
+
+A lazy random walk: for every node the walk is allowed to make no transition at all (stay at the node). THen the transition kernel is given by
+\[I_V \beta + P (1-\beta) \]
+however the stationary distribution is the same! Indeed
+\[\]
+
+The convergence rate: Let $\lambda_2$ be the second largest eigenvalue of the 
+transition kernel $P$. The convergence rate to the stationary distribution from a node $i$ with initial distribution $\pi(t=0) = e_i$ is bounded by
+\[\lvert p_j(t) - \pi_j \rvert \leq \sqrt{\frac{\delta_j}{\delta_i}} \frac{\lambda_2}{\lambda_1}\]
+where $\frac{\lambda_2}{\lambda_1}$ is the spectral gap of $P$.
+
+The more neighbours the starting vertex has the quicker the distribution
+converges to the stationary. The spectral gap for the lazy random is wider,
+since $\lambda_2' = \beta \lambda_2 + 1-\beta$.
+
+\subsubsection{Diffusion} % (fold)
+\label{ssub:diffusion}
+
+Fik's law: if $\Phi(x,t)$ is the concentration, then
+\[
+J
+= - C\frac{\partial}{\partial t}\Phi
+= - C \nabla\Phi
+\]
+
+Numerical solution of diffusion equations: finite difference method.
+
+\begin{description}
+	\item[2D laplacian] 
+	\[\delta = \nabla^2 f = \sum_i \frac{\partial}{\partial x_i} f\]
+	\item[MISSING] slide 12
+\end{description}
+
+Let's model the diffusion of some substance on a graph. Let $\phI)i(t)$ be the
+concentration at a node $i$ at time $t$ and suppose the diffusion is given by
+\[
+\phi_i(t+\delta t)
+= \phi_i(t) + \text{inflow}_i(t) - \text{outflow}_i(t)
+= \phi_i(t) + \sum_j A_{ij} \bigl(\phi_j(t) - \phi_i(t)\bigr) c \delta t
+\]
+The flow is proportional to the difference of concentrations. This equation
+can be simplified down to (with $\delta t \to 0$)
+\[
+\frac{d}{dt}\phi_i(t+1)
+= \sum_j A_{ij} \bigl(\phi_j(t) - \phi_i(t)\bigr) c
+= c \sum_j A_{ij} \phi_j(t) - c \phi_i(t) \sum_j A_{ij}
+= c \sum_j \bigl( A_{ij} - \delta_j 1{j=i} \bigr) \phi_j(t)
+\]
+Thus in the matrix form
+\[
+\frac{d}{dt}\phi
+= c (A-D) \phi
+= - c L \phi
+\]
+
+In spectral clustering did the second eigenvector represent the ``stationary'' concentration of mass at the nodes? No it determines the dynamics of the diffusion.
+
+The diffusion equation is thus just a simple linear ODE :
+\[\dot{\phi} = -c L \phi\]
+The solution is the matrix exponential $\phi(t) = e^{-c L t}$
+
+Since the laplacian matrix $L$ is symmetric, there necessarily exists an
+orthogonal basis $(v_i)_i$ of eigenvectors of $L$. Since $\phi(t)$ is a vector
+it is representable as a linear combination of the basis vector, whence:
+\[
+\dot{\phi}
+= \sum_i \dot{a}_i v_i
+= - c L \sum_i a_i v_i
+= - c \sum_i a_i L v_i
+= - c \sum_i a_i \lambda_i v_i
+\]
+Since $v_i$ a re linearly independent, for all $t\geq0$ it must be true that
+\[\dot{a}_i = - c \lambda_i a_i\]
+which implies that
+\[a_i(t) = a_i(0) e^{-c \lambda_i t}\]
+since the laplacian matrix is positive semidefinite and the graph is connected,
+there is an eigenvalue $\lambda_k=0$. Therefore
+\[
+\phi(t)
+= \sum_i a_i(t) v_i
+= \sum_i a_i(0) e^{-c \lambda_i t} v_i
+= a_k(0) v_k + \sum_{i\neq k} a_i(0) e^{-c \lambda_i t} v_i
+\]
+
+Why diffusion processes are needed? The smoothing effect! The idea of a
+diffusion is to smooth the mass from over concentrated to under concentrated --
+even out the concentration. Averaging images is an example of redistributing
+the excess concentrations of the noise at pixels no denoise them.
+
+% subsubsection diffusion (end)
+
+There are different laplacians! The normalised laplacian matrix
+\[\Lcal = D^{-\frac{1}{2}} L D^{-\frac{1}{2}} \]
+it scales the laplacian but retains it symmetric properties. Has good bound on
+eigenvalues, but still has an orthonormal eigenbasis. Seen this in normalised
+cut clustering:
+\[
+(D-A) x
+= \lambda D x 
+\Leftrightarrow
+D^{-\frac{1}{2}} L D^{-\frac{1}{2}} D^\frac{1}{2} x
+= \lambda D^\frac{1}{2} x
+\]
+Furthermore (check this?)
+\[
+P
+= D^{-1} A
+= D^{-\frac{1}{2}}(I_n - \Lcal)D^\frac{1}{2}
+\]
+
+% subsection diffusion_and_random_walks_on_graphs (end)
+
+% section lecture_11 (end)
+
 
 \end{document}
