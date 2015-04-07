@@ -59,7 +59,7 @@ Graph $G=(V,E)$. The set $V$ is the set of vertices and $E$ is a subset of $V\ti
 An element $(u,v)\in E$ is an edge starting at $u$ and ending in $v$.
 The incidence matrix is defined as $a_{ij}=1_E\brac{(i,j)}$, so it denotes and edge $i\to j$.
 
-Random graphs are pure mathematics theory created by Erd\"os and Renyui.
+Random graphs are pure mathematics theory created by Erd\"os and Renyi.
 Statistical physics for analysis of complex networks.
 
 Network, social network, complex network just another name for a graph.
@@ -1110,5 +1110,160 @@ P
 
 % section lecture_11 (end)
 
+\section{Lecture \# 12} % (fold)
+\label{sec:lecture_#_12}
 
+\subsection{Epidemic dynamic model} % (fold)
+\label{sub:epidemic_dynamic_model}
+
+The SIR models the dynamics of the size of three groups of people:\begin{itemize}
+	\item Susceptible $S_t$;
+	\item Infected $I_t$;
+	\item Recovered $R_t$.
+\end{itemize}
+
+major assumptions \begin{itemize}
+	\item Fully mixing model -- everyone is in contact with everyone else;
+	\item The population is static.
+\end{itemize}
+
+\subsubsection{SI model} % (fold)
+\label{ssub:si_model}
+
+A simple \textbf{S}usceptible-\textbf{I}nfected model is given by the following dynamic and balance equations:
+\begin{align*}
+	I_{t+\delta t} &= I_t + \beta \frac{S_t}{N} I_t \delta t\\
+	N &= S_t + I_t
+\end{align*}
+The factor $\frac{S_t}{N}$ can be interpreted as the probability of meeting a
+susceptible agent by an infected agent.
+Put $s_t = \frac{S_t}{N}$, $i_t = \frac{I_t}{N}$ and tend $\delta t \to 0$ effectively transforms the system into
+\begin{align*}
+	\frac{d}{dt}i_t = \beta (1 - i_t) i_t
+\end{align*}
+the general solution is given by
+\[ -\int \frac{-1}{1-i} di + \int \frac{1}{i} di = \int \beta dt + C \]
+whence
+\[ \frac{i_t}{1-i_t} = Ce^{\beta t} \]
+and the solution is a logistic curve
+\[i_t = \frac{1}{1+Ce^{-\beta t}} \]
+
+% subsubsection si_model (end)
+
+\subsubsection{SIS model} % (fold)
+\label{ssub:sis_model}
+
+This is a basic extension of the the SI model to a situation, where there is a
+back flow from $i_t$ to $s_t$ :
+\begin{align*}
+	\dot{s} &= \gamma i - \beta s i\\
+	\dot{i} &= \beta s i - \gamma i\\
+	1 &= s+i
+\end{align*}
+this non-linear system simplifies to
+\[\dot{i} = \beta (1-i) i - \gamma i\]
+whence
+\[\dot{i} = (\beta - \gamma - \beta i ) i \]
+
+% subsubsection sis_model (end)
+
+\subsubsection{The SIR model} % (fold)
+\label{ssub:the_sir_model}
+
+It further modifies the SI model to include a separate group of agents, which
+once recovered from the infection cannot get infected again. The dynamics is
+given by
+\begin{align*}
+	\dot{s} &= - \beta s i\\
+	\dot{i} &= \beta s i - \gamma i\\
+	\dot{r} &= \gamma i\\
+	1 &= s+i+r
+\end{align*}
+Substituting the $s$ into $i$ yields
+\[\dot{s} = - \beta s \frac{1}{\gamma}\dot{r}\]
+whence
+\[\ln|s| = -\frac{\beta}{\gamma} r_t + C \]
+and 
+\[ s = s_0 e^{-\frac{\beta}{\gamma} r_t}\]
+
+Thus
+\[\dot{r} = \gamma (1 - r - s_0 e^{-\frac{\beta}{\gamma} r_t})\]
+
+This non-linear system is unsolvable analytically. But it is still useful. If 
+$t\to \infty$ then since $r_t$ is bounded (and if $r_t$ is not periodic) (?),
+then $r_t$ tends to an equilibrium (stationary point), where $\dot{r} = 0$.
+Thus
+\[r_\infty = 1 - e^{-R_0 r_\infty}\]
+with $R_0 = \frac{\beta}{\gamma}$. This looks very much like the probability
+of a giant connected component occurring in a random Erd\"os-Renyi graph.
+
+In order to establish stationarity of $r_t$ as $t\to\infty$ one might use
+Lyapunov or other theorems.
+
+The critical point is $R_0 = 1$. The total size of the outbreak $r_\infty$ and
+$R_0$ is the basic reproduction number, which is the average number of agents
+infected by another agent before its recovery (removal from the population).
+\[
+R_0
+= \Ex(\beta \tau)
+= \int_0^\infty \gamma \tau e^{-\gamma \tau} d\tau
+= \frac{\beta}{\gamma}
+\]
+The distribution of time being infected is $\text{Exp}(\gamma)$. The heuristic
+derivation is to look at the outflow from the infected share: an agent ceases to be infected with rate $\gamma$
+\[\dot{i} = - \gamma i\]
+
+% subsubsection the_sir_model (end)
+
+% subsection epidemic_dynamic_model (end)
+
+\subsection{Contagion model} % (fold)
+\label{sub:contagion_model}
+
+A simple model of rumour propagation, disease contagion or any other
+irreversible status transmission. \begin{description}
+	\item[1st Wave] First infected agent occurs in the population and
+	transmits the infection to each agent it meets with probability $p$.
+	Suppose it meets $Z^1_1=k$ agents;
+	\item[2nd Wave] Each infected agent $m=Z^1_1$ from the $1$-st wave
+	re-transmits the disease to $Z^2_m=k$ agents to each with probability $p$;
+	\item[So on] \hfill\\
+\end{description}
+This kind of dynamics is known as branching stochastic process, which was
+first introduced by Francis Galton in 1889 (in a less general formulation).
+
+\subsubsection{Random branching process} % (fold)
+\label{ssub:random_branching_process}
+
+Let $\xi^n_i$ be the number of transmitted infections by the $i$-th node on
+the level $n$. Further, let $Z_n$ be the number of infected people at the
+$n$-th level, $Z_0 = 1$. Then the number of infected people at the $n+1$-th
+level (generation, iteration) is given by
+\[Z_{n+1} = \sum_{m=1}^{Z_k} \xi^n_m\]
+The main assumption, that $\xi^n_i$ are mutually independent, yields
+\begin{multline*}
+G_{Z_{n+1}}(s)
+= \Ex s^{Z_{n+1}}
+= \Ex \Ex \bigl(s^{Z_{n+1}}\rvert Z_n\bigr)
+= \Ex \prod_{m=1}^{Z_n} \Ex \bigl(s^{\xi^n_m}\rvert Z_n\bigr)\\
+= \Ex \bigl( \Ex s^{\xi^n_m} \bigl)^Z_n
+= \Ex (G_\xi(s))^{Z_n}
+= G_{Z_n}( G_\xi(s) )
+\end{multline*}
+whence
+\[G_{Z_n}(s) = \underset{n\text{-times}}{(G_\xi\circ \ldots G_\xi)}(s)\]
+
+In simpler language the probability $q_n$ of the infection never spreading
+through a node at level $n$ is the chance that neither of $k$ potentially
+infectable agents further propagates the infection. This results in the
+following recursive equation for $q_n$:
+\[(1-pq_{n+1})^k = 1-q_n\]
+
+%% See the first homework on probabilistic methods
+
+% subsubsection random_branching_process (end)
+
+% subsection contagion_model (end)
+
+% section lecture_#_12 (end)
 \end{document}
