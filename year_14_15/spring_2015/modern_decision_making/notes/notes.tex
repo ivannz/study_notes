@@ -2743,4 +2743,318 @@ whence
 
 % section revision (end)
 
+\section{Lecture \# 11} % (fold)
+\label{sec:lecture_11}
+
+An overview of module 4:
+\begin{itemize}
+	\item linear classifiers (Fisher approach, and perceptron);
+	\item Decision trees, (bagginng, boosting, adaboost at c.);
+	\item Support Vector Machine (convex optimization);
+	\item Reproducing Kernel Hilbert Spaces (classification and regression);
+	\item Neural Networks;
+	\item (optional) Bayesian regression and classification.
+\end{itemize}
+
+\subsection{Classifiers} % (fold)
+\label{sub:classifiers}
+Probabilistic and discriminative approaches.
+
+One-to-one or one-to-all may result in undefined regions in multi-class problems.
+
+\subsubsection{A reminder on hyperplanes} % (fold)
+\label{ssub:a_reminder_on_hyperplanes}
+Consider a linear space $V$ with $\dim(V)=p$ and an inner product $\langle\rangle$.
+Then a hyperplane is a flat affine subspace $H$ of $V$ of dimension $p-1$. The equation
+of a hyperplane $H$ is given by the equation for $x\in V$
+\[
+\beta_0 + \sum_{k=1}^p \neta_k x_k
+= \beta_0 + \langle x, \beta\rangle
+= 0
+\]
+for some $\beta\in V$ -- a normal vector. Let $\beta^* = \frac{\beta}{\|\beta\|}$.
+
+The signed distance of $y\in V$ to the hyperplane $H$ is given by
+\[\]
+Indeed, for $x_1, x_2\in H$
+\begin{align*}
+	\langle x_1, \beta\rangle &= -\beta_0\\
+	\langle x_2, \beta\rangle &= -\beta_0
+\end{align*}
+whence
+\[\langle x_2-x_1, \beta\rangle = 0\]
+
+Next, for any $y\in V$ there exist a decomposition
+\[ y = x^\perp + x^*\]
+where $x^*\in H$ and $x^\perp = r\beta^*$. Therefore
+\[
+\langle\beta,y\rangle
+= \langle\beta,x^*\rangle + \langle\beta,r\beta^*\rangle
+= 0 + r \frac{\|\beta\|^2}{\|\beta\|}
+\]
+Thus $\inf_{x\in H}\|y-x\| = r\|\beta\|$ (?).
+
+% subsubsection a_reminder_on_hyperplanes (end)
+
+\subsubsection{The leas sqaure apporach} % (fold)
+\label{ssub:the_leas_sqaure_apporach}
+
+The problem of classification is to choose a class among $(c_k)_{k=1}^K$ by using
+$K$ linear discriminant functions: for $x\in \Real^d$ and $k=1,\ldots, K$
+\[y_k(x) = \beta_{k0} + \beta_k'x\]
+Classify by choosing the class with the largest $y_k(x)$.
+
+Let $B$ be a matrix defiend as 
+\begin{align*}
+\tilde{B}' &= \begin{pmatrix}
+	\beta_{10} 	& \beta_{11} 		& \beta_{12} 		& \cdots & \beta_{1d} \\
+	\vdots 	& \vdots	& \vdots 	& \ddots & \vdots \\
+	\beta_{K0} 	& \beta_{K1} 		& \beta_{K2} 		& \cdots & \beta_{Kd} \\
+	\end{pmatrix}_{K\times (D+1)}
+\end{align*}
+Let $\tilde{\beta}_k' = (\beta_{k0}\, \beta_k)$ where $\beta_k = (\beta_{km})_{m=1}^d$.
+
+Furthermore let $t$ be used in a 1-of-K notation $t = e_k$ vector $K\times 1$.
+
+The training data (?)
+\begin{align*}
+T &= \begin{pmatrix}
+	\beta_{10} 	& \beta_{11} 		& \beta_{12} 		& \cdots & \beta_{1d} \\
+	\vdots 	& \vdots	& \vdots 	& \ddots & \vdots \\
+	\beta_{K0} 	& \beta_{K1} 		& \beta_{K2} 		& \cdots & \beta_{Kd} \\
+	\end{pmatrix}_{n\times K}
+\end{align*}
+
+\textbf{Check other's notes!}(?)
+\begin{align*}
+\tilde{X} &= \begin{pmatrix}
+	\beta_{10} 	& \beta_{11} 		& \beta_{12} 		& \cdots & \beta_{1d} \\
+	\vdots 	& \vdots	& \vdots 	& \ddots & \vdots \\
+	\beta_{K0} 	& \beta_{K1} 		& \beta_{K2} 		& \cdots & \beta_{Kd} \\
+	\end{pmatrix}_{n\times (D+1)}
+\end{align*}
+
+Consider a problem of discriminating between two classes. The goal is to match the $t$
+to $y$ by choosing a proper set of coefficients $\tilde{B}$. We want to minimize the
+error function
+\[\text{error} = \frac{1}{2} \tr \bigl(\tilde{X}\tilde{B} - T\bigr)'\bigl(\tilde{X}\tilde{B} - T\bigr)\]
+\textbf{see the picture}
+the solution is given by
+\[
+\bigl(\tilde{X}\tilde{B} - T\bigr)
++ \bigl(\tilde{X}\tilde{B} - T\bigr)'
+= 0
+\]
+whence 
+\[\tilde{B} = (\tilde{X}'\tilde{X})^{-1}(\tilde{X}'T)\]
+
+Least squares estimation in not robust. If there is a third class, on the same
+side of the bi-class hyperplane, then the outlying class will be much heavily
+penalized, whence the hyperplane in this case will fail to properly distinguish
+the first two classes (the plane shifts towards outlier).
+
+The LS solution has the following property: it preserves the linear constraints
+on the target vector. If every observation in the training set satisfies $a't_i + b = 0$
+for all $i=1,\ldots N$ then $a'y(x) + b = 0$ for all $x\in \Real^d$.
+
+Proof:
+The notation $\tilde{B}'\in \Real^{K\times (d+1)}$:
+\[\tilde{B}' = \bigl(\beta_0 \rvert B'\bigr)\]
+with $\beta_0\in \Real^{K\times 1}$ and $\B\in \Real^{K\times K}$.
+The contribution of the bias can hereafter be extracted from the product
+\[\tilde{X}\tilde{B} = \one\beta_0' + \tilde{X}B\]
+
+The LS estimate (the first step):
+\[
+\text{error} = \frac{1}{2} \Tr\bigl\{
+\beta_0\one'\one\beta_0' + \beta_0\one'\tilde{X}B - \beta_0\one'T
++ B\tilde{X}'\one\beta_0' + B\tilde{X}'\tilde{X}B - B\tilde{X}'T
+- T'\one\beta_0' - T'\tilde{X}B + T'T
+\bigr\}
+\]
+differentiating with respect to $\beta_0$ and equating to zero yields
+\[
+\frac{\partial}{\partial \beta_0} \text{error} 
+= n\beta_0 + (XB-T)'\one
+= 0
+\]
+which implies that 
+\[
+\beta_0 = (\one'\one)^{-1} (T-XB)'\one
+\]
+if $\bar{t} = (\one'\one)^{-1}T'\one$ and $\bar{x} = (\one'\one)^{-1}X'\one$ 
+then
+\[\beta_0 = \bar{t} - B'\bar{x}\]
+
+Therefore
+\[
+\text{error}
+= \frac{1}{2} \Tr\bigl\{ (XB + \one( \bar{t} - B'\bar{x} )' )' \times ( \ldots ) \bigr\}
+\]
+Letting $\bar{T} = \one \bar{t}'$ and $\bar{X} = \one \bar{x}'$ gives
+\[
+\text{error}
+= \frac{1}{2} \Tr\Bigl\{ \bigl( (X-\bar{X}) B - [T-\bar{T}] \bigr)' \times (\ldots) \Bigr\}
+\]
+whence finally the target criterion becomes
+\[
+\text{error}
+= \frac{1}{2} \Tr\Bigl\{ ( \hat{X} B - \hat{T} )' \times ( \hat{X} B - \hat{T} ) \Bigr\}
+\]
+which implies that 
+\[B = (\hat{X}'\hat{X})^{-1}\hat{X}'\hat{T}\]
+
+The second step: apply the linear constraints to $\bar{t}$.
+\[
+a'\bar{t} + b
+= a'\frac{1}{N}T'\one + b
+= \frac{1}{N} a'T'\one + b
+= -\frac{1}{N} b\one' \one + b
+\]
+since $a'T' = -b\one'$ by the constraints.
+
+The last step: compute the $y(x)$.
+IT sis given by
+\[
+y(x^*)
+= \beta_0 + B'x^*
+= \bar{t} - B'\bar{x} + B'x^*
+= \bar{t} + B'(x^*-\bar{x})
+= \bar{t} + \hat{T}'\hat{X}(\hat{X}'\hat{X})^{-1}(x^*-\bar{x})
+\]
+now \begin{align*}
+a'y(x^*)
+	&= a'\bar{t} + a'\hat{T}'\hat{X}(\hat{X}'\hat{X})^{-1}(x^*-\bar{x})\\
+\end{align*}
+Simplifying gives
+\[
+a'\hat{T}'
+= a'(T-\bar{T})'
+= a'T'-a'\bar{T}'
+= - b\one' - a'\bar{t}\one'
+= - b\one' - b\one'
+=0
+\]
+QED
+
+% subsubsection the_leas_sqaure_apporach (end)
+
+\subsubsection{Fisher's linear discriminant} % (fold)
+\label{ssub:fisher_s_linear_discriminant}
+
+Suppose $x\in \Real^{p}$ but there are only two classes $K=2$. The main idea is
+to try to reduce the dimensionality of the data, to project it in a ``smart'' way
+to enable easy classification. Use the following projection onto $[\beta]$:
+\[y = \beta'x\]
+usually $x$ do not include the intercept.
+The direction of $\beta$ is fine but, there has to be a decision made on the
+threshold $\beta_0$ of the discriminant hyperplane.
+The classification rule is 
+\[\begin{cases}
+	\text{class}_1, &\text{ if } y(x)\geq -\beta_0\\
+	\text{class}_2, &\text{ otherwise}
+\end{cases}\]
+The rationale : classes are well separated if the mean values are well separated.
+Thus we need to maximize the separation of the projected means onto the flat world
+inside the hyperplane.
+
+The means and their projections are given by
+\[
+\bar{m}_k = \frac{1}{|C_k|}\sum_{x\in C_k} x,
+\text{ and }
+m_k = \beta'\bar{m}_k
+\]
+respectively. Fix the magnitude of $\beta$ since the separation increases to infinity
+with $\|\beta\|$. The lagrangian
+\[\Lcal = \beta'(\bar{m}_2-\bar{m}_1) + \lambda (\beta'\beta - 1)\to\max\]
+whence
+\[\bar{m}_2-\bar{m}_1 + 2\lambda\beta = 0\]
+It turns out to be that the optimal $\beta$ must be parallel to the line between
+$\bar{m}_1$ and $\bar{m}_2$, which is geometrically intuitive:
+\[\beta \propto \bar{m}_1-\bar{m}_2\]
+
+However, it seems that using the class variance might give better discrimination.
+The ideas is the same: project in smart way, but also try to balance the separation
+with the within class variance:
+\[S_k = \sum_{x\in C_k} (\beta'x-\beta'\bar{m}_k)^2\]
+
+Consider the following criterion (Fisher's)
+\[J(\beta) =\frac{(m_1-m_2)^2}{S_1+S_2} \]
+Let's make the dependence on $\beta$ explicit by computing the $S_k$.
+By definition 
+\[
+(m_2-m_1)^2
+= (m_2-m_1)(m_2-m_1)'
+= \beta'(\bar{m}_2-\bar{m}_1)(\bar{m}_2-\bar{m}_1)'\beta
+= \beta'S_B\beta
+\]
+where $S_B$ -- the between class variance matrix (scatter). As for the denominator
+\[
+S_2+S_1
+= \sum_{x\in C_1} (\beta'x-\beta'\bar{m}_1)^2 + \sum_{x\in C_2} (\beta'x-\beta'\bar{m}_2)^2
+= \beta'\Bigl(\sum_{x\in C_1} (x-\bar{m}_1)(x-\bar{m}_1)' + \sum_{x\in C_2} (x-\bar{m}_2)(x-\bar{m}_2)'\Bigr) \beta
+= \beta'S_W\beta
+\]
+Thus the quotient we are trying to minimize is the Rayleigh quotient
+\[J(\beta) = \Rcal = \frac{\beta'S_B\beta}{\beta'S_W\beta}\]
+Reexpress this as an optimization problem with respect to $\beta^* = \beta c$
+to see that $c$ cancel. Therefore it is possible to fix the denominator and
+then maximize the numerator. Thus we will be trying to maximize the 
+\[\beta'S_B\beta\to\max_\beta\]
+subject to $\beta'S_W\beta = 1$. The Lagrangian is
+\[\Lcal = \beta'S_B\beta - \lambda(\beta'S_W\beta-1)\to\max_{\beta,\lambda}\]
+The first order conditions
+\begin{align*}
+	\frac{\partial}{\partial\beta} \Lcal &= S_B\beta - \lambda S_W\beta = 0\\
+	\frac{\partial}{\partial\lambda} \Lcal &= 1 - \beta'\lambda S_W\beta
+\end{align*}
+Which reduces to a generalized eigenvalue-eigenvector problem
+\[
+S_B\beta = \lambda S_W\beta
+\]
+But since $\beta'\lambda S_W\beta=1$ it turns out that
+\[\beta'S_B\beta = \lambda \beta'S_W\beta\]
+whence $\lambda = \beta'S_B\beta$. Therefore in the generalized eigenvalue-eigenvector
+problem the eigenvector $\beta$ with the largest eigenvalue must be chosen. In fact
+it is possible to reduce this generalized problem to the usual eugen-problem.
+If $S_W$ is invertible then the problem can be transformed into
+\[S_W^{-1}S_B \beta = \lambda \beta\]
+otherwise it is necessary to regularize the $S_W$ with $S_W + cI_p$ for $c>0$.
+
+Now notice that
+\[
+S_B\beta
+= (\bar{m}_2-\bar{m}_1)(\bar{m}_2-\bar{m}_1)'\beta
+= (\bar{m}_2-\bar{m}_1)\bigl((\bar{m}_2-\bar{m}_1)'\beta\bigr)_{1\times 1}
+\propto \bar{m}_2-\bar{m}_1
+\]
+whence from the FOC
+\[\beta\propto S_W^{-1} (\bar{m}_2-\bar{m}_1)\]
+
+In order to find the threshold, one could fit the ML mean and variance.
+
+% subsubsection fisher_s_linear_discriminant (end)
+
+\subsubsection{Relation to the LDA} % (fold)
+\label{ssub:relation_to_the_lda}
+
+Again the case of $2$ classes. The LDA was
+\[
+\frac{\Pr\bigl(T=k\lvert X=x\bigr)}{\Pr\bigl(T=j\lvert X=x\bigr)}
+= x'\Sigma^{-1}(\mu_k-\mu_j) + \text{terms independent of } x
+\]
+which is a hyperplane with $\bata = \Sigma^{-1}(\mu_k-\mu_j)$.
+The MLE of $\hat{\Sigma}$ is given by
+\[\hat{\Sigma} = \frac{1}{N}\sum_{k=1}^K \sum_{x\in C_k} (x - \mu_k)(x - \mu_k)'\]
+where $n\hat{\Sigma} = S_W$.
+
+Exercise: show that LDA and Fisher's approach are identical in one special case.
+
+
+% subsubsection relation_to_the_lda (end)
+
+% subsection classifiers (end)
+
+% section lecture_11 (end)
+
 \end{document}
