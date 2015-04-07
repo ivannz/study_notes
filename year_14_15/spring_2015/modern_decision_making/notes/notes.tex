@@ -840,7 +840,7 @@ g(x)
 	\frac{\gamma_{k+1}(x-\xi_k)^3+\gamma_k(\xi_{k+1}-x)^3}{\xi_{k+1}-\xi_k}
 \]
 for all $x\in (\xi_k,\xi_{k+1}]$ and $k=1, K-1$. The regions beyond the boundaries
-by definition must be linear, therefore $g(x) = A_0 (x-\xi_1) + B_0$ for $x\leq \xi_1$
+by definition must be linear, therefore $g(x) = A_0 (\xi_1-x) + B_0$ for $x\leq \xi_1$
 and $g(x) = A_K (x-\xi_1) + B_K$ for $x > \xi_K$.
 
 Now let's for a moment forget about the smoothness constraints and try to find
@@ -848,12 +848,12 @@ the parameters $A_k$ and $B_k$ on each interval $(\xi_k,\xi_{k+1}]$ from the val
 $g_k = g(\xi_k)$. Since $g$ is continuous, for each $k=1,\ldots,K-1$ it must be
 true that $g_k = g(\xi_k-) = g(\xi_k+)$, which is equivalent to
 \begin{align*}
-	g_k &= A_k(\xi_k - \xi_k) + B_k + \frac{1}{6}
-		\frac{\gamma_{k+1}(\xi_k-\xi_k)^3+\gamma_k(\xi_{k+1}-\xi_k)^3}{\xi_{k+1}-\xi_k}\\
-		&= B_k + \frac{1}{6} \gamma_k (\xi_{k+1}-\xi_k)^2\\
-	g_{k+1} &= A_k(\xi_{k+1}-\xi_k) + B_k + \frac{1}{6}
-		\frac{\gamma_{k+1}(\xi_{k+1}-\xi_k)^3+\gamma_k(\xi_{k+1}-\xi_{k+1})^3}{\xi_{k+1}-\xi_k}\\
-		&= A_k(\xi_{k+1}-\xi_k) + B_k + \frac{1}{6} \gamma_{k+1}(\xi_{k+1}-\xi_k)^2
+g_k &= A_k(\xi_k - \xi_k) + B_k + \frac{1}{6}
+	\frac{\gamma_{k+1}(\xi_k-\xi_k)^3+\gamma_k(\xi_{k+1}-\xi_k)^3}{\xi_{k+1}-\xi_k}\\
+	&= B_k + \frac{1}{6} \gamma_k (\xi_{k+1}-\xi_k)^2\\
+g_{k+1} &= A_k(\xi_{k+1}-\xi_k) + B_k + \frac{1}{6}
+	\frac{\gamma_{k+1}(\xi_{k+1}-\xi_k)^3+\gamma_k(\xi_{k+1}-\xi_{k+1})^3}{\xi_{k+1}-\xi_k}\\
+	&= A_k(\xi_{k+1}-\xi_k) + B_k + \frac{1}{6} \gamma_{k+1}(\xi_{k+1}-\xi_k)^2
 \end{align*}
 This linear inhomogeneous system is trivial, as one of the unknowns is already
 solved for 
@@ -862,120 +862,250 @@ where $\delta_k = \xi_{k+1}-\xi_k$ for brevity. The second unknown is thus
 \[A_k = \frac{g_{k+1} - g_k}{\delta_k} - \frac{1}{6} (\gamma_{k+1}-\gamma_k) \delta_k\]
 Plugging these expressions back into $g(x)$ yields
 \begin{align*}
-	g(x) &= \Bigl(
-			\frac{g_{k+1} - g_k}{\delta_k} - \frac{\delta_k}{6} (\gamma_{k+1}-\gamma_k)
-		\Bigr)(x - \xi_k) + g_k\\
-		&\quad- \frac{\delta_k^2}{6} \gamma_k
-		+ \frac{1}{6\delta_k} \bigl(\gamma_{k+1}(x-\xi_k)^3+\gamma_k(\xi_{k+1}-x)^3\bigr)\\
-		&= \frac{g_{k+1}(x - \xi_k) + g_k(\xi_{k+1} - x)}{\delta_k}
-		- \frac{\delta_k}{6} \bigl( \gamma_k \delta_k + (\gamma_{k+1}-\gamma_k) (x - \xi_k) \bigr)\\
-		&\quad+ \frac{1}{6\delta_k} \bigl(\gamma_{k+1}(x-\xi_k)^3+\gamma_k(\xi_{k+1}-x)^3\bigr)
+g(x) &= \Bigl(
+		\frac{g_{k+1} - g_k}{\delta_k} - \frac{\delta_k}{6} (\gamma_{k+1}-\gamma_k)
+	\Bigr) (x - \xi_k) + g_k - \frac{\delta_k^2}{6} \gamma_k\\
+	&\quad + \frac{1}{6\delta_k} \bigl(\gamma_{k+1}(x-\xi_k)^3+\gamma_k(\xi_{k+1}-x)^3\bigr)\\
+	&= \frac{g_{k+1} - g_k}{\delta_k}(x - \xi_k) + g_k
+	- \frac{\delta_k}{6} (\gamma_{k+1}-\gamma_k)(x - \xi_k) - \frac{\delta_k^2}{6} \gamma_k\\
+	&\quad + \frac{\delta_k^2}{6} \Bigl(\gamma_{k+1}\Bigl(\frac{x-\xi_k}{\delta_k}\Bigr)^3+\gamma_k\Bigl(\frac{\xi_{k+1}-x}{\delta_k}\Bigr)^3\Bigr)\\
+	&= \frac{g_{k+1}(x - \xi_k) + g_k(\xi_{k+1} - x)}{\delta_k}
+	- \frac{\delta_k}{6} \bigl( \gamma_{k+1} (x - \xi_k) + \gamma_k (\xi_{k+1}-x)\bigr)\\
+	&\quad + \frac{\delta_k^2}{6} \Bigl(\gamma_{k+1}\Bigl(\frac{x-\xi_k}{\delta_k}\Bigr)^3+\gamma_k\Bigl(\frac{\xi_{k+1}-x}{\delta_k}\Bigr)^3\Bigr)\\
 \end{align*}
 because
 \begin{align*}
-	\frac{g_{k+1} - g_k}{\delta_k}(x - \xi_k) + g_k
+\frac{g_{k+1} - g_k}{\delta_k}(x - \xi_k) + g_k
 	&= \frac{g_{k+1} - g_k}{\delta_k}(x - \xi_k) + \frac{g_k\xi_{k+1} - g_k\xi_k}{\delta_k}\\
-	&= \frac{g_{k+1}(x - \xi_k) + g_k(\xi_{k+1} - x)}{\delta_k}
-\end{align*}
-Simplifying results in
-\begin{align*}
+	&= \frac{g_{k+1}(x - \xi_k) + g_k(\xi_{k+1} - x)}{\delta_k}\\
 \gamma_k \delta_k + (\gamma_{k+1}-\gamma_k) (x - \xi_k)
 	& = \gamma_k \xi_{k+1} - \gamma_k \xi_k
 		+ \gamma_{k+1} x - \gamma_k x
 		- \gamma_{k+1}\xi_k + \gamma_k \xi_k \\
-	&= \gamma_k (\xi_{k+1}-x) + \gamma_{k+1} (x - \xi_k)
+	&= \gamma_{k+1} (x - \xi_k) + \gamma_k (\xi_{k+1}-x) 
 \end{align*}
 Therefore for $x\in (\xi_k,\xi_{k+1}]$
 \begin{align*}
-	g(x) &= \frac{g_{k+1}(x - \xi_k) + g_k(\xi_{k+1} - x)}{\delta_k}\\
-		&\quad- \frac{\delta_k^2}{6} \Bigl( \gamma_{k+1} \frac{x - \xi_k}{\delta_k} + \gamma_k \frac{\xi_{k+1}-x}{\delta_k} \Bigr)\\
-		&\quad+ \frac{\delta_k^2}{6} \Bigl( \gamma_{k+1}\Bigl(\frac{x-\xi_k}{\delta_k}\Bigr)^3+\gamma_k\Bigl(\frac{\xi_{k+1}-x}{\delta_k}\Bigr)^3\Bigr)
+g(x) &= \Bigl( g_{k+1} \frac{x - \xi_k}{\delta_k} + g_k \frac{\xi_{k+1}-x}{\delta_k} \Bigr)
+	- \frac{\delta_k^2}{6} \Bigl( \gamma_{k+1} \frac{x - \xi_k}{\delta_k} + \gamma_k \frac{\xi_{k+1}-x}{\delta_k} \Bigr)\\
+	&\quad+ \frac{\delta_k^2}{6} \Bigl( \gamma_{k+1}\Bigl(\frac{x-\xi_k}{\delta_k}\Bigr)^3+\gamma_k\Bigl(\frac{\xi_{k+1}-x}{\delta_k}\Bigr)^3\Bigr)
 \end{align*}
-which implies
-\begin{align*}
-	g(x) &= \frac{g_{k+1}(x - \xi_k) + g_k(\xi_{k+1} - x)}{\delta_k}\\
-		&\quad- \frac{\delta_k^2}{6} \Bigl(
-			\gamma_{k+1}\frac{x - \xi_k}{\delta_k} \Bigl\{1-\Bigl(\frac{x-\xi_k}{\delta_k}\Bigr)^2\Bigr\}
-			+\gamma_k\frac{\xi_{k+1}-x}{\delta_k} \Bigl\{1-\Bigl(\frac{\xi_{k+1}-x}{\delta_k}\Bigr)^2\Bigr\}
-		\Bigr)
-\end{align*}
-Now since 
+Group the last two terms on the right hand side into
+\[
+- \frac{\delta_k^2}{6} \Bigl(
+	\gamma_{k+1}\frac{x - \xi_k}{\delta_k} \Bigl\{1-\Bigl(\frac{x-\xi_k}{\delta_k}\Bigr)^2\Bigr\}
+	+\gamma_k\frac{\xi_{k+1}-x}{\delta_k} \Bigl\{1-\Bigl(\frac{\xi_{k+1}-x}{\delta_k}\Bigr)^2\Bigr\}
+\Bigr)
+\]
+Since 
 \[
 1-\frac{x-\xi_k}{\delta_k} = \frac{\xi_{k+1}-x}{\delta_k }
 \text{ and }
 1-\frac{\xi_{k+1}-x}{\delta_k} = \frac{x-\xi_k}{\delta_k }
 \]
-the expression of the NCS within the region $(\xi_k, \xi_{k+1}]$ for $k=1,\ldots, K-1$
-reduces to
+and the terms in curly brackets are differences of squares both terms reduce to
+\begin{multline*}
+\ldots = - \frac{\delta_k^2 }{6} \frac{\xi_{k+1}-x}{\delta_k} \frac{x-\xi_k}{\delta_k} \Bigl(
+		\gamma_{k+1}\Bigl\{1+\frac{x-\xi_k}{\delta_k}\Bigr\}
+		+ \gamma_k\Bigl\{1+\frac{\xi_{k+1}-x}{\delta_k}\Bigr\}
+	\Bigr)\\
+= - \frac{1}{6} (\xi_{k+1}-x)(x-\xi_k) \Bigl(
+	\gamma_{k+1}\Bigl\{1+\frac{x-\xi_k}{\delta_k}\Bigr\}
+	+\gamma_k\Bigl\{1+\frac{\xi_{k+1}-x}{\delta_k}\Bigr\}
+\Bigr)
+\end{multline*}
+Thus over the partition within the main region the expression of the NCS becomes
 \begin{align*}
-	g(x) &= \frac{g_{k+1}(x - \xi_k) + g_k(\xi_{k+1} - x)}{\delta_k}\\
-		&\quad- \frac{\delta_k^2 }{6} \frac{\xi_{k+1}-x}{\delta_k} \frac{x-\xi_k}{\delta_k} \Bigl(
-			\gamma_{k+1}\Bigl\{1+\frac{x-\xi_k}{\delta_k}\Bigr\}
-			+ \gamma_k\Bigl\{1+\frac{\xi_{k+1}-x}{\delta_k}\Bigr\}
-		\Bigr)\\
-		&= \frac{g_{k+1}(x - \xi_k) + g_k(\xi_{k+1} - x)}{\delta_k}\\
-		&\quad- \frac{1}{6} (\xi_{k+1}-x)(x-\xi_k) \Bigl(
-			\gamma_{k+1}\Bigl\{1+\frac{x-\xi_k}{\delta_k}\Bigr\}
-			+\gamma_k\Bigl\{1+\frac{\xi_{k+1}-x}{\delta_k}\Bigr\}
-		\Bigr)
+g(x) &= - \frac{1}{6} (\xi_{k+1}-x)(x-\xi_k) \Bigl(
+		\gamma_{k+1}\Bigl\{1+\frac{x-\xi_k}{\delta_k}\Bigr\}
+		+\gamma_k\Bigl\{1+\frac{\xi_{k+1}-x}{\delta_k}\Bigr\}
+	\Bigr)\\
+	&\quad +\Bigl( g_{k+1} \frac{x - \xi_k}{\delta_k} + g_k \frac{\xi_{k+1}-x}{\delta_k} \Bigr)
 \end{align*}
-As for the branches outside the main region, they are given by ...
+for any $x\in(\xi_k, \xi_{k+1}]$ and each $k=1,\ldots, K-1$. Since for all $k=1,\ldots, K-1$
+\[\lim_{x\downarrow\xi_k} g(x) = g(\xi_k-) = g_k\]
+and formally $g_k = g(\xi_k)$, the domain of each polynomial piece can be a closed
+interval $[\xi_k, \xi_{k+1}]$.
 
-Therefore the final NCS is given by:
+As for the branches outside the main region, they are given by the following
+expressions with two as of yet ``free'' parameters:
+\[g(x) = \begin{cases}
+	A_0(\xi_1-x)+B_0, &\text{ if }x\leq \xi_1\\
+	A_K(x-\xi_K)+B_K, &\text{ if }x > \xi_K
+\end{cases}\]
+since integration of $g''(x)$, which is zero over these regions, yields lines. Using
+the continuity conditions $g(\xi_1-)=g_1$ an $g(\xi_K+)=g_K$ at $\xi_1$ and $\xi_K$
+respectively implies that
+\[B_0 = g_1\text{ and }B_K = g_K\]
+
+Recall that the derivative of $g(x)$ over $(\xi_k, \xi_{k+1})$ is (even though $A_k$
+are mostly known)
+\[g'(x) = A_k + \frac{1}{2\delta_k}\bigl(\gamma_{k+1}(x-\xi_k)^2-\gamma_k(x-\xi_{k+1})^2\bigr)\]
+Though the domain of the derivative of each piece is $(\xi_k, \xi_{k+1})$,
+the requirement that the derivative of $g$ be continuous makes it possible to use
+closed intervals instead of half-open.
+
+Now at the boundary at the $\xi_1$ knot the expressions for the left hand and the
+right hand derivatives are
+\begin{align*}
+	g'(x) &= \bigl[ \text{ if } x \leq \xi_1 \bigr]
+		= - A_0\\
+	g'(x) &= \bigl[ \text{ if } x > \xi_1 \bigr]
+		= A_1 + \frac{1}{2\delta_1}\bigl(\gamma_2(x-\xi_1)^2-\gamma_1(x-\xi_2)^2\bigr)
+\end{align*}
+The smoothness requirement
+\[g'(\xi_1+) = \lim_{x\downarrow \xi_k} g'(x) = \lim_{x\uparrow \xi_k} g'(x) = g'(\xi_1-)\]
+implies the following equation
+\[- A_0 = A_1 - \frac{\delta_1}{2}\gamma_1\]
+However $\gamma_1 = 0$ means that $- A_0 = A_1$. At the knot $\xi_K$ similar reasoning
+yields
 \[
-g(x) = \begin{cases}
-	g_1 - (\xi_1-x)g'(\xi_1), &\text{ if } x\leq \xi_1\\
-	g_K - (x-\xi_K)g'(\xi_K), &\text{ if } x\geq \xi_K\\
-	% \frac{(x-\xi_k)g_{k+1} + (\xi_k-x)g_k}{\delta_k}
-	\frac{1}{\delta_k}\bigl(g_{k+1}(x-\xi_k) + g_k(\xi_{k+1}-x)\bigr)
-		- \frac{1}{6}(x-\xi_k)(\xi_{k+1}-x) \cdot \\
-		\quad\cdot\Bigl\{ \gamma_{k+1}\bigl( 1+\frac{x-\xi_k}{\delta_k}\bigr)
-			+ \gamma_k\bigl( 1+\frac{\xi_{k+1}-x}{\delta_k}\bigr) \Bigr\}, &\text{otherwise}
+A_K
+= A_{K-1} + \frac{\delta_{K-1}}{2}\gamma_K
+= A_{K-1}
+\]
+which means that the ``parameters'' of the line segments beyond the main region
+were not free after all.
+
+There must be some relation between $(g_k)_{k=1}^K$ and $(\gamma_k)_{k=2}^{K-1}$
+since continuity and $2$-nd order smoothness across the knots are quite strict
+requirements. For $k=1,\ldots,K-1$ and $x\in [\xi_k,\xi_{k+1}]$
+\[g'(x) = A_k + \frac{1}{2\delta_k}\bigl(\gamma_{k+1}(x-\xi_k)^2-\gamma_k(x-\xi_{k+1})^2\bigr)\]
+The very same smoothness condition $g'(\xi_k+)=g'(\xi_k-)$ for $k=2,\ldots,K-1$ results in
+\begin{align*}
+	g'(\xi_k+) &= A_k + \frac{1}{2\delta_k}\bigl(\gamma_{k+1}(\xi_k-\xi_k)^2-\gamma_k(\xi_k-\xi_{k+1})^2\bigr)\\
+	g'(\xi_k-) &= A_{k-1} + \frac{1}{2\delta_{k-1}}\bigl(\gamma_k(\xi_k-\xi_{k-1})^2-\gamma_{k-1}(\xi_k-\xi_k)^2\bigr)
+\end{align*}
+whence for $k=2,\ldots,K-1$
+\begin{align*}
+	g'(\xi_k+) &= A_k - \frac{1}{2}\gamma_k\delta_k\\
+	g'(\xi_k-) &= A_{k-1} + \frac{1}{2}\gamma_k\delta_{k-1}
+\end{align*}
+This gives an equation
+\[A_k - A_{k-1} = \frac{1}{2}\gamma_k(\delta_k+\delta_{k-1})\]
+where the left hand side is equal to
+\[A_k - A_{k-1}
+= \frac{g_{k+1} - g_k}{\delta_k} - \frac{1}{6} (\gamma_{k+1}-\gamma_k) \delta_k
+- \frac{g_k - g_{k-1}}{\delta_{k-1}} + \frac{1}{6} (\gamma_k-\gamma_{k-1}) \delta_{k-1}
+\]
+After minor rearrangement
+\[
+\frac{1}{6}\bigl(3\gamma_k(\delta_k+\delta_{k-1})
++ (\gamma_{k+1}-\gamma_k) \delta_k
+- (\gamma_k-\gamma_{k-1}) \delta_{k-1} \bigr)
+= \frac{g_{k+1} - g_k}{\delta_k} - \frac{g_k - g_{k-1}}{\delta_{k-1}}
+\]
+The right hand side simplifies to
+\begin{multline*}
+\frac{g_{k+1} - g_k}{\delta_k} - \frac{g_k - g_{k-1}}{\delta_{k-1}}
+= \frac{g_{k+1}\delta_{k-1} - g_k(\delta_k + \delta_{k-1}) + g_{k-1}\delta_k}{\delta_k\delta_{k-1}}\\
+= \frac{1}{\delta_k}g_{k+1} + \Bigl(-\frac{1}{\delta_{k-1}} - \frac{1}{\delta_k}\Bigr)g_k + \frac{1}{\delta_{k-1}}g_{k-1}
+\end{multline*}
+while the right hand side (without the multiplier) reduces to
+\begin{multline*}
+	3\gamma_k(\delta_k+\delta_{k-1}) + (\gamma_{k+1}-\gamma_k) \delta_k - (\gamma_k-\gamma_{k-1}) \delta_{k-1}\\
+	= 3\gamma_k(\delta_k+\delta_{k-1}) + \gamma_{k+1}\delta_k - \gamma_k\delta_k - \gamma_k\delta_{k-1} + \gamma_{k-1}\delta_{k-1}\\
+	= 3\gamma_k(\delta_k+\delta_{k-1}) + \gamma_{k+1}\delta_k - \gamma_k(\delta_k +\delta_{k-1}) + \gamma_{k-1}\delta_{k-1}\\
+	= \gamma_{k+1}\delta_k + 2\gamma_k(\delta_k+\delta_{k-1}) + \gamma_{k-1}\delta_{k-1}
+\end{multline*}
+Hence vectors $g = (g_k)_{k=1}^K\in \Real^{K\times 1}$ and
+$\gamma = (\gamma_k)_{k=2}^{K-1}\in \Real^{(K-2)\times 1}$
+are related through the following equations:
+\[
+\frac{\delta_k}{6} \gamma_{k+1} + \frac{\delta_k+\delta_{k-1}}{3} \gamma_k + \frac{\delta_{k-1}}{6}\gamma_{k-1}
+= \frac{1}{\delta_k}g_{k+1} + \Bigl(-\frac{1}{\delta_{k-1}} - \frac{1}{\delta_k}\Bigr)g_k + \frac{1}{\delta_{k-1}}g_{k-1}
+\]
+Or in the matrix notation
+\[Q'g = R\gamma\]
+where $R\in \Real^{(K-2)\times(K-2)}$ and $Q\in \Real^{K\times(K-2)}$.
+The matrix $R$ is a tri-diagonal square $(K-2)\times(K-2)$ matrix with elements
+\[
+r_{ij} = \begin{cases}
+	\frac{\delta_{i+1}+\delta_i}{3}, &\text{ if } j=i\\
+	\frac{1}{6}\delta_i, &\text{ if } j=i-1\\
+	\frac{1}{6}\delta_{i+1}, &\text{ if } j=i+1\\
+	0, &\text{ otherwise }
 \end{cases}
 \]
-
-
-There must be some relation between the coefficients since continuity across the knots is required.
-\begin{align*}
-g'(x) &= \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k}
-	-\frac{1}{6} \brac{ \frac{\gamma_{k+1}-\gamma_k}{\xi_{k+1}-\xi_k} (x-\xi_k)(\xi_{k+1}-x) }\\
-	&+ \frac{1}{6}\obj{
-		\brac{1+\frac{x-\xi_k}{\xi_{k+1}-\xi_k}}\gamma_{k+1}
-		+ \brac{1+\frac{\xi_{k+1}-x}{\xi_{k+1}-\xi_k}}\gamma_k
-	} \brac{\xi_{k+1} + \xi_k - 2 x}
-\end{align*}
-
-\begin{align*}
-g'(\xi_k+) &= \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} - \frac{1}{6} \brac{\xi_{k+1}-\xi_k}\brac{\gamma_{k+1}+2\gamma_k}\\
-g'(\xi_{k+1}-) &=\frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} + \frac{1}{6} \brac{\xi_{k+1}-\xi_k}\brac{2\gamma_{k+1}+\gamma_k}
-% g'(\xi_k-) =\frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k}
-\end{align*}
-
-Smoothness condition: for $g$ to be an NCS $g'(\xi_k+)=g'(\xi_{k+1}-)$.
-
-Which yields:
-
-\[ \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} - \frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k}\]
-
-
-All of the above in the matrix notation:
-\[\underset{(K-2)\times K}{Q'}\underset{K\times1}{g} = \underset{(K-2)\times(K-2)}{R}\underset{(K-2)\times1}{\gamma}\]
-the matrix $R$ is invertible.
-
-% the structure of $R$ and $Q$ is on the sheet.
-The matrix $Q\in \Real^{K\times (K-2)}$ has the following structure:
+The matrix $Q$ is also a tri-diagonal matrix, but it is rectangular $K\times(K-2)$.
+Its elements are given by
 \[
-\begin{pmatrix}
+q_{ij} = \begin{cases}
+	\frac{1}{\delta_i}, &\text{ if } i=j\\
+	-\Bigl(\frac{1}{\delta_i}+\frac{1}{\delta_{i+1}}\Bigr), &\text{ if } i=j+1\\
+	\frac{1}{\delta_{i+1}}, &\text{ if } i=j+2\\
+	0, &\text{ otherwise }
+\end{cases}
+\]
+The matrices $Q$ and $R$ have the following structure:
+\begin{align*}
+Q &= \begin{pmatrix}
 q_{11} 	& 0 		& 0 		& \cdots & 0 \\
 q_{21} 	& q_{22} 	& 0 		& \cdots & 0 \\
 q_{31} 	& q_{32} 	& q_{33} 	& \cdots & 0 \\
-0 		& q_{43} 	& q_{44} 	& \cdots & 0 \\
-% 0 		& 0 		& q_{54} 	& \cdots & 0 \\
+0 		& q_{42} 	& q_{43} 	& \cdots & 0 \\
+0 		& 0 		& q_{53} 	& \cdots & 0 \\
 \vdots 	& \vdots	& \vdots 	& \ddots & \vdots \\
 0 		& 0			& 0 		& \cdots & q_{K(K-2)}
-\end{pmatrix}
+\end{pmatrix}_{K\times (K-2)}\\
+R &= \begin{pmatrix}
+r_{11} 	& r_{12} 	& 0 		& \cdots & 0 \\
+r_{21} 	& r_{22} 	& r_{23} 	& \cdots & 0 \\
+0 		& r_{32} 	& r_{33} 	& \cdots & 0 \\
+\vdots 	& \vdots	& \vdots 	& \ddots & \vdots \\
+0 		& 0			& 0 		& \cdots & r_{(K-2)(K-2)}
+\end{pmatrix}_{(K-2)\times (K-2)}
+\end{align*}
+respectively. The matrix $R$ is symmetric, since for all $k=1,\ldots, K-2$
+\[
+r_{(k+1)k}
+= r_{(k+1)((k+1)-1)}
+= \frac{\delta_{k+1}}{6}
+= r_{k(k+1)}
 \]
-where (\textbf{CHECK THIS!}) $q_{ii} = -\frac{1}{h_{i-1}}-\frac{1}{h_i}$
+and all other elements except for the diagonal are zero. Furthermore the matrix
+$R$ is positive definite. Indeed the product $\gamma'R\gamma$ is given by
+\begin{align*}
+\gamma'R\gamma
+	&= \sum_{k=2}^{K-1} \gamma_k\Bigl( \frac{\delta_k}{6} \gamma_{k+1} + \frac{\delta_k+\delta_{k-1}}{3} \gamma_k + \frac{\delta_{k-1}}{6}\gamma_{k-1} \Bigr)\\
+	&= \sum_{k=2}^{K-1} \frac{\delta_k}{6} \bigl(\gamma_{k+1}\gamma_k + 2 \gamma_k^2\bigr)
+		+ \frac{\delta_{k-1}}{6} \bigl( 2\gamma_k^2 + \gamma_{k-1}\gamma_k \bigr)\\
+	&= \frac{\delta_{K-1}}{6} \bigl(\gamma_K\gamma_{K-1} + 2 \gamma_{K-1}^2\bigr)
+		+ \sum_{k=2}^{K-2} \frac{\delta_k}{6} \bigl(\gamma_{k+1}\gamma_k + 2 \gamma_k^2\bigr) \\
+	&\quad + \sum_{k=3}^{K-1} \frac{\delta_{k-1}}{6} \bigl( 2\gamma_k^2 + \gamma_{k-1}\gamma_k \bigr)
+		+ \frac{\delta_1}{6} \bigl( 2\gamma_2^2 + \gamma_1\gamma_2 \bigr)\\
+	&= \frac{\delta_{K-1}}{3} \gamma_{K-1}^2
+		+ \sum_{k=2}^{K-2} \Bigl( \frac{\delta_k}{6} \bigl(\gamma_{k+1}\gamma_k + 2 \gamma_k^2\bigr)
+			+ \frac{\delta_k}{6} \bigl( 2\gamma_{k+1}^2 + \gamma_k\gamma_{k+1} \bigr)\Bigr)
+		+ \frac{\delta_1}{3}\gamma_2^2\\
+	&= \frac{\delta_{K-1}}{3} \gamma_{K-1}^2 + \frac{\delta_1}{3}\gamma_2^2
+		+ \sum_{k=2}^{K-2} \frac{\delta_k}{6} \bigl(2\gamma_{k+1}\gamma_k + 2 \gamma_k^2 + 2\gamma_{k+1}^2\bigr)\\
+	&= \frac{\delta_{K-1}}{3} \gamma_{K-1}^2 + \frac{\delta_1}{3}\gamma_2^2
+		+ \sum_{k=2}^{K-2} \frac{\delta_k}{6} \bigl((\gamma_{k+1}+\gamma_k)^2 -\gamma_{k+1}^2 - \gamma_k^2 + 2 \gamma_k^2 + 2\gamma_{k+1}^2\bigr)\\
+	&= \frac{\delta_{K-1}}{3} \gamma_{K-1}^2 + \frac{\delta_1}{3}\gamma_2^2
+		+ \sum_{k=2}^{K-2} \frac{\delta_k}{6} \bigl((\gamma_{k+1}+\gamma_k)^2 + \gamma_k^2 + \gamma_{k+1}^2\bigr)
+\end{align*}
+Therefore the matrix $R$ must be non-singular.
+
+\noindent To reiterate, the final form of the NCS is given by
+\[
+g(x) = \begin{cases}
+	A_0(\xi_1-x)+g_1, &\text{ if }x \leq \xi_1\\
+	A_K(x-\xi_K)+g_K, &\text{ if }x \geq \xi_K\\
+	\Bigl(
+		g_{k+1} \frac{x - \xi_k}{\delta_k} + g_k \frac{\xi_{k+1}-x}{\delta_k}
+	\Bigr) - \frac{1}{6} (\xi_{k+1}-x)(x-\xi_k) \cdot\\
+	\quad\quad\cdot \Bigl\{
+		\gamma_{k+1}\Bigl(1+\frac{x-\xi_k}{\delta_k}\Bigr)
+		+\gamma_k\Bigl(1+\frac{\xi_{k+1}-x}{\delta_k}\Bigr)
+	\Bigr\}, &\text{ if } x\in [\xi_k,\xi_{k+1}]
+\end{cases}
+\]
+with
+\begin{align*}
+	A_0 &= -g'(\xi_1) = - A_1 =  \frac{1}{6} \gamma_2 \delta_1 - \frac{g_2 - g_1}{\delta_1}\\
+	A_K &= g'(\xi_K) = A_{K-1} = \frac{g_K - g_{K-1}}{\delta_{K-1}} + \frac{1}{6} \gamma_{K-1} \delta_{K-1}
+\end{align*}
 
 \noindent\textbf{Theorem}\hfill \\
 The vectors $g$ and $\gamma$ fully specify the NCS if and only if $Q'g = R'\gamma$.
