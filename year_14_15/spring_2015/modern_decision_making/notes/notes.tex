@@ -815,7 +815,8 @@ consecutive knots: for $x\in (\xi_k,\xi_{k+1}]$, $k=1,\ldots, K-1$
 Introduce a set of extra parameters $(\gamma_k)_{k=1}^K$ which are defined as the
 value of the second derivative of $g$ at each knot: $\gamma_k=g''(\xi_k)$.
 Obviously, due to linearity at the ends $\gamma_K = \gamma_1 = 0$.
-Given these 
+% Given these new parameters, let's try to squeeze the parameters from within
+% by the smoothness results
 For $k=1,\ldots, K-1$ the continuity of $g''$ is equivalent to $g''(\xi_k+0) = g''(\xi_k-0)$
 which in terms of $\gamma_k$ is identical to
 \begin{align*}
@@ -831,22 +832,107 @@ resolves into
 Therefore $g''(x)$ on $x\in (\xi_k, \xi_{k+1}]$ for $k=1,\ldots, K-1$ is defined as
 \[g''(x) = \frac{\gamma_{k+1}(x-\xi_k)+\gamma_k(\xi_{k+1}-x)}{\xi_{k+1}-\xi_k}\]
 Integrating on $x\in (\xi_k,\xi_{k+1}]$ yields
-\[g'(x) = c_k + \frac{1}{2}\frac{\gamma_{k+1}(x-\xi_k)^2-\gamma_k(x-\xi_{k+1})^2}{\xi_{k+1}-\xi_k}\]
-(?)...
-%% See 20150405_184027.jpg
-Finally the NCS is given by:
+\[g'(x) = A_k + \frac{1}{2}\frac{\gamma_{k+1}(x-\xi_k)^2-\gamma_k(x-\xi_{k+1})^2}{\xi_{k+1}-\xi_k}\]
+whence second integration yields on the same region results in
+\[
+g(x)
+= A_k(x - \xi_k) + B_k + \frac{1}{6}
+	\frac{\gamma_{k+1}(x-\xi_k)^3+\gamma_k(\xi_{k+1}-x)^3}{\xi_{k+1}-\xi_k}
+\]
+for all $x\in (\xi_k,\xi_{k+1}]$ and $k=1, K-1$. The regions beyond the boundaries
+by definition must be linear, therefore $g(x) = A_0 (x-\xi_1) + B_0$ for $x\leq \xi_1$
+and $g(x) = A_K (x-\xi_1) + B_K$ for $x > \xi_K$.
+
+Now let's for a moment forget about the smoothness constraints and try to find
+the parameters $A_k$ and $B_k$ on each interval $(\xi_k,\xi_{k+1}]$ from the values
+$g_k = g(\xi_k)$. Since $g$ is continuous, for each $k=1,\ldots,K-1$ it must be
+true that $g_k = g(\xi_k-) = g(\xi_k+)$, which is equivalent to
+\begin{align*}
+	g_k &= A_k(\xi_k - \xi_k) + B_k + \frac{1}{6}
+		\frac{\gamma_{k+1}(\xi_k-\xi_k)^3+\gamma_k(\xi_{k+1}-\xi_k)^3}{\xi_{k+1}-\xi_k}\\
+		&= B_k + \frac{1}{6} \gamma_k (\xi_{k+1}-\xi_k)^2\\
+	g_{k+1} &= A_k(\xi_{k+1}-\xi_k) + B_k + \frac{1}{6}
+		\frac{\gamma_{k+1}(\xi_{k+1}-\xi_k)^3+\gamma_k(\xi_{k+1}-\xi_{k+1})^3}{\xi_{k+1}-\xi_k}\\
+		&= A_k(\xi_{k+1}-\xi_k) + B_k + \frac{1}{6} \gamma_{k+1}(\xi_{k+1}-\xi_k)^2
+\end{align*}
+This linear inhomogeneous system is trivial, as one of the unknowns is already
+solved for 
+\[B_k = g_k - \frac{1}{6} \gamma_k \delta_k^2\]
+where $\delta_k = \xi_{k+1}-\xi_k$ for brevity. The second unknown is thus
+\[A_k = \frac{g_{k+1} - g_k}{\delta_k} - \frac{1}{6} (\gamma_{k+1}-\gamma_k) \delta_k\]
+Plugging these expressions back into $g(x)$ yields
+\begin{align*}
+	g(x) &= \Bigl(
+			\frac{g_{k+1} - g_k}{\delta_k} - \frac{\delta_k}{6} (\gamma_{k+1}-\gamma_k)
+		\Bigr)(x - \xi_k) + g_k\\
+		&\quad- \frac{\delta_k^2}{6} \gamma_k
+		+ \frac{1}{6\delta_k} \bigl(\gamma_{k+1}(x-\xi_k)^3+\gamma_k(\xi_{k+1}-x)^3\bigr)\\
+		&= \frac{g_{k+1}(x - \xi_k) + g_k(\xi_{k+1} - x)}{\delta_k}
+		- \frac{\delta_k}{6} \bigl( \gamma_k \delta_k + (\gamma_{k+1}-\gamma_k) (x - \xi_k) \bigr)\\
+		&\quad+ \frac{1}{6\delta_k} \bigl(\gamma_{k+1}(x-\xi_k)^3+\gamma_k(\xi_{k+1}-x)^3\bigr)
+\end{align*}
+because
+\begin{align*}
+	\frac{g_{k+1} - g_k}{\delta_k}(x - \xi_k) + g_k
+	&= \frac{g_{k+1} - g_k}{\delta_k}(x - \xi_k) + \frac{g_k\xi_{k+1} - g_k\xi_k}{\delta_k}\\
+	&= \frac{g_{k+1}(x - \xi_k) + g_k(\xi_{k+1} - x)}{\delta_k}
+\end{align*}
+Simplifying results in
+\begin{align*}
+\gamma_k \delta_k + (\gamma_{k+1}-\gamma_k) (x - \xi_k)
+	& = \gamma_k \xi_{k+1} - \gamma_k \xi_k
+		+ \gamma_{k+1} x - \gamma_k x
+		- \gamma_{k+1}\xi_k + \gamma_k \xi_k \\
+	&= \gamma_k (\xi_{k+1}-x) + \gamma_{k+1} (x - \xi_k)
+\end{align*}
+Therefore for $x\in (\xi_k,\xi_{k+1}]$
+\begin{align*}
+	g(x) &= \frac{g_{k+1}(x - \xi_k) + g_k(\xi_{k+1} - x)}{\delta_k}\\
+		&\quad- \frac{\delta_k^2}{6} \Bigl( \gamma_{k+1} \frac{x - \xi_k}{\delta_k} + \gamma_k \frac{\xi_{k+1}-x}{\delta_k} \Bigr)\\
+		&\quad+ \frac{\delta_k^2}{6} \Bigl( \gamma_{k+1}\Bigl(\frac{x-\xi_k}{\delta_k}\Bigr)^3+\gamma_k\Bigl(\frac{\xi_{k+1}-x}{\delta_k}\Bigr)^3\Bigr)
+\end{align*}
+which implies
+\begin{align*}
+	g(x) &= \frac{g_{k+1}(x - \xi_k) + g_k(\xi_{k+1} - x)}{\delta_k}\\
+		&\quad- \frac{\delta_k^2}{6} \Bigl(
+			\gamma_{k+1}\frac{x - \xi_k}{\delta_k} \Bigl\{1-\Bigl(\frac{x-\xi_k}{\delta_k}\Bigr)^2\Bigr\}
+			+\gamma_k\frac{\xi_{k+1}-x}{\delta_k} \Bigl\{1-\Bigl(\frac{\xi_{k+1}-x}{\delta_k}\Bigr)^2\Bigr\}
+		\Bigr)
+\end{align*}
+Now since 
+\[
+1-\frac{x-\xi_k}{\delta_k} = \frac{\xi_{k+1}-x}{\delta_k }
+\text{ and }
+1-\frac{\xi_{k+1}-x}{\delta_k} = \frac{x-\xi_k}{\delta_k }
+\]
+the expression of the NCS within the region $(\xi_k, \xi_{k+1}]$ for $k=1,\ldots, K-1$
+reduces to
+\begin{align*}
+	g(x) &= \frac{g_{k+1}(x - \xi_k) + g_k(\xi_{k+1} - x)}{\delta_k}\\
+		&\quad- \frac{\delta_k^2 }{6} \frac{\xi_{k+1}-x}{\delta_k} \frac{x-\xi_k}{\delta_k} \Bigl(
+			\gamma_{k+1}\Bigl\{1+\frac{x-\xi_k}{\delta_k}\Bigr\}
+			+ \gamma_k\Bigl\{1+\frac{\xi_{k+1}-x}{\delta_k}\Bigr\}
+		\Bigr)\\
+		&= \frac{g_{k+1}(x - \xi_k) + g_k(\xi_{k+1} - x)}{\delta_k}\\
+		&\quad- \frac{1}{6} (\xi_{k+1}-x)(x-\xi_k) \Bigl(
+			\gamma_{k+1}\Bigl\{1+\frac{x-\xi_k}{\delta_k}\Bigr\}
+			+\gamma_k\Bigl\{1+\frac{\xi_{k+1}-x}{\delta_k}\Bigr\}
+		\Bigr)
+\end{align*}
+As for the branches outside the main region, they are given by ...
+
+Therefore the final NCS is given by:
 \[
 g(x) = \begin{cases}
 	g_1 - (\xi_1-x)g'(\xi_1), &\text{ if } x\leq \xi_1\\
 	g_K - (x-\xi_K)g'(\xi_K), &\text{ if } x\geq \xi_K\\
-	% \frac{(x-\xi_k)g_{k+1} + (\xi_k-x)g_k}{h_k}
-	\frac{1}{h_k}\bigl(g_{k+1}(x-\xi_k) + g_k(\xi_{k+1}-x)\bigr)
+	% \frac{(x-\xi_k)g_{k+1} + (\xi_k-x)g_k}{\delta_k}
+	\frac{1}{\delta_k}\bigl(g_{k+1}(x-\xi_k) + g_k(\xi_{k+1}-x)\bigr)
 		- \frac{1}{6}(x-\xi_k)(\xi_{k+1}-x) \cdot \\
-		\quad\cdot\Bigl\{ g_{k+1}\bigl( 1+\frac{x-\xi_k}{h_k}\bigr)
-			+ g_k\bigl( 1+\frac{\xi_{k+1}-x}{h_k}\bigr) \Bigr\}, &\text{otherwise}
+		\quad\cdot\Bigl\{ \gamma_{k+1}\bigl( 1+\frac{x-\xi_k}{\delta_k}\bigr)
+			+ \gamma_k\bigl( 1+\frac{\xi_{k+1}-x}{\delta_k}\bigr) \Bigr\}, &\text{otherwise}
 \end{cases}
 \]
-where $h_k = \xi_{k+1}-\xi_k$.
 
 
 There must be some relation between the coefficients since continuity across the knots is required.
