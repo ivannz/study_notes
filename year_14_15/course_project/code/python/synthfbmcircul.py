@@ -15,8 +15,6 @@ class synth_fgn(object):
 	"""A class to conveniently generate fractional Gaussian process using
 		a circulant matrix method suggested by Dietrich and Newsam (1997)"""
 	def __init__(self, N, H, sigma = 1.0 ) :
-## Remeber the sample size
-		self.__N = N
 ## The autocorrelation structure for the fBM is constant provided
 ##  the Hurst exponent and the size sample are fixed
 ## "Synthese de la covariance du fGn", Synthesise the covariance
@@ -34,12 +32,12 @@ class synth_fgn(object):
 		R = sigma * sigma * .5 * ( np.abs( R - 1 ) ** (2.0 * H) + np.abs( R + 1 ) ** (2.0 * H) - 2 * np.abs( R ) ** (2.0 * H) )
 ## Generate the first row of the 2Mx2M Toeplitz matrix, where 2M = N + N-2:
 ##  it should be r_0, ..., r_{N-1}, r_{N-2}, ..., r_1
-		Z = np.real( rfft( np.append( R, R[::-1][1:-1] ) ) ) / ( 2 * N - 2 )
+		Z = np.real( rfft( np.append( R, R[::-1][1:-1] ) ) )
 ## The circulant matrix, defined by the autocorrelation structure above
 ##  is necessarily positive definite, which is equivalent to the FFT of any 
 ##  its row being nonegative. Due to numerical we truncate the close to zero
 ##  neagtive fourier coefficients.
-		Z = np.sqrt( np.maximum( Z, 0.0, out = Z ) )
+		Z = np.sqrt( np.maximum( Z, 0.0 ) / ( 2 * N - 2 ) )
 ## Collect the frequencies of the specialized real FFT output by concatenating
 ##  F with F[::-1][1:-1] so that it mathces the output of the complex FFT. Real
 ##  FFT returns (2*N-2)/2+1 = N
@@ -47,6 +45,8 @@ class synth_fgn(object):
 ## The circulant embedding method actually generates a pair of independent
 ##  long-range dependent processes.
 		self.__queue = []
+## Remeber the sample size
+		self.__N = N
 ## Use call semantics for brevity
 	def __call__( self, seed = None ) :
 ## Generate the next sample only if needed.
