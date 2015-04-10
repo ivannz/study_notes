@@ -106,11 +106,15 @@ def xtree_super_crossing( T, P, band_width ) :
 			subx.append( next_hit - last_hit )
 ## Aggregate the directions of excrusions: \/ and /\
 			directions = np.sign( np.diff( P[ last_hit : ( next_hit + 1 ) ] ) )
-## Count the number of /\ excluding the last pair // or \\
+## Count the number of /\ (+-) excluding the last pair //(++) or \\(--)
+##  this counting does not depend on the direction of the parent crossing:
+##  just +- for U and -+ for the rest, except for -- or ++
 			U = np.sum( directions[ 1:-2:2 ] == -1 )
 ## The number of \/ is equal to the total number of subscrossings, without
 ##  the last upward or downward movement.
 			excur.append( ( U, ( next_hit - last_hit ) // 2 - U - 1, directions[ -1 ] ) )
+## The format is (/\, \/, ±1) where sign of the last depends on the direction
+##  of final crossing.
 ## Start a new super-crossing
 			last_hit = next_hit
 		next_hit += 1
