@@ -218,6 +218,65 @@ def xtree_integer_crossings_fast( T, X ) :
 	return ( np.array( lht, np.float ), np.array( lhp, np.int ),
 		np.array( [ ], np.int ), np.empty( (0,3), np.int ) )
 
+def xtree_integer_crossings_superfast( T, X, first_hit = 0.0  ) :
+## Compute the crossing directions
+	cross_d = np.sign( np.diff( X ) )
+## Get the closest integers around each value of the process. Note that by definition
+##  floor(x) = ceil(x) for integers and floor(x) + 1 = ceil(x) for non-integer x.
+	X_floor, X_ceil = np.floor( X ), np.ceil( X )
+## For each crossing (X_t, X_{t+1}) determine the intervals potentially crossed
+##  by it. For an upcrossing round X_t up (ceiling) and X_{t+1} down (floor),
+##  whereas, the levels traversed by a downcrossing are the floor and the ceiling
+##  respectively.
+	X_beg = np.where( cross_d > 0, X_ceil[:-1], X_floor[:-1] )
+	X_end = np.where( cross_d < 0, X_ceil[+1:], X_floor[+1:] )
+## Adjusting the final level in the direction of the crossing helps in detection of
+##  the within-band sideways movements which are non-crossings.
+	X_fin = X_end + cross_d
+	del X_floor, X_ceil
+## Within-band sideways movements occcur when no integer levels were traversed:
+##  when floor(x_0) = ceil(x_1)-1 for x_0>x_1, or ceil(x_0) = floor(x_1)+1 for x_0<x_1
+	mask = np.logical_and( cross_d != 0, X_beg != X_fin )
+## Remove sequential within-band movements to get traversals.
+	tau = np.arange( len( X ) - 1, dtype = np.int )[ mask ]
+## Now it is neccessary to adjust the level each traversal starts with in order
+##  to elimintate movements back to the same just visited level.
+	mask = np.full( len( tau ), X_beg[ tau[ 0 ] ] == first_hit, dtype = np.bool )
+## If the (unadjusted) final level of the previous traversal is equal to the
+##  first level of the current traversal, then the current one is re-crosses the last
+##  level of the previous traversal.
+	mask[ 1: ] = ( X_beg[ tau[ +1: ] ] == X_end[ tau[ :-1 ] ] )
+## Adjust the initially crossed level, compute the sizes of the crossings and
+##  eliminate one-level traversals which do not contribute a crossing.
+	X_beg[ tau[ mask ] ] += cross_d[ tau[ mask ] ]
+	X_size = np.abs( X_fin - X_beg, np.empty( len( X ) - 1, dtype = np.int ) )
+	tau = tau[ X_size[ tau ] > 0 ]
+	del mask, X_end
+## Since, in general it is much more likely that a traversal crosses just one level,
+##  it is more efficient to handle such cases separately and in numpy.
+##  Arcane programming
+	X_size = X_size[ tau ]
+	X_index = 1 + np.cumsum( X_size, dtype = np.int64 )
+	X_total = X_index[ -1 ] ; X_index -= X_size
+## Initalize the final arrays
+	X_times, X_values = np.full( X_total, 0.0, np.float ), np.full( X_total, first_hit, np.float )
+## Select the times and indices of one-level crossings
+	tau1, inx1 = tau[ X_size == 1 ], X_index[ X_size == 1 ]
+## Due to discretized nature of the process the hitting times are approximated with
+##  linear interpolation. The speed is not improved by precalculating the constants.
+	X_values[ inx1 ] = X_beg[ tau1 ]
+	X_times[ inx1 ] = T[ tau1 ] + ( T[ tau1 + 1 ] - T[ tau1 ] ) * ( ( X_beg[ tau1 ] - X[ tau1 ] ) / ( X[ tau1 + 1 ] - X[ tau1 ] ) )
+	tau, inx, size = tau[ X_size > 1 ], X_index[ X_size > 1 ], X_size[ X_size > 1 ]
+	for t, i, s in zip( tau, inx, size ) :
+## In case three or more levels were crossed, create an array and use vectorized arithmetic
+		lines = np.arange( X_beg[ t ], X_fin[ t ], cross_d[ t ], dtype = np.float )
+## Add the levels, traversed by the crossing to the final array.
+		X_values[i:i+s] = lines
+		X_times[i:i+s] = T[ t ] + ( T[ t + 1 ] - T[ t ] ) * ( ( lines - X[ t ] ) / ( X[ t + 1 ] - X[ t ] ) )
+	return ( X_times, X_values, np.array( [ ], np.int ), np.empty( (0,3), np.int ) )
+
+
+
 ################################################################################
 ################################# CODE REVIEW! #################################
 ################################################################################
