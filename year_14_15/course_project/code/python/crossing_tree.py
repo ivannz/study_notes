@@ -83,8 +83,9 @@ def xtree_super_crossing( T, P, band_width ) :
 ## Instead of initializing the lists with the first hit, add it
 	lhp.append( P[ last_hit ] )
 	lht.append( T[ last_hit ] )
+	directions = np.sign( np.diff( P ) )
 	while next_hit < len( P ) :
-## Find the first time, when the crossing left the ±2 band. This logic
+## Find the first time, when the crossing left the +\-2 band. This logic
 ##  critically depends on the assumption that the grid levels are
 ##  crossed in succession. # Caching the last hit does not help.
 		if abs( P[ last_hit ] - P[ next_hit ] ) >= band_width :
@@ -98,21 +99,22 @@ def xtree_super_crossing( T, P, band_width ) :
 ##  the array, will have been caught.
 			lhp.append( P[ next_hit ] )
 			lht.append( T[ next_hit ] )
-## Owen Daffyd Jones 2005: "The first apparent crosing at each level
+## Owen Daffyd Jones 2005: "The first apparent crossing at each level
 ##  should be excluded, since for a non-Markov process the path from
 ##  T^n_0 to T^n_1 is not a true crossing" [Citation needed]
 			# if last_hit > 0 :
 ## Count the number of excursions (children in the crossing tree).
 			subx.append( next_hit - last_hit )
-## Aggregate the directions of excrusions: \/ and /\
-			directions = np.sign( np.diff( P[ last_hit : ( next_hit + 1 ) ] ) )
+## Aggregate the directions of excursions: \/ and /\
+			# directions = np.sign( np.diff( P[ last_hit : ( next_hit + 1 ) ] ) )
+			dirs = directions[ last_hit : next_hit ]
 ## Count the number of /\ (+-) excluding the last pair //(++) or \\(--)
 ##  this counting does not depend on the direction of the parent crossing:
 ##  just +- for U and -+ for the rest, except for -- or ++
-			U = np.sum( directions[ 1:-2:2 ] == -1 )
-## The number of \/ is equal to the total number of subscrossings, without
+			U = np.sum( dirs[ 1:-2:2 ] == -1 )
+## The number of \/ is equal to the total number of subcrossings, without
 ##  the last upward or downward movement.
-			excur.append( ( U, ( next_hit - last_hit ) // 2 - U - 1, directions[ -1 ] ) )
+			excur.append( ( U, ( next_hit - last_hit ) // 2 - U - 1, dirs[ -1 ] ) )
 ## The format is (/\, \/, ±1) where sign of the last depends on the direction
 ##  of final crossing.
 ## Start a new super-crossing
@@ -296,6 +298,84 @@ def xtree_integer_crossings_superfast( T, X ) :
 		X_values[ i : j ] = lines
 		X_times[ i : j ] = T[ t ] + ( T[ t + 1 ] - T[ t ] ) * ( ( lines - X[ t ] ) / ( X[ t + 1 ] - X[ t ] ) )
 	return ( X_times, X_values, np.empty( 0, np.int ), np.empty( (0,3), np.int ) )
+
+## Adaptive selection of the basic (coarsest) grid scale is based on the standard
+##  deviation of increments of the sample path of process.
+def xtree_build_superfast( T, X, delta = None, max_height = float( 'inf' ) ) :
+## Set up the crossing tree structure
+	hp = list( ) ; ht = list( ); hx = list( ) ; ex = list( )
+## By default, delta, the maximum grid spacing, is the standard
+##  deviation of the increments.
+	delta = np.std( np.diff( X ) ) if delta is None else delta
+## Rescale the sample path, so that the grid base scale is 1.0
+	Z = ( X - X[ 0 ] ) / delta
+## First compute the crossing times and points of the finest
+##  integer grid
+	lht0, lhp0, lhx0, lex0 = xtree_integer_crossings_superfast( T, Z )
+## Add the times and property translated point to the master queue
+	hp.append( lhp0 * delta + X[ 0 ] )
+	ht.append( lht0 )
+	hx.append( lhx0 )
+	ex.append( lex0 )
+## If the height restriction permits and the crossings did occur
+##  iteratively construct crossings of increasingly coarser grids.
+	height = 0
+	while len( lhp0 ) > 1 and height < max_height :
+## Advnace to the next level of the crossing tree and reduce the scale of
+##  the sample path.
+		height += 1
+		delta *= 2
+		Z = ( X - X[ 0 ] ) / delta
+## Compute the crossing times and points
+		lht1, lhp1, lhx1, lex1 = xtree_integer_crossings_superfast( T, Z )
+## Since the crossing times are linearly interpolated, the twofold descaling
+##  does not affect the crossing times of the even leves. Thus it is possible
+##  to match exactly the times on the consecutive levels of tree.
+		if False :
+## The very last crossing of the current level has either no nontrvival offspring
+##  or is incomplete. 
+## If we encountered a super-crossing while within the array,
+##  commit it to our queue. Note that we do not loose a "crossing"
+##  if we just leave this loop on overshooting the length of
+##  the array. This is because in this case the last crossing
+##  is an incomplete one, and a complete one, with the last within
+##  the array, will have been caught.
+
+			hits = np.searchsorted( lht0, np.concatenate( ( lht1, [ np.infty ] ) ) ) #
+			directions = np.concatenate( ( np.sign( np.diff( lhp0 ) ), [ 0.0 ] ) )
+		else :
+			hits = np.searchsorted( lht0, lht1 )
+			directions = np.sign( np.diff( lhp0 ) )
+## Owen Daffyd Jones 2005: "The first apparent crossing at each level
+##  should be excluded, since for a non-Markov process the path from
+##  T^n_0 to T^n_1 is not a true crossing" [Citation needed]
+		lht0, lhp0 = lht1, lhp1
+		lhit, fhit = hits[+1:]//2 - 1, hits[:-1]//2
+		fdir = directions[ 1::2 ]
+## Aggregate the directions of up-down excursions /\. The down-up |/ are computed
+##  based on these and the number of pairs of sub-crossings.
+		mask = ( fdir == -1 )
+		mask[ lhit ] = False
+		ud_excur = np.cumsum( mask )
+## The format is (/\, \/, ±1) where sign of the last depends on the direction
+##  of final crossing.
+		excursions = np.empty( ( len( hits ) - 1, 3 ), np.int )
+## Count the number of /\ (+-) excluding the last pair //(++) or \\(--)
+##  this counting does not depend on the direction of the parent crossing:
+##  just +- for U and -+ for the rest, except for -- or ++
+		excursions[:,0] = ud_excur[ lhit ] - np.where( fhit > 0, ud_excur[ fhit-1 ], 0 )
+## The number of \/ is equal to the total number of subcrossings, without
+##  the last upward or downward movement.
+		excursions[:,1] = lhit - fhit - excursions[:,0]
+## Record the direction
+		excursions[:,2] = fdir[ lhit ]
+		hp.append( lhp0 * delta + X[ 0 ] )
+		ht.append( lht0 )
+## Count the number of offspring of the current scale crossings. This is just
+##  the number of subcrossings between two consecutive lower-scale crossings. 
+		hx.append( np.array( np.diff( hits ), np.int ) )
+		ex.append( excursions )
+	return ( ht, hp, hx, ex )
 
 ################################################################################
 ################################# CODE REVIEW! #################################
