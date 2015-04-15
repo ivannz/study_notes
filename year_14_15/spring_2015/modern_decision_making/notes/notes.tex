@@ -26,12 +26,13 @@
 \newcommand{\Ccal}{\mathcal{C}}
 \newcommand{\Ncal}{\mathcal{N}}
 \newcommand{\Lcal}{\mathcal{L}}
-\newcommand{\Ex}[0]{{\mathbb{E}}}
+\newcommand{\ex}{\mathbb{E}}
 \newcommand{\pr}[0]{{\mathbb{P}}}
 \newcommand{\Var}[0]{{\text{Var}}}
 \newcommand{\var}[0]{{\text{var}}}
 \newcommand{\RSS}{\text{RSS}}
 \newcommand{\argmin}{\mathop{\text{argmin}}}
+\newcommand{\argmax}{\mathop{\text{argmax}}}
 \newcommand{\tr}{\text{tr}}
 \newcommand{\one}{\mathbf{1}}
 \newcommand{\rank}{\mathop{\text{rank}}\nolimits}
@@ -109,7 +110,7 @@ The analysis of the problem may now fork:
 \end{description}
 
 Statistical decision theory helps decide on a functional form of $y(\cdot)$:
-choose $y(\cdot)$ so a to minimize the expected loss functional $\Ex_{X,T} L(T,y(X))$
+choose $y(\cdot)$ so a to minimize the expected loss functional $\ex_{X,T} L(T,y(X))$
 over the bivariate distribution of the input data.
 This way the incorrect estimation of $t$ by $y(x)$ given $x$ is penalized.
 
@@ -128,27 +129,27 @@ usual $\int f\bar{g} d\mu$ inner product.
 % Which approach to use?
 The joint randomness of $(X,T)$ leads to the following problem in the case of
 $L^2$ loss function:
-\[\Ex_{X,T} (T-y(X))^2 \to \min_y\]
+\[\ex_{X,T} (T-y(X))^2 \to \min_y\]
 Using the tower property of the conditional expectation the optimal $y$ is the
-conditional expectation $\phi(X)\defn \Ex(T\rvert X)$. Indeed, since
-$\Ex_{T\rvert X} \bigl(T-\phi(X) \bigr) = 0$, the mean squared error is
+conditional expectation $\phi(X)\defn \ex(T\rvert X)$. Indeed, since
+$\ex_{T\rvert X} \bigl(T-\phi(X) \bigr) = 0$, the mean squared error is
 \begin{align*}
-	\Ex_{X,T} \bigl(T-y(X)\bigr)^2 &= \Ex_{X} \Bigl( \Ex_{T\rvert X} (T-y(X))^2 \Bigr) \\
-		&= \Ex_X \Bigl( \Ex_{T\rvert X} \bigl( (T-\phi(X))^2+(\phi(X)-y(X))^2 \bigr) + \\
-			&\quad + 2 \Ex_{T\rvert X} (T-\phi(X))(\phi(X)-y(X)) \Bigr) \\
-		&= \Ex_X \bigl( (\phi(X)-y(X))^2 + \Ex_{T\rvert X} (T-\phi(X))^2 \bigr) + \\
-			&\quad + 2 \Ex_X \bigl((\phi(X)-y(X)) \Ex_{T\rvert X} (T-\phi(X)) \bigr) \\
-		&= \Ex_X \bigl( \Ex_{T\rvert X} (T-\phi(X))^2 + \Ex_{T\rvert X} (\phi(X)-y(X))^2 \bigr)
+	\ex_{X,T} \bigl(T-y(X)\bigr)^2 &= \ex_{X} \Bigl( \ex_{T\rvert X} (T-y(X))^2 \Bigr) \\
+		&= \ex_X \Bigl( \ex_{T\rvert X} \bigl( (T-\phi(X))^2+(\phi(X)-y(X))^2 \bigr) + \\
+			&\quad + 2 \ex_{T\rvert X} (T-\phi(X))(\phi(X)-y(X)) \Bigr) \\
+		&= \ex_X \bigl( (\phi(X)-y(X))^2 + \ex_{T\rvert X} (T-\phi(X))^2 \bigr) + \\
+			&\quad + 2 \ex_X \bigl((\phi(X)-y(X)) \ex_{T\rvert X} (T-\phi(X)) \bigr) \\
+		&= \ex_X \bigl( \ex_{T\rvert X} (T-\phi(X))^2 + \ex_{T\rvert X} (\phi(X)-y(X))^2 \bigr)
 \end{align*}
 
 The latter conditional expectation is vanishes whenever $y=\phi$, whilst the first
 one is independent of $y$ and can be considered as the irreducible variance due
 to structural variance. The mean prediction error is the irreducible variance and
 the approximation error:
-\[\text{error} \defn \Ex_X \Var(T\rvert X) + \Ex_x (\phi(X)-y(X))^2 \]
+\[\text{error} \defn \ex_X \Var(T\rvert X) + \ex_x (\phi(X)-y(X))^2 \]
 
-However it is never possible to achieve $y(x) = \Ex(T\rvert X=x)$.
-Therefore some insight is needed on $\Ex_{T\rvert X} (\phi(X)-y(X))^2$.
+However it is never possible to achieve $y(x) = \ex(T\rvert X=x)$.
+Therefore some insight is needed on $\ex_{T\rvert X} (\phi(X)-y(X))^2$.
 \begin{description}
 	\item[Frequentist] $\pr\bigl(\Dcal\rvert \Theta\bigr)$ -- uncertainty is due
 	to dataset;
@@ -160,50 +161,50 @@ Therefore some insight is needed on $\Ex_{T\rvert X} (\phi(X)-y(X))^2$.
 
 Error is for a particular training dataset, on which the $y$ is estimated. In effect
 the functional form of $y$ depends on the data set $D$:
-\[\Ex_\Dcal(\text{Error}_\Dcal) = \text{Noise} + \Ex_\Dcal \Ex_X \bigl( y(x,D)-\phi(x) \bigr)^2\]
-where noise is defined as $\Ex_X \Var(T\rvert X)$.
-Now put $f(x) \defn \Ex_\Dcal y(x,D)$.
+\[\ex_\Dcal(\text{Error}_\Dcal) = \text{Noise} + \ex_\Dcal \ex_X \bigl( y(x,D)-\phi(x) \bigr)^2\]
+where noise is defined as $\ex_X \Var(T\rvert X)$.
+Now put $f(x) \defn \ex_\Dcal y(x,D)$.
 \begin{align*}
-	\Ex_\Dcal( y(x,D)-\phi(x) \pm f(x) )^2
-		& = \Ex_\Dcal( y(x,D) - f(x) )^2 + \Ex_\Dcal( f(x) - \phi(x) )^2 \\
-			&\quad + 2 \Ex_\Dcal( y(x,D) - f(x) )( f(x) - \phi(x) ) \\
-		& = \Ex_\Dcal( y(x,D) - f(x) )^2 + ( f(x) - \phi(x) )^2 \\
-			&\quad + 2( f(x) - \phi(x) ) \Ex_\Dcal( y(x,D) - f(x) ) \\
-		& = \Ex_\Dcal( y(x,D) - f(x) )^2 + ( f(x) - \phi(x) )^2 \\
+	\ex_\Dcal( y(x,D)-\phi(x) \pm f(x) )^2
+		& = \ex_\Dcal( y(x,D) - f(x) )^2 + \ex_\Dcal( f(x) - \phi(x) )^2 \\
+			&\quad + 2 \ex_\Dcal( y(x,D) - f(x) )( f(x) - \phi(x) ) \\
+		& = \ex_\Dcal( y(x,D) - f(x) )^2 + ( f(x) - \phi(x) )^2 \\
+			&\quad + 2( f(x) - \phi(x) ) \ex_\Dcal( y(x,D) - f(x) ) \\
+		& = \ex_\Dcal( y(x,D) - f(x) )^2 + ( f(x) - \phi(x) )^2 \\
 \end{align*}
 
 Therefore the expected value of the loss is 
-\[\Ex_\Dcal(\text{Error}_\Dcal) = \text{Noise} + \text{Variance} + \text{Bias}^2\]
+\[\ex_\Dcal(\text{Error}_\Dcal) = \text{Noise} + \text{Variance} + \text{Bias}^2\]
 with the variance is due to the fact that the instance of $y$ is not static with
 varying dataset $D$, and the bias is the measure of average closeness of the
-approximation $y(\cdot)$ to the real conditional expectation $\Ex(T\rvert X)$.
+approximation $y(\cdot)$ to the real conditional expectation $\ex(T\rvert X)$.
 This is the decomposition of the loss into systemic noise, bias and variance.
 
 % Non-parametric approach + low dimension: smoothing local data (kNN -- $k$ nearest neighbours).
 
 Parametric approach would require a parametric expression of $y(\cdot)$ as an
-approximation of $\Ex(T\rvert X)$ at every $x$ (or at most almost all).
+approximation of $\ex(T\rvert X)$ at every $x$ (or at most almost all).
 
 Suppose $\Lcal^2$ is the space in which the best approximation of $\phi(X)$ is
-searched for. Projecting $\Ex(T\rvert X)$ onto $\Lcal^2$ yields $\phi(X) = h^\perp(X) + h(X)$,
+searched for. Projecting $\ex(T\rvert X)$ onto $\Lcal^2$ yields $\phi(X) = h^\perp(X) + h(X)$,
 where $h^\perp \perp \Lcal^2$ (i.e. $\langle h^\perp,g\rangle = 0$ for all
 $g\in \Lcal$) and $h\in \Lcal^2$.
 
 % Here should be a picture of the projection: the conditional expectation is projected onto the subspace of square integrable functions.
 
-% \Ex_\Dcal y(X,D) -- is an element of the 
+% \ex_\Dcal y(X,D) -- is an element of the 
 
 Since $f-h\in\Lcal^2$ it must be true that
-\[\Ex_X (f(X) - h(X)) h^\perp(X) = \langle f-h, h^\perp\rangle = 0 \]
+\[\ex_X (f(X) - h(X)) h^\perp(X) = \langle f-h, h^\perp\rangle = 0 \]
 whence the following decomposition must hold:
 \begin{align*}
-	\text{Bias}^2 &= \Ex_X \bigl( \Ex_\Dcal y(X,D) - \phi(X) \bigr)^2 
-		= \Ex_X (f(X) - h^\perp(X) - h(X))^2 \\
-		& = \Ex_X (f(X) - h)^2 + \Ex_X (h^\perp(X))^2 + \Ex_X (f(X) - h(X)) h^\perp(X) \\
-		& = \Ex_X (f(X) - h(X))^2 + \Ex_X (h^\perp(X))^2
+	\text{Bias}^2 &= \ex_X \bigl( \ex_\Dcal y(X,D) - \phi(X) \bigr)^2 
+		= \ex_X (f(X) - h^\perp(X) - h(X))^2 \\
+		& = \ex_X (f(X) - h)^2 + \ex_X (h^\perp(X))^2 + \ex_X (f(X) - h(X)) h^\perp(X) \\
+		& = \ex_X (f(X) - h(X))^2 + \ex_X (h^\perp(X))^2
 \end{align*}
 This means that the squared bias is the sum of how close the model is to the projection
-of $\Ex(T\rvert X)$ onto $\Lcal^2$, and how well the projection approximates the
+of $\ex(T\rvert X)$ onto $\Lcal^2$, and how well the projection approximates the
 conditional expectation itself.
 
 In linear regression problems the space $\Lcal^2$ is taken to be the set of all
@@ -213,7 +214,7 @@ linear functions of $X$.
 \label{sub:linear_regression}
 
 Suppose $X$ is a $p$-dimensional vector of features and that we attempt to approximate
-the $\Ex(T\rvert X)$ with $y(x) \defn \beta_0 + \sum_{k=1}^p \beta_k x_k$.
+the $\ex(T\rvert X)$ with $y(x) \defn \beta_0 + \sum_{k=1}^p \beta_k x_k$.
 
 In effect we suppose the following statistical model
 \[T = \beta_0 + \sum_{k=1}^p \beta_k X_p + \epsilon;\,\epsilon\sim\Ncal(0,\sigma^2)\]
@@ -261,7 +262,7 @@ Therefore $\frac{\partial^2}{\partial \beta\partial \beta}\RSS = 2 X'X \geq 0$,
 whence the Least Squares solution $\hat{\beta} \defn \brac{X'X}^{-1} X'T$ is indeed
 the minimizer of the RSS.
 
-The best linear approximation to $\Ex(T\rvert X)$ is the projection of $T$ onto
+The best linear approximation to $\ex(T\rvert X)$ is the projection of $T$ onto
 the space of linear functionals of $X$.
 
 The matrix $\hat{H} \defn X\brac{X'X}^{-1}X'$ is called the \textbf{hat matrix} and
@@ -1108,90 +1109,212 @@ with
 \end{align*}
 
 \noindent\textbf{Theorem}\hfill \\
-The vectors $g$ and $\gamma$ fully specify the NCS if and only if $Q'g = R'\gamma$.
-
-When this is satisfied, then 
-\[\int_a^b \abs{g''(s)}^2 ds = \gamma' R \gamma = g' Q R^{-1} R R^{-1} Q g = g' K g\]
-
-The nice observation is that this integral can be used as a penalty term in the regression problem.
-
+The vectors of values $g$ and $2$-nd derivatives $\gamma$ fully specify the NCS
+if and only if $Q'g = R'\gamma$. When this is satisfied, then $\gamma = R^{-1}Q'g$ and
+\[
+\int_a^b \abs{g''(s)}^2 ds
+= \gamma' R \gamma
+= g' Q R^{-1} R R^{-1} Q' g
+= g' K g
+\]
+where the ``penalty matrix'' $K = Q R^{-1} Q'$ is a positive semi-definite matrix. Indeed,
 \begin{align*}
-	\int_a^b \abs{g''(s)}^2 ds &= \induc{\brac{g''(s)g'(s)}}_a^b - \int_a^b g'(s) g'''(s) ds \\
-% Since on $(a, \xi_1]$ and $[\xi_K, b)$ the function $g$ is linear.
-	&= - \int_{\xi_1}^{\xi_K} g'(s) g'''(s) ds = - \sum_{k=1}^{K-1} \int_{\xi_k}^{\xi_{k+1}} g'(s) g'''(s) ds\\
-% Due to piecewise linearity
+	\int_a^b \bigl|g''(s)\bigr|^2 ds
+% Simple integration by parts
+	&= \Bigl. g''(s) g'(s) \Bigr\rvert_a^b - \int_a^b g'(s) g'''(s) ds \\
+% Since on $(a, \xi_1]$ and $[\xi_K, b)$ the function $g$ is linear. And g''(a) = g''(b) = 0
+	&= - \int_{\xi_1}^{\xi_K} g'(s) g'''(s) ds
+		= - \sum_{k=1}^{K-1} \int_{\xi_k}^{\xi_{k+1}} g'(s) g'''(s) ds\\
+% Due to piecewise linearity and continuity of g''
 	&= - \sum_{k=1}^{K-1} \int_{\xi_k}^{\xi_{k+1}} g'(s) \frac{\gamma_{k+1}-\gamma_k}{\xi_{k+1}-\xi_k} ds\\
-%  But $g'''$ is constant over each interval
+% But g''' is constant over each interval (and the Lebesgue measure has  dx({s}) = 0)
 	&= - \sum_{k=1}^{K-1} \frac{\gamma_{k+1}-\gamma_k}{\xi_{k+1}-\xi_k} \int_{\xi_k}^{\xi_{k+1}} g'(s) ds\\
-%  Since \int_{\xi_k}^{\xi_{k+1}} g'(s) ds = g(\xi_{k+1}) - g(\xi_k)
-	&= - \sum_{k=1}^{K-1} \frac{\gamma_{k+1}-\gamma_k}{\xi_{k+1}-\xi_k} \brac{\gamma_{k+1}-\gamma_k}\\
-	&= - \sum_{k=2}^{K-2} \brac{\frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} - \frac{g_k-g_{k-1}}{\xi_{k+1}-\xi_k}} \gamma_k \\
-	& = \gamma' Q' g = \gamma' R \gamma
+% Since \int_{\xi_k}^{\xi_{k+1}} g'(s) ds = g(\xi_{k+1}) - g(\xi_k)
+	&= - \sum_{k=1}^{K-1} \frac{\gamma_{k+1}-\gamma_k}{\xi_{k+1}-\xi_k} \bigl(g_{k+1}-g_k\bigr)\\
+	&= \sum_{k=1}^{K-1} \gamma_k\frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k}
+		- \sum_{k=1}^{K-1} \gamma_{k+1}\frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k}\\
+% Since \gamma_1 = \gamma_K = 0
+	&= \sum_{k=2}^{K-1} \gamma_k \Bigl(\frac{g_{k+1}-g_k}{\xi_{k+1}-\xi_k} - \frac{g_k-g_{k-1}}{\xi_k-\xi_{k-1}} \Bigr)\\
+% By definition of Q'g
+	&= \sum_{k=2}^{K-1} \gamma_k \bigl[Q'g\bigr]_k\\
+	&= \gamma' Q' g = \gamma' R \gamma
 \end{align*}
+A nice thing is that this integral can be used as a penalty term in a regularized
+regression problem.
 
-Putting things in other words:
-the NCS has the minimum value of the smoothness integral among all smooth curves interpolating the data.
+ANother important property of the NCS is summarized in the following theorem:
+\noindent \textbf{Theorem}\hfill\\
+the NCS has the minimum value of the smoothness integral $\int_a^b |g''(s)| ds$
+among all $C^2[a,b]$-smooth curves interpolating the data $(\xi_k, g_k)_{k=1}^K$.
 
-This means that formally we have the following:
-with at leas two knots and $g$ being the NCS interpolating $z_1,\ldots,z_K$ on knots $\xi_1,\ldots,\xi_K$ within a bounded interval.
+This means that formally we have the following: if $K\geq 2$ and $g$ is the NCS,
+interpolating $g_1,\ldots,g_K$ on knots $a\leq \xi_1 <\ldots<\xi_K\leq b$ within
+a bounded interval $[a,b]$, then for any other interpolating function $\tilde{g}$
+on the same mesh, the total variation of $\tilde{g}''$ is necessarily grater than
+that of $g$.
 
-Then for any other interpolating function on the same mesh $\bar{g}$, the total variation of $\bar{g}''$ is necessarily grater than that of the NCS.
-
-
-The function $h \defn g - \bar{g}$ has root at the knots $\xi_k$
-Consider the difference of these integrals. 
+Indeed, consider an at least $C^2[a,b]$ smooth function $\tilde{g}$, which interpolates
+the data $(\xi_k, g_k)_{k=1}^K$. Then the function $h \defn g - \tilde{g}$ has roots at
+knots $(\xi_k)_k$. First notice that (true for any $g$ with piecewise linear second
+derivative)
 \begin{align*}
 	\int_a^b h'' g'' ds
-%% Integrate by part using the nice properties of g 
-	& = \brac{h'(s)g''(s)}_a^b - \int_a^b h'(s) g'''(s) ds \\
-%% since g''' is zero outside \clo{\xi_1, \xi_K} and g'' is zero at the endpoints of the interval \clo{a,b}
+%% Integrate by parts using the nice properties of g 
+	& = \Bigl. h'(s) g''(s)\Bigr\rvert_a^b - \int_a^b h'(s) g'''(s) ds \\
+%% since g''' is zero outside [\xi_1, \xi_K] and g'' is zero at the
+%%  endpoints of the interval [a,b]
 	& = - \int_{\xi_1}^{\xi_K} h'(s) g'''(s) ds \\
 	& = - \sum_{k=1}^{K-1} \int_{\xi_k}^{\xi_{k+1}} h'(s) g'''(s) ds \\
-	& = - \sum_{k=1}^{K-1}  g'''(\xi_k+) \int_{\xi_k}^{\xi_{k+1}} h'(s) ds \\
-	& = - \sum_{k=1}^{K-1}  g'''(\xi_k+) \brac{h(\xi_{k+1})-h(\xi_k)} = 0
+%% g''' is piecewise constant
+	& = \Bigl[g'''(x) = C_k\text{ on } x\in[\xi_k, \xi_{k+1}]\Bigr]
+	& = - \sum_{k=1}^{K-1}  C_k \int_{\xi_k}^{\xi_{k+1}} h'(s) ds \\
+	& = - \sum_{k=1}^{K-1}  C_k (h(\xi_{k+1})-h(\xi_k)) = 0
 \end{align*}
-
+The total variation of the $2$-nd derivative of $\tilde{g}$ is
 \begin{align*}
-\int_a^b \abs{\bar{g}''}^2 ds
-	&= \int_a^b \abs{g'' + h''}^2 ds = \int_a^b \abs{g''}^2 + \abs{h''}^2 ds + \int_a^b 2h''g'' ds\\
-	&= \int_a^b \abs{g''}^2 + \abs{h''}^2 ds \geq \int_a^b \abs{g''}^2 ds
+	\int_a^b |\tilde{g}''|^2 ds
+	&= \int_a^b \bigl|g'' + h''\bigr|^2 ds
+	= \int_a^b |g''|^2 + |h''|^2 ds + 2 \int_a^b h'' g'' ds\\
+	&= \int_a^b |g''|^2 + |h''|^2 ds \geq \int_a^b |g''|^2 ds
 \end{align*}
+Now, if $\tilde{g} = g+h \in C^2[a,b]$ interpolates the knots and is such that
+\[\int_a^b |\tilde{g}''|^2 ds = \int_a^b |g''|^2 ds\]
+then $\int_a^b |h''|^2 ds = 0$, which implies that $|h''|=0$ on $[a,b]$. Therefore
+$h(x)=Ax + B$ and $\tilde{g}(x) = g(x) + A x + B$. But since $\tilde{g}$ and $g$
+interpolate the data, it must be true that $A \xi_k + B = 0$ for all $k$. Hence
+$A=B=0$ and $h=0$.
 
+Obviously, if $\tilde{g}=g$ then $\int_a^b |\tilde{g}''|^2 ds=\int_a^b |g''|^2 ds$.
+
+So far the following wonderful properties have been demonstrated for the NCS
 \begin{itemize}
-	\item the NCS on $\clo{a,b}$ is completely determined by the levels and derivatives at the interpolation knots;
-	\item The NCS brings the value of the $\int_a^b \abs{g''}ds$ to its minimum in the class of all smooth curves interpolating the data at the same knots;
-	\item The NCS with $K$ knots has $K$ basis functions.
+	\item on $[a,b]$ it is completely determined by its values $(g_k)_k$ at
+	the interpolation knots and the values of the second derivatives at the
+	internal nodes are computed via $\gamma = R^{-1}Q'g$;
+	\item it brings the value of the $\int_a^b |g''|^2 ds$ to a minimum in the class
+	of $C^2[a,b]$ smooth curves interpolating the data at the same knots;
+	\item to interpolate at $K$ knots it requires only $K$ basis functions.
 \end{itemize}
 
-
-Cubic spline with $K$ knots
-\[f(x) = \sum_{k=1}^3 \beta_k x^k + \sum_{k=1}^K \theta_k \brac{\brac{x-\xi_k}^+}^3\]
-
-\textbf{See the handwritten notes}
-
 % subsubsection natural_cubic_spline (end)
+
+\subsubsection{Tutorial \# 3 problem \# 1} % (fold)
+\label{ssub:tutorial_3_problem_1}
+
+Consider a cubic spline with $K$ knots
+\[f(x) = \sum_{k=0}^3 \beta_k x^k + \sum_{k=1}^K \theta_k \bigl(x-\xi_k\bigr)_+^3\]
+let's show that the boundary conditions for the NCS imply the following constraints
+on the coefficients...
+
+Indeed, first, let's find the derivatives of $f$ up to order $3$:
+\begin{align*}
+	f'(x) &= \sum_{k=1}^3 k\beta_k x^{k-1} + \sum_{k=1}^K 3 \theta_k \bigl(x-\xi_k\bigr)_+^2\\
+	f''(x) &= \sum_{k=2}^3 k(k-1)\beta_k x^{k-2} + \sum_{k=1}^K 6 \theta_k \bigl(x-\xi_k\bigr)_+\\
+	f'''(x) &= 6 \beta_3 + \sum_{k=1}^K 6 \theta_k 1_{x\geq \xi_k}
+\end{align*}
+For any $x\geq \xi_K$, we have $f'''(x) = 0$ and $1_{x\geq \xi_k}=1$, which
+implies that
+\[6 \beta_3 + 6 \sum_{k=1}^K \theta_k = 0\]
+on the other hand, for $x < \xi_1$ we get 
+\[6 \beta_3 = 0\]
+Therefore $\beta_3 = 0$ and $\sum_{k=1}^K \theta_k = 0$.
+
+With these results, the second derivative becomes
+\[
+f''(x)
+= 2\beta_2
+	+ 6 \sum_{k=1}^K \theta_k x 1_{x\geq \xi_k} - \theta_k \xi_k 1_{x\geq \xi_k}
+\]
+The second derivative of the NCS is restricted to be continuous, i.e.
+$f''(\xi_j-)=f''(\xi_j+)$ for $j=1\ldots K$. In particular for $j=1,K$ this implies
+that
+\begin{align*}
+	0 &= f''(\xi_1-) = f''(\xi_1+)
+	= 2\beta_2 + 6 \theta_1 \xi_j - \theta_1 \xi_1\\
+	0 &= f''(\xi_K+) = f''(\xi_K+)
+	= 2\beta_2 + 6 \sum_{k=1}^{K-1} \theta_k \xi_K - \theta_k \xi_k\\
+	&= 2\beta_2 + 6 \sum_{k=1}^K \theta_k \xi_K - \theta_k \xi_k
+\end{align*}
+whence $\beta_2 = 0$ and 
+\[\sum_{k=1}^K \theta_k \xi_K = \sum_{k=1}^K \theta_k \xi_k\]
+using previously obtained constraints
+\[
+\sum_{k=1}^K \theta_k \xi_K
+= \xi_K \sum_{k=1}^K \theta_k
+= 0
+\]
+Thus $\sum_{k=1}^K \theta_k \xi_k = 0$.
+
+These constraints imply that a cubic spline, satisfying the NCS restrictions can be
+expressed as
+\[f(x) = \beta_0 + \beta_1 x + \sum_{k=1}^K \theta_k \bigl(x-\xi_k\bigr)_+^3\]
+Now, the constraint $\sum_{k=1}^K \theta_k = 0$ yields
+\[
+\sum_{k=1}^K \theta_k \bigl(x-\xi_k\bigr)_+^3
+= \sum_{k=1}^{K-1} \theta_k \Bigl((x-\xi_k)_+^3 - (x-\xi_K)_+^3\Bigr)
+\]
+Similarly $\theta_K = - \sum_{k=1}^{K-1} \theta_k$ implies
+\[ \sum_{k=1}^K \theta_k \xi_k = \sum_{k=1}^{K-1} \theta_k ( \xi_k - \xi_K ) \]
+The second restriction $\sum_{k=1}^K \theta_k \xi_k = 0$ implies
+\[
+\theta_{K-1} = - \frac{1}{\xi_K - \xi_{K-1}}\sum_{k=1}^{K-2} \theta_k ( \xi_K - \xi_k )
+\]
+Now define $\phi_k(x) = (x-\xi_k)_+^3 - (x-\xi_K)_+^3$ and observe that
+\[
+\sum_{k=1}^K \theta_k \bigl(x-\xi_k\bigr)_+^3
+= \sum_{k=1}^{K-1} \theta_k \phi_k(x)
+= \sum_{k=1}^{K-2} \theta_k \Bigl( \phi_k(x) - \frac{\xi_K - \xi_k}{\xi_K - \xi_{K-1}} \phi_{K-1}(x) \Bigr)
+\]
+whence
+\[
+\sum_{k=1}^K \theta_k \bigl(x-\xi_k\bigr)_+^3
+= \sum_{k=1}^{K-2} \theta_k (\xi_K - \xi_k) \Bigl( \frac{\phi_k(x)}{\xi_K - \xi_k} - \frac{\phi_{K-1}(x)}{\xi_K - \xi_{K-1}} \Bigr)
+\]
+Thus for
+\[ d_k(x) = \frac{\phi_k(x)}{\xi_K - \xi_k} \]
+the following set of maps is a candidate for a ``basis'' of the NCS:
+\begin{align*}
+	N_1(x) &= 1\\
+	N_2(x) &= x\\
+	N_{k+2}(x) &= d_k(x) - d_{K-1}(x)
+\end{align*}
+and
+\[f(x) = \sum_{k=1}^K \tilde{\theta}_k N_k(x)\]
+
+% subsubsection tutorial_3_problem_1 (end)
 
 % subsection piecewise_polynomials_and_splines (end)
 
 \subsection{Smoothing spline} % (fold)
 \label{sub:smoothing_spline}
 
-The goal of fitting a smoothing spline is among all functions $g(x)$ with two continuous derivatives, to find the one that minimizes the following penalized sum of squares
-\[\RSS(g,\lambda) = \sum_{i=1}^n \brac{t_i - g(x_i)}^2 + \lambda \int \abs{g''(s)}^2 ds\]
-Trying to make $g$ fit the data s much as possible and yet penalizing if it varies too much. This is basically a problem of calculus of variations. The penalty term sums up all non-linearities in the function $g$ and is higher the more oscillations the $g$ has.
+The goal of fitting a smoothing spline is to find a function $g(x)$ among all functions
+with two continuous derivatives, that minimizes the following penalized sum of squares
+\[\RSS(g,\lambda) = \sum_{i=1}^n \brac{t_i - g(x_i)}^2 + \lambda \int |g''(s)|^2 ds\]
+The functional basically tries to fit the data as much as possible with $g$ and
+while penalizing it for irregular behaviour. The penalty term sums up non-linearities
+in the smoother $g$ and is higher the more oscillations the $g$ has. This is a problem
+of calculus of variations and functional analysis.
 
-$\lambda\to \infty$ then the optimal solution is linear $g$
-$\lambda = 0$ then the optimal solution is some ``wild'' function, matching all the points, with no structure known beforehand.
+Intuitively, the regularizing parameter $\lambda$ should affect the optimal solution
+in the following way: \begin{itemize}
+	\item $\lambda\to \infty$ then the optimal solution is linear: $\int_a^b |g''|^2 ds > 0$
+	gets penalized very highly, whence it should be optimal to chose $g$ with the
+	irregularity penalty as close to $0$ as possible. In the limit of $\lambda$
+	the term $\int_a^b |g''|^2 ds$ must be zero, which implies that $\hat{g}(x) = Ax + B$;
+	\item $\lambda = 0$ then the optimal solution is some ``wild'' function, which
+	matches all the points $(x_i, t_i)_{i=1}^n$, with no structure known beforehand.
+\end{itemize}
 
-This seems to be a problem of functional analysis.
+%%% HERE!!!
 
-consider the function $g(\xi_k) = \bar{g}(\xi_k)$ for all $k$.
+Consider a function $g(\xi_k) = \bar{g}(\xi_k)$ for all $k$.
 Consider as $\bar{g}$ an NCS at knots given by $\brac{\xi_k}_{k=1}^K$.
 Since an NCS has the lest variation integral, the solution of the problem cannot be anything but the NCS.
 \[\int \abs{g''(s)}^2 ds\geq \int \abs{\bar{g}''(s)}^2 ds\]
 
 Thus the optimal solution to this infinite dimensional problem is a quite finite dimensional NCS.
-% Surprise
+% Surprise!
 Therefore the problem reduces to the following quadratic optimization problem:
 \[\RSS(g,\lambda) = {(t - g)}'{(t - g)} + \lambda g'K g \to \min_g\]
 \[\RSS(g,\lambda) = t't - g't - t'g + g'( I + \lambda K )g  \to \min_g\]
@@ -1210,7 +1333,7 @@ Define the effective degree freedom as, again, the trace of $S_\lambda$.
 Use the SVD of $S_\lambda$ to extract the eigenvalues and eigenvectors.
 
 Since $K \defn Q R^{-1} Q'$, whence $K$ is symmetric. The unit matrix is symmetric, hence $S_\lambda$ is symmetric and its inverse is symmetric.
-% Thus it is an Hermitian matrix, whence the eigenvalues must be real.
+% Thus it is an Hermitian matrix, hence the eigenvalues must be real.
 \[S_\lambda = \sum_{i=1}^n \lambda_i u_i u_i' = U\Lambda U'\]
 
 Since  $S_\lambda$ is positive-semidefinite, all eigenvalues are non-negative.
@@ -1324,7 +1447,7 @@ when $p_{X,Y}(x,y) = p_X(x) p_Y(y)$;
 \end{description}
 
 Average amount of information for a discrete random variable
-\[H(X) = \Ex\brac{H(X)} = - \sum_x p(x) \log_2 p(x)\]
+\[H(X) = \ex\brac{H(X)} = - \sum_x p(x) \log_2 p(x)\]
 for a continuous:
 \[H(X) = \int \log_2\frac{1}{p(x)} p(x) dx\]
 
@@ -1332,7 +1455,7 @@ Suppose the $f$ is unknown distribution modelled using $\hat{f}$.
 
 The Kullback-Leibler \textbf{divergence} between $f$ and $\hat{f}$: the additional information need to describe the random variable with $f$ using $\hat{f}$: \[\int f(x) \log_2\frac{1}{\hat{f}(x)} dx - \int f(x) \log_2\frac{1}{f(x)} dx \leq 0 \]
 
-Use Jensen's inequality $\Ex g(X) \geq g\brac{\Ex X}$ for any convex $g$.
+Use Jensen's inequality $\ex g(X) \geq g\brac{\ex X}$ for any convex $g$.
 \begin{align*}
 	-\int f(x) \log_2\frac{\hat{f}(x)}{f(x)} dx & \geq -\log_2\int f(x) \frac{\hat{f}(x)}{f(x)}  dx = 
 \end{align*}
@@ -1354,21 +1477,21 @@ The idea is to look a t the Kullback-Leibler divergence between $g$ and $f_k$, a
 is the sum of the inherent entropy of $Y$ and the cross entropy.
 
 The problem is to minimize this function, and it is equivalent to minimizing the Kullback-Leibler \textbf{discrepancy}:
-\[d(\theta_k) = -2\int g(y) \log f_k(y) dy = - 2 \Ex_g\brac{\log f_k(Y)}\]
+\[d(\theta_k) = -2\int g(y) \log f_k(y) dy = - 2 \ex_g\brac{\log f_k(Y)}\]
 
 Instead	let's look at
-\[d(\hat{\theta}_k) = - 2\induc{\Ex_g\brac{\log f(\induc{y}\theta)}}_{\theta=\theta_k(y)} \]
+\[d(\hat{\theta}_k) = - 2\induc{\ex_g\brac{\log f(\induc{y}\theta)}}_{\theta=\theta_k(y)} \]
 
 Since in practice $g$ is unknown, Akaike suggested to use the log likelihood as a proxy for $d(\hat{\theta}_k)$, which is a biased estimator of it.
 
 In fact, using the law of large numbers
-\[\frac{1}{N} \sum_{i=1}^n \log f(Y_i|\hat{\theta}_k) \overset{a.s}{\to} \Ex_g\brac{\log f(\induc{Y}\hat{\theta}_k)}\]
+\[\frac{1}{N} \sum_{i=1}^n \log f(Y_i|\hat{\theta}_k) \overset{a.s}{\to} \ex_g\brac{\log f(\induc{Y}\hat{\theta}_k)}\]
 
 Therefore
 \[-\frac{2}{N} \sum_{i=1}^n \log f(Y_i|\hat{\theta}_k) \approx d(\hat{\theta}_k)\] and Akaike has something great in mind.
 
 In order to compute the bias, it is necessary look an the average Kullback-Leibler distance with respect to the distribution of the MLE estimate $\hat{\theta}_k$
-\[\Ex_{\hat{\theta}_k} d(\hat{\theta}_k) - \Ex_g\brac{- \log f\brac{\induc{Y}\hat{\theta}_k(Y)}}\]
+\[\ex_{\hat{\theta}_k} d(\hat{\theta}_k) - \ex_g\brac{- \log f\brac{\induc{Y}\hat{\theta}_k(Y)}}\]
 
 The AIC is given by (up to the terms of the first order):
 \[-2\log \hat{f}\brac{\induc{y}\,\hat{\theta}_k(y)} + 2k\]
@@ -1389,20 +1512,20 @@ Akaike criterion combines parameter estimation and model selection
 
 By looking at the Kullback-Leibler divergence between the estimated and the true
 
-\[d(\theta_k) = - 2 \Ex_g \ln f\brac{\induc{Y}\theta_k}\]
+\[d(\theta_k) = - 2 \ex_g \ln f\brac{\induc{Y}\theta_k}\]
 
 $g(y\vert \theta_0)$
 
-\[d(\hat{\theta}_k) = - 2 \induc{\Ex \ln f\brac{\induc{Y}\theta_k}}_{\theta_k = \hat{\theta}_k(y)}\]
+\[d(\hat{\theta}_k) = - 2 \induc{\ex \ln f\brac{\induc{Y}\theta_k}}_{\theta_k = \hat{\theta}_k(y)}\]
 
-\[\Ex_{\hat{\theta}_k} d(\hat{\theta}_k) = - 2 \induc{\Ex_z \Ex_Y \ln f\brac{\induc{Y}\theta_k}}_{\theta_k = \hat{\theta}_k(z)}\]
+\[\ex_{\hat{\theta}_k} d(\hat{\theta}_k) = - 2 \induc{\ex_z \ex_Y \ln f\brac{\induc{Y}\theta_k}}_{\theta_k = \hat{\theta}_k(z)}\]
 
 The idea is to use the sample twice (law of Large Numbers)
 
 What is the bias here?
 
 Law of Large numbers
-\[-2 \ln f\brac{\induc{y}\hat{\theta}_k(y)} \to \Ex \]
+\[-2 \ln f\brac{\induc{y}\hat{\theta}_k(y)} \to \ex \]
 
 Modified (Corrected) AIC
 
@@ -1451,26 +1574,26 @@ Since
 \end{align*}
 
 Therefore 
-\[\Ex-2\ln f\brac{\induc{y}\theta_k} = n \ln 2\pi + n\ln \sigma^2_k + \frac{1}{\sigma^2_k} \brac{ \brac{\beta_0-\beta_k}'X'X\brac{\beta_0-\beta_k} + n\sigma_0^2 }\]
+\[\ex-2\ln f\brac{\induc{y}\theta_k} = n \ln 2\pi + n\ln \sigma^2_k + \frac{1}{\sigma^2_k} \brac{ \brac{\beta_0-\beta_k}'X'X\brac{\beta_0-\beta_k} + n\sigma_0^2 }\]
 
 Now 
 \[d\brac{\hat{\theta}_k} = n \ln 2\pi + n\ln \hat{\sigma}^2_k + \frac{1}{\hat{\sigma}^2_k}\brac{\beta_0-\beta_k}'X'X\brac{\beta_0-\beta_k} + \frac{n\sigma_0^2}{\hat{\sigma}^2_k}\]
 
 taking expectations
-\[\Ex d\brac{\hat{\theta}_k} = n \ln 2\pi + n\Ex \ln \hat{\sigma}^2_k + n^2\Ex \frac{\sigma_0^2}{n\hat{\sigma}^2_k} + n \Ex \frac{1}{n\hat{\sigma}^2_k}\brac{\beta_0-\beta_k}'X'X\brac{\beta_0-\beta_k}\]
+\[\ex d\brac{\hat{\theta}_k} = n \ln 2\pi + n\ex \ln \hat{\sigma}^2_k + n^2\ex \frac{\sigma_0^2}{n\hat{\sigma}^2_k} + n \ex \frac{1}{n\hat{\sigma}^2_k}\brac{\beta_0-\beta_k}'X'X\brac{\beta_0-\beta_k}\]
 
 Since $\frac{n\hat{\sigma}^2_k}{\sigma_0^2} \sim \chi^2_{n-p}$ and 
 \[\brac{\beta_0-\beta_k}'X'X\brac{\beta_0-\beta_k}{\sigma_0^2} \sim \chi^2_p\]
 and are independent
 
 Hence
-\[\Ex d\brac{\hat{\theta}_k} = n \ln 2\pi + n\Ex \ln \hat{\sigma}^2_k + \frac{n^2}{n-p-2} + n \Ex \frac{1}{n\hat{\sigma}^2_k} \Ex \brac{\beta_0-\beta_k}'X'X\brac{\beta_0-\beta_k}\]
+\[\ex d\brac{\hat{\theta}_k} = n \ln 2\pi + n\ex \ln \hat{\sigma}^2_k + \frac{n^2}{n-p-2} + n \ex \frac{1}{n\hat{\sigma}^2_k} \ex \brac{\beta_0-\beta_k}'X'X\brac{\beta_0-\beta_k}\]
 and thus 
-\[\Ex d\brac{\hat{\theta}_k} = n \ln 2\pi + n\Ex \ln \hat{\sigma}^2_k + \frac{n^2}{n-p-2} + \frac{n p}{n-p-2} \]
+\[\ex d\brac{\hat{\theta}_k} = n \ln 2\pi + n\ex \ln \hat{\sigma}^2_k + \frac{n^2}{n-p-2} + \frac{n p}{n-p-2} \]
 
 Whence 
-\[\Ex d\brac{\hat{\theta}_k} = n \brac{1+\ln 2\pi} + n\Ex \ln \hat{\sigma}^2_k + \frac{2n(p+1)}{n-p-2}\]
-\[\Ex d\brac{\hat{\theta}_k} = \Ex -2 \ln f\brac{\induc{y}\hat{\theta}_k} + \frac{2n(p+1)}{n-p-2}\]
+\[\ex d\brac{\hat{\theta}_k} = n \brac{1+\ln 2\pi} + n\ex \ln \hat{\sigma}^2_k + \frac{2n(p+1)}{n-p-2}\]
+\[\ex d\brac{\hat{\theta}_k} = \ex -2 \ln f\brac{\induc{y}\hat{\theta}_k} + \frac{2n(p+1)}{n-p-2}\]
 
 Since 
 \[\frac{2n(p+1)}{n-p-2} = \frac{2nk}{n-k-1} = 2k + \frac{2k(k+1)}{n-k-1}\]
@@ -1504,21 +1627,21 @@ where $H$ is the projection matrix $X\brac{X'X}^{-1}X'$.
 
 The expected value of the RSS is given by
 \begin{align*}
-	\Ex Y'\brac{E-H}Y &= \Ex\tr{Y'\brac{E-H}Y} \\
+	\ex Y'\brac{E-H}Y &= \ex\tr{Y'\brac{E-H}Y} \\
 		&= \beta_0'X_0' \brac{E-H} X_0\beta_0 + \tr\brac{\brac{E-H} \sigma^2_0 I}\\
 		&= \beta_0'X_0' \brac{E-H} X_0\beta_0 + (n-p)\sigma^2_0
 \end{align*}
 
 Show that if $z\sim \Dcal_m\brac{\mu,\Sigma}$ and $A$ is a non-random $m\times m$ matrix, then
-\[\Ex\brac{z'Az} = \mu'A\mu + \tr\brac{A\Sigma}\] 
+\[\ex\brac{z'Az} = \mu'A\mu + \tr\brac{A\Sigma}\] 
 
 Define the $C_p^0$ as
 \[C_p^0 = \frac{\RSS}{\sigma^2_0} - n + 2p\]
 
 The expectation is 
-\[\Ex C_p^0 = p + \frac{1}{\sigma^2_0} \beta_0'X_0' \brac{E-H} X_0\beta_0\]
+\[\ex C_p^0 = p + \frac{1}{\sigma^2_0} \beta_0'X_0' \brac{E-H} X_0\beta_0\]
 
-If the true model has bee selected then $\Ex C_p^0 = p$, otherwise $\Ex C_p^0 > p$.
+If the true model has bee selected then $\ex C_p^0 = p$, otherwise $\ex C_p^0 > p$.
 
 Put $C_p$ to $\frac{\RSS}{\hat{\sigma}^2} - n + 2p$, with the hope, that it leads to the same expectation of $C_p^0$.
 
@@ -1551,7 +1674,7 @@ Hence
 
 \textbf{Exercise}\\
 Prove the expected Gauss discrepancy
-\[\Ex C_p^0 = \Ex \frac{1}{\sigma^2_0}\brac{X_0\beta_0 -X \beta}'\brac{X_0\beta_0 -X \beta}\]
+\[\ex C_p^0 = \ex \frac{1}{\sigma^2_0}\brac{X_0\beta_0 -X \beta}'\brac{X_0\beta_0 -X \beta}\]
 Indeed, take a look at the Gauss discrepancy:
 \begin{multline*}
 	\brac{X_0\beta_0 -X \beta}'\brac{X_0\beta_0 -X \beta} = \\
@@ -1563,12 +1686,12 @@ Indeed, take a look at the Gauss discrepancy:
 Since $I-H$ and $H$ are projectors onto orthogonal subspaces of $\Real^n$.
 
 Taking expectations yields
-\[\Ex\brac{\beta_0'X_0'(I-H)X_0\beta_0 + \epsilon'H\epsilon} = \beta_0'X_0'(I-H)X_0\beta_0 + \Ex\brac{\epsilon'H\epsilon}\]
-while at the same time due to linearity of $\Ex$ and $\tr$:
+\[\ex\brac{\beta_0'X_0'(I-H)X_0\beta_0 + \epsilon'H\epsilon} = \beta_0'X_0'(I-H)X_0\beta_0 + \ex\brac{\epsilon'H\epsilon}\]
+while at the same time due to linearity of $\ex$ and $\tr$:
 
 \begin{align*}
-\Ex(\epsilon'H\epsilon) &= \tr\Ex(\epsilon'H\epsilon) = \Ex\tr(\epsilon'H\epsilon) \\
-&= \Ex\tr(H\epsilon\epsilon) = \tr(H\Ex\epsilon\epsilon)
+\ex(\epsilon'H\epsilon) &= \tr\ex(\epsilon'H\epsilon) = \ex\tr(\epsilon'H\epsilon) \\
+&= \ex\tr(H\epsilon\epsilon) = \tr(H\ex\epsilon\epsilon)
 \end{align*}
 
 % subsection comparison_between_cp_and_aicc (end)
@@ -1640,7 +1763,7 @@ Using the Laplace approximation we can treat the integrand as a normal density.
 
 Let's compute the Laplace approximation.
 
-Let $\theta_k^* = \text{argmax}_{\theta_k\in \Theta_k}\,f(\theta_k)$ and put $A_{\theta_k^*}$ as
+Let $\theta_k^* = \argmax_{\theta_k\in \Theta_k}\,f(\theta_k)$ and put $A_{\theta_k^*}$ as
 \[\induc{- \frac{d^2}{d\theta_kd\theta_k'} \ln f(\theta_k)}_{\theta_k=\theta_k^*}\]
 
 Could be ignore the contribution coming from $g_k$?
@@ -1745,7 +1868,7 @@ Let $\hat{T}_j$ be the prediction of the model fit on $X_{-j}$, then the \textbf
 \end{description}
 
 Covariance function of the residuals $\epsilon = Y - H Y$ is given by 
-\[\text{cov}\big(\hat{\epsilon}\big) = \Ex\big( (I-H)YY'(I-H) \big) = \sigma^2 (I-H)\]
+\[\text{cov}\big(\hat{\epsilon}\big) = \ex\big( (I-H)YY'(I-H) \big) = \sigma^2 (I-H)\]
 
 Thus $\Var(\hat{\epsilon}_j) = \sigma^2 (1-h_{jj})$.
 
@@ -1847,7 +1970,7 @@ Consider a simple case of a binary $T$ -- a binary classification problem and le
 
 For small $x$ the response is zero, for large -- $T=1$, and in the intermediate region the intervals with $T=0$ and $T=1$ overlap.
 
-Minimizing the expectd sum of squares, the minimizer is the conditional expectation $\Ex\big(\big. T\big.\big\rvert X\big.\big)$, which is equal to 
+Minimizing the expectd sum of squares, the minimizer is the conditional expectation $\ex\big(\big. T\big.\big\rvert X\big.\big)$, which is equal to 
 \[\Pr\big(\big. T = 1\big.\big\rvert X = \mathbf{x}\big.\big) = \mathbf{x}\beta\]
 and the classification is done through comparison of the probability of $T=1$ versus $T=0$.
 
@@ -2194,7 +2317,7 @@ Remarks: \begin{itemize}
 	\[\Pr\big(X=x\vert T=j\big) = \prod_{m=1}^p \Pr\big(X_m=x_m\vert T=j\big)\]
 
 	the classification rule is using the Bayes part (maximizing the posterior):
-	\[\hat{j}_x = \text{argmax}_{j=1,\ldots, K} \Pr\big(X=x\vert T=j\big) \Pr\big(T=j\big)\]
+	\[\hat{j}_x = \argmax_{j=1,\ldots, K} \Pr\big(X=x\vert T=j\big) \Pr\big(T=j\big)\]
 	This has nothing to do with Bayesian inference. Thus there are Bayesian Na\"ive Bayes classifiers :).
 	\item The difference between the logistic regression and the LDA. In logistic we looked at
 	the log-ratio of class likelihoods given the data. It also linear in $x$, but the regression
@@ -2246,8 +2369,8 @@ due to concavity of log, the Jensen's inequality yields:
 
 To maximize the $l(\theta)$, first maximize the lower bound. The process is
 \begin{description}
-	\item[E-step] \[q^{(t+1)} = \text{argmax}_q F(q,\theta^{(t)})\]
-	\item[M-step] \[\theta^{(t+1)} = \text{argmax}_\theta F(q^{(t)},\theta)\]
+	\item[E-step] \[q^{(t+1)} = \argmax_q F(q,\theta^{(t)})\]
+	\item[M-step] \[\theta^{(t+1)} = \argmax_\theta F(q^{(t)},\theta)\]
 \end{description}
 But first we need to initialize the $\theta^{(0)}$ and the EM converges only to a local maximum.
 However even in this setting the problem is intractable. We may find a sufficient condition such that the lower bound becomes the equality.
@@ -2266,11 +2389,11 @@ Since $q(z\vert x,\theta) = q^{(t+1)}(z\vert x,\theta) = p(z\vert x, \theta^{(t)
 \[F(q,\theta) = Q(\theta, \theta^{(t)}) + H(q)\]
 and
 \[Q(\theta, \theta^{(t)}) = \sum_z p(z\vert x, \theta^{(t)} \log p(x\vert z, \theta)
-= \Ex_{p(z\vert x, \theta^{(t)})} \log p(z\vert x, \theta) \]
+= \ex_{p(z\vert x, \theta^{(t)})} \log p(z\vert x, \theta) \]
 
 In summary: \begin{itemize}
 	\item The $E$-step is the computation of $Q(\theta, \theta^{(t)})$;
-	\item The $M$-step return (update) the $\theta^{(t+1)} = \text{argmax}_\theta Q(\theta, \theta^{(t)})$;
+	\item The $M$-step return (update) the $\theta^{(t+1)} = \argmax_\theta Q(\theta, \theta^{(t)})$;
 \end{itemize}
 If the density family of the classes is exponential, then it is easy to maximize and compute the $Q$ as well.
 
@@ -2301,8 +2424,8 @@ In fact $Q(\theta^{(t)}, \theta^{(t)}) = l(\theta^{(t)})$ and $Q(\theta, \theta^
 \label{sec:lecture_10}
 
 The EM algorithm is in two steps: \begin{description}
-	\item[E-step] $Q\brac{\theta, \theta^k} = \Ex_{p(z\lvert x, \theta^k) p(x,Z\lvert \theta)}$.
-	\item[M-step] $\theta^{k+1}=\text{argmax}_{\theta} Q\brac{\theta, \theta^k}$.
+	\item[E-step] $Q\brac{\theta, \theta^k} = \ex_{p(z\lvert x, \theta^k) p(x,Z\lvert \theta)}$.
+	\item[M-step] $\theta^{k+1}=\argmax_\theta Q(\theta, \theta^k)$.
 \end{description}
 
 We need to show that $l(\theta^{k+1})\geq l(\theta^k)$. Two things. The LHS:
@@ -2311,7 +2434,7 @@ The RHS:
 \[l(\theta^{k+1}) \geq \sum \sum p(z_i\lvert x_i,\theta^k) \log\frac{p(x_i,z_i\lvert\theta^{k+1})}{p(z_i\lvert x_i,\theta^k)}\]
 whence 
 \[\ldots = Q(\theta^{k+1}, \theta^k) + \text{entropy}\geq Q(\theta^k, \theta^k) + \text{entropy} = l(\theta^k)\]
-since $\theta^k = \text{argmax}Q(\theta, \theta^k)$.
+since $\theta^{k+1} = \argmax_\theta Q(\theta, \theta^k)$ (?) CHECK THIS.
 
 \subsection{A typical application of the EM} % (fold)
 \label{sub:a_typical_application_of_the_em}
@@ -2338,9 +2461,9 @@ leading to
 \[l(\pi, p\lvert x, z) = \sum_i \sum_j u_j(i)\log \pi_j + \sum_{i,j} u_j(i)\log p_j^{x_i}(1-p_j)^{n_i-x_i}\]
 
 \textbf{The E-step}. Averaging out of the hidden variables:
-\[Q(\theta, \theta^k) =  \Ex_{p(z\lvert x, \theta^k) p(x,Z\lvert \theta)}\]
-define $\hat{u}_j(i) = \Ex u_j(i)$. It is given by 
-\[\Ex u_j(i) = \Pr\big(Z_i=j\,\lvert\,X=x_i\big)\]
+\[Q(\theta, \theta^k) =  \ex_{p(z\lvert x, \theta^k) p(x,Z\lvert \theta)}\]
+define $\hat{u}_j(i) = \ex u_j(i)$. It is given by 
+\[\ex u_j(i) = \Pr\big(Z_i=j\,\lvert\,X=x_i\big)\]
 Thus
 \[\hat{u}_j(i) = \frac{\Pr\big(X=x_i\,\lvert\,Z_i=j\big)\Pr\big(Z_i=j\big)}{\Pr\big(X=x_i\big)}
 = \frac{ \pi_j f(x_i\lvert n_i, p_j)}{\sum_c \pi_c f(x_i\lvert n_i, p_c)}\]
@@ -2716,7 +2839,7 @@ whence $\Lcal$ indeed decreases with the number of iterations $t$.
 \clearpage
 \section*{Mid-term test review} % (fold)
 \label{sec:mid_term_test_review}
-Ridge regression protects from the poor estimation in the direction of the least varinance.
+Ridge regression protects from the poor estimation in the direction of the least variance.
 % section* mid_term_test_review (end)
 
 \section{Revision} % (fold)
@@ -2731,12 +2854,12 @@ the likelihood function $L(X,Z;\theta)$.
 For all $\theta$ it is true that 
 \[\log p(X\;\theta) = \log p(X,Z;\theta) - \log p(Z\lvert X;\theta)\]
 Let $q$ be some distribution of the latent variables $Z$, then
-\[ \Ex_q\log p(X\;\theta) = \Ex_q\log p(X,Z;\theta) - \Ex_q \log q + \Ex_q\log {q}{p(Z\lvert X;\theta)} \]
+\[ \ex_q\log p(X\;\theta) = \ex_q\log p(X,Z;\theta) - \ex_q \log q + \ex_q\log {q}{p(Z\lvert X;\theta)} \]
 whence 
 \[
-\Ex_q\log p(X,Z;\theta)
-= \log p(X\;\theta) + \Ex_q \log q - \Ex_q\log {q}{p(Z\lvert X;\theta)}
-= - KL\bigl(q\lvert\rvert p(Z\lvert X;\theta)\bigr) + \Ex_q \log q + \log p(X\;\theta)
+\ex_q\log p(X,Z;\theta)
+= \log p(X\;\theta) + \ex_q \log q - \ex_q\log {q}{p(Z\lvert X;\theta)}
+= - KL\bigl(q\lvert\rvert p(Z\lvert X;\theta)\bigr) + \ex_q \log q + \log p(X\;\theta)
 \]
 
 % subsection em_algorithm (end)
@@ -2768,7 +2891,7 @@ Consider a linear space $V$ with $\dim(V)=p$ and an inner product $\langle\rangl
 Then a hyperplane is a flat affine subspace $H$ of $V$ of dimension $p-1$. The equation
 of a hyperplane $H$ is given by the equation for $x\in V$
 \[
-\beta_0 + \sum_{k=1}^p \neta_k x_k
+\beta_0 + \sum_{k=1}^p \beta_k x_k
 = \beta_0 + \langle x, \beta\rangle
 = 0
 \]
@@ -2860,13 +2983,13 @@ for all $i=1,\ldots N$ then $a'y(x) + b = 0$ for all $x\in \Real^d$.
 Proof:
 The notation $\tilde{B}'\in \Real^{K\times (d+1)}$:
 \[\tilde{B}' = \bigl(\beta_0 \rvert B'\bigr)\]
-with $\beta_0\in \Real^{K\times 1}$ and $\B\in \Real^{K\times K}$.
+with $\beta_0\in \Real^{K\times 1}$ and $B\in \Real^{K\times K}$.
 The contribution of the bias can hereafter be extracted from the product
 \[\tilde{X}\tilde{B} = \one\beta_0' + \tilde{X}B\]
 
 The LS estimate (the first step):
 \[
-\text{error} = \frac{1}{2} \Tr\bigl\{
+\text{error} = \frac{1}{2} \tr\bigl\{
 \beta_0\one'\one\beta_0' + \beta_0\one'\tilde{X}B - \beta_0\one'T
 + B\tilde{X}'\one\beta_0' + B\tilde{X}'\tilde{X}B - B\tilde{X}'T
 - T'\one\beta_0' - T'\tilde{X}B + T'T
@@ -2889,17 +3012,17 @@ then
 Therefore
 \[
 \text{error}
-= \frac{1}{2} \Tr\bigl\{ (XB + \one( \bar{t} - B'\bar{x} )' )' \times ( \ldots ) \bigr\}
+= \frac{1}{2} \tr\bigl\{ (XB + \one( \bar{t} - B'\bar{x} )' )' \times ( \ldots ) \bigr\}
 \]
 Letting $\bar{T} = \one \bar{t}'$ and $\bar{X} = \one \bar{x}'$ gives
 \[
 \text{error}
-= \frac{1}{2} \Tr\Bigl\{ \bigl( (X-\bar{X}) B - [T-\bar{T}] \bigr)' \times (\ldots) \Bigr\}
+= \frac{1}{2} \tr\Bigl\{ \bigl( (X-\bar{X}) B - [T-\bar{T}] \bigr)' \times (\ldots) \Bigr\}
 \]
 whence finally the target criterion becomes
 \[
 \text{error}
-= \frac{1}{2} \Tr\Bigl\{ ( \hat{X} B - \hat{T} )' \times ( \hat{X} B - \hat{T} ) \Bigr\}
+= \frac{1}{2} \tr\Bigl\{ ( \hat{X} B - \hat{T} )' \times ( \hat{X} B - \hat{T} ) \Bigr\}
 \]
 which implies that 
 \[B = (\hat{X}'\hat{X})^{-1}\hat{X}'\hat{T}\]
@@ -2996,7 +3119,7 @@ S_2+S_1
 = \beta'S_W\beta
 \]
 Thus the quotient we are trying to minimize is the Rayleigh quotient
-\[J(\beta) = \Rcal = \frac{\beta'S_B\beta}{\beta'S_W\beta}\]
+\[J(\beta) = \mathcal{R} = \frac{\beta'S_B\beta}{\beta'S_W\beta}\]
 Reexpress this as an optimization problem with respect to $\beta^* = \beta c$
 to see that $c$ cancel. Therefore it is possible to fix the denominator and
 then maximize the numerator. Thus we will be trying to maximize the 
@@ -3043,7 +3166,7 @@ Again the case of $2$ classes. The LDA was
 \frac{\Pr\bigl(T=k\lvert X=x\bigr)}{\Pr\bigl(T=j\lvert X=x\bigr)}
 = x'\Sigma^{-1}(\mu_k-\mu_j) + \text{terms independent of } x
 \]
-which is a hyperplane with $\bata = \Sigma^{-1}(\mu_k-\mu_j)$.
+which is a hyperplane with $\beta = \Sigma^{-1}(\mu_k-\mu_j)$.
 The MLE of $\hat{\Sigma}$ is given by
 \[\hat{\Sigma} = \frac{1}{N}\sum_{k=1}^K \sum_{x\in C_k} (x - \mu_k)(x - \mu_k)'\]
 where $n\hat{\Sigma} = S_W$.
@@ -3057,4 +3180,328 @@ Exercise: show that LDA and Fisher's approach are identical in one special case.
 
 % section lecture_11 (end)
 
+\section{Lecture \# 12} % (fold)
+\label{sec:lecture_12}
+
+\subsection{The perceptron classifier} % (fold)
+\label{sub:perceptron}
+
+Recall that the signed distance form a hyperplane $\beta_0 + \beta'x = 0$ to a
+point $p$ is given by
+\[\nrm{p-H} = \frac{\beta_0 + \beta'x}{\sqrt{\beta'\beta}}\]
+
+A target variable $t_i$ is given by $t_i = +1$ if $x_i\in C_1$ and $t_i = -1$
+if $x_i\in C_2$ (otherwise). The convenience of such encoding is that the sign
+coincides with the misclassification by the hyperplane. If $x_i$ is misclassified
+as $C_2$ then $t_i>0$, but $\beta_0+\beta'x_i < 0$ and vice versa. Thus every time
+a point is misclassified, we have $t_i(\beta_0 +\beta'x_i) < 0$, and the last term in
+brackets is proportional to the distance of $x_i$ from the hyperplane. The following
+criterion minimizes the overall distance of the points:
+\[
+E = - \sum_{i\in \Mcal} t_i( \beta_0 + \beta'x_i ) \to \min_{\beta_0, \beta}
+\]
+where $\Mcal$ is a the set of misclassified points and $\|\beta\| = 1$ -- this restricts
+the problem to well-defined hyperplanes only.
+
+The gradient of $E$ with respect to $\beta_0$ is given by:
+\[\frac{\partial}{\partial \beta_0} E = - \sum_{i\in \Mcal} t_i\]
+and the 
+\[\frac{\partial}{\partial \beta} E = - \sum_{i\in \Mcal} t_i x_i \]
+
+The batch algorithm is using all the datapoints at the same time
+\[
+\bigl(\begin{smallmatrix} \beta_0\\ \beta \end{smallmatrix}\bigr)
+\leftarrow \bigl(\begin{smallmatrix} \beta_0\\ \beta \end{smallmatrix}\bigr)
++\eta \nabla E
+\]
+where $\eta$ is the convergence parameter, usually set to $1$.
+
+Stochastic gradient descent is going to update the estimate of $\beta_0$ and $\beta$ 
+by going through the dataset point by point:
+\[
+\bigl(\begin{smallmatrix} \beta_0\\ \beta \end{smallmatrix}\bigr)
+\leftarrow \bigl(\begin{smallmatrix} \beta_0\\ \beta \end{smallmatrix}\bigr)
++\eta \nabla \bigl(\begin{smallmatrix} t_i\\ t_i x_i \end{smallmatrix}\bigr)
+\]
+Update if the point is currently misclassified.
+
+If the data is linearly separable, then the perceptron algorithm converges in a finite
+number of iterations.
+
+Depending on a starting values the convergence will take place to a possibly different local minimum.
+
+If the data is not linearly separable then the algorithm will loop (go in cycles).
+
+% subsection perceptron (end)
+
+\subsubsection{Proof of the algorithm} % (fold)
+\label{ssub:proof_of_the_algorithm}
+Suppose the data is linearly separable. then there exits some $\beta$ and $\beta_0$
+such that $t_i ( \beta_0 + \beta'x_i) > 0$ for all $i=1,\ldots, n$.
+
+Denote by $b$ the vector built by stacking $\beta_0$ atop $\beta$ and let
+$x_i^* = \bigl(\begin{smallmatrix} 1\\ x_i \end{smallmatrix}\bigr)$. Furthermore let
+$z_i = \frac{x_i^*}{\|x_i^*\|}$. Thus $t_i b'z_i > 0 $ for all $i$, whence there must
+exist $m>0$ with $t_ib'z_i \geq m$ (since there are finitely many points in the dataset).
+Let $b_\text{sep} = \frac{b}{m}$. For such $b_\text{sep}$ it is true that for all $i$
+\[t_i b_\text{sep}' z_i \geq 1\]
+
+The perceptron algorithm updates the estimate by (force $eta_i = 1$)
+\[b^\text{new} = b_\text{old} + \eta_i t_i z_i\]
+Hence
+\[
+b^\text{new} - b_\text{sep} = b_\text{old} - b_\text{sep} + \eta_i t_i z_i
+\]
+and the point $i$ is misclassified. The squared norm of the updated parameters is
+\[
+\|b^\text{new} - b_\text{sep}\|^2
+= \|b_\text{old} - b_\text{sep}\|^2 + \eta_i^2 \|t_i z_i\|^2
++ 2 t_i (b_\text{old} - b_\text{sep})'z_i
+= \|b_\text{old} - b_\text{sep}\|^2 + |t_i|^2 \|z_i\|^2
++ 2 \eta_i t_i (b_\text{old} - b_\text{sep})'z_i
+\]
+Since $i$ is misclassified we have $t_i b_\text{old}' z_i < 0$ whereas by construction $t_i b_\text{sep}' z_i \geq 1$. In other words:
+\[2 t_i b_\text{old}'z_i - 2 t_i b_\text{sep}'z_i \leq 2 t_i b_\text{old}'z_i - 2\leq -2\]
+whence
+\[
+\|b^\text{new} - b_\text{sep}\|^2 \leq \|b_\text{old} - b_\text{sep}\|^2 + \eta_i^2 - 2 \eta_i
+\]
+
+% subsubsection proof_of_the_algorithm (end)
+
+\subsection{Perceptron and Neural networks} % (fold)
+\label{sub:neural_networks}
+
+A simple mathematical model of a neuron is that of an input integrator, which fires
+when a certain threshold is surpassed.
+\begin{description}
+	\item[Dendrites] collect the input from other neurons;
+	\item[Soma] is responsible for aggregating the input from the dendrites
+	and releases an electric spike upon saturation;
+	\item[Axon] is the conduit through which the signal from soma is propagated
+	further through the network.
+\end{description}
+
+Mathematically the model is :
+\[x\to f\bigl( w_j'x + w_{j0}\bigr)\]
+where $w_{j0}$ is the bias (shift, baseline weight), and $w_j$ is the vector of
+dendrite ``weights''. The argument of the activation function $f$ is known as the
+soma potential Can be extended to stochastic neural networks by treating the result
+as the rate of the Poisson process, governing the firing of a neuron.
+
+Typical activation functions are \begin{description}
+	\item[Threshold] $f(z) = 1_{z\geq \theta}$;
+	\item[Sigmoid] $f(z) = \frac{1}{1+e^{-z}}$.
+\end{description}
+A simple perceptron cannot realise a bitwise XOR function, since it is not linearly
+separable.
+
+The idea is to group perceptrons in layers and stack layer upon each other and
+then use that to construct non-linear decision boundaries.
+
+% subsection neural_networks (end)
+
+\subsection{Decision trees} % (fold)
+\label{sub:decision_trees}
+
+This is a completely another topic: nonlinear classification. The idea is to partition
+the input space into hyper-rectangles. The question is how to construct the regions
+and then to use them for classification purposes.
+
+\subsubsection{Classification and Regression Trees} % (fold)
+\label{ssub:classification_and_regression_trees}
+
+The construction methods:\textbf{C}lassification \textbf{a}nd \textbf{R}egression
+\textbf{T}rees (Brieman;1984), ID3, C4.5.
+
+The set of rules for classification can be summarized in a tree: easy interpretation
+and highly transparent decision procedure.
+\begin{itemize}
+	\item How to choose the splitting variable;
+	\item how to predict and classify in each region.
+\end{itemize}
+
+Consider the usual training data $(x_i,t_i)$ with $x_i = (x_{ij})_{j=1}^p$. If the
+non-overlapping regions $(R_m)_{m=1}^M$ are constructed, then the regression function
+can be defined as the following step function
+\[f(x) = \sum_{m=1}^M c_m 1_{R_m}(x)\]
+The criterion for minimization is 
+\[\sum_{i=1}^N \bigl(t_i - f(x_i)\bigr)^2\]
+whence the optimal values of $c_m$ are given by local means within the region:
+\[\hat{c}_m = \frac{\sum_{i=1}^N t_i 1_{R_m}(x_i)}{|R_m|}\]
+this answers the second question.
+
+
+The first question is harder, since there are infinitely many way to partition the
+space into $M$ regions. The algorithm which is going to be used is the following greedy
+algorithm.
+
+Suppose $j$ is the splitting feature (variable) and $s$ id the splitting point.
+Let 
+\[R_1(j,s)
+= \bigl\{x_i\rvert x_{ij}\leq s\bigr\}
+= X \bigcap \Bigl( (-\infty, s] \times \prod_{m\neq j} \Real \Bigr)
+\]
+and $R_2(j,s)$ be the compliment of $R_1(j,s)$.
+
+Let's look for $j$ and $s$ such that 
+\[
+  \min_{c_1}\sum_{x_i\in R_1(j,s)} (t_i - c_1)^2
++ \min_{c_2}\sum_{x_i\in R_2(j,s)} (t_i - c_2)^2
+\to \min_{j,s}
+\]
+For a given choice of $j,s$ the parameters $c_1$ and $c_2$ are given by the local
+averages. An important observation is that the space of effective $s$ for a given $j$
+is finite and is given by the set of all possible values of the $j$-th feature.
+Therefore exhaustive search is possible, since there are $p$ dimensions and finitely
+many data points.
+
+The tree size can be regarded as the model complexity. Possible approaches:
+\begin{itemize}
+	\item Myopic approach: continue until the reward from splitting is less than
+	some threshold;
+	\item Pruning approach: start with a large tree $T_0$ and consider a subtree
+	$T\subseteq T_0$ obtained by collapsing the branching points, until some
+	optimality criterion is met;
+\end{itemize}
+
+Trade off between the goodness of fit and the complexity odf hte tree.
+Define the \textbf{cost-complexity pruning}
+\[C_\lambda(T) = \sum_{m=1}^M\sum_{x_i\in R_m} (t_i - \hat{c}_m)^2 + \lambda |T| \]
+where $|T|$ is the number of leaves in tree $T$. If $\lambda=0$ then the optimal
+tree is $T_0$, otherwise for $\lambda\to \infty$ the optimal trees would have
+fewer and fewer leaves.
+
+Rewrite the criterion as
+\[C_\lambda(T) = \sum_{m=1}^M |R_m| Q_m(T)+ \lambda |T| \]
+for the \textbf{measure of impurity}
+\[Q_m(T) = \frac{1}{|R_m|}\sum_{x_i\in R_m} (t_i - \hat{c}_m)^2\]
+
+Choosing the values of $\lambda$? Use cross-validation! Construct $K$ folds, withhold
+one fold and on the remaining $K-1$ folds grow the largest tree $T_0$.
+Use the cost-complexity pruning to obtain a sequence of trees $(T_\lambda)$, and then
+evaluate the means squared error of the withheld fold. Repeat $K$ times and then average
+the $K$ estimates. Find the $\hat{\lambda}$ -- the minimum of the \textbf{MSE}.
+For the optimal $\lambda$ grow the most complex tree $T_0$ and then do the cost-complexity
+pruning to return an optimal $T_{\hat{\lambda}}\subseteq T_0$.
+
+But how to find $T_\lambda$ from $T_0$? How is branch collapsing done?
+
+THe idea is to iteratively collapse just one node, which creates the smallest increase
+in the goodness-of-fit score. This is known as the weakest link pruning:
+\begin{itemize}
+	\item for a given $\lambda$ collapse the node which gives the smallest increase in
+	\[\sum_{m=1}^M |R_m| Q_m(T)\]
+	\item Stop at root.
+\end{itemize}
+It can be shown, that the optimal tree $T_\lambda$ is necessary among the sequence of
+single-node collapses.
+
+% subsubsection classification_and_regression_trees (end)
+
+\subsection{Classification trees} % (fold)
+\label{sub:classification_trees}
+
+The idea is similar, but a better criterion for splitting and fitting is wanted.
+Let $\hat{p}_{mk}$ the proportion of point in region $R_m$ that belong to class $k$:
+\[\hat{p}_{km} = \frac{1}{|R_m|} \sum_{x_i\in R_m} 1_{\{k\}}(t_i) \]
+classify an observation in $R_m$ according to the majority vote:
+\[k(m) = \argmax_k \hat{p}_{km}\]
+
+The choice of the impurity measure $Q_m(T)$
+\subsubsection{The misclassification error} % (fold)
+\label{ssub:the_misclassification_error}
+
+The misclassification error:
+\[
+Q_m(T)
+= \sum_{i \in R_m} 1_{\{\neq k\}}(t_i)
+= 1 - \hat{p}_{km}
+\]
+But this is not the best measure there is.
+% subsubsection the_misclassification_error (end)
+
+\subsubsection{Gini's impurity index} % (fold)
+\label{ssub:gini_s_impurity_index}
+
+Not to confuse with the inequality measure. In ecological applications, where it
+emerged, it measures the biodiversity. Lots of minority (non-dominant) species means
+greater diversity$\sim_{s\in\mathcal{S}} s (1-p_s)$. Literally this translates to a measure
+of how many other classes are present at a node $m$:
+\[Q_m(T) = \sum_{k=1}^K\hat{p}_{mk}(1-\hat{p}_{mk})\]
+where $K$ is the number of classes. This measure is employed by CART.
+
+% subsubsection gini_s_impurity_index (end)
+
+\subsubsection{Impurity measure based on entropy} % (fold)
+\label{ssub:impurity_measure_based_on_entropy}
+
+Consider the cross-entropy (ID3, C4.5). The idea to weight the least represented
+classes not by the residual proportion, but by the logarithm:
+\[Q_m(T) = -\sum_{k=1}^K\hat{p}_{mk} \log \hat{p}_{mk}\]
+(Maybe this is not cross-, but a usual entropy (?))
+
+% subsubsection impurity_measure_based_on_entropy (end)
+
+\subsection{Binary classification} % (fold)
+\label{sub:binary_classification}
+
+Suppose $p$ is the proportion of observations in class $C_1$
+\begin{align*}
+	\text{ME} &= 1 - \max\{p, 1-p\}\\
+	\text{Gini} &= 2 p (1-p)\\
+	\text{X-entropy} &= - p\log p - (1-p)\log (1-p)
+\end{align*}
+
+% subsection binary_classification (end)
+
+\subsubsection{Interpreation} % (fold)
+\label{ssub:interpreation}
+
+Decision and classification trees are interpretable and explicable. However, in
+general trees have poor prediction accuracy. There are various method for improving
+the accuracy by aggregating many poor classifiers. Simple aggregation is not robust,
+and highly variable.
+
+% subsubsection interpreation (end)
+
+% subsection classification_trees (end)
+
+% subsection decision_trees (end)
+
+\subsection{Bagging and boosting} % (fold)
+\label{sub:bagging_and_boosting}
+
+\subsubsection{\emph{B}ootstrap \emph{agg}regation} % (fold)
+\label{ssub:bootstrap_aggregation}
+
+This is a general procedure for reducing the variance of a statistical classification
+method. The idea is to use bootstrap samples toward this reduction. There are two types
+of bootstrap: parametric and non-parametric.
+
+Generate $B$ bootstrap samples, and use each sample as input for the statistical
+learning regression method $\hat{f}^*_b(x)$. The bagging prediction for a regression
+problem is given by
+\[\hat{f}_\text{bag}(x) = \frac{1}{B} \sum_b \hat{f}^*_b(x)\]
+for the classification problem the bagging classification is just the ``majority'' vote in
+favour of a certain class:
+\[\hat{f}_\text{bag}(x) = \argmax_k \sum_b 1_{\{=k\}}(\hat{f}^*_b(x))\]
+As $B$ grows larger, the sum under the argmax operator is converging to the
+theoretical share of the class $k$.
+
+% There are deep theoretical issues with simple majority voting
+
+Assign each data point in the dataset a probability $\hat{q}_i$. In a non-parametric
+bootstrap setting $\hat{q}_i = \frac{1}{n}$. Use $\hat{q}$ to simulate a sample
+\[\hat{f}^*(x) \to (x^*_i, t^*_i)_{i=1}^n\]
+where $(x^*_i, t^*_i)\sim \hat{q}$. The ``true'' bagging estimate is given by the 
+\[\ex_{\hat{q}} \bigl(\hat{f}^*(x)\bigr)\]
+-- the expected value of the empirical process. Since it is hard to study the
+properties of a random estimate, we are going to focus on its limit.
+
+% subsubsection bootstrap_aggregation (end)
+
+% subsection bagging_and_boosting (end)
+
+% section lecture_12 (end)
 \end{document}
