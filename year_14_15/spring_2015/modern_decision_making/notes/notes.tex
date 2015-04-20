@@ -1305,6 +1305,69 @@ and
 
 % subsubsection tutorial_3_problem_1 (end)
 
+\subsubsection{Tutorial \# 3 problem 3} % (fold)
+\label{ssub:tutorial_3_problem_3}
+
+Suppose the natural cubic spline is given by the linear combination of some basis
+functions $\bigl(N_k(x)\bigr)_{k=1}^K$:
+\[
+g(x)
+= \sum_{k = 1}^K \theta_k N_k(x)
+= \mathbf{N}(x) \theta
+\]
+Since $\theta$ are constant with respect to $x$, the second derivative of $g$ is
+\[
+\frac{d^2}{dx^2} g(x)
+= \frac{d^2}{dx^2} \Bigl(\mathbf{N}(x)\Bigr) \theta
+= \mathbf{\omega}(x) \theta
+\]
+where $\mathbf{\omega}_k(x) = \frac{d^2}{dx^2}\mathbf{N}_k(x)$ and
+$\mathbf{\omega}(x) \in \Real^{1\times n}$. Thus the goodness-of-fit functional
+could be expressed in matrix notation:
+\[
+\RSS
+= (t-N\theta)' (t-N\theta)
++ \lambda \int_a^b \theta' \mathbf{\omega}'\mathbf{\omega} \theta ds
+\]
+where $N = \bigl(\mathbf{N}_j(x_i)\bigr)_{ij=1}^n$ looks like
+\[N = \begin{pmatrix}
+	\mathbf{N}_1(x_1) & \mathbf{N}_2(x_1) & \cdots & \mathbf{N}_n(x_1)\\
+	\mathbf{N}_1(x_2) & \mathbf{N}_2(x_2) & \cdots & \mathbf{N}_n(x_2)\\
+	\vdots & \vdots & \ddots & \vdots\\
+	\mathbf{N}_1(x_n) & \mathbf{N}_2(x_n) & \cdots & \mathbf{N}_n(x_n)
+\end{pmatrix}\]
+Since integration of a matrix in done elementwise, define $\Omega\in \Real^{n\times n}$ as
+\[
+\Omega_{ij}
+= \int_a^b \mathbf{\omega}_i(s) \mathbf{\omega}_j(s) ds
+= \int_a^b \mathbf{N}_i''(s) \mathbf{N}_j''(s) ds
+\]
+The matrix $\Omega$ is symmetric and positive semidefinite by construction. For
+the NCS basis necessarily contains a border of zeroes corresponding to linear
+basis functions in $(N_k)$.
+
+Thus confined to the NCS family of functions the criterion reduces to
+\[ \RSS(\theta, \lambda) = (t-N\theta)' (t-N\theta) + \lambda \theta'\Omega\theta \]
+The solution (optimal NCS curve) is determined by the first order conditions given
+by
+\[ \frac{\partial}{\partial \theta} \RSS = 2\lambda \Omega\theta - 2 N't + 2 N'N \theta \]
+whence
+\[\hat{\theta} = (N'N + \lambda \Omega)^{-1} N' t\]
+and 
+\[\hat{t} = N (N'N + \lambda \Omega)^{-1} N' t\]
+Since $\mathbf{N}$ is a set of linearly independent $C^2[a,b]$ functions, the matrix
+$N$ must be of full rank $n$, which means that it it invertible. Therefore
+\[
+\hat{t}
+= N (N'N + \lambda \Omega)^{-1} N' t
+= \Bigl( {N'}^{-1} ( N'N + \lambda \Omega) N^{-1} \Bigr)^{-1} t 
+= \Bigl( I_n + \lambda G'\Omega G \Bigr)^{-1} t
+\]
+Therefore $\hat{t} = S_\lambda t$ and $S_\lambda$ is in Reinsch form $(I_n + \lambda H)$
+for $H = G'\Omega G$ with $G = N^{-1}$.
+
+% subsubsection tutorial_3_problem_3 (end)
+
 % subsection piecewise_polynomials_and_splines (end)
 
 \subsection{Smoothing spline} % (fold)
@@ -1329,8 +1392,8 @@ in the following way: \begin{itemize}
 	matches all the points $(x_i, t_i)_{i=1}^n$, with no structure known beforehand.
 \end{itemize}
 
-%%% HERE!!! Solve the third tutorial and write it here!!
 
+%%% HERE -- sort through these crappy paragraphs below
 Consider any function $f\in C^2$ which interpolates the data $(x_i, t_i)_{i=1}^n$.
 Prior observations imply that necessarily
 \[\int_a^b |f''|^2 ds \geq \int_a^b |g''|^2 ds\]
@@ -1371,6 +1434,8 @@ whence
 	- 2 \lambda \sum_{i=1}^{n-1} c_i \bigl(h(x_{i+1})-h(x_i)\bigr)
 	+ \RSS(g,\lambda)
 \]
+
+
 
 % Surprise! Infinite to finite reduction
 Thus the optimal solution to this infinite dimensional problem is a quite finite
@@ -1427,7 +1492,7 @@ In general, the eigenvectors of $S_\lambda$ should depend on $\lambda$. Luckily,
 further analysis uncovers the following properties:
 \begin{itemize}
 	\item both $S_\lambda$ and $K$ have the same eigenvectors;
-	\item the eigenvalues of $K$ do not depend on $\lambda$.
+	\item the eigenvectors of $S_\lambda$ do not depend on $\lambda$.
 \end{itemize}
 
 For the first statement, consider an eigenvalue-eigenvector pair $(\mu, u)$ of
@@ -1609,17 +1674,64 @@ $(\lambda, u)$ it is true that
 \]
 whence $\lambda$ is either $\pm 1$ or $0$.
 
-The solution to the weighted problem
+\subsubsection{Tutorial \# Problem 4} % (fold)
+\label{ssub:tutorial_problem_4}
+
+Consider the dataset $\bigl(x_i, t_i\bigr)_{i=1}^n$, with ties in $x_i$, to be 
+fit by a curve $g$. The input data does not affect the penalty term, so one has
+to deal with the goodness-of-fit term $\sum_{k=1}^n (t_k g_\theta(x_k))^2$
 \[
-\sum_{i=1}^n \omega_i \bigl(t_i - g(x_i)\bigr)^2
-+ \lambda \int |g''|^2 ds
+\sum_{i=1}^n (t_i - g(x_i) )^2
+= \sum_{k=1}^K \sum_{i=1}^{n_k} (t_{ki} - g(x_k) )^2
+\]
+where $K$ is the number of distinct $x_i$ and $t_{ki}$ is the $i$-th target value
+in the $k$-th group with the same $x_k$. Next, focus on the inner sum:
+\[\sum_{i=1}^{n_k} (t_{ki} - g(x_k) )^2\]
+and note that for $\bar{t}_k = \frac{1}{n_k}\sum_{i=1}^{n_k} t_{ki}$
+\[
+(t_{ki} - \bar{t}_k + \bar{t}_k - g(x_k) )^2
+= (t_{ki} - \bar{t}_k)^2
++ 2 (t_{ki} - \bar{t}_k)(\bar{t}_k - g(x_k) )
++ (\bar{t}_k - g(x_k) )^2
+\]
+Thus
+\begin{align*}
+	\sum_{i=1}^{n_k} (t_{ki} - g(x_k) )^2
+	&= n_k (\bar{t}_k - g(x_k) )^2
+	+ \sum_{i=1}^{n_k} (t_{ki} - \bar{t}_k)^2
+	+ 2 (\bar{t}_k - g(x_k) ) \sum_{i=1}^{n_k} (t_{ki} - \bar{t}_k)\\
+	&= n_k (\bar{t}_k - g(x_k) )^2 + \sum_{i=1}^{n_k} (t_{ki} - \bar{t}_k)^2
+\end{align*}
+since $\sum_{i=1}^{n_k} (t_{ki} - \bar{t}_k) = \sum_{i=1}^{n_k} t_{ki} - n_k \bar{t}_k = 0$.
+This implies
+\[
+\sum_{i=1}^n (t_i - g(x_i) )^2
+= \sum_{k=1}^K n_k (\bar{t}_k - g(x_k) )^2
++ \sum_{k=1}^K \sum_{i=1}^{n_k} (t_{ki} - \bar{t}_k)^2
+\]
+note that the last term is independent of $g$. Therefore the smoothing spline problem
+for data with ties turns out to be equivalent to
+\[
+\min_{g\in C^2[a,b]} \Bigl\{
+	\sum_{k=1}^K n_k (\bar{t}_k - g(x_k) )^2
+	+ \lambda \int_a^b |g''(x)|^2 dx
+\Bigr\}
+\]
+This is an instance of a generalization of the smoothing spline problem, which
+essentially is the introduction of individual weighting of the data-points in the
+dataset: for $(x_i, t_i)_{i=1}^n$ with no ties in $x_i$ and weights $(w_i)_{i=1}^n\geq 0$
+\[
+\sum_{i=1}^n w_i \bigl(t_i - g(x_i)\bigr)^2
++ \lambda \int_a^b |g''(s)|^2 ds
 \to \min_{g\in C^2[a,b]}
 \]
-is again in the Natural Cubic spline family, since we can consider an NCS with
-the same goodness-of-fit term, but with apriori smaller penalty term (recall the
-proof that the natural cubic spline has the least penalty in $C^[a,b]$). The solution
-in the weighted case is
+The solution to the weighted problem is again in the Natural Cubic spline family,
+since we can consider an NCS with the same goodness-of-fit term, but with apriori
+smaller penalty term (recall the proof that the natural cubic spline has the least
+penalty in $C^[a,b]$). The solution in the weighted case is
 \[\hat{g} = ( W + \lambda K )^{-1} W t\]
+
+% subsubsection tutorial_problem_4 (end)
 
 % subsection smoothing_splines_recap (end)
 
