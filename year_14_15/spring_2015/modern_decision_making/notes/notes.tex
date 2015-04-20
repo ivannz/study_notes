@@ -1155,8 +1155,8 @@ that of $g$.
 
 Indeed, consider an at least $C^2[a,b]$ smooth function $\tilde{g}$, which interpolates
 the data $(\xi_k, g_k)_{k=1}^K$. Then the function $h \defn g - \tilde{g}$ has roots at
-knots $(\xi_k)_k$. First notice that (true for any $g$ with piecewise linear second
-derivative)
+knots $(\xi_k)_k$. First notice that (this is true for any $g$ with piecewise linear
+second derivative)
 \begin{align*}
 	\int_a^b h'' g'' ds
 %% Integrate by parts using the nice properties of g 
@@ -1166,11 +1166,12 @@ derivative)
 	& = - \int_{\xi_1}^{\xi_K} h'(s) g'''(s) ds \\
 	& = - \sum_{k=1}^{K-1} \int_{\xi_k}^{\xi_{k+1}} h'(s) g'''(s) ds \\
 %% g''' is piecewise constant
-	& = \Bigl[g'''(x) = C_k\text{ on } x\in[\xi_k, \xi_{k+1}]\Bigr]
-	& = - \sum_{k=1}^{K-1}  C_k \int_{\xi_k}^{\xi_{k+1}} h'(s) ds \\
-	& = - \sum_{k=1}^{K-1}  C_k (h(\xi_{k+1})-h(\xi_k)) = 0
+	& = \Bigl[g'''(x) = \alpha_k\text{ on } x\in[\xi_k, \xi_{k+1}]\Bigr]
+	& = - \sum_{k=1}^{K-1}  \alpha_k \int_{\xi_k}^{\xi_{k+1}} h'(s) ds \\
+	& = - \sum_{k=1}^{K-1}  \alpha_k (h(\xi_{k+1})-h(\xi_k)) = 0
 \end{align*}
-The total variation of the $2$-nd derivative of $\tilde{g}$ is
+since $h(\xi_k)=0$ for all $k$. The total variation of the $2$-nd derivative
+of $\tilde{g}$ is
 \begin{align*}
 	\int_a^b |\tilde{g}''|^2 ds
 	&= \int_a^b \bigl|g'' + h''\bigr|^2 ds
@@ -1195,6 +1196,27 @@ So far the following wonderful properties have been demonstrated for the NCS
 	of $C^2[a,b]$ smooth curves interpolating the data at the same knots;
 	\item to interpolate at $K$ knots it requires only $K$ basis functions.
 \end{itemize}
+
+A side note: consider an arbitrary map $f\in C^2[a,b]$ and let $h = f - g$. Then
+\begin{align*}
+	\int_a^b h'' g'' ds &= h' g''\rvert_a^b - \int_a^b h' g''' ds \\
+%% g''(a)=g''(b) = 0 and g'''(s) = 0 for s<\xi_1 or s>\xi_K
+	&= - \sum_{k=1}^{K-1} \int_{\xi_k}^{\xi_{k+1}} h' g''' ds \\
+%% The third derivative of g
+	&= \sum_{k=1}^{K-1} \frac{\gamma_{k+1}-\gamma_k}{\xi_{k+1}-\xi_k} (h_k - h_{k+1})\\
+	&= \sum_{k=2}^{K-1} \gamma_k \bigl( \frac{h_{k+1}-h_k}{\xi_{k+1}-\xi_k}
+		- \frac{h_k - h_{k-1}}{\xi_k-\xi_{k-1}}\bigr)\\
+	&= \gamma'Q'h = g' Q R^{-1} Q' h = g' K h
+\end{align*}
+where $h = (h_k)_{k=1}^K$ with $h_k = h(\xi_k)$ for all $k=1,\ldots K$. Therefore
+\[
+\int_a^b |f''|^2 ds
+= \int_a^b |h''|^2 ds + \int_a^b |g''|^2 ds + 2\int_a^b h''g'' ds
+= \int_a^b |h''|^2 ds - h' K h + g' K h + h' K g + g' K g + h' K h
+\]
+whence for any $f\in C^2[a,b]$
+\[ \int_a^b |f''|^2 ds - f' K f = \int_a^b |(f-g)''|^2 ds - (f-g)' K (f-g) \]
+where $g$ is the NCS through $(\xi_k, g_k)_{k=1}^K$.
 
 % subsubsection natural_cubic_spline (end)
 
@@ -1290,11 +1312,12 @@ and
 
 The goal of fitting a smoothing spline is to find a function $g(x)$ among all functions
 with two continuous derivatives, that minimizes the following penalized sum of squares
-\[\RSS(g,\lambda) = \sum_{i=1}^n \brac{t_i - g(x_i)}^2 + \lambda \int |g''(s)|^2 ds\]
-The functional basically tries to fit the data as much as possible with $g$ and
-while penalizing it for irregular behaviour. The penalty term sums up non-linearities
-in the smoother $g$ and is higher the more oscillations the $g$ has. This is a problem
-of calculus of variations and functional analysis.
+\[\RSS(g,\lambda) = \sum_{i=1}^n (t_i - g(x_i))^2 + \lambda \int |g''(s)|^2 ds\]
+where $(x_i,t_i)_{i=1}^n$ is the data to be interpolated, $x_1<\ldots<x_i<\ldots<x_n$.
+This functional basically rewards fitting the data as close as possible with $g$
+while penalizing $g$ for irregular behaviour: the penalty term sums up non-linearities
+in the smoother $g$ and is higher the more oscillations the $g$ has. On the whole, this
+seems to be a functional problem of calculus of variations.
 
 Intuitively, the regularizing parameter $\lambda$ should affect the optimal solution
 in the following way: \begin{itemize}
@@ -1306,78 +1329,219 @@ in the following way: \begin{itemize}
 	matches all the points $(x_i, t_i)_{i=1}^n$, with no structure known beforehand.
 \end{itemize}
 
-%%% HERE!!!
+%%% HERE!!! Solve the third tutorial and write it here!!
 
-Consider a function $g(\xi_k) = \bar{g}(\xi_k)$ for all $k$.
-Consider as $\bar{g}$ an NCS at knots given by $\brac{\xi_k}_{k=1}^K$.
-Since an NCS has the lest variation integral, the solution of the problem cannot be anything but the NCS.
-\[\int \abs{g''(s)}^2 ds\geq \int \abs{\bar{g}''(s)}^2 ds\]
+Consider any function $f\in C^2$ which interpolates the data $(x_i, t_i)_{i=1}^n$.
+Prior observations imply that necessarily
+\[\int_a^b |f''|^2 ds \geq \int_a^b |g''|^2 ds\]
+where $g$ is the NCS built at knots $(x_i, t_i)_{i=1}^n$. Therefore among all
+interpolating functions with $f(x_i)=t_i$, the NCS has the smallest ``wiggliness''
+penalty term.
 
-Thus the optimal solution to this infinite dimensional problem is a quite finite dimensional NCS.
-% Surprise!
-Therefore the problem reduces to the following quadratic optimization problem:
-\[\RSS(g,\lambda) = {(t - g)}'{(t - g)} + \lambda g'K g \to \min_g\]
-\[\RSS(g,\lambda) = t't - g't - t'g + g'( I + \lambda K )g  \to \min_g\]
-using the matrix derivatives, the solution turns out to be
-\[\frac{\partial}{\partial g} \quad:\quad 2( I + \lambda K )g - 2 t = 0\]
-which reduces to
-\[\hat{g} = \brac{I + \lambda K}^{-1} t\]
+\[ \int_a^b |f''|^2 ds - f' K f = \int_a^b |(f-g)''|^2 ds - (f-g)' K (f-g) \]
 
-The matrix $\brac{I + \lambda K}^{-1}$ is called the \textbf{smoother matrix} $S_\lambda$.
+\[
+\int_a^b |f(s)''|^2 ds
+= \int_a^b |(f(s)-g(s))''|^2 ds + 2 (f-g)'K g + g'K g
+\geq g'K g
+\]
+since $f(x)-g(x)$ has roots at $\xi_i$.
 
-Where does the smoothing take place? 
+Indeed,
+\[\RSS(g,\lambda) = \sum_{i=1}^n (t_i - g(x_i))^2 + \lambda \int_a^b |g''(s)|^2 ds\]
 
-Define the effective degree freedom as, again, the trace of $S_\lambda$.
-\[\text{df}(\lambda) = \tr\brac{S_\lambda}\]
+For an arbitrary $h\in C^2[a,b]$, it is true that
+\begin{align*}
+	\int_a^b h'' g'' ds
+	&= h' g''\rvert_a^b - \int_a^b h' g''' ds\\
+	&= - \sum_{i=1}^{n-1} \int_{x_i}^{x_{i+1}} h'(s) g'''(s) ds\\
+	&= - \sum_{i=1}^{n-1}  \alpha_i \bigl(h(x_{i+1})-h(x_i)\bigr)
+\end{align*}
+where $\alpha_i = g(x_i+)$ for all $i$. Now, for $f = g+h$, it is true that
+$\sum_{i=1}^n (t_i - f(x_i))^2 = \sum_{i=1}^n h(x_i)^2$ and
+\[
+\int_a^b |f''(s)|^2 ds
+= \int_a^b |h''(s)|^2 ds + \int_a^b |g''(s)|^2 ds
++ 2\int_a^b h''(s)g''(s) ds
+\]
+whence
+\[
+\RSS(f,\lambda)
+= \sum_{i=1}^n h(x_i)^2 + \lambda \int_a^b |h''(s)|^2 ds
+	- 2 \lambda \sum_{i=1}^{n-1} c_i \bigl(h(x_{i+1})-h(x_i)\bigr)
+	+ \RSS(g,\lambda)
+\]
 
-Use the SVD of $S_\lambda$ to extract the eigenvalues and eigenvectors.
+% Surprise! Infinite to finite reduction
+Thus the optimal solution to this infinite dimensional problem is a quite finite
+dimensional NCS. Therefore the problem reduces to the following quadratic optimization
+problem:
+\[\RSS(g,\lambda) = (t - g)'(t - g) + \lambda g'K g \to \min_g\]
+or equivalently
+\[\RSS(g,\lambda) = t't - g't - t'g + g'( I_n + \lambda K )g \to \min_g\]
+Using matrix derivatives, the solution turns out to be:
+\[\frac{\partial}{\partial g} \quad:\quad 2( I_n + \lambda K ) g - 2 t = 0\]
+The matrix $K$ is not necessarily invertible, despite being symmetric and positive
+semidefinite. However the matrix $I_n + \lambda K$ is invertible for any sufficiently
+small $\lambda$, since the term $I_n$ ``regularizes'' the eigenvalues of $K$.
+If $\eta, v$ is an eigenvalue-eigenvector pair of $K$, then
+\[(I_n + \lambda K)x = (1 + \lambda\eta)x\]
+which implies that the ``regularized'' matrix $I_n + \lambda K$ has eigenvalues
+$1 + \lambda\eta > 0$. Therefore the roots of the characteristic polynomial of
+$I_n + \lambda K$ are non-zero, implying that its determinant is nonzero as well,
+whence follows invertibility.
 
-Since $K \defn Q R^{-1} Q'$, whence $K$ is symmetric. The unit matrix is symmetric, hence $S_\lambda$ is symmetric and its inverse is symmetric.
-% Thus it is an Hermitian matrix, hence the eigenvalues must be real.
-\[S_\lambda = \sum_{i=1}^n \lambda_i u_i u_i' = U\Lambda U'\]
+The solution to the finite dimensional problem is
+\[\hat{g} = (I_n + \lambda K)^{-1} t\]
+This vector in fact uniquely identifies the NCS, thereby giving a closed form solution
+to the original functional problem.
 
-Since  $S_\lambda$ is positive-semidefinite, all eigenvalues are non-negative.
+The form of the solution $\hat{g}$ resembles the linear regression case, where
+the estimate of the target variable is a projection onto the space spanned by the
+columns of $X$:
+\[\hat{t} = X(X'X)^{-1}X't\]
+The matrix $S_\lambda = (I_n + \lambda K)^{-1}$ is the so called \textbf{smoother matrix}.
+Unfortunately, the smoother matrix is not a projector.
 
+Since in the linear regression case the effective degrees freedom was defined as
+the trace of the projector. Mimicking that idea, define
+\[\text{df}(\lambda) = \tr(S_\lambda)\]
+
+The matrices $K$ and the unit matrix are symmetric, whence $S_\lambda$ and its inverse
+must be symmetric. Furthermore $S_\lambda$ is positive semi-definite, and all its
+eigenvalues are non-negative.
+
+To find out where the smoothing takes place consider the \textbf{SVD} of $S_\lambda$.
+Since the matrix is symmetric and positive semi-definite, the SVD coincides with
+the eigenvalue decomposition, where $U=V$: $S_\lambda = U M U'$, with
+$M = \text{diag}(\mu_i)_{i=1}^n$. Thus $S_\lambda$ can be spectrally decomposed
+into the sum
+\[
+S_\lambda
+= U M U'
+= \sum_{i=1}^n \mu_i u_i u_i'
+\]
+% It is an Hermitian matrix, hence the eigenvalues must be real.
+
+In general, the eigenvectors of $S_\lambda$ should depend on $\lambda$. Luckily,
+further analysis uncovers the following properties:
 \begin{itemize}
-	\item The eigenvalues of $K$ do not depend on the parameter $\lambda$;
-	\item Both $S_\lambda$ and $K$ have the same eigenvectors.
+	\item both $S_\lambda$ and $K$ have the same eigenvectors;
+	\item the eigenvalues of $K$ do not depend on $\lambda$.
 \end{itemize}
 
-If $\eta$ -- the eigenvalues of $K$, then $\text{det}\brac{K-\eta I} = 0$.
-Thus \[\text{det}\brac{\frac{1}{\lambda}\brac{\brac{I+\lambda K} -(1 + \lambda \eta) I} } = 0\]
+For the first statement, consider an eigenvalue-eigenvector pair $(\mu, u)$ of
+$S_\lambda$. Then, obviously, $S_\lambda u = \mu u$, whence due to invertibility
+of $S_\lambda$ one has:
+\[
+u
+= \mu S_\lambda^{-1} u
+= \mu (I+\lambda K) u
+= \mu u + \mu \lambda K u
+\]
+Therefore $u\neq 0$ is an eigenvector of $K$ corresponding to $\eta = \frac{1-\mu}{\lambda \mu}$.
+The converse implication is similar: $K u = \eta u$ implies
+\[ ( \lambda K + I ) u = ( \lambda \eta + 1 ) u \]
+In conclusion, if $(\mu_k)_{k=1}^n$ are eigenvalues of $S_\lambda$ in non-increasing
+order, then the corresponding eigenvectors $(u_k)_{k=1}^n$ are the eigenvectors
+of $K$ with eigenvalues $(\eta_j)_{j=1}^n$, given by 
+\[\eta_{n-j+1} = \frac{1}{1 + \lambda \mu_j}\]
 
-Thus $1 + \lambda \eta$ are the eigenvalues of $\brac{I+\lambda K}$, and $\frac{1}{1 + \lambda \eta}$ is the eigenvalue of $S_\lambda$.
-Thus $\lambda_j = \frac{1}{1+\lambda \eta_{n-j+1}}$ is a decreasing function of $\lambda$.
+As for the second conjecture, the matrix $K = Q R^{-1} Q'$ depends on the spacing
+between the interpolation knots only, whence its eigenvalues and eigenvectors are
+determined exclusively by the data to be interpolated.
 
-Consider a $u_j$ the eigenvector of $S_\lambda$ corresponding to $\lambda_j$.
-Then $S_\lambda u_j = \lambda_j u_j$ and
-\[u_j = \lambda_j \brac{S_\lambda}^{-1} u_j
-= \lambda_j \brac{I+\lambda K} u_j
-= \lambda_j u_j + \lambda_j \lambda K u_j\]
-Whence
-\[K u_j = \frac{1-\lambda_j}{\lambda \lambda_j} u_j = \eta_{n-j+1} u_j\]
-therefore the eigenvectors of $S_\lambda$ are the eigenvectors of $K$ (with other eigenvalues).
+The spectral decomposition of $S_\lambda$ yields:
+\[
+\hat{g}
+= S_\lambda t
+= \sum_{j=1}^n \mu_j u_j u_j' t
+= \sum_{j=1}^n \mu_j \langle u_j, t \rangle u_j
+\]
+Since each eigenvector $u_j$ of $S_\lambda$ is independent of the actual value
+of $\lambda$, the projection is made onto a fixed subspace, determined by the data
+only. This observation makes it possible to do inter-model are comparisons with
+respect to different values if the complexity parameter $\lambda$.
+
+Now, the actual smoothing peculiarities can be inferred from the expression of
+the eigenvalues of $S_\lambda$ through eigenvalues of $K$:
+\[
+\hat{g}
+= \sum_{j=1}^n \frac{ \langle u_j, t \rangle }{1 + \lambda \eta_{n-j+1}} u_j
+\]
+The higher the index of the eigenvector $j$, the smaller the respective eigenvalue
+of $S_\lambda$ is, and the more smoothing takes place. Thus the less variance in
+the principal direction, the more of that direction is preserved as is.
+
+To what maps in $C^2[a,b]$ do the first two eigenvectors of $S_\lambda$ correspond?
+This question is equivalent to studying the functional properties of the eigenvectors
+of $K$ with the smallest eigenvalues.
+
+Higher $u_j$ correspond to more and more oscillating functions of $x$ and the smoothing
+spline does not shrink linear components. The intuition for not shrinking linear
+function of $x$ is that the penalty term involves the second derivative of $g$. Indeed,
+\[
+\int_a^b \Bigl|\frac{d^2}{ds} g(s)+l(s) \Bigr|^2 ds
+= \int_a^b \Bigl|\frac{d^2}{ds} g(s) \Bigr|^2 ds
+\]
+for any $l$ -- linear in $x$. This means that linear components of $g$ ``pass through''
+the regularization term and are not penalized at all. In fact, for a general penalty
+term
+\[ \int_a^b R\Bigl( \frac{d^{k_1}}{dx^{k_1}} g, \ldots, \frac{d^{k_p}}{dx^{k_p}} g\Bigr) ds\]
+any additive component $h$ of $g$ with $\frac{d^k}{dx^k} h = 0$ does not get penalized,
+where $k$ is the smallest among $(k_m)_{i=1}^m$.
+
+Since smoothing spline does not shrink linear components, $\int_a^b |l''|^2ds = 0$
+and the two least eigenvalues of $K$ ($\eta_n$ and $\eta_{n-1}$) are zero. Therefore
+the nature of the matrix $K$ makes the first $\mu_1$ and $\mu_2$ equal to $1$:
+\[
+\hat{g} =
+\langle u_1, t \rangle u_1 + \langle u_2, t \rangle u_2 +
++ \sum_{j=3}^n \mu_j \langle u_j, t \rangle u_j
+\]
 
 
-Thus due to the spectral decomposition:
-\[g = S_\lambda t = \sum_{j=1}^n \lambda_j u_j u_j' t = \sum_{j=1}^n \lambda_j \brkt{u_j, t} u_j \]
+% Now, a matrix and its inverse have the same set of eigenvectors. Indeed, since
+% $S_\lambda$ is non-singular, its eigenvalues must be non-zero for otherwise it
+% would have been that $\text{det} S_\lambda = 0$. If $S_\lambda x = \mu x$ then
+% \[
+% S_\lambda^{-1} x
+% = \frac{1}{\mu} S_\lambda^{-1} \mu x
+% = \frac{1}{\mu} S_\lambda^{-1} S_\lambda x
+% = \frac{1}{\mu} x
+% \]
 
-Since each eigenvector $u_j$ is independent of the $\lambda$, the projections on are invariant under $\lambda$. Therefore models are comparable.
+% A value $\eta$ is an eigenvalue of $K$ if and only if it is a root of the characteristic
+% polynomial of $K$ 
+% \[\text{det}(K - \eta I_n) = 0\]
+% However, the multilinearity of determinants implies that for $\lambda>0$
+% \begin{align*}
+% \text{det}\Bigl(K - \eta I_n\Bigr)
+% 	&= \lambda^{-n} \text{det}\Bigl(\lambda K + I_n - I_n - \lambda \eta I_n\Bigr) \\
+% 	&= \lambda^{-n} \text{det}\Bigl(S_\lambda^{-1} - ( 1 + \lambda \eta ) I_n\Bigr)
+% \end{align*}
+% whence $1 + \lambda \eta$ must necessarily be an eigenvalue of $S_\lambda^{-1}$.
+% Since the eigenvalues of the inverse are reciprocals of the original matrix, it
+% therefore is true that $\frac{1}{1 + \lambda \eta}$ is an eigenvalue of $S_\lambda$.
+% Note that the eigenvalues of $S_\lambda$ are non-negative decreasing functions
+% of $\lambda$.
 
-\[\sum_{j=1}^n \frac{1}{1+\lambda\eta_{n-j+1}} \brkt{u_j, t} u_j\]
-some smoothing take place
+% Furthermore, if $A$ is Hermitian (symmetric), then it admits a diagonalized form
+% with respect to an orthogonal basis of eigenvectors $V\in \Real^{n\times n}$:
+% \[K = V \Lambda V'\]
 
-The higher the $j$ the more smoothing take place:
-	the less principal component is, the more smoothed it is.
+% Consider the SVD of $K$: if the rank of $K$ is $r$ then there exist orthogonal
+% matrices $U,V\in \Real^{n\times n}$ and a diagonal matrix $\Lambda$ of rank $r$
+% such that
+% \[K = U\Lambda V'\]
 
-\[g = \lambda_1\brkt{u_1, t} u_1 + \lambda_2\brkt{u_2, t} u_2 + \sum_{j=3}^n \lambda_j \brkt{u_j, t} u_j \]
-The nature of the matrix $K$ makes the first $\lambda_1$ and $\lambda_2$ equal to $1$.
+% Suppose there is a matrix $X$ with dimensions $n\times p$ with rank $r$.
+% SVD decomposition claims that there exist square orthogonal matrices $U_{n\times n}$
+% and $V_{p\times p}$ and a diagonal matrix $\Sigma_{n\times p}$ of rank $r$, such
+% that $X = U \Sigma V'$:
+% \[X = U \Bigl(\begin{smallmatrix} \Lambda & 0\\ 0 & 0 \end{smallmatrix}\Bigr) V'\]
 
-What is the relationship between $x$ and $u_1$?
-
-The smoothing spline does not shrink linear components.
-
-Higher $u_j$ correspond to more and more oscillating functions of $x$.
+% \item the eigenvalues of $K$ must be real and nonnegaitve, since $K$ is symmetric and ;
 
 % Reproducing Hilbert spaces
 
@@ -1389,37 +1553,75 @@ Higher $u_j$ correspond to more and more oscillating functions of $x$.
 \section{Lecture \# 5} % (fold)
 \label{sec:lecture_5}
 
-\[\RSS = \sum_{i=1}^n \brac{t_i - g(x_i)}^2 + \lambda \int \abs{g''(s)}^2ds\]
-The solution to this problem is the Natural cubic spline , which is finite dimensional reduces the problem to
-\[\brac{t-g}'\brac{t-g} + \lambda g'K g\]
-where $K$ is a symmetric and positive  semi-definite matrix
-the fitted $\hat{g}$ are determined by the 
-\[S_\lambda = \brac{I+\lambda H}^{-1}\]
+\subsection{Smoothing splines (recap)} % (fold)
+\label{sub:smoothing_splines_recap}
 
-The smoother matrix $S_\lambda$ is positive semi-definite and has eigenvalues $\lambda_k$. Why does $\lambda_1$ and $\lambda_2$ are equal to $1$?
+Recall that the following problem's optimal solution is in the family of piecewise
+cubic polynomials from $C^2[a,b]$ with knots determined by the nature of the
+interpolated data.
+\[
+\sum_{i=1}^n \bigl(t_i - g(x_i)\bigr)^2
++ \lambda \int |g''(s)|^2 ds
+\to \min_{g\in C^2[a,b]}
+\]
+In the last lecture it was proven that the solution is given by the Natural Cubic
+Spline, which effectively reduces the infinite dimensional problem to a finite
+dimensional one:
+\[(t-g)'(t-g) + \lambda g' K g\to \min_{g\in \Real^{n\times 1}}\]
+where $(x_i, t_i)_{i=1}^n$ is the data to be interpolated, and $g$ is the vector
+which enables unique identification of the NCS, $K$ is a symmetric and positive
+semi-definite matrix, which depends on the knots only. The fitted $\hat{g}$ is
+determined by the projection-like expression:
+\[\hat{g} = S_\lambda t\]
+where the smoother matrix $S_\lambda = ( I + \lambda K )^{-1}$ is positive
+semi-definite and has eigenvalues $\mu_k = \frac{1}{1 + \lambda \eta_{n-j+1}}$,
+where $(\eta_i)_{i=1}^n$ are the eigenvalues of $K$.
+
+% Why are $\mu_1$ and $\mu_2$ equal to $1$?
 
 %% See handwritten notes
 
-What happens when the soother is applied again to the smoothed output?
-In the case of a linear regression we get the same output.
-
-Re-applying the smoother to $\hat{g}$ yields a more linear fit, since the first pair of eigenvalues are unit, thus preserving the linear components, while other higher degree polynomial components diminish.
-
-Indeed, \begin{align*}
-	\hat{g}_2 & = \sum_{k=1}^n \lambda_k \langle\hat{g}, u_k\rangle u_k \\
-	& = \sum_{k=1}^n \lambda_k \Bigl\langle \sum_{j=1}^n \lambda_j \langle g, u_j\rangle u_j, u_k\Bigr\rangle u_k \\
-	& = \sum_{k=1}^n \sum_{j=1}^n \lambda_j \lambda_k \langle g, u_j\rangle \langle u_j, u_k\rangle u_k \\
-	& = \sum_{k=1}^n \sum_{j=1}^n \lambda_j \lambda_k \langle g, u_j\rangle \delta_{kj} u_k \\
-	& = \sum_{k=1}^n \lambda_k^2 \langle g, u_k\rangle u_k
+What happens when the smoother is applied again to the smoothed output? In the
+case of a linear regression we get the same output. However, re-applying the smoother
+to $\hat{g}$ yields a more linear fit, since the first pair of eigenvalues are $1$
+and correspond to linear maps in $C^2[a,b]$. Thus $S_\lambda$ preserves the linear
+components, while diminishing the impact of other higher degree polynomial components.
+Indeed,
+\begin{align*}
+	\hat{g} & = \sum_{k=1}^n \mu_k \langle\hat{g}, u_k\rangle u_k \\
+	& = \sum_{k=1}^n \mu_k \Bigl\langle \sum_{j=1}^n \mu_j \langle g, u_j\rangle u_j, u_k\Bigr\rangle u_k \\
+	& = \sum_{k=1}^n \sum_{j=1}^n \mu_j \mu_k \langle g, u_j\rangle \langle u_j, u_k\rangle u_k \\
+	& = \sum_{k=1}^n \sum_{j=1}^n \mu_j \mu_k \langle g, u_j\rangle \delta_{kj} u_k \\
+	& = \langle g, u_1\rangle u_1 + \langle g, u_2\rangle u_2
+		+ \sum_{k=3}^n \mu_k^2 \langle g, u_k\rangle u_k
 \end{align*}
+and $\mu_1 = \mu_2 = 1$.
 
-The projection matrix is idempotent, hence for any eigenvector-eigenvalue pair $(\lambda, u)$ it is true that $\lambda u = Hu = H^2u = H\lambda u = \lambda Hu = \lambda^2 u$. Thus $\lambda$ is either $\pm1$ or $0$.
+The projection matrix is idempotent, hence for any eigenvector-eigenvalue pair
+$(\lambda, u)$ it is true that 
+\[
+\lambda u
+= H u
+= H^2 u
+= H \lambda u
+= \lambda H u
+= \lambda^2 u
+\]
+whence $\lambda$ is either $\pm 1$ or $0$.
 
-The solution to the weighted problem is the same Natural Cubic spline.
-\[\sum_{i=1}^n \omega_i \brac{t_i - g(x_i)}^2 + \lambda \int \abs{g''(s)}^2 ds \to \min\]
-Since again, we can take an NCS with the same first sum but with lesser penalty term.
+The solution to the weighted problem
+\[
+\sum_{i=1}^n \omega_i \bigl(t_i - g(x_i)\bigr)^2
++ \lambda \int |g''|^2 ds
+\to \min_{g\in C^2[a,b]}
+\]
+is again in the Natural Cubic spline family, since we can consider an NCS with
+the same goodness-of-fit term, but with apriori smaller penalty term (recall the
+proof that the natural cubic spline has the least penalty in $C^[a,b]$). The solution
+in the weighted case is
+\[\hat{g} = ( W + \lambda K )^{-1} W t\]
 
-The solution is $\hat{g} = \brac{W+\lambda K}^{-1} Wt$.
+% subsection smoothing_splines_recap (end)
 
 \subsection{Model selection} % (fold)
 \label{sub:model_selection}
