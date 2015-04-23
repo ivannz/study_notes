@@ -30,8 +30,9 @@
 \newcommand{\Dcal}{\mathcal{D}}
 \newcommand{\Acal}{\mathcal{A}}
 \newcommand{\borel}{\mathcal{B}}
+\newcommand{\one}{\mathbf{1}}
 
-\newcommand{\Ex}{\mathbb{E}}
+\newcommand{\ex}{\mathbb{E}}
 \newcommand{\Var}{\text{Var}}
 \newcommand{\pr}{\mathbb{P}}
 
@@ -159,23 +160,23 @@ A shorter lecture, no definition of expectation, but full of functions:
 
 Suppose $X$ is a real-valued random variable with law $F_X$. If $F_X$ is absolutely continuous with respect to $dx$, then $F_X(x) = \int_{-\infty}^x f dx$.
 
-The expectation of $X$ is defined as \[\Ex(X) \defn \int X d{F_X}\] and in the case of absolutely continuous distribution it is true that \[\int X d{F_X} = \int X f(x) dx\]
+The expectation of $X$ is defined as \[\ex(X) \defn \int X d{F_X}\] and in the case of absolutely continuous distribution it is true that \[\int X d{F_X} = \int X f(x) dx\]
 
 Riemann-Stieltjes integrals are used (but those who know, can use a better Lebesgue-Stieltjes integral).
 \[\int d dF = \lim_{\Delta\to 0} \sum_i g(x_i) \brac{F(\xi_{i+1}) - F(\xi_i)}\]
 Lebesgue integral is pedagogically more difficult, though more abstract, flexible and overall better.
 % Geometric measure theory.
 
-Cauchy distribution does not allow $\Ex X$, however it has the mean in terms of the \textbf{main value} (integration over a symmetric interval $\clo{-M,+M}$).
+Cauchy distribution does not allow $\ex X$, however it has the mean in terms of the \textbf{main value} (integration over a symmetric interval $\clo{-M,+M}$).
 % \rus{Уравнение Власова}
 
-The expectation of a function $g$ of $X$ is $\Ex\brac{g(X)} = \int g(X) dF_X$.
+The expectation of a function $g$ of $X$ is $\ex\brac{g(X)} = \int g(X) dF_X$.
 
-The $k$-th moment of an RV is $\Ex X^k$ and the $k$-th central moment is $\Ex\brac{ X - \Ex X}^2$.
-The second central moment of $X$ is the variance of $X$ : $\mathbb{D}(X) \defn \Ex\brac{ X - \Ex X}^2$.
+The $k$-th moment of an RV is $\ex X^k$ and the $k$-th central moment is $\ex\brac{ X - \ex X}^2$.
+The second central moment of $X$ is the variance of $X$ : $\mathbb{D}(X) \defn \ex\brac{ X - \ex X}^2$.
 
 Jensen's inequality. For any convex function $g$ of $X$ it is true that 
-\[g\brac{\Ex X}\leq \Ex g(X) \]
+\[g\brac{\ex X}\leq \ex g(X) \]
 
 Fatou's lemma \[\int \liminf X_n d\mu \leq \liminf \int X_n d\mu\]
 
@@ -183,23 +184,23 @@ Holder's inequality for nonnegative measurable $f$ and $g$ \[\int fg d\mu \leq \
 
 Minkowski inequality \[\brac{\int {(f+g)}^p d\mu}^\frac{1}{p}\leq \brac{\int f^p d\mu}^\frac{1}{p} + \brac{\int g^p d\mu}^\frac{1}{p}\]
 
-The probability generating function is defined for any $z\in \Cplx$ with $\abs{z}\leq 1$ as \[G_X(z) \defn \Ex z^X\]
+The probability generating function is defined for any $z\in \Cplx$ with $\abs{z}\leq 1$ as \[G_X(z) \defn \ex z^X\]
 If $X$ has discrete distribution, then $G_X(z) = \sum_{n\geq 0} z^n \Pr(X=n)$.
 Since the series is analytical in a finite disc, it is differentiable.
 Thus \[G_X^{(k)}(z) = \sum_{n\geq 0} \frac{n!}{(n-k)!} z^{n-k} \Pr(X=n) \]
-whence $G_X^{(k)}(0) = \Ex \brac{X(X-1)\ldots (X-k+1)}$
+whence $G_X^{(k)}(0) = \ex \brac{X(X-1)\ldots (X-k+1)}$
 
 Factorial exponent: $x^{\underline{k}} = \prod_{s=1}^k (X-s+1)$.
 \[x^{\underline{k}} - \brac{x-1}^{\underline{k}} = k \cdot \brac{x-1}^{\underline{k-1}} \]
 
-The moment generating function of $X$ is given by \[S_X(t) \defn G(e^t) = \Ex(e^{tX})\]
+The moment generating function of $X$ is given by \[S_X(t) \defn G(e^t) = \ex(e^{tX})\]
 Differentiation of the MGF and evaluation at $t=0$ yields moments of $X$.
-Indeed, if the integral converges uniformly, then $S_X^{(k)}(t) = \induc{\Ex X^k e^{tX}}_{t=0} = \Ex X^k$.
+Indeed, if the integral converges uniformly, then $S_X^{(k)}(t) = \induc{\ex X^k e^{tX}}_{t=0} = \ex X^k$.
 
 \emph{A gentle reminder}\hfill \\
 For any pair of independent random variables the expectation of their product equals the product of their expectations.
 
-Thus the mgf of a sum of independent $X,Y$ results in \[S_{X+Y}(t) = \Ex e^{t(X+Y)} = \Ex e^{tX} e^{tY} = \Ex e^{tX} \Ex e^{tY} = S_X(t) S_Y(t)\]
+Thus the mgf of a sum of independent $X,Y$ results in \[S_{X+Y}(t) = \ex e^{t(X+Y)} = \ex e^{tX} e^{tY} = \ex e^{tX} \ex e^{tY} = S_X(t) S_Y(t)\]
 
 The cumulants of $X$ (or semiinvariants) are defined as the coefficients in the following formal series expansion of $\log S_X(t)$ as
 \[\log S_X(t) \defn \sum_{n\geq 0} \frac{t^n}{n!} \kappa_n^X\]
@@ -288,7 +289,7 @@ The sequence of distribution function $F_n$ converges weakly to some $F$ if $\ph
 
 \noindent \textbf{Proposition}\hfill\\
 
-Suppose $X_n\to X$ and $\phi_n(s)\defn \Ex\brac{e^{isX_n}}$. Then there exists a limiting function of $\phi_n$ such that $\phi_n\to \phi = \Ex\brac{e^{isX}}$.
+Suppose $X_n\to X$ and $\phi_n(s)\defn \ex\brac{e^{isX_n}}$. Then there exists a limiting function of $\phi_n$ such that $\phi_n\to \phi = \ex\brac{e^{isX}}$.
 
 Let's show that if $X_n\overset{D}{\to} X$ then
 \[\int g(X) dF_n \to \int g(X)dF\]
@@ -354,11 +355,11 @@ we get
 
 Indeed, if characteristic functions coincide, but but distributions differ at least in some point, then there is a contradiction
 
-Suppose $\phi_n(x) = \Ex\brac{e^{isX_n}}$ converges to some $\phi$ -- and $\phi$ is continuous at $x=0$, then there exists a random variable, such that $\phi(s) = \Ex\brac{e^{isX}}$ and $X_n\to X$ weakly.
+Suppose $\phi_n(x) = \ex\brac{e^{isX_n}}$ converges to some $\phi$ -- and $\phi$ is continuous at $x=0$, then there exists a random variable, such that $\phi(s) = \ex\brac{e^{isX}}$ and $X_n\to X$ weakly.
 
-Suppose $Y_k$ are iid and $X_n = \sum_{k=1}^n Y_k$ with $\Ex\brac{e^{isY}} = \psi(s) = e^{-\abs{s}}$.
+Suppose $Y_k$ are iid and $X_n = \sum_{k=1}^n Y_k$ with $\ex\brac{e^{isY}} = \psi(s) = e^{-\abs{s}}$.
 
-Then $\phi_n(s) = \Ex\brac{e^{isX}} = \brac{\phi(s)^n}$, but it converges to $1_{s=0}$.
+Then $\phi_n(s) = \ex\brac{e^{isX}} = \brac{\phi(s)^n}$, but it converges to $1_{s=0}$.
 
 % the probability is smeared along the infinity/
 
@@ -393,19 +394,19 @@ since $\phi(0)$ is continuous at $0$.
 Thus $1 \leq \int dF$. But $\int dF$ cannot strictly exceed $1$, whence $F$ is a distribution function.
 
 \noindent\textbf{Lyapunov's Central Limit Theorem} \hfill\\
-Suppose $X_k$ are i.i.d. with $\Ex X_k = \mu$ and $\Ex X_k^2 = \sigma^2$. Introduce the following sequence:
+Suppose $X_k$ are i.i.d. with $\ex X_k = \mu$ and $\ex X_k^2 = \sigma^2$. Introduce the following sequence:
 \[Y_n = \frac{\sum_{k=1}^n X_k - n \mu }{\sqrt{n}\sigma}\]
 Then $Y_n\overset{D}{\to}\mathcal{N}(0,1)$
 
 \textbf{Proof}\hfill\\
 
-If $Z_n = \sum_{k=1}^n X_k - n\mu$. Then $\Ex Z_n = 0$ and $\Var Z_n = n \sigma^2$ due to independence.
+If $Z_n = \sum_{k=1}^n X_k - n\mu$. Then $\ex Z_n = 0$ and $\Var Z_n = n \sigma^2$ due to independence.
 
-Let $\phi_n(s) = \Ex\brac{e^{isZ_n}}$. Then
+Let $\phi_n(s) = \ex\brac{e^{isZ_n}}$. Then
 \[\phi_n(s) = 1 + 0 - \frac{n\sigma^2}{2} s^2 + o(s^2)\]
 
 Now
-\[\phi_{Y_n}(s) = \Ex\brac{e^{is\frac{Z_n}{\sigma \sqrt{n}}}} = \phi_n(\frac{s}{\sigma\sqrt{n}})\]
+\[\phi_{Y_n}(s) = \ex\brac{e^{is\frac{Z_n}{\sigma \sqrt{n}}}} = \phi_n(\frac{s}{\sigma\sqrt{n}})\]
 whence
 \[\phi_{Y_n}(s) = 1 - \frac{s^2}{2} + o(s^2)\]
 
@@ -468,7 +469,7 @@ What happens to the central limit theorem, when its assumptions fail.
 \begin{description}
 	\item[Independence] Stochastic processes CLT;
 	\item[Identical distribution] The most useful generalisation of the CLT;
-	\item[Moments] What if $\Ex(X_k) = \mu$ and $\text{Var}(X_k) = \sigma^2$ are violated?
+	\item[Moments] What if $\ex(X_k) = \mu$ and $\text{Var}(X_k) = \sigma^2$ are violated?
 \end{description}
 
 Consider the Cauchy distributed random variable. IS $\brac{X_n}_{n\geq1}\sim \text{Cauchy}$, then their normalised sum is still Cauchy (consider the characteristic function).
@@ -487,7 +488,7 @@ Consider the asymptotics near zero (the problems at infinity i time domain trans
 
 Since $p(x)$ is symmetrical
 \begin{align*}
-	\phi(s) &= \Ex\brac{e^{-isX} } = \int e^{-isx}p(x)dx \\
+	\phi(s) &= \ex\brac{e^{-isX} } = \int e^{-isx}p(x)dx \\
 	&= \int_{-1}^1 \frac{A}{2} e^{-isx} dx + \brac{\int_1^\infty + \int_{-\infty}^{-1}} \frac{A}{2} \frac{e^{-isx} }{\abs{x}^{\alpha+1}} dx
 \end{align*}
 
@@ -535,7 +536,7 @@ Thus
 \[\phi(s) = 1 - A \Ical_1(\alpha) \abs{s}^\alpha + o(s^2)\]
 
 Since the variables are independent, then the sum has the product characteristic function
-\[\Ex\brac{ e^{-is\frac{S_n}{n^\frac{1}{\alpha}}} }
+\[\ex\brac{ e^{-is\frac{S_n}{n^\frac{1}{\alpha}}} }
 = \brac{1 - A \Ical_1(\alpha) \frac{\abs{s}^\alpha}{n} + o(s^2)}^n \to e^{-A \Ical_1(\alpha)\abs{s}^\alpha}\]
 
 Thus it turns out that if $F(x)\underset{x\to\infty}{\sim} \abs{x}^{-\alpha}$,
@@ -650,10 +651,10 @@ Suppose $\xi$ is some random variable, then
 
 \noindent\textbf{Chernoff's inequality}\hfill\\
 Suppose $\xi$ is a real-valued random variable.
-\[\Pr\brac{\xi>\epsilon}\leq \inf_{\lambda>0} \Ex\exp\brac{\lambda\xi - \lambda\epsilon}\]
+\[\Pr\brac{\xi>\epsilon}\leq \inf_{\lambda>0} \ex\exp\brac{\lambda\xi - \lambda\epsilon}\]
 
 Since $1_\obj{\xi\>x}\leq e^{\lambda \xi - \lambda x}$ and expectations preserve monotonicity, we have for every $\lambda>0$
-\[\Pr\brac{\xi>\epsilon}\leq \Ex\brac{e^{\lambda \xi - \lambda x}}\]
+\[\Pr\brac{\xi>\epsilon}\leq \ex\brac{e^{\lambda \xi - \lambda x}}\]
 whence the inequality for the infumum over all $\lambda$ follows.
 
 Similarly being a real function of a real value $\xi$ we have the following inequality
@@ -699,13 +700,13 @@ Thus the marginal distribution of $\phi$ is uniform on $\ploc{0,2\pi}$, and $F_r
 Suppose we have a sample $\brac{Y_k}_{k=1}^n$ iid with $F(x)$. The empirical distribution function of $Y$ given the sample is 
 \[\hat{F}_n(x) \defn \frac{1}{n}\sum_{k=1}^n 1_\ploc{-\infty, x}(Y_k)\]
 The expectation of $\hat{F}_n(x)$ for any $x$ is 
-\[\Ex \hat{F}_n(x) = \frac{1}{n} n \Ex1_\ploc{-\infty, x}(Y) = \Pr\brac{Y\leq x} = F(x)\]
+\[\ex \hat{F}_n(x) = \frac{1}{n} n \ex1_\ploc{-\infty, x}(Y) = \Pr\brac{Y\leq x} = F(x)\]
 
 The variance of $\hat{F}_n(x)$ at any $x$ is given by
 \[\Var\brac{\hat{F}_n(x)} = \frac{1}{n^2}n \Var{1_\ploc{-\infty, x}(Y)}\]
 where independence assumption has been used.
 The variance on an indicator is
-\[\Var{1_A(Y)} = \Ex 1_A(Y) - \brac{\Ex 1_A(Y)}^2 = \Pr(Y\in A)\brac{1-\Pr(Y\in A)}\]
+\[\Var{1_A(Y)} = \ex 1_A(Y) - \brac{\ex 1_A(Y)}^2 = \Pr(Y\in A)\brac{1-\Pr(Y\in A)}\]
 Thus \[\Var\brac{\hat{F}_n(x)} = \frac{1}{n} F(x)\brac{1-F(x)}\]
 
 Using the central limit theorem we get
@@ -899,10 +900,10 @@ A scalar process on a probability space $\brac{\Omega, \Fcal, \Pr}$ is an $\Fcal
 A Gaussian random process is a scalar process $X_t$ \begin{itemize}
 	\item $\brac{X_{t_k}}_{k=1}^p\sim \Ncal_p\brac{\brac{m(t_i)}_{i=1}^p, \Sigma^p}$ for any $\brac{t_k}_{k=1}^m$ of time slices;
 	\item The covariance matrix is given by 
-	\[\Sigma^p_{ij} = \Ex\brac{X_{t_i} - m(t_i)}\brac{X_{t_j} - m(t_j)}\]
+	\[\Sigma^p_{ij} = \ex\brac{X_{t_i} - m(t_i)}\brac{X_{t_j} - m(t_j)}\]
 \end{itemize}
 
-A Wiener process is a Gaussian process $W_t$, $t\geq 0$ with $m(t) = 0$ and $\Ex\brac{W_t W_s} = \min\obj{t,s}$.
+A Wiener process is a Gaussian process $W_t$, $t\geq 0$ with $m(t) = 0$ and $\ex\brac{W_t W_s} = \min\obj{t,s}$.
 
 The Brownian Bridge is a process defined over $t\in\clo{0,1}$ by
 \[W_0(t) \defn W(t) - t W(1)\]
@@ -928,9 +929,9 @@ Next
 Consider for $\brac{\xi_i}_{i\geq1}$ independent and identically distribution $\xi_i\sim\text{exp}(1)$:
 \[W_n(t) = \frac{1}{\sqrt{n}} \sum^{\floor{n t}}_{i=1} (\xi_i - 1)\]
 
-First of all $\Ex W_n(t) = 0$ and the covariance is given by
-\[\Ex W_n(t)W_n(s)  = \frac{1}{n} \sum^{\floor{n t}}_{j=1} \sum^{\floor{n s}}_{i=1} (\xi_j - 1) (\xi_i - 1) = \frac{1}{n^2}
-\sum^{\floor{n t}\vee \floor{n s}}_{i=1} \Ex {(\xi_i - 1)}^2 = 
+First of all $\ex W_n(t) = 0$ and the covariance is given by
+\[\ex W_n(t)W_n(s)  = \frac{1}{n} \sum^{\floor{n t}}_{j=1} \sum^{\floor{n s}}_{i=1} (\xi_j - 1) (\xi_i - 1) = \frac{1}{n^2}
+\sum^{\floor{n t}\vee \floor{n s}}_{i=1} \ex {(\xi_i - 1)}^2 = 
 \frac{1}{n} \floor{n t}\vee \floor{n s} = \floor{t}\vee \floor{s} + o(\frac{1}{n})\]
 
 Thus from the Central Limit Theorem on $t\in \clo{0,1}$
@@ -948,7 +949,7 @@ Thus the theorem is proved.
 A sample $\brac{Y_k}_{k=1}^n$ of independent and identically distributed random variables with $F(x)$. The distribution of 
 \[\Pr\brac{\max_{i=1}^n Y_i \leq x} = \prod_{i=1}^n \Pr\brac{Y_i \leq x} = F^n(x)\]
 
-There are three types of limitnig distributions of maxima (properly scaled and centred) \begin{description}
+There are three types of limiting distributions of maxima (properly scaled and centred) \begin{description}
 	\item[Fr\'ech\'et]\hfill\\
 	\[ e^{-x^{-\alpha}} 1_{\clop{0,\infty}}(x) \]
 	\item[Gumbel]\hfill\\
@@ -1094,7 +1095,7 @@ The number of upward and downward steps is equal to $N_+ = \frac{1+\alpha}{2}n$ 
 
 Suppose $X_k = 0$ with positive probability $p_0$, while $X_k = 1$ with $p_+$ and $X_k=-1$ with $p_-$. 
 
-Then $\Ex \frac{S_n}{n} = p_+ - p_-$, where $S_n = \frac{N_+-N_-}{n}$ with $N_++N_0+N_- = n$ and $N_i$ is the number of steps in the direction $i$.
+Then $\ex \frac{S_n}{n} = p_+ - p_-$, where $S_n = \frac{N_+-N_-}{n}$ with $N_++N_0+N_- = n$ and $N_i$ is the number of steps in the direction $i$.
 
 Even the most improbable event occurs with some highly probable chances.
 
@@ -1202,7 +1203,7 @@ One of the earliest theorems on extreme values (1938).
 Is investinages the distribution of the normalised sum of independent and identically distributed random variables $\brac{X_k}_{k=1}^n$.
 
 Again the law of large numbers tells us that
-\[\frac{\sum_{k=1}^n X_k}{n} \to \Ex X = \mu\]
+\[\frac{\sum_{k=1}^n X_k}{n} \to \ex X = \mu\]
 
 A large deviation is the following event :
 \[\obj{ \sum_{k=1}^n X_k - n\mu \neq 0 }\]
@@ -1326,18 +1327,18 @@ Indeed,
 \begin{align*}
 	1 &= \int e^{sx - \kappa(s)} p(x) dx \\
 	e^{\kappa(s)} \kappa'(s) &= \int xe^{sx} p(x) dx \\
-	\kappa'(s) &= \int xe^{sx - \kappa(s)} p(x) dx = \Ex_s X
+	\kappa'(s) &= \int xe^{sx - \kappa(s)} p(x) dx = \ex_s X
 \end{align*}
 
-Where $\Ex_s$ is the expectation with respect to a distribution with density $e^{sx - \kappa(s)} p(x)$.
+Where $\ex_s$ is the expectation with respect to a distribution with density $e^{sx - \kappa(s)} p(x)$.
 
 Then
 \begin{align*}
 	e^{\kappa(s)} \kappa'(s) &= \int xe^{sx} p(x) dx \\
 	e^{\kappa(s)} \kappa''(s) + e^{\kappa(s)} \brac{\kappa'(s)}^2 &= \int x^2 e^{sx} p(x) dx \\
 	\kappa''(s) + \brac{\kappa'(s)}^2 &= \int x^2 e^{sx-\kappa(s)} p(x) dx \\
-	\kappa''(s) + \brac{\kappa'(s)}^2 &= \Ex_s X^2 \\
-	\kappa''(s) &= \Ex_s X^2 - \brac{\Ex_s X}^2\geq 0
+	\kappa''(s) + \brac{\kappa'(s)}^2 &= \ex_s X^2 \\
+	\kappa''(s) &= \ex_s X^2 - \brac{\ex_s X}^2\geq 0
 \end{align*}
 
 Therefore $\kappa(s)$ can be described as an envelope of tangents:
@@ -1520,7 +1521,7 @@ then using the characteristic function we get $F_{S_n}(x) \sim \text{Cauchy}$, w
 \label{sub:subgaussain_random_variables}
 
 
-Consider $\brac{Y_i}_{i=1}^n$  independent with $\Ex Y_i = 0$ and $\Ex Y_i^2 = 1$, then
+Consider $\brac{Y_i}_{i=1}^n$  independent with $\ex Y_i = 0$ and $\ex Y_i^2 = 1$, then
 \[\Pr\brac{ \frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i > x } \to \frac{1}{\sqrt{2\pi}} \int_x^\infty e^{-\frac{u^2}{2}}du \]
 
 However
@@ -1529,32 +1530,32 @@ However
 \end{align*}
 for some $n\geq n_0(x)$.
 
-Consider independent $\brac{Y_i}_{i=1}^n$ such that they are subgaussian: $\exists \sigma^2 > 0$ with \[\Ex\big( e^{\lambda Y_i} \big) \leq \text{exp}\big( \frac{\sigma^2 \lambda^2}{2} \big)\]
+Consider independent $\brac{Y_i}_{i=1}^n$ such that they are subgaussian: $\exists \sigma^2 > 0$ with \[\ex\big( e^{\lambda Y_i} \big) \leq \text{exp}\big( \frac{\sigma^2 \lambda^2}{2} \big)\]
 then 
 \[\Pr\brac{ \frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i > x }\leq e^{-\frac{x^2}{2}}\]
 
 Indeed using Chernoff's inequality
-\[\Pr\brac{\xi>\epsilon}\leq \inf_{\lambda>0} \Ex\exp\brac{\lambda\xi - \lambda\epsilon}\]
+\[\Pr\brac{\xi>\epsilon}\leq \inf_{\lambda>0} \ex\exp\brac{\lambda\xi - \lambda\epsilon}\]
 
 we get
-\[\Pr\brac{\frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i>\epsilon}\leq \inf_{\lambda>0} \exp\brac{ - \lambda\epsilon} \Ex\exp\brac{\lambda\frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i}\]
+\[\Pr\brac{\frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i>\epsilon}\leq \inf_{\lambda>0} \exp\brac{ - \lambda\epsilon} \ex\exp\brac{\lambda\frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i}\]
 
 since $Y_i$ is subgaussian, we have by the independence
-\[\Ex\exp\brac{\lambda\frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i} = 
-\prod_{i=1}^n \Ex\exp\brac{\frac{\lambda}{\sqrt{n}} Y_i} \leq 
+\[\ex\exp\brac{\lambda\frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i} = 
+\prod_{i=1}^n \ex\exp\brac{\frac{\lambda}{\sqrt{n}} Y_i} \leq 
 \text{exp}\big( n \frac{\sigma^2 \lambda^2}{2n} \big)
 \]
 
 whence, minimizing
-\[\inf_{\lambda>0} \Ex\exp\brac{\lambda\frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i} \leq \ldots\]
+\[\inf_{\lambda>0} \ex\exp\brac{\lambda\frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i} \leq \ldots\]
 and thus $\lambda = \frac{x}{\sigma^2}$
 
 \noindent\textbf{H\"oefding inequality}\hfill\\
-Consider a random variable $\xi$ with $\Ex \xi = 0$ and $\xi\ni\clo{a,b}$ almost surely.
-\[\Ex\brac{\lambda \xi}\leq \exp\big( \frac{\lambda^2(b-a)^2}{8} \big)\]
+Consider a random variable $\xi$ with $\ex \xi = 0$ and $\xi\ni\clo{a,b}$ almost surely.
+\[\ex\brac{\lambda \xi}\leq \exp\big( \frac{\lambda^2(b-a)^2}{8} \big)\]
 
 Indeed, put
-\[\phi(\lambda) = \log \Ex\big(\lambda \xi\big) = \log \int_a^b e^{\lambda x} p(x) dx\]
+\[\phi(\lambda) = \log \ex\big(\lambda \xi\big) = \log \int_a^b e^{\lambda x} p(x) dx\]
 
 Differentiating with respect to $\lambda$:
 \[\phi'(\lambda) = \frac{\int_a^b x e^{\lambda x} p(x) dx}{\int_a^b e^{\lambda x} p(x) dx}\]
@@ -1565,8 +1566,8 @@ and
 Notice that
 \[f(x) = \frac{\int_a^b e^{\lambda x} p(x) dx}{\int_a^b e^{\lambda x} p(x) dx}\]
 
-is a density function of a random variable $\eta\in \clo{a,b}$. Furthermore $\Ex \eta = \phi'(\lambda)$ and $\Var \eta^2 = \phi''(\lambda)$. The second moment is given by
-\[\Ex \eta^2 = \phi''(\lambda) + \big(\phi'(\lambda)\big)^2\]
+is a density function of a random variable $\eta\in \clo{a,b}$. Furthermore $\ex \eta = \phi'(\lambda)$ and $\Var \eta^2 = \phi''(\lambda)$. The second moment is given by
+\[\ex \eta^2 = \phi''(\lambda) + \big(\phi'(\lambda)\big)^2\]
 
 Now
 \[\bigg(\eta - \frac{b-a}{2}\bigg)^2 \leq \bigg(\frac{b-a}{2}\bigg)^2\]
@@ -1609,7 +1610,7 @@ Examples
 \begin{itemize}
 	\item $M(p_0)$: $\hat{M} = \frac{1}{n}\sum_{k=1}^n y_k$;
 	\item $D(p_0)$: $\hat{D} = \frac{1}{n}\sum_{k=1}^n y_k^2 - \big(\frac{1}{n}\sum_{k=1}^n y_k\big)^2$;
-	\item $\phi(p_0) = \Ex_{p_0} e^{is\xi}$: $\hat{\phi} = \frac{1}{n}\sum_{k=1}^n e^{isy_k}$;
+	\item $\phi(p_0) = \ex_{p_0} e^{is\xi}$: $\hat{\phi} = \frac{1}{n}\sum_{k=1}^n e^{isy_k}$;
 	\item $Q_\alpha(p_0)$ -- quantile: $\hat{Q}_\alpha$ is defined as $\abs{\obj{\induc{k=1,\ldots,n} y_k \leq \hat{Q}_\alpha}} = \floor{n\alpha}$.
 \end{itemize}
 
@@ -1806,7 +1807,7 @@ using the fact that $p$ and $q$ are densities of $P$ and $Q$ respectively:
 \[D(p,q) = \int_{A_0} p-q dx = P(A_0) - Q(A_0)\]
 
 Jensen's inequality for a convex $f$ yields
-\[\Ex f(X) \geq f\big(\Ex X\big)\]
+\[\ex f(X) \geq f\big(\ex X\big)\]
 
 Since $f(x) = -\log x$ is convex the following is true:
 \[KL(p,q) = \int_{A_0} -\log\frac{q}{p} p dx + \int_{A_0^c} -\log\frac{q}{p} p dx \]
@@ -1887,12 +1888,12 @@ Using the empirical density to estimate $\int p^{(n)}_0 \log p^{(n)}(\cdot;\thet
 whence 
 \[\hat{\theta}(Y^{(n)}) = \text{argmax}_{\theta\in \Theta} \log p^{(n)}(Y^{(n)};\theta)\]
 
-if $Y^{(n)}$ is iid and $Y_i = \theta + \epsilon_i$ with $\epsilon_i\sim p_\epsilon$ iid with $\Ex \epsilon_i = 0$ and $\Ex \epsilon_i^2 = \sigma^2$, then
+if $Y^{(n)}$ is iid and $Y_i = \theta + \epsilon_i$ with $\epsilon_i\sim p_\epsilon$ iid with $\ex \epsilon_i = 0$ and $\ex \epsilon_i^2 = \sigma^2$, then
 \[\hat{L} = \sum_{i=1}^n\log p_\epsilon(Y_i-\theta)\]
 Using the law of large numbers we get
-\[\frac{1}{n}\hat{L} \to \Ex_{p_0}\log p_\epsilon(Y_1-\theta)\]
+\[\frac{1}{n}\hat{L} \to \ex_{p_0}\log p_\epsilon(Y_1-\theta)\]
 whence
-\[\hat{\theta}_n \to \text{argmax}_{\theta}\Ex_{p_0}\log p_\epsilon(Y_1-\theta) = \text{argmin}_{\theta} KL\Big(p_0,p_\epsilon(\cdot - \theta)\Big)\]
+\[\hat{\theta}_n \to \text{argmax}_{\theta}\ex_{p_0}\log p_\epsilon(Y_1-\theta) = \text{argmin}_{\theta} KL\Big(p_0,p_\epsilon(\cdot - \theta)\Big)\]
 
 % subsection the_maximum_likelihood (end)
 
@@ -1903,8 +1904,8 @@ Illustrated for the case of a simple constant and spread estimation.
 If $\epsilon\sim \Ncal(0,\sigma^2)$, then 
 \[\hat{L} = -\frac{1}{2\sigma^2}\sum_{i=1}^n\big(Y_i-\theta\big)^2 - \frac{n}{2}\log(2\pi \sigma^2)\]
 implying that $\hat{\theta} = \frac{1}{n}\sum_{i=1}^n Y_i$.
-If $\epsilon$ are iid with $D(0,\sigma^2)$ then the ML estimate is unbiased $\Ex \hat{\theta} = \theta$.
-Its variance is $\Ex (\hat{\theta}-\theta)^2 = \frac{\sigma^2}{n}$.
+If $\epsilon$ are iid with $D(0,\sigma^2)$ then the ML estimate is unbiased $\ex \hat{\theta} = \theta$.
+Its variance is $\ex (\hat{\theta}-\theta)^2 = \frac{\sigma^2}{n}$.
 
 using the Central Limit theorem we get
 \[\Pr\big(\sqrt{n} \frac{\hat{\theta}-\theta}{\sigma} \geq z\big)\to \int_z^\infty \frac{1}{\sqrt{2\pi}} e^{-\frac{s^2}{2}}ds \]
@@ -1912,17 +1913,17 @@ using the Central Limit theorem we get
 The sample variance is estimated using $\hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^n(Y_i - \hat{\theta})^2$ whence
 \[\hat{\sigma}^2 = \sigma^2 + \frac{1}{n}\sum_{i=1}^n (\epsilon_i^2 - \sigma^2) - \frac{1}{n} \sum_{i=1}^n \epsilon_i^2\]
 Therefore
-\[\Ex \hat{\sigma}^2 = \sigma^2 - \frac{1}{n}\sigma^2 \]
+\[\ex \hat{\sigma}^2 = \sigma^2 - \frac{1}{n}\sigma^2 \]
 and the estimate is biased.
 
 However the estimates $\hat{\sigma}^2$ and $\hat{\theta}$ are independent. It is based on the fact that for Gaussian random variables only lack of correlation implies independence.
 \begin{align*}
-	\Ex (\hat{\theta}-\theta) (Y_i - \hat{\theta})
-	&= \Ex (\hat{\theta}-\theta) \big(\epsilon_i + (\theta - \hat{\theta}) \big) \\
-	&= \Ex (\hat{\theta}-\theta)\epsilon_i - \Ex (\hat{\theta}-\theta)^2 \\
-	&= \Ex \Big(\frac{1}{n}\sum_{j=1}^n Y_j-\theta\Big)\epsilon_i - \frac{1}{n}\sigma^2 \\
-	&= \frac{1}{n}\sum_{j=1}^n \Ex (Y_j - \theta)\epsilon_i - \frac{1}{n}\sigma^2 \\
-	&= \frac{1}{n}\sum_{j=1}^n \Ex \epsilon_j\epsilon_i - \frac{1}{n}\sigma^2 \\
+	\ex (\hat{\theta}-\theta) (Y_i - \hat{\theta})
+	&= \ex (\hat{\theta}-\theta) \big(\epsilon_i + (\theta - \hat{\theta}) \big) \\
+	&= \ex (\hat{\theta}-\theta)\epsilon_i - \ex (\hat{\theta}-\theta)^2 \\
+	&= \ex \Big(\frac{1}{n}\sum_{j=1}^n Y_j-\theta\Big)\epsilon_i - \frac{1}{n}\sigma^2 \\
+	&= \frac{1}{n}\sum_{j=1}^n \ex (Y_j - \theta)\epsilon_i - \frac{1}{n}\sigma^2 \\
+	&= \frac{1}{n}\sum_{j=1}^n \ex \epsilon_j\epsilon_i - \frac{1}{n}\sigma^2 \\
 	&= \frac{1}{n}\sigma^2 - \frac{1}{n}\sigma^2 = 0
 \end{align*}
 
@@ -2021,7 +2022,824 @@ Ordinary monotonicity is $2$-cyclical monotonicity. Indeed,
 
 % subsection legendre_transform (end)
 
-
 % section lecture_13 (end)
+
+\section{Lecture \# 14} % (fold)
+\label{sec:lecture_14}
+
+\subsection{Probability spaces and filtrations} % (fold)
+\label{sub:probability_spaces_and_filtrations}
+
+
+Consider a sequence $(X_n)_{n\geq 1}\in \{0,1\}$ of independent and identically
+distributed random variables with $\Pr(X_n = 0) = \frac{1}{2}$. Let $X$ be defied
+as $X=0.X_1X_2\ldots = \sum_{n\geq1}\frac{1}{2^n} X_n$. Then $X\in [0,1]$ and
+$X\sim\mathcal{U}[0,1]$.
+
+Indeed, to prove this we need to show that $\Pr(a\leq X \leq b) = b-a$.
+First observation -- $X_1$, -- tells us if $X$ is either in the left or the
+right half of $[0,1]$. The second -- $X_2$, -- the halves of halves and so on.
+For any dyadic interval $X\in(\frac{k}{2^n}, \frac{k+1}{2^n}]$ has the probability
+$2^{-n}$. Thus exhausting the interval $[a,b]$ from within yields 
+\[
+\Bigl| \sum_{k=\lceil a2^n \lceil}^{\lfloor b2^n\rfloor} \frac{1}{2^n} - (b-a)\Bigr|
+= \frac{1}{2^n}\Bigl| \lceil b2^n \lceil - b2^n - ( \lfloor a2^n \lfloor - a2^n ) + 1 \Bigr|
+\leq 3 \frac{1}{2^n}
+\]
+
+Consider $X_n$ defined $\frac{1}{2^{n-1}}1_{I_n}(x)$ with 
+\[I_n = \bigcup_{k=0}^{2^{n-1}}(\frac{2k+1}{2^n}, \frac{2(k+1)}{2^n}]\]
+then any finite collection of such random variables is independent.
+
+\subsubsection{A non-measurable set} % (fold)
+\label{ssub:a_non_measurable_set}
+
+Consider unit interval identified with a circumference and throw away $1$ (so we
+end up with $[0,1)\to [0,2\pi)$). Consider partition of $[0,2\pi)$ defined through
+equivalence relation $\theta_1\sim\theta_2$ if and only if $|\theta_1-\theta_2|\in \mathbb{Q}$
+on the central angle
+\[\mathcal{C}(\theta_0) = \Bigl\{\theta\in [0,2\pi)\Big\rvert \theta\sim \theta_0\Bigr\}\]
+Since each class is countable while the circumference is a continuum, there must be
+a continuum of distinct classes $\mathcal{C}(\theta)$. However every class is congruent
+to one another.
+
+Using the Axiom of Choice consider a choice function $g:\mathcal{P}[0,2\pi) \to [0,2\pi)$
+(with $g(S)\in S$). Pick a representative in each class using $g$ and collect them
+into
+\[\mathcal{Z} = \bigcup_{\theta \in[0,2\pi)} g\bigl(\mathcal{C}(\theta)\bigr)\]
+Then rotating $Z$ by every rational number and taking the union yields
+\[S_1 = \bigcup_{q\in \mathbb{Q}} Z\oplus q\]
+
+% subsubsection a_non_measurable_set (end)
+
+\subsubsection{Elements of measure theory} % (fold)
+\label{ssub:elements_of_measure_theory}
+
+Measure theory is the formalisation of intuitive understanding of the lengths,
+volumes et c.
+
+A triple $\bigl(\Omega, \Fcal, \mu \bigr)$ is called a measure space (probability space)
+if $\Fcal$ is a $\sigma$-algebra on $\Omega$ and $\mu:\Fcal\to[0,\infty]$ is a measure:
+\begin{itemize}
+	\item $\mu(\emptyset)=0$;
+	\item for any measurable partition $(A_n)_{n\geq1}$ of a measurable $A$
+	\[\mu(A) = \mu\Bigl(\uplus_{n\geq1} A_n\Bigr)=\sum_{n\geq1} \mu(A_n)\]
+\end{itemize}
+(with $\mu(\Omega) = 1$).
+
+% subsubsection elements_of_measure_theory (end)
+
+\subsubsection{Filtrations} % (fold)
+\label{ssub:filtrations}
+
+A \textbf{filtration} is a sequence of nested $\sigma$-algebras on $\Omega$
+$(\Fcal_n)_{n\geq0} \subseteq \Fcal$ of $\Fcal$ with
+\[\Fcal_0\subseteq\Fcal_1\subseteq\ldots\subseteq\Fcal_n\subseteq\Fcal\]
+
+Time is a one-dimensional manifold with a parameter (smoothness and continuity).
+A more correct mathematical formalisation of time is the collection of events
+accumulated so far which coincides with filtration. Time point is the ``amount''
+of information obtained so far.
+
+% subsubsection filtrations (end)
+
+% subsection probability_spaces_and_filtrations (end)
+
+% section lecture_14 (end)
+
+\section{Lecture \# 15} % (fold)
+\label{sec:lecture_15}
+
+\subsection{Finite Markov chains} % (fold)
+\label{sub:finite_markov_chains}
+
+Finiteness is in terms of a number of states.
+Finite Markov chains have a limiting distribution, and the convergence to it
+is exponential.
+
+Dual approach to Finite Markov chains:
+\begin{itemize}
+	\item a random walk on an oriented graph of states;
+	\item a stochastic matrix, that permits convergence results.
+\end{itemize}
+
+A homogeneous Markov chain is such that its parameters are static.
+
+A homogeneous finite Markov chain is a sequence of states form a finite set of
+states $i=1,\ldots m$ with a certain probability distribution of interstate transition.
+\[\Pr( x_{t+1} = j\rvert X_t = i) = p_{ij}\]
+The \textbf{transition kernel} is defined by a stochastic matrix $P = (p_{ij})_{i,j=1}^{m,m}$
+with the following restriction $\sum_j p_{ij} = 1$ for all $i$ and $p_{ij}\geq0$.
+
+A bi-stochastic matrix has an additional constraint that its columns sum to $1$.
+The hyper-polygon of bi-stochastic matrices is determined by the convex hull of
+the set of all $n!$ permutation matrices.
+
+The probabilistic state of a finite Markov chain is a vector $(\pi_k)_{k=1}^m$ in
+$[0,1]^{1\times m}$ of probabilities of $X_t$ at the moment $t$ being in the sate $k$.
+Then 
+\[\pi_k(t+1) = \sum_j \pi_j(t) p_{ji}\]
+whence $\pi(t+1) = \pi(t)P$.
+
+Every time one gets a matrix it is interesting to consider its eigenvalues and
+eigenvectors. The matrix $P$ has a right eigenvector $v = \one$, since
+the stochasticity of $P$ implies that $P\one = \one$
+
+Eigenvalues of a matrix and its transpose coincide, since they are the roots of
+the characteristic polynomial. The left eigenvector of $\lambda = 1$ is such $\pi$
+that $\pi = \pi P$. The goal of this lecture is to find conditions appropriate
+for the convergence of $\pi(t) = \pi(0) P^t$ to this eigenvector $\pi$.
+
+Consider a directed graph of states $G=(V,E)$ where directed edges represent the
+possibility of making a transition $j\to i$ whenever $(j,i)\in E$.
+The graph $G$ must not have multiple edges, but might have loops, and every vertex
+$j$ (state) must not be a sink (there is at least one outgoing edge from $j$ in $E$).
+
+These conditions allow the interpretation of a directed graph as a finite state
+Markov chains. The weighted incidence matrix of $G$ can be regarded the transition
+kernel of the associated Markov chain.
+
+Such matrix (with proper permutation of states) has block structure if the graph
+has more than one weakly connected component.
+
+When studying matrices, we are interested in their spectrum, while with graphs --
+their connected components are of interest.
+
+\subsubsection{Elementary graph theory} % (fold)
+\label{ssub:elementary_graph_theory}
+
+Consider a directed graph $G=(V,E)$. A vertex $v$ is \textbf{reachable} form $u$
+($u\leadsto v$) if there exists an ordered path $\pi$ of edges from $E$, such that
+\[ u = x_0 \to x_1 \to \ldots x_k \to\ \ldots \to x_p = v\]
+where $(x_i,x_{i+1})\in E$ for all $i=1,\ldots, p$.
+
+Vertices $u$ and $v$ are connected if $u\leadsto v$ and $v\leadsto u$.
+
+A transitory vertex is such that it has only one outgoing edge. Such vertices only
+add a delay in the random walk (increase the number of iterations) and for the
+purposes of limit analysis are irrelevant (transitory vertices cannot have any other
+stationary probability but $0$).
+
+A class of connected vertices (state) is \textbf{absorbing} if no vertex of any
+other class is reachable from it.
+
+The idea is that the probability mass as the walk goes on redistributes itself
+in favour of the absorbing classes. Thus the stationary distribution factorizes
+into multiplicative components of the distribution of mass between classes
+and the distribution within each class. Hence the understanding of the limiting
+case may be reduced to studying a single absorbing class of states.
+
+% subsubsection elementary_graph_theory (end)
+
+\subsubsection{Back to Markov chains} % (fold)
+\label{ssub:back_to_markov_chains}
+
+A Markov chain is \textbf{irreducible} if it consists entirely of one absorbing
+class (one strongly connected component in $G$). However nothing is simple and
+the Markov chain might exhibit periodicity.
+
+\noindent\textbf{Perron-Frobenius}\hfill\\
+For any irreducible and aperiodic Markov chain with transition kernel $P$ there
+exists a stationary distribution $\pi$ such that $\pi = \pi P$ and for any
+distribution $\pi(0)$ it is true that $\pi(t) = \pi(0) P^t$ converges to $\pi$
+in $l^1$ norm and
+\[\|\pi(t) - \pi\|_1 < (1-\alpha)^t\]
+for some $\alpha>0$. The $l^1$ norm is $\|\theta\|_1 = \sum_j |\theta_j|$.
+
+Suppose that the transition kernel has strictly positive elements. Then since
+the chain is finite there is $\lambda>0$ such that $p_{ij}\geq \lambda$ for all
+$i$ and $j$.
+
+Consider distributions $\pi$ and $\sigma$ and show that
+\[\|\pi P-\sigma P\|_1 < \|\pi - \sigma \|\]
+But 
+\[
+\|\pi P-\sigma P\|_1
+= \sum_j | [\pi P]_j - [\sigma P]_j |
+= \max_{|\xi_j|=1}  \sum_j \bigl([\pi P]_j - [\sigma P]_j \bigr) \xi_j
+\]
+since 
+\[ [\pi P]_j = \sum_k \pi_k p_{kj} \]
+we get this
+\[
+\|\pi P-\sigma P\|_1
+= \max_{|\xi_j|=1}  \sum_j\sum_k \bigl(\pi_k p_{kj} - \sigma_k p_{kj} \bigr) \xi_j
+= \max_{|\xi_j|=1}  \sum_k\bigl(\pi_k - \sigma_k \bigr) \sum_j p_{kj} \xi_j
+\]
+Let $\eta_k=\sum_j p_{kj} \xi_j$.
+
+Since $\pi$ and $\sigma$ each sum to one, then some $\xi_j$ must have different
+signs (?). Thus $|\eta_k| \leq 1-2\lambda$ and
+\[
+\|\pi P-\sigma P\|_1
+\leq \max_{|\eta_k|\leq 1-2\lambda} \sum_k\bigl(\pi_k - \sigma_k \bigr)\eta_k
+\leq (1-2\lambda) \|\pi - \sigma\|_1
+\]
+
+% subsubsection back_to_markov_chains (end)
+
+% subsection finite_markov_chains (end)
+
+% section lecture_15 (end)
+
+\section{Lecture \# 16} % (fold)
+\label{sec:lecture_16}
+
+Consider a sample $(Y^n)\in \Real^n$ with unknown density $p(\cdot)$ from the parametric
+family $p(x\rvert \theta)$ with $\theta\in \Theta\subseteq \Real^p$. Suppose that
+$\Theta = \Theta_0\uplus \Theta_1$. Th goal is to discriminate the following hypothesis
+$H_0: \theta\in \Theta_0$ from $H_1: \theta\in \Theta_1$.
+ A statistical decision rule is a map $\phi:\Real^n \to\{0,1\}$ which is defined as
+\[
+\phi(x) = \begin{cases}
+	0, &\to H_0\\
+	1, &\to H_1\\
+	0, &\to H_0,H_1\\
+\end{cases}
+\]
+
+THe following errors a re possible:
+\begin{itemize}
+	\item reject $H_0$, when it is true; type-$1$ error;
+	\item reject $H_1$, when it is true; type-$2$ error.
+\end{itemize}
+A criterion for the type-$1$ error:
+\[\alpha(\phi, \theta) = \ex_{p(\cdot\rvert\theta)} \phi(X)\]
+for $\theta\in \Theta_0$. This is equivalent to
+\[\alpha(\phi, \theta) = \int_{\Real^n} \phi(X) p(X \rvert \theta) dX\]
+For the type-$2$ error
+\[\beta(\phi, \theta) = \int_{\Real^n} \Bigl(1-\phi(X)\Bigr) p(X \rvert \theta) dX\]
+for $\theta\in \Theta_1$ whence
+\[\beta(\phi, \theta) = 1-\ex_\theta \phi(Y^n)\]
+
+We wish to find a decision rule with \begin{itemize}
+	\item $\alpha(\phi,\theta)\leq \alpha$;
+	\item $\beta(\phi,\theta)\to \min_\phi$.
+\end{itemize}
+
+The Bayesian risk is 
+\[
+r_\pi(\phi)
+= \int_{\Theta_0} \pi(\theta) \alpha(\phi,\theta) d\theta
++ \int_{\Theta_1} \pi(\theta) \beta(\phi,\theta) d\theta
+\]
+for some prior distribution $\pi(\theta)$. Thus
+\[
+\ldots =
+= \int_{\Theta_0} \pi(\theta) \ex_\theta \phi(Y^n) d\theta
++ \int_{\Theta_1} \pi(\theta) \bigl(1-\ex_\theta \phi(Y^n)\bigr) d\theta
+\]
+The Bayesian test is defines as
+\[\bar{\phi}_\pi = \text{argmin}_{\phi} r_\pi(\phi)\]
+
+Theorem:
+\begin{align*}
+	\bar{\phi}_\pi(Y^n) &= 1_{A}(Y^n)\\
+\end{align*}
+where
+\[
+A = \biggl\{
+\int_{\Theta_1} \pi(\theta)p(X \rvert \theta) d\theta
+\geq \int_{\Theta_0} \pi(\theta)p(X \rvert \theta) d\theta
+\biggr\}
+\]
+
+Indeed, for an arbitrary decision rule $\phi$
+\[
+r_\pi(\phi)
+= \int_{\Theta_0} \pi(\theta) \ex_\theta \phi(Y^n) d\theta
++ \int_{\Theta_1} \pi(\theta) \bigl(1-\ex_\theta \phi(Y^n)\bigr) d\theta
+\]
+transforms into
+\begin{align*}
+	r_\pi(\phi)
+	&= \int_{\Theta_0} \pi(\theta)\int_{\Real^n} \phi(X) p(X \rvert \theta) dX d\theta
+	+ \int_{\Theta_1} \pi(\theta) \int_{\Real^n} (1-\phi(X)) p(X \rvert \theta) dX d\theta\\
+	&= \int_{\Real^n} \phi(X) \int_{\Theta_0} \pi(\theta)p(X \rvert \theta) d\theta dX
+	+ \int_{\Real^n} (1-\phi(X)) \int_{\Theta_1} \pi(\theta) p(X \rvert \theta) d\theta dX\\
+	&\geq \int_{\Real^n} \min_{y\in[0,1]} \Bigl\{
+		y \int_{\Theta_0} \pi(\theta)p(X \rvert \theta) d\theta
+	+ (1-y) \int_{\Theta_1} \pi(\theta) p(X \rvert \theta) d\theta \Bigr\}dX
+	&\geq \int_{\Real^n} \min\Bigl\{
+		\int_{\Theta_0} \pi(\theta)p(X \rvert \theta) d\theta,
+		\int_{\Theta_1} \pi(\theta) p(X \rvert \theta) d\theta
+	\Bigr\}dX
+\end{align*}
+
+How to compute integrals with respect to unknown priors? Use the mean-value theorem:
+\[
+\int_{\Theta_0} p(X\rvert \theta) \pi(\theta) d\theta
+\approx C_0 \max_{\theta\in \Theta_0} p(X\rvert \theta)
+\]
+and similarly
+\[
+\int_{\Theta_1} p(X\rvert \theta) \pi(\theta) d\theta
+\approx C_1 \max_{\theta\in \Theta_1} p(X\rvert \theta)
+\]
+whence the decision can be reduced to the maximum likelihood rule:
+\[
+\bar{\phi}_{t_\alpha}(X) = 1_{A(t_\alpha)}(X)
+\]
+where
+\[
+A(t_\alpha)
+= \Biggl\{\max_{\theta\in \Theta_1} p(X\rvert \theta)
+\geq t_\alpha \max_{\theta\in \Theta_0} p(X\rvert \theta)
+\Biggr\}
+\]
+and $t_\alpha$ is computed from
+\[\max_{\theta\in \Theta_0}\alpha(\bar{\phi}_{t_\alpha},\theta) \leq \alpha\]
+
+\noindent\textbf{Fano inequality}\hfill\\
+Consider a multivariate $X\sim p(\cdot)$ and hypotheses $H_k: p=p_k$ with prior
+probabilities $\pi_k$ for $k=1,\ldots, M$. The parameter is discrete. The decision
+rule $\phi(Y^n):\Real^n\to \{1,\ldots,M\}$. The mean error of $\phi$ is
+\[P_\phi = \sum_{k=1}^M \pi_k \int_{\Real^n} 1_{\phi(X)\neq k} p_k(X) dX\]
+where $p_k(X) = p(X\rvert \theta_k)$. Then
+\[h[P_\phi] + P_\phi \log(M+1 )\geq \ex H(Y^n)\]
+with
+\begin{align*}
+	h(x) &= - x \log x - (1-x) \log (1-x)\\
+	H(X) &= - \sum_{k=1}^M \Pr(\theta=\theta_k\rvert X) \log \Pr(\theta=\theta_k\rvert X)\\
+	\Pr(\theta=\theta_k\rvert X) &= \frac{\pi_k p_k(X)}{\sum_{k=1}^M \pi_k p_k(X)}
+\end{align*}
+The map $h$ obeys $h(x)\leq 1$ whence
+\[1+P_\phi \log(M+1 )\geq h[P_\phi] + P_\phi \log(M+1)\geq \ex H(Y^n)\]
+and $P_\phi \log(M+1)\geq \ex H(Y^n)-1$.
+
+Indeed, put 
+\[q_{\phi}(X) = \sum_{k\neq \phi(X)}\Pr(\theta=\theta_k\rvert X)\]
+then the conditional entropy becomes
+\[
+H(X)
+= - \sum_{k\neq \phi(X)} \Pr(\theta=\theta_k\rvert X) \log \Pr(\theta=\theta_k\rvert X)
+- \Pr(\theta=\theta_{\phi(X)}\rvert X) \log \Pr(\theta=\theta_{\phi(X)}\rvert X)
+\]
+whence the first term becomes
+\[
+\sum_{k\neq \phi(X)}
+\frac{\Pr(\theta=\theta_k\rvert X)}{q_{\phi}(X)} q_{\phi}(X) \Bigl(
+-\log \frac{q_{\phi}(X)}{\Pr(\theta=\theta_k\rvert X)} - \log q_{\phi}(X)
+\Bigr)
+\]
+and the second term
+\[
+\Pr(\theta=\theta_{\phi(X)}\rvert X) \log \frac{1}{\Pr(\theta=\theta_{\phi(X)}\rvert X)}
+\]
+
+By the conditional version of Jensen's inequality for $-\log x$ applied to the
+conditional distribution (?) we get ($\ex_p \log f \leq \log \ex_p f$)
+\[
+H(X)
+\leq  \log \sum_{k\neq \phi(X)} \frac{\Pr(\theta=\theta_k\rvert X)}{q_{\phi}(X)} q_{\phi}(X)
+\Bigl(\frac{q_{\phi}(X)}{\Pr(\theta=\theta_k\rvert X)}\Bigr)
++ \ldots
+= \log(M-1) + \ldots
+\]
+
+
+A stationary Gaussian sequence $Y_n$ from $\xi_n\sim \Ncal(0,1)$ can be derived
+using
+\[
+Y_n = \sum_{k=-\infty}^n h_{n-k} \xi_k
+\]
+where $h_k$ are defined as such terms in the analytical expression of 
+\[
+\sum_{i\geq 0} h_i z^i = \text{exp}\{ \sum_{j=0}^\infty f_j z^j \}
+\]
+where
+\[\phi_j = \int_{-\sfrac{1}{2}}^{\sfrac{1}{2}} e^{2\pi i \lambda j } \log f_Y( \lambda ) d\lambda \]
+
+% section lecture_16 (end)
+
+\section{Lecture \# 17} % (fold)
+\label{sec:lecture_17}
+
+\subsection{A sequence of uniform random variables} % (fold)
+\label{sub:a_sequence_of_uniform_random_variables}
+
+Constructing a countable sequence of independent random variables is done as
+follows: pick a random number $x\sim \mathcal{U}[0,1]$ and consider its infinite
+decimal expansion:
+\[x = \sum_{k\geq 1}x_k \frac{1}{10^k}\]
+then use the natural bijection between $\mathbb{N}^2\to\mathbb{N}$ to get the following
+collection of random variables:
+\[y_k = \sum_{n\geq 1} x_{\phi(k,n)}\]
+these random variables are independent and identically uniformly distributed on $[0,1]$.
+Using the inversion method one can get a sequence of independently and arbitrarily
+distributed random variables.
+
+% subsection a_sequence_of_uniform_random_variables (end)
+
+\subsection{Wiener process} % (fold)
+\label{sub:wiener_process}
+
+A standard Wiener process is a random function $W(t)$ on $[0,1]$ with the following
+properties:
+\begin{itemize}
+	\item $W(0) = 0$;
+	\item independence of finite (non-overlapping) differences $\bigl(W(t_{i+1})-W(t_i)\bigr)_{i=1}^n$
+	for any $n\geq 2$;	
+	\item for any $t>s$ the difference $W(t)-W(s)\sim \Ncal(0, t-s)$.
+\end{itemize}
+the existence of a uncountable family of independent standard normal random variables
+is assumed proven (?).
+
+Thus $W(0) = 0$ and $W(1) \sim \Ncal(0,1)$. Consider a time $t=\frac{1}{2}$. How to
+construct a variable $W(\frac{1}{2})$ given $W(1)$.
+The density of a normal random variable $W(1)$ is 
+\[p_1(x) = \frac{1}{\sqrt{2\pi}} e^{-\frac{x^2}{2}}\]
+find the density
+\[p_\frac{1}{2}(x|W(1)= x) = ?\]
+Thus the joint density $p(x_1, x_2)$ must satisfy the requirements of a Wiener process.
+
+After some thought the conditional density of $W(\frac{1}{2})$ given $W(1)$ is gaussain
+with parameters $\mu = \frac{W(1)}{2}$ and $\sigma^2 = \frac{1}{2}$.
+Now on the second iteration,
+\begin{align*}
+	W(\frac{1}{4})|W(\frac{1}{2}) &\sim \Ncal(w(\frac{1}{2})\frac{1}{2}, \frac{1}{4})\\
+	W(\frac{3}{4})|W(\frac{1}{2}),W(1) &\sim \Ncal((W(\frac{1}{2})+W(1))\frac{1}{2}, \frac{1}{4})
+\end{align*}
+Thus on the $n$-th iteration we get the following:
+\[
+W_n(t) = \sum_{k=1}^{2^n-1} z_{n,k}(t) \cdot \xi_{\phi(n,k)}
+\]
+where 
+\[
+z_{n,k}(t) = \int_0^t 1_{( \frac{k}{2^n}, \frac{2k+1}{2^{n+1}} ]} - 1_{( \frac{2k+1}{2^{n+1}}, \frac{k+1}{2^n} ]} ds
+\]
+and $\xi\sim\Ncal(0,1)$.
+
+Note that 
+\[
+\max_{0\leq s\leq 1} |f_n(s)| = \max_{n<\log_2 i \leq n+1} |\xi_i| \frac{1}{2^n}
+\]
+Thus
+\begin{align*}
+	\pr\Bigl( \max_{0\leq s\leq 1} |f_n(s)| \geq \epsilon_n \Bigr)
+	&= \pr\Bigl( \max_{n<\log_2 i \leq n+1} \xi_i \geq 2^n \epsilon_n \Bigr)\\
+	&= 1 - \pr\Bigl( \max_{n<\log_2 i \leq n+1} \xi_i < 2^n \epsilon_n \Bigr)\\
+	&= 1 - \Bigl( \pr\Bigl( \xi < 2^n \epsilon_n \Bigr)\Bigr)^{2^n}\\
+	&= 1 - \Bigl( 1 - \pr\Bigl( \xi \geq 2^n \epsilon_n \Bigr)\Bigr)^{2^n}\\
+	&\leq 1 - \Bigl( 1 - 2^n \pr\Bigl( \xi \geq 2^n \epsilon_n \Bigr)\Bigr)\\
+	&= 2^n \pr\Bigl( \xi \geq 2^n \epsilon_n \Bigr)
+\end{align*}
+
+The chance that $\xi\sim\Ncal(0,1)$ exceeds some threshold is given by
+\begin{align*}
+	\pr(|\xi| \geq a)
+	&= 2 \pr(\xi \geq a )
+	= 2 \int_a^\infty  \frac{1}{\sqrt{2\pi}} e^{-\frac{u^2}{2}} du\\
+	&= \frac{\sqrt{2}}{\sqrt{\pi}} \int_a^\infty e^{-\frac{u^2}{2}} du\\
+	&= \frac{\sqrt{2}}{\sqrt{\pi}} \frac{1}{a} e^{-\frac{a^2}{2}}
+\end{align*}
+because
+\begin{align*}
+\int_a^\infty e^{-\frac{u^2}{2}} du
+&= \int_a^\infty \frac{1}{u} d -e^{-\frac{u^2}{2}}\\
+&= \frac{1}{a} e^{-\frac{a^2}{2}} - \int_a^\infty \frac{1}{u^2} e^{-\frac{u^2}{2}} du\\
+&\leq \frac{1}{a} e^{-\frac{a^2}{2}}
+\end{align*}
+
+Therefore
+\[
+\pr\Bigl( \max_{0\leq s\leq 1} |f_n(s)| \geq \epsilon_n \Bigr)
+\leq \frac{\sqrt{2}}{\sqrt{\pi}} \frac{2^n}{2^n \epsilon_n} e^{-2^{2n-1} \epsilon_n^2}
+= \frac{\sqrt{2}}{\sqrt{\pi}} \frac{1}{\epsilon_n} e^{-2^{2n-1} \epsilon_n^2}
+\]
+Let $\epsilon_n = \frac{1}{\alpha^n}$ for $\alpha\in(1,2)$, whence
+\[
+\pr\Bigl( \max_{0\leq s\leq 1} |f_n(s)| \geq \alpha^{-n} \Bigr)
+\leq \frac{\sqrt{2}}{\sqrt{\pi}} e^{n\ln \alpha - \frac{1}{2} \Bigl( \frac{2}{\alpha}\Bigr)^{2n}}
+< e^{- \frac{1}{2} \Bigl( \frac{2}{\alpha}\Bigr)^{2n}}
+\]
+
+\noindent\textbf{The first Borel-Cantelli lemma}\hfill\\
+Consider a probability space $(\Omega, \Fcal, \Pr)$ and a countable sequence of sets
+$(E_n)_{n\geq1}\in \Fcal$ such that $\sum_{n\geq1} \pr\bigl(E_n\bigr)$ converges. Then
+then
+\[
+\pr\bigl( E_n \text{- ininitely often} \bigr)
+= \pr\bigl( \limsup E_n \bigr)
+= \pr\bigl( \limsup \bigcap_{n\geq1} \bigcup_{k\geq n} E_k \bigr)
+= 0
+\]
+Indeed, consider $G_n = \bigcup_{k\geq n} E_k$ and $G = \bigcap_{n\geq1} G_n$. Since
+$\Fcal$ is a $\sigma$-algebra and these sets are formed via countable unions or
+intersections. Thus for all $n\geq1$ due to the union bound
+\[
+\pr(G)
+\leq \pr(G_n)
+\leq \sum_{k\geq n} \pr(E_k)
+\]
+The fact that $\sum_{k\geq1} \pr(E_k)$ converges, implies that
+\[
+\limsup_{n\to 1\infty}\sum_{k\geq n} \pr(E_k) = 0
+\]
+whence
+\[
+\pr(G)
+\leq \limsup_{n\to 1\infty} \sum_{k\geq n} \pr(E_k)
+= 0
+\]
+and $\pr\bigl( E_n \text{- i.o.} \bigr) = 0$.
+
+Therefore
+\[ \pr\bigl( \max_{0\leq s\leq 1} |f_n(s)| \geq \alpha^{-n} \text{ -i.o.} \bigr) = 0 \]
+because the series converge
+\[ \sum_{n\geq 1} e^{- \frac{1}{2} \Bigl( \frac{2}{\alpha} \Bigr)^{2n}} < +\infty \]
+
+
+
+
+% subsection wiener_process (end)
+
+% section lecture_17 (end)
+
+\section{Lecture \# 18} % (fold)
+\label{sec:lecture_18}
+
+\subsection{Markov chains} % (fold)
+\label{sub:markov_chains}
+
+What is meant by aperiodicity? A trivial example is a markov chain with countably
+many states corresponding to a random walk on an integer mash with admissible
+transitions being $\pm1$. This chain is $2$-periodic.
+
+A period is the greatest common divisor (minimal) of the length of all simple cycles
+passing through it. Consider an irreducible chain with states (vertices) with different
+periods. Since any pairs of states are connected, thus it is possible to linger at
+state $u$ with period $L_u$, then make a one-hop transition (due to irreducibility
+every state is reachable from every other state) to a state $v$ with another period
+$L_v$ and then return to $u$. Thus the cycle through $u$ becomes $L_v$. If $L_v$
+is odd, then $L_u$ is not the greatest common divisor.
+
+In general, is vertices in an irreducible chain have periods $k$ and $n$, then
+connectivity implies that both must have same period with $\text{gcd}(k,n)$.
+
+If $P$ is a transition kernel of an irreducible Markov chain, then there exists
+$N\geq 1$ such that $P^n$ has non-zero elements for all $n\geq N$.
+
+Suppose the kernel $P$ has all non-zero elements. We want to show that there exists
+the stationary distribution $\pi^*$ with $\pi^*=\pi^*P$. Let's employ the principle of
+contraction mappings: if $f:X\to X$ in a metric space $(X,d)$ is such that there exists
+$|\beta| < 1$ such that $d(f(x), f(y)) < \beta d(x,y)$ for all $x,y\in X$, then
+there a unique fixed point $z\to X$: $z=f(z)$. Thus in order to employ this principle
+one just has to find a proper metric space of the distributions such that $\pi \to \pi P$
+is a contraction.
+
+First of all the distributions of a finite sate chain constitute
+and $n$-dimensional simplex
+\[S_n \bigl\{ \pi\in [0,1]^n \big\rvert \sum_k \pi_k = 1 \bigr\}\]
+and define a metric between $\pi$ and $\sigma$ as follows:
+\[
+d(\pi,\sigma)
+= \sum_k |\pi_k-\sigma_k|
+\]
+One neat trick is that basic convex optimization yields
+\[
+d(\pi,\sigma)
+= \max_{s_k = \pm 1} \sum_k s_k(\pi_k-\sigma_k)
+= \max_{|s_k| \leq 1} \sum_k s_k(\pi_k-\sigma_k)
+\]
+note that the functional to be maximized is additively separable.
+
+Consider the effect of $P$ on $d$:
+\begin{align*}
+	d( \pi P,\sigma P)
+	&= \max_{|s_k| \leq 1} \sum_k s_k ([\pi P]_k-[\sigma P]_k)\\
+	&= \max_{|s_k| \leq 1} \sum_k \sum_j s_k (\pi_j P_{kj} - \sigma_j P_{kj})\\
+	&= \max_{|s_k| \leq 1} \sum_j (\pi_j - \sigma_j ) \sum_k s_k P_{kj}\\
+	&= \Bigl[\eta_j = \sum_k s_k P_{kj} \Bigr]
+	&= \max_{|s_k| \leq 1} \sum_j (\pi_j - \sigma_j ) \eta_j
+\end{align*}
+It is not very easy to see that $|\eta_j| \leq 1 - 2\min_{i,k} P_{kj}$. Indeed,
+it is impossible for all $s_k$ to have the same sign, because they sort of depend
+on the differences $[\pi P]_k-[\sigma P]_k$ of elements of probability distributions
+which should \textbf{sum} to $1$. Thus for $\lambda = \min_{i,k} P_{kj}$
+\[-1+2\lambda \leq \eta_j \leq 1-2\lambda\]
+and
+\begin{align*}
+	d( \pi P,\sigma P)
+	&= \max_{|s_k| \leq 1} \sum_j (\pi_j - \sigma_j ) \eta_j\\
+	&\leq \max_{|\eta_j| \leq 1-2\lambda} \sum_j (\pi_j - \sigma_j ) \eta_j\\
+	&= (1-2\lambda) \max_{|s_j| \leq 1 } \sum_j (\pi_j - \sigma_j ) s_j\\
+	&= (1-2\lambda) d(\pi,\sigma)
+\end{align*}
+whence $P$ is a contraction.
+
+% subsection markov_chains (end)
+
+% section lecture_18 (end)
+
+\section{Lecture \# 19} % (fold)
+\label{sec:lecture_19}
+
+\subsection{maximum likelihood hypothesis testing} % (fold)
+\label{sub:maximum_likelihood_hypothesis_testing}
+
+Consider a random sample $Y^n = (Y_k)_{k=1}^n\sim p_\theta(\cdot)$ and two hypotheses:
+\[H_0: \theta\in \Theta_0\text{ and }H_1: \theta\in \Theta_1\]
+The decision rule is $\phi(Y^n) = 1_{T(Y^n)\geq t_\alpha}$
+where 
+\[T(Y^n) = \frac{\max_{\theta_0\in \Theta_0} p(Y^n|\theta_0)}{\max_{\theta_1\in \Theta_1} p(Y^n|\theta_1)}\]
+and $t_\alpha$ is such that $\ex_{\theta_0} \phi(Y^n) \leq \alpha$ for $\theta_0\in \Theta_0$.
+
+Let $Y_i\sim \Ncal(\mu, \sigma^2)$. Consider testing a simple hypothesis in the
+setting when $\sigma^2$ is unknown:
+\[H_0: \mu=\mu_0\text{ and }H_1: \mu\neq \mu_0\]
+The decision rule in this case is
+\[
+\phi(Y^n) = I\Bigl\{ 
+\max_{\theta_0\in \Theta_0} \log p(Y^n|\theta_0) - \max_{\theta_1\in \Theta_1} \log p(Y^n|\theta_1) \geq t_\alpha
+\Bigr\}
+\]
+with 
+\[
+\pr\Bigl( \max_{\theta_0\in \Theta_0} \log p(Y^n|\theta_0) - \max_{\theta_1\in \Theta_1} \log p(Y^n|\theta_1) \geq t_\alpha \Bigr) = \alpha
+\]
+In the gaussain case 
+\[
+L(\theta|Y^n)
+= \log p(Y^n|\theta)
+= - \frac{n}{2} \log 2\pi
+  - \frac{n}{2} \log \sigma^2
+  - \frac{1}{2\sigma^2} \sum_{k=1}^n (Y_k - \mu)^2
+\]
+maximizing with respect to $\sigma$ with $\mu$ fixed yields
+\[\hat{\sigma}^2_n = \frac{1}{n} \sum_{k=1}^n (Y_k - \mu)^2\]
+whence
+\[ \hat{L}_n(\mu|Y^n) = - \frac{n}{2} - \frac{n}{2} \log 2\pi \hat{\sigma}^2_n \]
+maximizing $\hat{L}_n(\mu|Y^n)$ with respect to $\mu$ gives
+\[
+\hat{\mu}_n
+= \frac{1}{n}\sum_{k=1}^n Y_k
+\]
+The test becomes
+\[
+\phi(Y^n)
+ = I\Bigl\{ 
+\frac{n}{2} \bigl( \log 2\pi \hat{\sigma}^2_n(\mu_0) 
+ - \log 2\pi \hat{\sigma}^2_n(\hat{\mu}_n) \bigr)
+\geq t_\alpha
+\Bigr\}
+\]
+whence
+\[
+\phi(Y^n)
+ = I\Bigl\{ 
+\frac{\hat{\sigma}^2_n(\mu_0)}{\hat{\sigma}^2_n(\hat{\mu}_n)}
+\geq t_\alpha'
+\Bigr\}
+\]
+
+Expanding the numerator results in
+\[
+\frac{\hat{\sigma}^2_n(\mu_0)}{\hat{\sigma}^2_n(\hat{\mu}_n)}
+= \frac{\sum_{k=1}^n (Y_k - \mu_0)^2}{\sum_{k=1}^n (Y_k - \hat{\mu}_n)^2}
+= \frac{\sum_{k=1}^n (Y_k - \hat{\mu}_n)^2 + n( \hat{\mu}_n -\mu_0 )^2}{\sum_{k=1}^n (Y_k - \hat{\mu}_n)^2}
+\]
+and finally 
+\[
+\phi(Y^n)
+ = I\Bigl\{ 
+\frac{\sqrt{n} \sqrt{\hat{\mu}_n -\mu_0} }{\sfrac{\sqrt{\sum_{k=1}^n (Y_k - \hat{\mu}_n)^2}}{\sqrt{n-1}} }
+\geq \hat{t}_\alpha
+\Bigr\}
+\]
+since $\ex_{\theta_0}\phi(Y^n) = \alpha$ it must be true that
+\[\pr\bigl(T(Y^n) \geq \hat{t}_\alpha\bigr) = \alpha\]
+and 
+\[
+T(Y^n)
+= \frac{\sqrt{n} \sqrt{\hat{\mu}_n -\mu_0} }{\sfrac{\sqrt{\sum_{k=1}^n (Y_k - \hat{\mu}_n)^2}}{\sqrt{n-1}} }
+\]
+The distribution of the test statistic is Student's-$t$ with $n-1$ degrees of freedom.
+
+% subsection maximum_likelihood_hypothesis_testing (end)
+
+\subsection{Discrete distribution case} % (fold)
+\label{sub:discrete_distribution_case}
+
+Consider a discrete random variable $(Y_i)_i\in \{S_1\ldots S_d\}$ with distribution
+$\Pr(Y_i = S_k) = p(k)$. And let's study the following hypotheses:
+\[ H_0: p = p_0\text{ and } H_1: p\neq p_0 \]
+The statistical decision rule in this case is $ \phi(Y^n) = 1_{T(Y^n) \geq t_\alpha} $,
+where 
+\[
+T(Y^n)
+= \max_{p} \sum_{i=1}^n \log p(Y_i) - \sum_{i=1}^n \log p_0(Y_i)
+\]
+Now
+\[
+\sum_{i=1}^n \log p(Y_i)
+= \sum_{i=1}^n \sum_{k=1}^d 1_{Y_i = S_k} \log p_k
+= \sum_{k=1}^d \Bigl( \sum_{i=1}^n 1_{Y_i = S_k} \Bigr) \log p_k
+= n \sum_{k=1}^d \hat{p}_k \log p_k
+\]
+and $\hat{p}_k$ is the empirical distribution function. Let's maximize $\sum_{i=1}^n \log p(Y_i)$.
+We get an equivalent problem (by omitting $n$ multiplier)
+\[
+\max_{p} \sum_{k=1}^d \hat{p}_k \log p_k - \sum_{k=1}^d \hat{p}_k \log \hat{p}_k
+= \min_{p} - \sum_{k=1}^d \hat{p}_k \log \frac{p_k}{\hat{p}_k}
+\geq 0
+\]
+whence $p_k = \hat{p}_k$ for all $k$.
+
+Therefore we get a test abase on the empirical Kullback-Leibler divergence and
+the expression of the log-likelihood
+\[
+\{ T(Y^n) \geq t_\alpha \}
+= \{
+\sum_{k=1}^d \hat{p}_k \log \hat{p}(k) - 
+\sum_{k=1}^d \hat{p}_k \log p_0(k)
+\geq t_\alpha
+\}
+= \{ \text{KL}( \hat{p}\| p_0) \geq t_\alpha \}
+\]
+
+The Law of Large Numbers implies that under the null
+\[ \hat{p}_k \overset{\pr}{\to} p_0(k) \]
+Consider the logarithm
+\begin{align*}
+	\log \frac{\hat{p}_k}{p_0(k)}
+	&= - \log \Bigl( \frac{p_0(k)}{\hat{p}_k} - 1 + 1 \Bigr)\\
+	&\approx - \frac{p_0(k)}{\hat{p}_k} + 1
+		+ \frac{1}{2} \Bigl( \frac{p_0(k)}{\hat{p}_k} - 1 \Bigr)^2
+\end{align*}
+therefore
+\[
+T(Y^n) = \frac{n}{2} \sum_{k=1}^d \frac{(p_0(k)-\hat{p}_k)^2}{\hat{p}_k}
+\]
+
+Theorem
+\[ \lim_{n\to \infty} \pr\Bigl( T(Y^n) \leq a \Bigr) = \pr\Bigl( \chi^2_{d-1} \leq a\Bigr)\]
+Indeed, let $\xi^n_k  = \sqrt{n}\frac{-p_0(k)+\hat{p}_k}{\sqrt{p_0(k)}}$. Thus
+$\ex\xi^n_k = 0$ and 
+\[
+\ex \xi^n_i \xi^n_j
+= \frac{1}{\sqrt{p_0(i)}\sqrt{p_0(j)}}
+ \times \sum_{s,i=1}^n \frac{1}{n^2} \ex [1_{Y_i = S_k} - p_0(k)][1_{Y_s = S_j} - p_0(j)]
+\]
+after some simplification we get
+\[
+\ex \xi^n_i \xi^n_j
+= 1_{i=j} \frac{p_0(j)}{\sqrt{p_0(i) p_0(j)}} - \sqrt{p_0(i) p_0(j)}
+= 1_{i=j} - \sqrt{p_0(i) p_0(j)}
+\]
+
+Using the Central Limit Theorem one gets
+\[
+\xi^n_j \overset{\Dcal}{\to} \Ncal_d(0, \Sigma)
+\]
+where $\Sigma_{ij} = 1_{i=j} - \sqrt{p_0(i) p_0(j)}$
+
+Consider
+\[\eta_k = \epsilon_k - \langle \epsilon, q_0\rangle q_0\]
+where $\epsilon \sim \Ncal_d(o, I_d)$ and $q_{0k} = \sqrt{p_0(k)}$ for $k=1,\ldots,d$.
+For an orthonormal basis $q_k$ in $\Real^d$ with $q_0$ defined above, one get
+\[
+\sum_{k=1}^d
+= \sum_{k=1}^{d-1} \langle \epsilon, q_k \rangle
+\sim \chi^2_{d-1}
+\]
+
+Comparison criterion
+Consider two samples $Y^n\sim \Ncal(\mu_Y,\Sigma^2_Y)$ and $Z^m\sim \Ncal(\mu_Z,\Sigma^2_Z)$.
+Lets use maximum likelihood to test the hypotheses
+\[H_0: \mu_Y = \mu_Z, \sigma^2_Y = \sigma^2_Z\text{ and } H_1:\text{ otherwise}\]
+The log-likelihood for the null is
+\[
+L_0(Y^n,Z^m;\mu,\sigma^2)
+= \prod_{i=1}^n p(Y_i;\mu,\sigma^2)\prod_{j=1}^m p(Z_i;\mu,\sigma^2)
+\]
+and under the alternative:
+\[
+L_1(Y^n,Z^m;\mu_Y,\sigma^2_Y,\mu_Z,\sigma^2_Z)
+= \prod_{i=1}^n p(Y_i;\mu_Y,\sigma^2_Y) \prod_{j=1}^m p(Z_i;\mu_Z,\sigma^2_Z)
+\]
+Recalling the values of the log-likelihood in its maximum for both likelihoods
+\[
+\hat{L}_0(Y^n,Z^m)
+= -\frac{n+m}{2} - \frac{n+m}{2} \log 2\pi
+	\min_\mu \frac{m\sum_{i=1}^n (Y_i - \mu)^2 + n\sum_{i=1}^m (Z_i - \mu)^2}{n+m}
+\]
+whence
+\[ \hat{\mu} = \frac{m\bar{Y}_n + n\bar{Z}_m}{n+m} \]
+
+Thus
+\[
+T(Y^n,Z^m)
+= -\frac{n+m}{2} - \frac{n+m}{2} \log 2\pi
+  - \frac{n}{2} \log \frac{\sum_{i=1}^n (Y_i - \bar{Y}_n)^2}{n}
+  - \frac{m}{2} \log \frac{\sum_{i=1}^m (Z_i - \bar{Z}_m)^2}{m}
+- \frac{n+m}{2}\Bigl( 1
+	+ \log 2\pi \frac{m\sum_{i=1}^n (Y_i - \hat{\mu})^2 + n\sum_{i=1}^m (Z_i - \hat{\mu})^2}{n+m}
+\Bigr)
+\]
+
+% subsection discrete_distribution_case (end)
+
+% section lecture_19 (end)
 
 \end{document}
