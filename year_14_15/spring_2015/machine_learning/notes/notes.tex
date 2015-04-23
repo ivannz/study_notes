@@ -554,4 +554,88 @@ altogether form a basis of the lattice.
 
 % section lecture_#_10 (end)
 
+\section{Lecture \# 11} % (fold)
+\label{sec:lecture_11}
+
+Combinatorial dealing with over-fitting. Test set and training set. 
+
+Consider a collection $X\in \Real^{l\times n}$ of objects and $Y\in \Real^{l\times 1}$
+-- responses, determined through $y^*(X)$. The goal is to find $a:\mathbb{X}\to \mathbb{Y}$, which
+is able to approximate $y^*$ on new set of objects $\tilde{X}\in \Real^{k\times n}$.
+
+ALgorithmic model
+\[A = \bigl\{g(\cdot, \theta)\rvert \theta\in \Theta\bigr\}\]
+where $g:X\times \Theta\to Y$.
+A learning method
+\[\mu:(\mathbb{X}\times \mathbb{Y})^l\to A\]
+
+Empirical risk
+\[Q(a,X) = \frac{1}{l} \sum_{i=1}^l 1_{a(x_i)\neq y_i}\]
+minimization of empirical risk yields
+\[
+\mu(X) = \argmin_{a\in A} Q(a, X)\]
+
+Does $a$ approximate $y^*$ on the entire $\mathbb{X}$ well enough? What happens:
+a discovery of a true latent law of nature, or overfitting?
+
+Case-by-case learning. Consider a learning method $\mu:\mathcal{P}(X)\to A$ which
+for an arbitrary training sample $X$ returns some algorithm $a\in A$. The response
+of $\mu$ is determined with respect to empirical risk minimization:
+\[\mu X =\argmin_{a\in A} m(a, X)\]
+
+Introduce the following ``operator''
+\[\mathbb{E} = \frac{1}{C^l_L} \sum_{X\subset \mathbb{X}}\]
+
+Let $\delta(\mu,X,\bar{X}) = \nu(\mu X,\bar{X})-\nu(\mu X, X)$. Then the abstraction
+capability functional:
+\begin{itemize}
+	\item The expected overfitting: $\mathbb{E} \delta(\mu,X,\bar{X})$;
+	\item $\ldota$
+\end{itemize}
+
+% section lecture_11 (end)
+
+\section{Lecture \# 12} % (fold)
+\label{sec:lecture_12}
+
+Dimensionality reduction.
+Consider two problems: \begin{itemize}
+	\item Document-term matrix, latent semantic analysis;
+	\item MISSED.
+\end{itemize}
+
+Goal compactify the data with tolerance towards small errors.
+Discover hidden correlations or topics: commonly occurring words.
+Remove redundant or noisy variables.
+
+Consider a matrix $M\in \Real^{m\times n}$ with rank $r\leq m,n$. Then there exist
+orthogonal matrices $U\in \Real^{m\times m}$, $V\in \Real^{n\times n}$ and
+a diagonal matrix $\Sigma = \diag(\sigma_i)_{i=1}^r$ of non-negative and non-zero elements
+such that 
+\[ M = U \Biggl( \begin{smallmatrix} \Sigma & 0\\0 & 0 \end{smallmatrix} \Biggr) V' \]
+the matrices $U,V$ are unique up to first $r$ columns.
+
+Here $U$ is object-to-concept and $V$ is feature-to-concept matrix. $\Sigma$ reflects
+the strength of concepts.
+
+Dimensionality reduction is performed by eliminating the smallest non-zero singular
+values. With respect to the Fro\"benius norm on $\Real^{m\times n}$ it gives the
+closest approximation.
+
+An important result is that $\|M\|_F = \sum_{i=1}^r \sigma_i$. Furthermore
+\[
+\|M\|
+= \sum_{i=1}^m \sum_{j=1}^n m_{ij}^2
+= \sum_{i=1}^m \sum_{j=1}^n \Bigl( \sum_{k=1}^r \sum_{k=1}^r p_{ik}\sigma_{kl}q_{lj} \Bigr)^2
+\]
+
+If a pair of object or features is highly correlated, then 
+
+Querying the SVD. For a given feature vector $q$ it is possible to project it into
+the space of concepts by right multiplying by $V'$.
+
+% A singular vector is a linear combination of rows and columns.
+
+% section lecture_12 (end)
+
 \end{document}
