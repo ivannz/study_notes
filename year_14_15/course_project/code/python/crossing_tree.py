@@ -138,7 +138,7 @@ def xtree_build( T, X, delta = None, max_height = float( 'inf' ) ) :
 	Z = ( X - X[ 0 ] ) / delta
 ## First compute the crossing times and points of the finest
 ##  integer grid
-	lht, lhp, lhx, lex = xtree_integer_crossings_superfast( T, Z )
+	lht, lhp, lhx, lex = xtree_integer_crossings_fast( T, Z )
 ## Add the times and property translated point to the master queue
 	hp.append( lhp * delta + X[ 0 ] )
 	ht.append( lht )
@@ -298,13 +298,13 @@ def xtree_integer_crossings_superfast( T, X ) :
 ## Add the levels, traversed by the crossing to the final array.
 		X_values[ i : j ] = lines
 		X_times[ i : j ] = T[ t ] + ( T[ t + 1 ] - T[ t ] ) * ( ( lines - X[ t ] ) / ( X[ t + 1 ] - X[ t ] ) )
-	return ( X_times, X_values, np.empty( 0, np.int ), np.empty( (0,3), np.int ) )
+	return ( X_times, X_values, np.empty( 0, np.int ), np.empty( (0,3), np.int ), np.empty( 0, np.int ) )
 
 ## Adaptive selection of the basic (coarsest) grid scale is based on the standard
 ##  deviation of increments of the sample path of process.
 def xtree_build_superfast( T, X, delta = None, max_height = float( 'inf' ) ) :
 ## Set up the crossing tree structure
-	hp = list( ) ; ht = list( ); hx = list( ) ; ex = list( )
+	hp = list( ) ; ht = list( ); hx = list( ) ; ex = list( ) ; wt = list( )
 ## By default, delta, the maximum grid spacing, is the standard
 ##  deviation of the increments.
 	delta = np.std( np.diff( X ) ) if delta is None else delta
@@ -312,12 +312,10 @@ def xtree_build_superfast( T, X, delta = None, max_height = float( 'inf' ) ) :
 	Z = ( X - X[ 0 ] ) / delta
 ## First compute the crossing times and points of the finest
 ##  integer grid
-	lht0, lhp0, lhx0, lex0 = xtree_integer_crossings_superfast( T, Z )
+	lht0, lhp0, lhx0, lex0, lwt0 = xtree_integer_crossings_superfast( T, Z )
 ## Add the times and property translated point to the master queue
 	hp.append( lhp0 * delta + X[ 0 ] )
-	ht.append( lht0 )
-	hx.append( lhx0 )
-	ex.append( lex0 )
+	ht.append( lht0 ) ; hx.append( lhx0 ) ; ex.append( lex0 ) ; wt.append( lwt0 )
 ## If the height restriction permits and the crossings did occur
 ##  iteratively construct crossings of increasingly coarser grids.
 	height = 0
@@ -327,7 +325,7 @@ def xtree_build_superfast( T, X, delta = None, max_height = float( 'inf' ) ) :
 		height += 1 ; delta *= 2
 		Z = ( X - X[ 0 ] ) / delta
 ## Compute the crossing times and points
-		lht1, lhp1, lhx1, lex1 = xtree_integer_crossings_superfast( T, Z )
+		lht1, lhp1, lhx1, lex1, lwt1 = xtree_integer_crossings_superfast( T, Z )
 ## Owen Daffyd Jones 2005: "The first apparent crossing at each level should be
 ##  excluded, since for a non-Markov process the path from T^n_0 to T^n_1 is not
 ##  a true crossing" [Citation needed]
@@ -374,8 +372,9 @@ def xtree_build_superfast( T, X, delta = None, max_height = float( 'inf' ) ) :
 ##  the number of subcrossings between two consecutive lower-scale crossings. 
 		hx.append( np.array( np.diff( hits ), np.int ) )
 		ex.append( excursions )
+		wt.append( np.diff( lht1 ) )
 		lht0, lhp0 = lht1, lhp1
-	return ( ht, hp, hx, ex )
+	return ( ht, hp, hx, ex, wt )
 
 ################################################################################
 ################################# CODE REVIEW! #################################

@@ -17,7 +17,8 @@ def monte_carlo_serial( generator, kernel, M = 100, quiet = False, **kwargs ) :
 	result = [ kernel( generator, **kwargs ) for m in xrange( M ) ]
 	if quiet :
 		print( "--: %.3f" % ( time.time( ) - tic ) )
-	return np.concatenate( [ result ] )
+	return [ result ]
+	# return np.concatenate( [ result ] )
 
 ## DD = monte_carlo_serial( generator, M=100, K = 16, T = 3 )
 def monte_carlo_parallel( generator, kernel, M = 100, quiet = False, **kwargs ) :
@@ -37,7 +38,12 @@ def monte_carlo_parallel( generator, kernel, M = 100, quiet = False, **kwargs ) 
 ## Track the porgress
 			print( "%i: %.3f" % ( result.progress, time.time( ) - tic ) )
 	cluster.clear( block = True )
-	return np.concatenate([r for r in result if r])
+## Collect the results in one list
+	res = list( )
+	for r in result :
+		if r : res.extend( r )
+	return [ res ]
+	# return np.concatenate([r for r in result if r])
 
 ## This is a genral procedure to be run on each node of the cluster.
 @interactive
