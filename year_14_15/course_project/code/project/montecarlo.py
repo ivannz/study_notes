@@ -47,8 +47,10 @@ def mc_run( generator, kernel, replications, **op ) :
 				tm.sleep( 1 )
 ## Track the progress
 				print( "%.3f\r" % ( tm.time( ) - tic ) )
-		pass
-		return result.get( )
+			result = result.get( )
+		worker_pool.close()
+		worker_pool.join()
+		return result
 	else :
 ## For a serieal run, just do the same initialization steps
 		rnd = RandomState( )

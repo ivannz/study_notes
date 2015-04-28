@@ -52,12 +52,13 @@ class fgn( object ) :
 ##  Gaussian white noise in the frequency domain and then get back to the time domain.
 ##    cf. \url{ http://www.thefouriertransform.com/transform/properties.php }
 ## Begin with generation of the Gaussian white noise with unit variance and zero mean.
-		W = self.__np_rand.randn( 2 * self.__N - 2 ) + self.__np_rand.randn( 2 * self.__N - 2 ) * 1j
+		Wr = self.__acf_ft * self.__np_rand.randn( 2 * self.__N - 2 )
+		Wi = self.__acf_ft * self.__np_rand.randn( 2 * self.__N - 2 )
 ## Compute the convolution of the circulant row (of autocorrelations) with the noise.
 ## "%% ATTENTION: ne pas utiliser ifft, qui utilise une normalisation differente"
 ## Compute this (see p.~1091 [Dietrich, Newsam; 1997]) :
 ##  F \times (\frac{1}{2M}\Lambda)^\frac{1}{2} \times w
-		W = fft( self.__acf_ft * W )
+		W = fft( Wr + Wi * 1j )
 ## [Dietrich, Newsam; 1997] write : "In our case the real and imaginary parts of any N
 ##  consecutive entries yield two independent realizations of \mathcal{N}_N(0,R) where
 ##  $R$ is the autocorrelation structure of an fBM."

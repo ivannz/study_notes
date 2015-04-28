@@ -63,8 +63,8 @@ def mc_kernel( generate_sample, **op ) :
 
 
 if __name__ == '__main__' :
-	N = 2**18+1 ; M = 10
-	for H in  np.linspace( .5, .95, num = 10 ) :
+	N = 2**20+1 ; M = 100
+	for H in  np.linspace( .5, .95, num = 3 ) :
 		P = int( np.log2( N - 1 ) )
 		print "Monte carlo (%d) for FBM(2**%d+1, %.4f):" % ( M, P, H )
 ## Get the current timestamp
@@ -73,8 +73,9 @@ if __name__ == '__main__' :
 		generator = fbm( N = N, H = H )
 ## Run the experiment
 		result = montecarlo( generator, mc_kernel,
-			replications = M, parallel = P < 21, debug = False,
-			quiet = False, # processes = 2,
+			# replications = M, parallel = P < 21, debug = False,
+			replications = M, parallel = True, debug = False,
+			quiet = True, # processes = 2,
 			L = 10, K = 20 )
 ## Create a meaningful name for the output data blob
 		np.savez_compressed( "./output/fbm%s_%d_%.2f_%d" % (
