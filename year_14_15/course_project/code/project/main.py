@@ -15,7 +15,16 @@ def mc_kernel( generate_sample, **op ) :
 ##  between different sample paths.
 ## 2015-04-08 : I think 6-level deep crossing tree is too poor for any analysis which
 ##  is why it is necessary to take the variance, i.e the inherent scale, into account.
-	delta = np.std( np.diff( X ) )
+## 2015-04-29 : I think lower (finer) levels of the tree are too biased for the analysis
+##  the bias is due to the discretization of the sample path.
+	delta_method = op.get( 'delta', 'std' ).lower( )
+	if delta_method == 'std' :
+		delta = np.std( np.diff( X ) )
+	elif delta_method == 'iqr' :
+## Use the interquartile range
+		delta = np.subtract( *np.percentile( np.diff( X ), [ 75, 25 ] ) )
+	else :
+		delta = 1.0
 ## max_levels -- the number of level of the tree to construct (from the finest grid)
 ##  beyond this level (L+1, L+2, ...) the levels are pooled.
 ## max_crossing -- the threshold for the number of subcrossings beyond which they
@@ -35,36 +44,37 @@ def mc_kernel( generate_sample, **op ) :
 	Tnk, XTnk, Znk, Vnk, Wnk = xtree_build( T, X, delta = delta )
 ## Get the total number of crosssings of \delta 2^n resolution
 ## Nn[n] -- the total number of crossings of grid with spacing \delta 2^n
-	Nn = np.array( [ len( Tk ) - 1 for Tk in Tnk ],
-		dtype = np.float ).reshape( ( len( Tnk ), -1 ) )
-## Dnm[n][m] -- m<M : the total number of crossings of grid \delta 2^{n+1} with 2(m+1)
-##  subcrossings of grid \delta 2^n. The values in column M are the number
-##  of crossings of \delta 2^{n+1} with not less than 2(M+1) subcrossings.
+	Nn = np.zeros( ( max_levels + 1, 1 ), dtype = np.int )
+	for n, Tk in enumerate( Tnk, 0 ) :
+		n = max_levels if n > max_levels else n
+		Nn[ n ] += len( Tk ) - 1
+## Dnk[n][k] -- k<K : the total number of crossings of grid \delta 2^{n+1} with 2(k+1)
+##  subcrossings of grid \delta 2^n. The values in column K are the number
+##  of crossings of \delta 2^{n+1} with not less than 2(K+1) subcrossings.
 ## 32bit Integers should be enough
-	Dnm = np.zeros( ( max_levels + 1, max_crossings // 2 ), dtype = np.float )
+	Dnk = np.zeros( ( max_levels + 1, max_crossings // 2 ), dtype = np.int )
 	for n, Zk in enumerate( Znk[ 1: ], 0 ) :
 		n = max_levels if n > max_levels else n
 		Z_count, Z_freq = np.unique( Zk, return_counts = True )
 ## Truncate the observed crossings
 		Z_count = np.minimum( Z_count, max_crossings )
 		mask = ( Z_count < max_crossings )
-		Dnm[ n, Z_count[ mask ] // 2 - 1 ] += Z_freq[ mask ]
-		Dnm[ n, max_crossings // 2 - 1 ] += np.sum( Z_freq[ ~mask ] )
-## VDn[n][d][e] -- the total number of up-down(e=0) and down-up(e=1) excursions
+		Dnk[ n, Z_count[ mask ] // 2 - 1 ] += Z_freq[ mask ]
+		Dnk[ n, max_crossings // 2 - 1 ] += np.sum( Z_freq[ ~mask ] )
+## Vnde[n][d][e] -- the total number of up-down(e=0) and down-up(e=1) excursions
 ##  (/\ and \/ subcrosssings od \delta 2^n respectively) in a downward(d=0) or
 ##  upward(d=1) crossing of spacing \delta 2^{n+1} (level n+1). Levels beyond
 ##  max_levels are agregated.
-	VDn = np.zeros( ( max_levels + 1, 2, 2 ), dtype = np.int )
+	Vnde = np.zeros( ( max_levels + 1, 2, 2 ), dtype = np.int )
 	for n, Vk in enumerate( Vnk[ 1: ], 0 ) :
 		n = max_levels if n > max_levels else n
-		VDn[ n, 0 ] += np.sum( Vk[ Vk[ :, 2 ] < 0 ], axis = 0 )[:2]
-		VDn[ n, 1 ] += np.sum( Vk[ Vk[ :, 2 ] > 0 ], axis = 0 )[:2]
-	return Nn, Dnm, VDn
-
+		Vnde[ n, 0 ] += np.sum( Vk[ Vk[ :, 2 ] < 0 ], axis = 0 )[:2]
+		Vnde[ n, 1 ] += np.sum( Vk[ Vk[ :, 2 ] > 0 ], axis = 0 )[:2]
+	return Nn, Dnk, Vnde
 
 if __name__ == '__main__' :
-	N = 2**20+1 ; M = 100
-	for H in  np.linspace( .5, .95, num = 3 ) :
+	N = 2**21+1 ; M = 1000 ; delta_method = 'iqr'
+	for H in np.linspace( .5, .95, num = 10 ) :
 		P = int( np.log2( N - 1 ) )
 		print "Monte carlo (%d) for FBM(2**%d+1, %.4f):" % ( M, P, H )
 ## Get the current timestamp
@@ -73,18 +83,19 @@ if __name__ == '__main__' :
 		generator = fbm( N = N, H = H )
 ## Run the experiment
 		result = montecarlo( generator, mc_kernel,
-			# replications = M, parallel = P < 21, debug = False,
-			replications = M, parallel = True, debug = False,
-			quiet = True, # processes = 2,
-			L = 10, K = 20 )
+			processes = 2, debug = False, quiet = False, parallel = True,
+			replications = M, delta = delta_method, L = 15, K = 30 )
 ## Create a meaningful name for the output data blob
-		np.savez_compressed( "./output/fbm%s_%d_%.2f_%d" % (
-				run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ),
-			Njn  = np.array( [ n for w, j, ( n, _, _ ) in result ] ),
-			Djnm = np.array( [ d for w, j, ( _, d, _ ) in result ] ),
-			VDjn = np.array( [ v for w, j, ( _, _, v ) in result ] ) )
-## To access use: dat = np.load(..) ; dat['Djnm'], dat['Njn'], dat['VDjn']
-
+		np.savez_compressed( "./output/fbm_%s_%s_%d_%.4f_%d" % (
+				delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ),
+			Njn   = np.array( [ n for w, j, ( n, _, _ ) in result ] ),
+			Djnk  = np.array( [ d for w, j, ( _, d, _ ) in result ] ),
+			Vjnde = np.array( [ v for w, j, ( _, _, v ) in result ] ) )
+## To access use: dat = np.load(..) ; dat['Djnk'], dat['Njn'], dat['Vjnde']
+## For analysis:
+##  Vnd = np.sum( Vnde, axis = 2, dtype = np.float ).reshape( VDn.shape[:2] + ( 1, ) )
+##  Vnde / Vnd <- the conditional distribution of excursions
+##  Dn = np.sum( Dnm, axis = 1, dtype = np.float ).reshape( Dnm.shape[:1] + ( 1, ) )
+##  Dnk / Dn <- the subcrossing number distribution
 ## Generate default name for each Monte Carlo result
-	# np.savez_compressed( './test.out', **{ "rep%04d"%(i,): d
-	#  	for _, i, (d, _) in result } )
+	# np.savez_compressed( './test.out', **{ "rep%04d"%(i,): d for _, i, (d, _) in result } )

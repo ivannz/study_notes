@@ -244,7 +244,7 @@ def f_get_w( T, X, levels = [ ], delta = 1.0, deleteFirst = False ) :
 # w=hit_time;
 # comptscale=1;
 ## Set up the crossing tree structure
-	hp = list( ) ; ht = list( )
+	hp = list( ) ; ht = list( ) ; hv = list( )
 # z = ( x - x( 1 ) ) / delta ;
 	Y = ( X - X[ 0 ] ) / delta
 	for n in levels :
@@ -254,7 +254,7 @@ def f_get_w( T, X, levels = [ ], delta = 1.0, deleteFirst = False ) :
 #     y = z/scale;
 		Z = Y / scale
 # .....
-		lht, lhp, lhx = f_get_w_int( T, Z, deleteFirst )
+		lht, lhp, lhx, lhv = f_get_w_int( T, Z, deleteFirst )
 #     hit_point{comptscale}=h_p(1:compt-1);
 		hp.append( lhp * scale * delta + X[ 0 ] )
 #     hit_time{comptscale}=h_t(1:compt-1);
@@ -296,6 +296,6 @@ def f_get_w( T, X, levels = [ ], delta = 1.0, deleteFirst = False ) :
 		hx.append( np.array( sx, np.int ) )
 #    hit0 = hit1;
 		hit0 = hit1
-	return ( ht, hp, hx )
+	return ( ht, hp, hx, hv )
 #end
 
