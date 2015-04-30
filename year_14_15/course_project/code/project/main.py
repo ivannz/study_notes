@@ -83,10 +83,10 @@ if __name__ == '__main__' :
 		generator = fbm( N = N, H = H )
 ## Run the experiment
 		result = montecarlo( generator, mc_kernel,
-			processes = 2, debug = False, quiet = False, parallel = True,
+			processes = 7, debug = False, quiet = False, parallel = True,
 			replications = M, delta = delta_method, L = 15, K = 30 )
 ## Create a meaningful name for the output data blob
-		np.savez_compressed( "./output/fbm_%s_%s_%d_%.4f_%d" % (
+		np.savez_compressed( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
 				delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ),
 			Njn   = np.array( [ n for w, j, ( n, _, _ ) in result ] ),
 			Djnk  = np.array( [ d for w, j, ( _, d, _ ) in result ] ),
