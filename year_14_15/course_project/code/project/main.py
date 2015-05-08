@@ -44,9 +44,11 @@ def mc_kernel( generate_sample, **op ) :
 	Tnk, XTnk, Znk, Vnk, Wnk = xtree_build( T, X, delta = delta )
 ## Get the total number of crosssings of \delta 2^n resolution
 ## Nn[n] -- the total number of crossings of grid with spacing \delta 2^n
-	Nn = np.zeros( ( max_levels + 1, 1 ), dtype = np.int )
+	Nn = np.zeros( ( max_levels + 1 + 1, 1 ), dtype = np.int )
 	for n, Tk in enumerate( Tnk, 0 ) :
-		n = max_levels if n > max_levels else n
+		n = max_levels + 1 if n > max_levels + 1 else n
+## The correct number of crossings of level \delta 2^n is the number of consecutive
+##  pairs with Tnk_i < Tnk_{i+1}.
 		Nn[ n ] += len( Tk ) - 1
 ## Dnk[n][k] -- k<K : the total number of crossings of grid \delta 2^{n+1} with 2(k+1)
 ##  subcrossings of grid \delta 2^n. The values in column K are the number
@@ -73,7 +75,7 @@ def mc_kernel( generate_sample, **op ) :
 	return Nn, Dnk, Vnde
 
 if __name__ == '__main__' :
-	N = 2**21+1 ; M = 1000 ; delta_method = 'iqr'
+	N = 2**22+1 ; M = 1000 ; delta_method = 'iqr'
 	for H in np.linspace( .5, .95, num = 10 ) :
 		P = int( np.log2( N - 1 ) )
 		print "Monte carlo (%d) for FBM(2**%d+1, %.4f):" % ( M, P, H )
@@ -84,7 +86,7 @@ if __name__ == '__main__' :
 ## Run the experiment
 		result = montecarlo( generator, mc_kernel,
 			processes = 7, debug = False, quiet = False, parallel = True,
-			replications = M, delta = delta_method, L = 15, K = 30 )
+			replications = M, delta = delta_method, L = 20, K = 30 )
 ## Create a meaningful name for the output data blob
 		np.savez_compressed( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
 				delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ),
