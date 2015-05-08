@@ -75,24 +75,25 @@ def mc_kernel( generate_sample, **op ) :
 	return Nn, Dnk, Vnde
 
 if __name__ == '__main__' :
-	N = 2**22+1 ; M = 1000 ; delta_method = 'iqr'
-	for H in np.linspace( .5, .95, num = 10 ) :
-		P = int( np.log2( N - 1 ) )
-		print "Monte carlo (%d) for FBM(2**%d+1, %.4f):" % ( M, P, H )
+	N = 2**23+1 ; M = 2000
+	for delta_method in [ 'iqr', 'std' ] :
+		for H in np.linspace( .5, .95, num = 10 ) :
+			P = int( np.log2( N - 1 ) )
+			print "Monte carlo (%d) for FBM(2**%d+1, %.4f):" % ( M, P, H )
 ## Get the current timestamp
-		run_dttm = datetime.utcnow( )
+			run_dttm = datetime.utcnow( )
 ## Iinitalize the generator
-		generator = fbm( N = N, H = H )
+			generator = fbm( N = N, H = H )
 ## Run the experiment
-		result = montecarlo( generator, mc_kernel,
-			processes = 7, debug = False, quiet = False, parallel = True,
-			replications = M, delta = delta_method, L = 20, K = 30 )
+			result = montecarlo( generator, mc_kernel,
+				processes = 4, debug = False, quiet = False, parallel = True,
+				replications = M, delta = delta_method, L = 20, K = 40 )
 ## Create a meaningful name for the output data blob
-		np.savez_compressed( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
-				delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ),
-			Njn   = np.array( [ n for w, j, ( n, _, _ ) in result ] ),
-			Djnk  = np.array( [ d for w, j, ( _, d, _ ) in result ] ),
-			Vjnde = np.array( [ v for w, j, ( _, _, v ) in result ] ) )
+			np.savez_compressed( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
+					delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ),
+				Njn   = np.array( [ n for w, j, ( n, _, _ ) in result ] ),
+				Djnk  = np.array( [ d for w, j, ( _, d, _ ) in result ] ),
+				Vjnde = np.array( [ v for w, j, ( _, _, v ) in result ] ) )
 ## To access use: dat = np.load(..) ; dat['Djnk'], dat['Njn'], dat['Vjnde']
 ## For analysis:
 ##  Vnd = np.sum( Vnde, axis = 2, dtype = np.float ).reshape( VDn.shape[:2] + ( 1, ) )
