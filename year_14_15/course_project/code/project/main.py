@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 from datetime import datetime
+import os, re
 
 import numpy as np
 from montecarlo import mc_run as montecarlo
@@ -23,6 +24,9 @@ def mc_kernel( generate_sample, **op ) :
 	elif delta_method == 'iqr' :
 ## Use the interquartile range
 		delta = np.subtract( *np.percentile( np.diff( X ), [ 75, 25 ] ) )
+	elif delta_method == 'med' :
+## Use the median as suggested in [Jones, Rolls; 2009] p. 11 (0911.5204v2)
+		delta = np.median( np.abs( np.diff( X ) ) )
 	else :
 		delta = 1.0
 ## max_levels -- the number of level of the tree to construct (from the finest grid)
@@ -32,7 +36,7 @@ def mc_kernel( generate_sample, **op ) :
 ##  {2}, {4}, ... {2k}, ... {2K, 2(K+1), ...}, where K = max_crossing
 	max_levels, max_crossings = op.get( 'L', 6 ), op.get( 'K', 20 )
 ## Tnk[n][k] -- the time (approximate) of the k-th crossing of the gird with resolution
-##  \delta 2^n. XTnk[n][k] -- the value of the process at the time of the crossing:
+##  \delta 2^n. Xnk[n][k] -- the value of the process at the time of the crossing:
 ##  alwayts equal to the shifted and scaled grid level crossed.
 ## Znk[n][k] -- the number of subcrossings of a finer grid (crossings of
 ##  \delta 2^{n-1}) that make up the k-th corssing of a coarser grid (\delta 2^n).
@@ -41,10 +45,10 @@ def mc_kernel( generate_sample, **op ) :
 ##  crossing of size \delta 2^n. Undefined for n = 0.
 ## Wnk[n][k] -- the waiting time between the k-th and k+1-st crossing of the grid
 ##  of spacing \delta 2^n
-	Tnk, XTnk, Znk, Vnk, Wnk = xtree_build( T, X, delta = delta )
+	Tnk, Xnk, Znk, Vnk, Wnk = xtree_build( T, X, delta = delta )
 ## Get the total number of crosssings of \delta 2^n resolution
 ## Nn[n] -- the total number of crossings of grid with spacing \delta 2^n
-	Nn = np.zeros( ( max_levels + 1 + 1, 1 ), dtype = np.int )
+	Nn = np.zeros( ( 1 + max_levels + 1, 1 ), dtype = np.int )
 	for n, Tk in enumerate( Tnk, 0 ) :
 		n = max_levels + 1 if n > max_levels + 1 else n
 ## The correct number of crossings of level \delta 2^n is the number of consecutive
@@ -72,11 +76,43 @@ def mc_kernel( generate_sample, **op ) :
 		n = max_levels if n > max_levels else n
 		Vnde[ n, 0 ] += np.sum( Vk[ Vk[ :, 2 ] < 0 ], axis = 0 )[:2]
 		Vnde[ n, 1 ] += np.sum( Vk[ Vk[ :, 2 ] > 0 ], axis = 0 )[:2]
-	return Nn, Dnk, Vnde
+## Make a crude summary of the crossing durations: 
+	prc = np.array( [ 0.5, 1.0, 2.5, 5.0, 10, 25, 50, 75, 90, 95, 97.5, 99, 99.5 ] )
+## Wnp[n][p] -- the p-th empirical quantile of the n-th level crossing durations.
+##  Crossing durations are not aggregated in the last row of the output.
+	Wnp = np.zeros( ( max_levels, ) + prc.shape, dtype = np.float )
+## The average crossing duration and its standard deviation
+	Wbarn = np.zeros( ( max_levels, 1 ), dtype = np.float )
+## The average crossing duration and its standard deviation
+	Wstdn = np.zeros( ( max_levels, 1 ), dtype = np.float )
+	for n, Wk in enumerate( Wnk[1:], 0 ) :
+		if len( Wk ) :
+## Get the mean, standard deviation and the quantiles of non-empty levels only.
+			Wbarn[ n ], Wstdn[ n ], Wnp[ n ] = np.average( Wk ), np.std( Wk ), np.percentile( Wk, prc )
+	return Nn, Dnk, Vnde, ( Wnp, Wbarn, Wstdn )
+
+## A procedure for loading results of a saved simulation
+def sim_load( file_name, return_durations = False ) :
+## Load the npz file
+	data = np.load( file_name )
+## Remove the extension and split by underscores: the format is (G, D, dttm, P, H, M)
+	par = re.sub( r'(.*)\.npz$', r'\1', os.path.basename( file_name ) ).split( '_' )
+	if not return_durations :
+## return the basic results of the simulation : tuple( H, Njn, Djnk, Vjnde )
+		return float( par[ -2 ] ), data[ 'Njn' ], data[ 'Djnk' ], data[ 'Vjnde' ]
+	else :
+## Get the dimensions of the data
+		M, L, K = data[ 'Djnk' ].shape
+## Prepare the data on crossing durations
+		Wjnp = data[ 'Wjnp' ] if 'Wjnp' in data else np.empty( ( M, L, 0 ) )
+		Wbarjn = data[ 'Wbarjn' ] if 'Wbarjn' in data else np.empty( ( M, L, 0 ) )
+		Wstdjn = data[ 'Wstdjn' ] if 'Wstdjn' in data else np.empty( ( M, L, 0 ) )
+## return the results of the simulation : basic plus summary of duration data
+		return float( par[ -2 ] ), data[ 'Njn' ], data[ 'Djnk' ], data[ 'Vjnde' ], Wjnp, Wbarjn, Wstdjn
 
 if __name__ == '__main__' :
 	N = 2**23+1 ; M = 2000
-	for delta_method in [ 'iqr', 'std' ] :
+	for delta_method in [ 'med', 'std', 'iqr', ] :
 		for H in np.linspace( .5, .95, num = 10 ) :
 			P = int( np.log2( N - 1 ) )
 			print "Monte carlo (%d) for FBM(2**%d+1, %.4f):" % ( M, P, H )
@@ -86,14 +122,18 @@ if __name__ == '__main__' :
 			generator = fbm( N = N, H = H )
 ## Run the experiment
 			result = montecarlo( generator, mc_kernel,
-				processes = 4, debug = False, quiet = False, parallel = True,
+				processes = 2, debug = False, quiet = False, parallel = True,
 				replications = M, delta = delta_method, L = 20, K = 40 )
 ## Create a meaningful name for the output data blob
-			np.savez_compressed( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
+			# np.savez_compressed( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
+			np.savez_compressed( "./output/fbm_%s_%s_%d_%.4f_%d" % (
 					delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ),
-				Njn   = np.array( [ n for w, j, ( n, _, _ ) in result ] ),
-				Djnk  = np.array( [ d for w, j, ( _, d, _ ) in result ] ),
-				Vjnde = np.array( [ v for w, j, ( _, _, v ) in result ] ) )
+				Njn     = np.array( [ n for wrk, j, ( n, _, _, ( _, _, _ ) ) in result ] ),
+				Djnk    = np.array( [ d for wrk, j, ( _, d, _, ( _, _, _ ) ) in result ] ),
+				Vjnde   = np.array( [ v for wrk, j, ( _, _, v, ( _, _, _ ) ) in result ] ),
+				Wjnp    = np.array( [ w for wrk, j, ( _, _, _, ( w, _, _ ) ) in result ] ),
+				Wbarjn  = np.array( [ b for wrk, j, ( _, _, _, ( _, b, _ ) ) in result ] ),
+				Wstdjn  = np.array( [ s for wrk, j, ( _, _, _, ( _, _, s ) ) in result ] ) )
 ## To access use: dat = np.load(..) ; dat['Djnk'], dat['Njn'], dat['Vjnde']
 ## For analysis:
 ##  Vnd = np.sum( Vnde, axis = 2, dtype = np.float ).reshape( VDn.shape[:2] + ( 1, ) )
