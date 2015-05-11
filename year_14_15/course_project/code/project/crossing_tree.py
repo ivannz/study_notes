@@ -38,49 +38,29 @@ def xtree_integer_crossings( T, X ) :
 ## Effectively, this detects movements, which recrossed the last level of their
 ##  preceding movement. In order to account for such movements it is necessary to
 ##  adjust the level each traversal starts with in the direction of the crossing.
-####  Consecutive re-crossings are properly accounted for, since ...
+## Consecutive re-crossings are properly accounted for, since if the next crossing passes
+##  through the final level of the crossing, which precedes it, then it cannot possibly be
+##  a valid crossing.
 ## Adjust initially crossed levels of re-crossings, and update the sizes.
 	X_begin[ is_recrossing ] += X_direction[ is_recrossing ]
 ## Adjusting the starting level necessarily makes the crossing shorter by one level.
 	size[ is_recrossing ] -= 1
-	del previous_crossing, is_recrossing
-## Pruning: eliminate one-level traversals which do not contribute a crossing because
-##  they are recrossings.
-	tau = np.nonzero( size > 0 )[ 0 ] # np.arange( len( X_direction ), dtype = np.int )[ size > 0 ]
-## Get the sizes of genuine crossings
-	size = size[ tau ]
-## Arcane programming : compute the index of the end of each crossing in the output
-##  array. Hopefully the incre,emts are not so large as to cause 64-bit int overflow.
-	inx = np.cumsum( size, dtype = np.int64 )
-## Initialize final crossing times and values arrays
-	X_times, X_values = np.zeros( inx[ -1 ], np.float ), np.zeros( inx[ -1 ], np.float )
-## Get the index of the beginning of each crossing (aka group [inx:inx+size] in
-##  python colon notation).
-	inx -= size
-## In general it is much more likely that a crossing traverses just one or two levels.
-##  Invoking the np.arange() for such short events is too expensive. Thus it is
-##  more efficient to handle such cases separately and let numpy's core do all the
-##  heavy looping. The following selects the times and starting indices of such
-##  short crossings. 
-	tau1, inx1 = tau[ size < 3 ], inx[ size < 3 ]
-	tau2, inx2 = tau[ size == 2 ], inx[ size == 2 ] + 1
-## Since the process is sampled at discrete moments which are not necessarily spaced
-##  uniformly apart, the level hitting times are approximated by linear interpolation.
-##  The speed is not improved by the usage of pre-calculated constants. First record
-##  the first levels crossed and their times.
-	X_values[ inx1 ] = X_begin[ tau1 ]
-	X_times[ inx1 ] = T[ tau1 ] + ( T[ tau1 + 1 ] - T[ tau1 ] ) * ( ( X_begin[ tau1 ] - X[ tau1 ] ) / ( X[ tau1 + 1 ] - X[ tau1 ] ) )
-	X_values[ inx2 ] = X_final[ tau2 ]
-	X_times[ inx2 ] = T[ tau2 ] + ( T[ tau2 + 1 ] - T[ tau2 ] ) * ( ( X_final[ tau2 ] - X[ tau2 ] ) / ( X[ tau2 + 1 ] - X[ tau2 ] ) )
-	del tau1, inx1, tau2, inx2
-## Now handle multi-level crossings
-	tau, inx, size = tau[ size > 2 ], inx[ size > 2 ], size[ size > 2 ]
-	for t, i, j in zip( tau, inx, inx + size ) :
-## In case three or more levels were crossed, create an array and use vectorized arithmetic
-		lines = np.arange( X_begin[ t ], X_final[ t ] + X_direction[ t ], X_direction[ t ], dtype = np.float )
-## Add the levels, traversed by the crossing to the final array.
-		X_values[ i : j ] = lines
-		X_times[ i : j ] = T[ t ] + ( T[ t + 1 ] - T[ t ] ) * ( ( lines - X[ t ] ) / ( X[ t + 1 ] - X[ t ] ) )
+	del previous_crossing, is_recrossing, X_final
+## Get the index of crossings of positive size. "Tau" is aligned with consecutive
+##  pairs of (T_t, X_t). Then repeat each value of the constructed index according
+##  to the size of the associated crossing. Numpy's repeat also performs pruning:
+##  it eliminates zero-sized "crossings", which in fact are one-level traversals
+##  that do not contribute a crossing because they are recrossings.
+	tau = np.repeat( np.arange( len( X_direction ), dtype = np.int ), size )
+## Compute the levels of each crossing : multiply the direction by the increment and
+##  then add the level crossed first.
+	X_values = X_begin[ tau ] + X_direction[ tau ] * (
+## Produce level increments for each crossing : the index of the beginning of each
+##  crossing's group of levels is subtracted from the global index of "tau".
+        np.arange( len( tau ) ) - np.repeat( np.cumsum( size, dtype = np.float ) - size, size ) )
+## The crossing times are approximated by linear interpolation between the crossed
+##  levels.
+	X_times  = T[ tau ] + ( T[ tau + 1 ] - T[ tau ] ) * ( X_values - X[ tau ] ) / ( X[ tau + 1 ] - X[ tau ] )
 	return X_times, X_values
 
 ## Adaptive selection of the basic (coarsest) grid scale is based on the standard
