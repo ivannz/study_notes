@@ -1,12 +1,18 @@
 # -*- coding: UTF-8 -*-
 import numpy as np
 
-def xtree_integer_crossings( T, X ) :
+## This module handles the task of computing the hitting times, points and
+##  subcrossings for continuous processes
+
+def xtree_integer_crossings( T, X, y_eps = 0.0 ) :
 ## Compute movement directions
 	X_direction = np.sign( np.diff( X ) )
+## 2015-05-11 : Having studied the original code for [Jones, Rolls; 2009] (arXiv: 0911.5204v2),
+##  (get_hits.m) I decided to introduce a jiggle parameter for finding crossings, which defaults
+##  to zero. 
 ## Get the closest integers around each value of the process. Note that by definition
 ##  floor(x) = ceil(x) for integers and floor(x) + 1 = ceil(x) for non-integer x.
-	X_floor, X_ceil = np.floor( X ), np.ceil( X )
+	X_floor, X_ceil = np.floor( X + y_eps ), np.ceil( X - y_eps )
 ## For each crossing (X_t, X_{t+1}) determine the intervals potentially crossed
 ##  by it. For an upcrossing round X_t up (ceiling) and X_{t+1} down (floor),
 ##  whereas, the levels traversed by a downcrossing are the floor and the ceiling
