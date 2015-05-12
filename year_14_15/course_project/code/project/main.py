@@ -86,7 +86,7 @@ def mc_kernel( generate_sample, **op ) :
 ## The average crossing duration and its standard deviation
 	Wstdn = np.zeros( ( max_levels, 1 ), dtype = np.float )
 	for n, Wk in enumerate( Wnk[1:], 0 ) :
-		if len( Wk ) :
+		if len( Wk ) and n < max_levels :
 ## Get the mean, standard deviation and the quantiles of non-empty levels only.
 			Wbarn[ n ], Wstdn[ n ], Wnp[ n ] = np.average( Wk ), np.std( Wk ), np.percentile( Wk, prc )
 	return Nn, Dnk, Vnde, ( Wnp, Wbarn, Wstdn )
@@ -111,9 +111,11 @@ def sim_load( file_name, return_durations = False ) :
 		return float( par[ -2 ] ), data[ 'Njn' ], data[ 'Djnk' ], data[ 'Vjnde' ], Wjnp, Wbarjn, Wstdjn
 
 if __name__ == '__main__' :
-	N = 2**23+1 ; M = 2000
-	for delta_method in [ 'med', 'std', 'iqr', ] :
-		for H in np.linspace( .5, .95, num = 10 ) :
+	N = 2**21+1 ; M = 2000
+	for delta_method in [ 'med', ] :
+	# for delta_method in [ 'med', 'std', 'iqr', ] :
+		for H in np.linspace( .95, .95, num = 1 ) :
+		# for H in np.linspace( .5, .95, num = 10 ) :
 			P = int( np.log2( N - 1 ) )
 			print "Monte carlo (%d) for FBM(2**%d+1, %.4f):" % ( M, P, H )
 ## Get the current timestamp
@@ -122,11 +124,13 @@ if __name__ == '__main__' :
 			generator = fbm( N = N, H = H )
 ## Run the experiment
 			result = montecarlo( generator, mc_kernel,
-				processes = 2, debug = False, quiet = False, parallel = True,
+				processes = 7, debug = False, quiet = False, parallel = True,
 				replications = M, delta = delta_method, L = 20, K = 40 )
+## Get the datetime after the simulation has finished
+			end_dttm = datetime.utcnow( )
 ## Create a meaningful name for the output data blob
-			# np.savez_compressed( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
-			np.savez_compressed( "./output/fbm_%s_%s_%d_%.4f_%d" % (
+			np.savez_compressed( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
+			# np.savez_compressed( "./output/fbm_%s_%s_%d_%.4f_%d" % (
 					delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ),
 				Njn     = np.array( [ n for wrk, j, ( n, _, _, ( _, _, _ ) ) in result ] ),
 				Djnk    = np.array( [ d for wrk, j, ( _, d, _, ( _, _, _ ) ) in result ] ),
