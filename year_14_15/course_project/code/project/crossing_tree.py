@@ -31,16 +31,15 @@ def xtree_integer_crossings( T, X, y_eps = 0.0 ) :
 ## Within-band sideways movements occur when no integer levels are crossed during
 ##  the traversal. This happens when floor(x_0) = ceil(x_1)-1 for x_0>x_1, or
 ##  ceil(x_0) = floor(x_1)+1 for x_0<x_1. In such cases the computed crossing size
-##  is zero. The following line masks all movements which do not cross anything.
-	is_crossing = size > 0
-## Find out the indices of movements, which crossed a level. Note, that this array
-##  indexes the "is_crossing" array.
-	previous_crossing = np.concatenate( ( [ 0 ], np.cumsum( is_crossing[ :-1 ], dtype = np.int ) ) ) - 1
+##  is zero. The following picks all indices of movements which cross at least one level.
+	crossing_index = np.nonzero( size > 0 )[ 0 ]
+## Find the apparent crossings which recross the last level of an immediately preceding
+##  crossing. The very first crossing is forced to be a true crossing.
+	recrossing_inx = crossing_index[ np.concatenate( ( [ False ],
 ## A true crossing of an integer level occurs when this level was not the last level
-##  traversed by the crossing preceding this one. This happens if the unadjusted final
-##  level of the preceding crossing is equal to the first traversed level of the
-##  current one.
-	is_recrossing = is_crossing & ( X_begin == X_final[ is_crossing ][ previous_crossing ] ) & ( previous_crossing >= 0 )
+##  traversed by the crossing preceding this one. This happens if the final level of
+##  the preceding crossing is equal to the first traversed level of the current one.
+		X_begin[ crossing_index[ 1: ] ] == X_final[ crossing_index[ :-1 ] ] ) ) ]
 ## Effectively, this detects movements, which recrossed the last level of their
 ##  preceding movement. In order to account for such movements it is necessary to
 ##  adjust the level each traversal starts with in the direction of the crossing.
@@ -48,10 +47,10 @@ def xtree_integer_crossings( T, X, y_eps = 0.0 ) :
 ##  through the final level of the crossing, which precedes it, then it cannot possibly be
 ##  a valid crossing.
 ## Adjust initially crossed levels of re-crossings, and update the sizes.
-	X_begin[ is_recrossing ] += X_direction[ is_recrossing ]
+	X_begin[ recrossing_inx ] += X_direction[ recrossing_inx ]
 ## Adjusting the starting level necessarily makes the crossing shorter by one level.
-	size[ is_recrossing ] -= 1
-	del previous_crossing, is_recrossing, X_final
+	size[ recrossing_inx ] -= 1
+	del crossing_index, recrossing_inx, X_final
 ## Get the index of crossings of positive size. "Tau" is aligned with consecutive
 ##  pairs of (T_t, X_t). Then repeat each value of the constructed index according
 ##  to the size of the associated crossing. Numpy's repeat also performs pruning:
