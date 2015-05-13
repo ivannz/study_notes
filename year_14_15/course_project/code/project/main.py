@@ -1,13 +1,15 @@
 # -*- coding: UTF-8 -*-
-from datetime import datetime
+## Base modules
 import os, re
-
 import numpy as np
-from montecarlo import mc_run as montecarlo
+from datetime import datetime
 
+## Project modules
 from fgn import fbm
+from montecarlo import mc_run as montecarlo
 from crossing_tree import xtree_build
 
+## This procedure runs a single replication of the monte carlo experiment.
 def mc_kernel( generate_sample, **op ) :
 ## Generate a replication of the process -- a sample path
 	T, X = generate_sample( )
@@ -28,6 +30,8 @@ def mc_kernel( generate_sample, **op ) :
 ## Use the median as suggested in [Jones, Rolls; 2009] p. 11 (0911.5204v2)
 		delta = np.median( np.abs( np.diff( X ) ) )
 	else :
+## By default, delta is set to 1, which is the most inferior chice, since it disregards
+##  the base scale of the sample path.
 		delta = 1.0
 ## max_levels -- the number of level of the tree to construct (from the finest grid)
 ##  beyond this level (L+1, L+2, ...) the levels are pooled.
@@ -104,18 +108,28 @@ def sim_load( file_name, return_durations = False ) :
 ## Get the dimensions of the data
 		M, L, K = data[ 'Djnk' ].shape
 ## Prepare the data on crossing durations
-		Wjnp = data[ 'Wjnp' ] if 'Wjnp' in data else np.empty( ( M, L, 0 ) )
+		Wjnp   = data[ 'Wjnp' ]   if 'Wjnp'   in data else np.empty( ( M, L, 0 ) )
 		Wbarjn = data[ 'Wbarjn' ] if 'Wbarjn' in data else np.empty( ( M, L, 0 ) )
 		Wstdjn = data[ 'Wstdjn' ] if 'Wstdjn' in data else np.empty( ( M, L, 0 ) )
 ## return the results of the simulation : basic plus summary of duration data
 		return float( par[ -2 ] ), data[ 'Njn' ], data[ 'Djnk' ], data[ 'Vjnde' ], Wjnp, Wbarjn, Wstdjn
 
+## A service procedure for dumping a directory
+def list_files( path = './', pattern = r'\.npz$' ) :
+## If the regular expression fails to compile, return an empty list of files,
+##  since no file name would match an invalid expression.
+	try :
+		mask = re.compile( pattern, re.UNICODE )
+## Return full path to located files
+		return [ os.path.join( os.path.realpath( path ), filename )
+			for filename in os.listdir( path ) if mask.search( filename ) ]
+	except :
+		return [ ]
+
 if __name__ == '__main__' :
-	N = 2**21+1 ; M = 2000
-	for delta_method in [ 'med', ] :
-	# for delta_method in [ 'med', 'std', 'iqr', ] :
-		for H in np.linspace( .95, .95, num = 1 ) :
-		# for H in np.linspace( .5, .95, num = 10 ) :
+	N = 2**18+1 ; M = 10
+	for delta_method in [ 'med', 'std', 'iqr', ] :
+		for H in np.linspace( .5, .95, num = 10 ) :
 			P = int( np.log2( N - 1 ) )
 			print "Monte carlo (%d) for FBM(2**%d+1, %.4f):" % ( M, P, H )
 ## Get the current timestamp
@@ -124,13 +138,11 @@ if __name__ == '__main__' :
 			generator = fbm( N = N, H = H )
 ## Run the experiment
 			result = montecarlo( generator, mc_kernel,
-				processes = 7, debug = False, quiet = False, parallel = True,
+				processes = 2, debug = False, quiet = False, parallel = True,
 				replications = M, delta = delta_method, L = 20, K = 40 )
-## Get the datetime after the simulation has finished
-			end_dttm = datetime.utcnow( )
 ## Create a meaningful name for the output data blob
-			np.savez_compressed( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
-			# np.savez_compressed( "./output/fbm_%s_%s_%d_%.4f_%d" % (
+			# np.savez_compressed( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
+			np.savez_compressed( "./output/fbm_%s_%s_%d_%.4f_%d" % (
 					delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ),
 				Njn     = np.array( [ n for wrk, j, ( n, _, _, ( _, _, _ ) ) in result ] ),
 				Djnk    = np.array( [ d for wrk, j, ( _, d, _, ( _, _, _ ) ) in result ] ),
