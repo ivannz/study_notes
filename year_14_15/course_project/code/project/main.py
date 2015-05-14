@@ -127,8 +127,9 @@ def list_files( path = './', pattern = r'\.npz$' ) :
 		return [ ]
 
 if __name__ == '__main__' :
-	N = 2**18+1 ; M = 10
-	for delta_method in [ 'med', 'std', 'iqr', ] :
+	N = 2**19+1 ; M = 1000
+	# for delta_method in [ 'med', 'std', 'iqr', ] :
+	for delta_method in [ 'med', ] :
 		for H in np.linspace( .5, .95, num = 10 ) :
 			P = int( np.log2( N - 1 ) )
 			print "Monte carlo (%d) for FBM(2**%d+1, %.4f):" % ( M, P, H )
