@@ -68,9 +68,9 @@ def xtree_integer_crossings( T, X, y_eps = 0.0 ) :
 	X_times  = T[ tau ] + ( T[ tau + 1 ] - T[ tau ] ) * ( X_values - X[ tau ] ) / ( X[ tau + 1 ] - X[ tau ] )
 	return X_times, X_values
 
-## Adaptive selection of the basic (coarsest) grid scale is based on the standard
+## Adaptive selection of the basic (finest) grid scale is based on the standard
 ##  deviation of increments of the sample path of process.
-def xtree_build( T, X, delta = None, max_height = float( 'inf' ) ) :
+def xtree_build_old( T, X, delta = None, max_height = float( 'inf' ) ) :
 ## Set up the crossing tree structure
 	hp = list( ) ; ht = list( ) ; hx = list( ) ; ex = list( ) ; wt = list( )
 ## By default, delta, the maximum grid spacing, is the standard
@@ -157,7 +157,84 @@ def xtree_build( T, X, delta = None, max_height = float( 'inf' ) ) :
 # aa = np.array( a )
 # print np.allclose( aa, excursions )
 
+####################################################################################################
+## This verision ofthe crossign tree constructor use the fact that it is only
+##  necessary to know the crossings of the finest grid in order to build the tree.
+## Indeed: the crossing times are interpolated based of the increment which yielded
+##  the crossing and power-of-two scaling does not affect the interpolation multiplier
+##  which comes from the values of the process before and after the increment. This is
+##  the crossed level should iteself be a power-of-two times some integer.
+def xtree_build( T, X, shift = 0.0, delta = None, max_height = float( 'inf' ) ) :
+## Set up the crossing tree structure
+	hp, ht, hx, ex, wt = list( ), list( ), list( ), list( ), list( )
+## By default, delta, the maximum grid spacing, is the standard deviation of
+##  the increments.
+	delta = np.std( np.diff( X ) ) if delta is None else delta
+## Rescale the sample path, so that the grid base scale is 1.0
+	Z = ( X - X[ 0 ] - shift ) / delta
+## First compute the crossing times and points of the finest
+##  integer grid
+	lht0, lhp0 = xtree_integer_crossings( T, Z )
+	lhx0, lex0, lwt0 = np.empty( 0, np.int ), np.empty( ( 0, 3 ), np.int ), np.empty( 0, np.int )
+## If the height restriction permits and the crossings did occur
+##  iteratively construct crossings of increasingly coarser grids.
+	height = 0
+	while height < max_height :
+## Add the times and property translated point to the master queue
+## Owen Daffyd Jones 2005: "The first apparent crossing at each level should be
+##  excluded, since for a non-Markov process the path from T^n_0 to T^n_1 is not
+##  a true crossing" [Citation needed].
+		ht.append( lht0 ) ; hp.append( lhp0 * delta + X[ 0 ] + shift )
+		hx.append( lhx0 ) ; ex.append( lex0 ) ; wt.append( lwt0 )
+## By desgn the tree always contains the T=0 as the origin anchor.
+		if len( lht0 ) < 2 : break
+## Recover the next level of the crossing tree
+		height += 1
+## Get the indices of the hits of the 2^{n+1} \delta grid centered at the first
+##  integer level crossed. It is assumed that the hitting points are "continuous"
+##  in a sense that difference between successive values is exactly ±1: if s< t
+##  and |x_s - x_t| > 1 then \exits p \in (s,t) with x_p \in (x_s,x_t).
+## Thus by construction of the current level crossing points this index must be
+##  an array of even numbers with zero at the beginning.
+		hit_index = np.nonzero( np.mod( lhp0 - lhp0[ 0 ], 2 ** height ) == 0 )[ 0 ]
+## Prune the index: remove successive hits which linger on the same level.
+		hit_index = hit_index[ np.concatenate( (
+			[ True ], np.diff( lhp0[ hit_index ] ) != 0 ) ) ]
+## By construction of lhp0 the crossing index must be an array of even numbers with zero at the beginning
+		crossing_index = hit_index // 2
+## Get the direction the current subcrossing had
+		directions = np.concatenate( ( [ 0 ], np.sign( np.diff( lhp0 ) ) ) )
+## Pick all pairs of subcrossings (previous, current) with the current being a downward one.
+		up_down_mask = directions[ ::2 ] < 0
+## Mask all paired subcrossings that constitute a crossing
+		up_down_mask[ crossing_index ] = False
+## The very last crossing of the current level is either degenerate (no offspring)
+##  or is incomplete. An incomplete crossing is one with known beginning but unknown
+##  end. Such last crossing occurs only an the end of the examined sample path and
+##  is likely to include a sub-crossing which might not even be paired!
+## The format is [#/\, #\/, ±1] where sign of the last depends on the direction of
+##  the final crossing. The number of subcrossing on the current level is one less
+##  than the number of hitting times of the current level (coincides with len(hits)).
+## Aggregate the directions of up-down excursions /\. The down-up |/ are computed
+##  based on these and the number of pairs of sub-crossings given by lhit - fhit.
+		lex0 = np.empty( ( len( hit_index ) - 1, 3 ), np.int )
+## Count the number of true up-down /\ encountered so far by the end of the current
+##  crossing excluding the last pair up-up // or down-down \\. The number of down-up
+##  \/ is equal to the total number of excursions, without the up-down ones /\.
+		lex0[:,0] = np.diff( np.cumsum( up_down_mask )[ crossing_index ] )
+		lex0[:,1] = np.diff( crossing_index ) - lex0[:,0] - 1
+		lex0[:,2] = directions[ hit_index[ 1: ] ]
+## Since the crossing times are linearly interpolated, the twofold descaling does not
+##  affect the crossing times of the even levels. Thus it is possible to match exactly
+##  the times on the consecutive levels of tree. The following logic depends on the
+##  condition that lht0[0] <= lht1[0]. In fact theoretically lht1 is a subset of lht0.
+		lht0, lhp0 = lht0[ hit_index ], lhp0[ hit_index ]
+## Count the number of offspring of the current scale crossings. This is just
+##  the number of subcrossings between two consecutive lower-scale crossings. 
+		lhx0, lwt0 = np.diff( hit_index ), np.diff( lht0 )
+	return ( ht, hp, hx, ex, wt )
 
+####################################################################################################
 def f_get_w_int( T, X, deleteFirst = False ) :
 #    if deleteFirst
 	if deleteFirst :
