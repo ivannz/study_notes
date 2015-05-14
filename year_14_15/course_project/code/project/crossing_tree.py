@@ -179,7 +179,7 @@ def xtree_build( T, X, shift = 0.0, delta = None, max_height = float( 'inf' ) ) 
 ## If the height restriction permits and the crossings did occur
 ##  iteratively construct crossings of increasingly coarser grids.
 	height = 0
-	while height < max_height :
+	while height <= max_height :
 ## Add the times and property translated point to the master queue
 ## Owen Daffyd Jones 2005: "The first apparent crossing at each level should be
 ##  excluded, since for a non-Markov process the path from T^n_0 to T^n_1 is not
