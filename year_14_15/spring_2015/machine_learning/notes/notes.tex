@@ -638,4 +638,185 @@ the space of concepts by right multiplying by $V'$.
 
 % section lecture_12 (end)
 
+\section{Lecture \# 14} % (fold)
+\label{sec:lecture_14}
+
+\subsection{EM algorithm and its applications} % (fold)
+\label{sub:em_algorithm_and_its_applications}
+
+Consider a model of a mixture of distributions given by
+\[p(x) = \sum_k p_k(x|\theta_k) \pi_k \]
+where $\pi_k$ are the mixture component probabilities with $\sum_k \pi_k = 1$.
+Given $X = (x_i)\sim p(x)$ we are to find $\Theta = (\pi_k,\theta_k)$.
+The log-likelihood is
+\[
+L(X, \Theta)
+= \log \prod_{i=1}^n p( x_i | \Theta )
+= \sum_{i=1}^n \log \sum_k p_k(x_i|\theta_k) \pi_k
+\]
+and we wish to maximize it with respect to $\Theta$. Due to the sum under the
+logarithm this problem is analytically intractable.
+
+Suppose the hidden (latent) variables were in fact observable, then the log-likelihood
+would simplify. Indeed, consider a model where the source mixture components are known
+and given by $Z=(z_i)\sim \pi$ and $p(x_i|z_i = k) = p_k(x_i|\theta_k)$. The log-likelihood
+thus becomes
+\[
+L(X,Z,\Theta)
+= \log \prod_{i=1}^n p( x_i, z_i| \Theta )
+= \sum_{i=1}^n \sum_k 1_{z_i=k} \log \pi_k p_k(x_i|\theta_k) \pi_k
+\]
+
+The problem separates into
+\[ \sum_{i=1}^n 1_{z_i=k} \log p_k(x_i|\theta_k) \pi_k \to \max_{\theta_k} \]
+and 
+\[ \pi_k = \frac{\sum_{i=1}^n 1_{z_i=k}}{n} \]
+
+In order to infer the hidden component in practice let's use Bayes
+\[
+g_{ik}
+= p(z_i = k| x_i)
+= \frac{ p_k(x_i|\theta_k) \pi_k }{\sum_j p_j(x_i|\theta_j) \pi_j}
+\]
+
+The basic step of the algortim is:
+\begin{itemize}
+	\item[E] Compute $g_{ik}$ based on $\Theta$;
+	\item[M] Maximize $\sum_{i=1}^n g_{ik} \log p_k(x_i|\theta_k) \pi_k \to \max_{\theta_k}$
+	and update $\Theta$.
+\end{itemize}
+
+Recall the Kullback-Leibler divergence for densities $p$ and $q$
+\[
+KL(P\|Q)
+= \ex_p \log \frac{p}{q}
+= \int p(x) \log \frac{p(x)}{q(x)} dx
+= \int \log \frac{\parital P}{\partial Q} dP
+\]
+It is non-negative and $KL(P\|Q) = 0$ if and only if $p = q$ almost surely.
+Furthermore, if $KL(P\|Q)< KL(Q\|P)$ then $P$ is more embedden in $Q$ than $Q$ in $P$.
+Minimization of $KL(P\|Q(\theta))$ is equivalent to maximization of the expected
+likelihood $\ex_p \log q(\theta)$ wit hrespec to $\theta$.
+
+% subsection em_algorithm_and_its_applications (end)
+
+\subsection{Derivation of EM} % (fold)
+\label{sub:derivation_of_em}
+
+Reduce the problem 
+\[L(X,\Theta) \to \max_\Theta\]
+to
+\[L(X,Z,\Theta) \to \max_\Theta\]
+Suppose $Z\sim q(\cdot)$. Then the log-likelihood of the sample $X$ is
+\[
+L(X,\Theta)
+= \log p(X|\Theta)
+= \ex_q \log p(X|\Theta)
+= \int q(Z) \log p(X|\Theta) dT
+\]
+Next using $p(X \Theta) = \frac{p(X,Z|\Theta) q(Z)}{ q(Z) p(Z|X,\Theta)}$ we get this
+\[
+\log p(X|\Theta)
+= \int q(Z) \log p(X,Z|\Theta) dT - \int q(Z) \log q(Z) dT
++ \int q(Z) \log \frac{q(Z)}{p(Z|X,\Theta)} dT
+\]
+which reduces to
+\[ \log p(X|\Theta) = G(q(\cdot),\Theta) + KL(q\|p(Z|X,\Theta)) \]
+
+Since $KL(q\|p(Z|X,\Theta)) \geq 0$ we get
+\[
+\log p(X|\Theta) \geq G(q(\cdot),\Theta)
+\]
+
+Let's do the following: \begin{description}
+	\item[E] $G(X,\Theta) \to \max_q$;
+	\item[M] $G(X,\Theta) \to \max_{\Theta}$.
+\end{description}
+
+Now, the left hand side is independent of $q$, whence maximization of $L(q(\cdot),\Theta)$
+with respect to $q$ is equivalent to minimization of $KL(q\|p(Z|X,\Theta))$ with respect
+to $q$, whence $\hat{q}(Z) = p(Z|X,\Theta)$. Thus
+\[
+L(X,\Theta)
+= \int p(Z|X,\Theta) \log \frac{p(X,Z|\Theta)}{p(Z|X,\Theta)} dT
+= \ex_{p(Z|X,\Theta)} \log p(X,Z|\Theta) - \ex_{p(Z|X,\Theta)} \log p(Z|X,\Theta)
+\]
+
+Now maximization of $L$ with respec to $\Theta$ reduces to
+\[ \ex_{p(Z|X,\Theta)} \log p(X,Z|\Theta) \to \max_\Theta \]
+In our case of the mixture
+\[
+\log p(X,Z|\Theta)
+= \sum_{i=1}^n \log p(x_i|z_i,\Theta) p(z_i|\Theta)
+\]
+whence
+\[
+\ex_{q(Z)} \log p(X,Z|\Theta)
+= \sum_{i=1}^n \ex_{q(Z)} \log p(x_i|z_i,\Theta) p(z_i|\Theta)
+= \sum_{i=1}^n \sum_k q(z_i=k) \log p(x_i|z_i=k,\Theta) p(z_i=k|\Theta)
+\]
+
+% subsection derivation_of_em (end)
+
+\subsection{Modifications of EM} % (fold)
+\label{sub:modifications_of_em}
+
+\begin{itemize}
+	\item How to choose the inital $\Theta$ values? 
+\end{itemize}
+
+Stocastic EM. On the \textbf{M}-step instead of 
+\[ \theta_k \argmax_\theta \sum_{i=1}^n g_{ik} \log p_k(x_i|\theta) \]
+maximize
+\[ \theta_k \argmax_\theta \sum_{x\in X_k} g_{ik} \log p_k(x|\theta) \]
+where $X_k$ is a stochstically generated sample: for each $x_i$ one
+generates $k\sim p(z_i=k|x_i) = g_{ik}$ and assignes it to $X_k$.
+
+% subsection modifications_of_em (end)
+
+\subsubsection{EM in general} % (fold)
+\label{ssub:em_in_general}
+
+Suppose $X$ -- observed variables and $Z$ are latent, And $\Theta$ are parameters.
+The EM can be reformulated as the problem of maximization of incomplete likelihood:
+\[
+\log p(X|\Theta)
+= \log \int p(X,T|\Theta) dT
+= J\{q,\Theta\} + KL(q(\cdot)\|p(\cdot|X,\Theta)) \to \max_\Theta
+\]
+where 
+\[J\{q,\Theta\} = \int q(T) \log p(X,T|\Theta) dT - \int q(T) \log q(T) dT \]
+is the variational lower bound. Then \begin{description}
+	\item[E] minimize 
+	\[KL(q(\cdot)\|p(\cdot|X,\Theta)) \to \min_{q(T)}\] which yeilds $q(T) = p(T|X,\Theta)$;
+	\item[M] maximize $J\{q,\Theta\} \to \max_\Theta$ which is equivalent to
+		\[\ex_{q(T)} \log p(X,T|\Theta) \to \max_\Theta\]
+\end{description} 
+
+% subsubsection em_in_general (end)
+
+\subsubsection{Another application of the EM} % (fold)
+\label{ssub:another_application_of_the_em}
+
+Machine translation. Given a sentence $f$ find $e$ such that
+\[ \hat{e} = \argmax_e p(e) p(f|e)\]
+where the probability $p(f|e)$ is the translation likelihood and $p(e)$ is the 
+prior probability. The data sample is $D = (e_i,f_i)_{i=1}^n$ and the latent variables
+are alignment $A$ and et c.
+
+The observed likelihood of the sentence pairs is
+\[
+p(D|\Theta)
+= \prod_{i=1}^n p(f_i|e_i,\Theta) p(e_i|\Theta)
+= \prod_{i=1}^n \sum_{a_i} p(f_i|e_i,a_i\Theta) p(a_i|e_i,\Theta) p(e_i|\Theta)
+\]
+
+In particular
+\[
+p(f|e) = \prod_{j=1}^{|f|} \sum_{a_j=1}^{|e|} p(a_j|e) p(f_j|e_{a_j})
+\]
+% subsubsection another_application_of_the_em (end)
+
+% section lecture_14 (end)
+
 \end{document}
