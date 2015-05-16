@@ -80,7 +80,7 @@ def mc_kernel( generate_sample, **op ) :
 		n = max_levels if n > max_levels else n
 		Vnde[ n, 0 ] += np.sum( Vk[ Vk[ :, 2 ] < 0 ], axis = 0 )[:2]
 		Vnde[ n, 1 ] += np.sum( Vk[ Vk[ :, 2 ] > 0 ], axis = 0 )[:2]
-## Make a crude summary of the crossing durations: 
+## Make a crude summary of crossing durations: 
 	prc = np.array( [ 0.5, 1.0, 2.5, 5.0, 10, 25, 50, 75, 90, 95, 97.5, 99, 99.5 ] )
 ## Wnp[n][p] -- the p-th empirical quantile of the n-th level crossing durations.
 ##  Crossing durations are not aggregated in the last row of the output.
@@ -127,9 +127,8 @@ def list_files( path = './', pattern = r'\.npz$' ) :
 		return [ ]
 
 if __name__ == '__main__' :
-	N = 2**19+1 ; M = 1000
-	# for delta_method in [ 'med', 'std', 'iqr', ] :
-	for delta_method in [ 'med', ] :
+	N = 2**21+1 ; M = 1000
+	for delta_method in [ 'std', 'iqr', 'med', ] :
 		for H in np.linspace( .5, .95, num = 10 ) :
 			P = int( np.log2( N - 1 ) )
 			print "Monte carlo (%d) for FBM(2**%d+1, %.4f):" % ( M, P, H )
@@ -139,11 +138,13 @@ if __name__ == '__main__' :
 			generator = fbm( N = N, H = H )
 ## Run the experiment
 			result = montecarlo( generator, mc_kernel,
-				processes = 2, debug = False, quiet = False, parallel = True,
+				processes = 7, debug = False, quiet = False, parallel = True,
 				replications = M, delta = delta_method, L = 20, K = 40 )
+## Get the datetime after the simulation has finished
+			end_dttm = datetime.utcnow( )
 ## Create a meaningful name for the output data blob
-			# np.savez_compressed( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
-			np.savez_compressed( "./output/fbm_%s_%s_%d_%.4f_%d" % (
+			np.savez_compressed( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
+			# np.savez_compressed( "./output/fbm_%s_%s_%d_%.4f_%d" % (
 					delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ),
 				Njn     = np.array( [ n for wrk, j, ( n, _, _, ( _, _, _ ) ) in result ] ),
 				Djnk    = np.array( [ d for wrk, j, ( _, d, _, ( _, _, _ ) ) in result ] ),
