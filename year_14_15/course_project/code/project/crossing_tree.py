@@ -63,13 +63,20 @@ def xtree_integer_crossings( T, X, y_eps = 0.0 ) :
 ## Produce level increments for each crossing : the index of the beginning of each
 ##  crossing's group of levels is subtracted from the global index of "tau".
         np.arange( len( tau ) ) - np.repeat( np.cumsum( size, dtype = np.float ) - size, size ) )
-## The crossing times are approximated by linear interpolation between the crossed
+## Usually the input process is sampled uniformly on the time axis and the exact
+##  times are irrelevant.
+	X_times = np.empty( 0, dtype = np.float )
+	if len( T ) > 0 :
+## If the path is supplemented with the sample times, then compute the crossing times.
+##  They are approximated by linear interpolation between the staring value and crossed
 ##  levels.
-	X_times  = T[ tau ] + ( T[ tau + 1 ] - T[ tau ] ) * ( X_values - X[ tau ] ) / ( X[ tau + 1 ] - X[ tau ] )
+		X_times = T[ tau ] + ( T[ tau + 1 ] - T[ tau ] ) * ( X_values - X[ tau ] ) / ( X[ tau + 1 ] - X[ tau ] )
+## To normalise the usage, return both the crossing levels and the crossing times.
 	return X_times, X_values
 
 ## Adaptive selection of the basic (finest) grid scale is based on the standard
-##  deviation of increments of the sample path of process.
+##  deviation of increments of the sample path of process. This verson requires
+##  that the process be supplied with sampling times.
 def xtree_build_old( T, X, delta = None, max_height = float( 'inf' ) ) :
 ## Set up the crossing tree structure
 	hp = list( ) ; ht = list( ) ; hx = list( ) ; ex = list( ) ; wt = list( )
@@ -90,7 +97,7 @@ def xtree_build_old( T, X, delta = None, max_height = float( 'inf' ) ) :
 ## If the height restriction permits and the crossings did occur
 ##  iteratively construct crossings of increasingly coarser grids.
 	height = 0
-	while len( lhp0 ) > 1 and height < max_height :
+	while len( lht0 ) > 1 and height < max_height :
 ## Advance to the next level of the crossing tree and reduce the scale of the sample
 ##  path.
 		height += 1 ; delta *= 2
@@ -186,8 +193,8 @@ def xtree_build( T, X, shift = 0.0, delta = None, max_height = float( 'inf' ) ) 
 ##  a true crossing" [Citation needed].
 		ht.append( lht0 ) ; hp.append( lhp0 * delta + X[ 0 ] + shift )
 		hx.append( lhx0 ) ; ex.append( lex0 ) ; wt.append( lwt0 )
-## By desgn the tree always contains the T=0 as the origin anchor.
-		if len( lht0 ) < 2 : break
+## By desgn the tree always contains the X[t=0] as the origin anchor.
+		if len( lhp0 ) < 2 : break
 ## Recover the next level of the crossing tree
 		height += 1
 ## Get the indices of the hits of the 2^{n+1} \delta grid centered at the first
@@ -228,10 +235,12 @@ def xtree_build( T, X, shift = 0.0, delta = None, max_height = float( 'inf' ) ) 
 ##  affect the crossing times of the even levels. Thus it is possible to match exactly
 ##  the times on the consecutive levels of tree. The following logic depends on the
 ##  condition that lht0[0] <= lht1[0]. In fact theoretically lht1 is a subset of lht0.
-		lht0, lhp0 = lht0[ hit_index ], lhp0[ hit_index ]
+		lhp0 = lhp0[ hit_index ]
+		if len( T ) : lht0 = lht0[ hit_index ]
 ## Count the number of offspring of the current scale crossings. This is just
 ##  the number of subcrossings between two consecutive lower-scale crossings. 
-		lhx0, lwt0 = np.diff( hit_index ), np.diff( lht0 )
+		lhx0 = np.diff( hit_index )
+		if len( T ) : lwt0 = np.diff( lht0 )
 	return ( ht, hp, hx, ex, wt )
 
 ####################################################################################################
