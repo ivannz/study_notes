@@ -45,19 +45,19 @@ def mc_kernel( generate_sample, **op ) :
 ## Znk[n][k] -- the number of subcrossings of a finer grid (crossings of
 ##  \delta 2^{n-1}) that make up the k-th corssing of a coarser grid (\delta 2^n).
 ##  Undefined (empty array) for n = 0.
-## Vnk[n][k] -- the number of up-down and down-up excursions in the k-th
-##  crossing of size \delta 2^n. Undefined for n = 0.
+## Vnk[n][k] -- the number of up-down and down-up excursions in the k-th crossing
+##  of size \delta 2^n. Undefined for n = 0. The format is (# of /\, # of \/, ±1).
 ## Wnk[n][k] -- the waiting time between the k-th and k+1-st crossing of the grid
 ##  of spacing \delta 2^n
 	Tnk, Xnk, Znk, Vnk, Wnk = xtree_build( T, X, delta = delta )
 ## Get the total number of crosssings of \delta 2^n resolution
 ## Nn[n] -- the total number of crossings of grid with spacing \delta 2^n
 	Nn = np.zeros( ( 1 + max_levels + 1, 1 ), dtype = np.int )
-	for n, Tk in enumerate( Tnk, 0 ) :
+	for n, Xk in enumerate( Xnk, 0 ) :
 		n = max_levels + 1 if n > max_levels + 1 else n
 ## The correct number of crossings of level \delta 2^n is the number of consecutive
 ##  pairs with Tnk_i < Tnk_{i+1}.
-		Nn[ n ] += len( Tk ) - 1
+		Nn[ n ] += len( Xk ) - 1
 ## Dnk[n][k] -- k<K : the total number of crossings of grid \delta 2^{n+1} with 2(k+1)
 ##  subcrossings of grid \delta 2^n. The values in column K are the number
 ##  of crossings of \delta 2^{n+1} with not less than 2(K+1) subcrossings.
@@ -135,7 +135,7 @@ if __name__ == '__main__' :
 ## Get the current timestamp
 			run_dttm = datetime.utcnow( )
 ## Iinitalize the generator
-			generator = fbm( N = N, H = H )
+			generator = fbm( N = N, H = H, time = False )
 ## Run the experiment
 			result = montecarlo( generator, mc_kernel,
 				processes = 7, debug = False, quiet = False, parallel = True,

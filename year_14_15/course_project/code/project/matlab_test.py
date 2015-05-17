@@ -5,7 +5,7 @@ from fgn import fbm
 import scipy.io as io
 
 N, H = 2**20 + 1, 0.5
-generator = fbm( N = N, H = H )
+generator = fbm( N = N, H = H, time = True )
 generator.set_rnd( RandomState( 123 ) )
 
 T, X = generator( )
@@ -18,7 +18,7 @@ io.savemat( './output/data.mat', { 'T': T, 'X': X, 'H': H, 'N': N } )
 
 from crossing_tree import xtree_build, f_get_w
 delta = 1e-3 # np.std( np.diff( X ) )
-Tnk, XTnk, Znk, Vnk, Wnk = xtree_build( T, X, delta = delta )
+Tnk, Xnk, Znk, Vnk, Wnk = xtree_build( T, X, delta = delta )
 print np.unique( Znk[1], return_counts = True )
 
 
@@ -41,8 +41,8 @@ print np.unique( Znk[1], return_counts = True )
 
 if False :
 ##  # ht, hp, hx, hv = f_get_w( T, X, range( 0, 17 ), delta )
-##  # print np.all( [ np.allclose( a0,a1 ) for a0, a1 in zip( XTnk, hp ) ] )
-  io.savemat( './output/xtree.mat', { 'XTnk': XTnk, 'Tnk': Tnk } )
+##  # print np.all( [ np.allclose( a0,a1 ) for a0, a1 in zip( Xnk, hp ) ] )
+  io.savemat( './output/xtree.mat', { 'Xnk': Xnk, 'Tnk': Tnk } )
 ##
   Z = ( X - X[ 0 ] ) / delta
   Z_floor = np.floor( Z, np.empty_like( Z, np.float64 ) )
@@ -56,12 +56,12 @@ if False :
 
 ################################################################################
 delta = np.std( np.diff( X ) )
-Tnk, XTnk, Znk, Vnk, Wnk = xtree_build( T, X, delta = delta )
+Tnk, Xnk, Znk, Vnk, Wnk = xtree_build( T, X, delta = delta )
 
-Nn = np.zeros( ( max_levels + 1 + 1, 1 ), dtype = np.int )
-for n, Tk in enumerate( Tnk, 0 ) :
+Nn = np.zeros( ( 1 + max_levels + 1, 1 ), dtype = np.int )
+for n, Xk in enumerate( Xnk, 0 ) :
   n = max_levels + 1 if n > max_levels + 1 else n
-  Nn[ n ] += len( Tk ) - 1
+  Nn[ n ] += len( Xk ) - 1
 
 Dnk = np.zeros( ( max_levels + 1, max_crossings // 2 ), dtype = np.int )
 for n, Zk in enumerate( Znk[ 1: ], 0 ) :
@@ -78,3 +78,10 @@ for n, Vk in enumerate( Vnk[ 1: ], 0 ) :
   Vnde[ n, 0 ] += np.sum( Vk[ Vk[ :, 2 ] < 0 ], axis = 0 )[:2]
   Vnde[ n, 1 ] += np.sum( Vk[ Vk[ :, 2 ] > 0 ], axis = 0 )[:2]
 
+prc = np.array( [ 0.5, 1.0, 2.5, 5.0, 10, 25, 50, 75, 90, 95, 97.5, 99, 99.5 ] )
+Wnp = np.zeros( ( max_levels, ) + prc.shape, dtype = np.float )
+Wbarn = np.zeros( ( max_levels, 1 ), dtype = np.float )
+Wstdn = np.zeros( ( max_levels, 1 ), dtype = np.float )
+for n, Wk in enumerate( Wnk[1:], 0 ) :
+  if len( Wk ) and n < max_levels :
+    Wbarn[ n ], Wstdn[ n ], Wnp[ n ] = np.average( Wk ), np.std( Wk ), np.percentile( Wk, prc )
