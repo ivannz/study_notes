@@ -7,7 +7,7 @@ class fgn( object ) :
 	a circulant matrix method suggested by Dietrich and Newsam (1997). For the
 	best performance N-1 should be a power of two."""
 ## For better performance N-1 should be a power of two.
-	def __init__( self, N, H = .5, sigma = 1.0 ) :
+	def __init__( self, N, H = .5, sigma = 1.0, cache = list( ) ) :
 ## The autocorrelation structure for the fBM is constant provided the Hurst exponent
 ##  and the size sample are fixed. "Synthese de la covariance du fGn", Synthesise
 ##  the covariance of the fractional Gaussian noise. This autocorrelation function
@@ -40,7 +40,7 @@ class fgn( object ) :
 		del Z
 ## The circulant embedding method actually generates a pair of independent long-range
 ##  dependent processes.
-		self.__queue = list( )
+		self.__cache = cache
 ## Remember the sample size
 		self.__N = N
 ## Setup a local rng
@@ -59,6 +59,7 @@ class fgn( object ) :
 ## Compute this (see p.~1091 [Dietrich, Newsam; 1997]) :
 ##  F \times (\frac{1}{2M}\Lambda)^\frac{1}{2} \times w
 		W = fft( Wr + Wi * 1j )
+		del Wr, Wi
 ## [Dietrich, Newsam; 1997] write : "In our case the real and imaginary parts of any N
 ##  consecutive entries yield two independent realizations of \mathcal{N}_N(0,R) where
 ##  $R$ is the autocorrelation structure of an fBM."
@@ -66,14 +67,14 @@ class fgn( object ) :
 		return ( np.real( W[ :self.__N ] ), np.imag( W[ :self.__N ] ) )
 ## Reset the internal state of the generator
 	def reset( self ) :
-		del self.__queue[:]
+		del self.__cache[:]
 ## A visbile function, to generate the sample
 	def __call__( self ) :
 ## Generate the next sample only if needed.
-		if not self.__queue :
-			self.__queue.extend( self.__gen( ) )
+		if not self.__cache :
+			self.__cache.extend( self.__gen( ) )
 ## Return a pregenerated sample
-		return self.__queue.pop( )
+		return self.__cache.pop( )
 	def set_rnd( self, numpy_random ) :
 		self.reset( )
 		self.__np_rand = numpy_random
@@ -83,9 +84,9 @@ class fbm( fgn ):
 	"""A derived class to produce sample paths of a Fractional Brownian Motion with
 	a specified fractional integration parameter (the Hurst exponent). For the best
 	performance N-1 should be a power of two."""
-	def __init__(self, N, H = 0.5 ) :
-		self.__t = np.arange( N, dtype = np.float ) / ( N - 1 )
-		fgn.__init__( self, N, H, sigma = ( 1.0 / N ) ** H )
+	def __init__(self, N, H = 0.5, time = False, **kwargs ) :
+		self.__t = np.empty( 0, np.float ) if not time else np.arange( N, dtype = np.float ) / ( N - 1 )
+		fgn.__init__( self, N, H, sigma = ( 1.0 / N ) ** H, **kwargs )
 	def __call__( self ) :
 		increments = super( fbm, self ).__call__( )
 		return self.__t, np.concatenate( ( [ 0 ], np.cumsum( increments[ : -1 ] ) ) )
@@ -98,19 +99,19 @@ class fbm( fgn ):
 
 
 class test_gen(object):
-	def __init__( self, N ) :
-		self.__queue = list( )
+	def __init__( self, N, **kwargs ) :
+		self.__cache = list( )
 		self.__N = N
 		self.__np_rand = None
 	def set_rnd( self, numpy_random ) :
 		self.__np_rand = numpy_random
 	def __call__( self ) :
-		if not self.__queue :
-			self.__queue.extend( self.__gen( )[::-1] )
-		return self.__queue.pop( )
+		if not self.__cache :
+			self.__cache.extend( self.__gen( )[::-1] )
+		return self.__cache.pop( )
 	def reset( self ) :
-		del self.__queue[ : ]
+		del self.__cache[ : ]
 	def __gen( self ) :
 		return [( 0, self.__np_rand.randn( 1 ), ) for i in range( self.__N ) ]
 	def info( self ) :
-		return ( id( self.__queue ), )
+		return ( id( self.__cache ), )
