@@ -1,11 +1,16 @@
 \documentclass[a4paper]{report}
+
 \usepackage[utf8]{inputenc}
+\usepackage[russian, english]{babel}
+
 % \usepackage{fullpage}
+% \linespread{1.5}
 
 \usepackage{graphicx, url}
-
 \usepackage{amsmath, amsfonts, xfrac}
 \usepackage{mathtools}
+
+% \usepackage{natbib}
 
 \newcommand{\Real}{\mathbb{R}}
 \newcommand{\Cplx}{\mathbb{C}}
@@ -21,11 +26,10 @@
 \newcommand{\re}{\operatorname{Re}\nolimits}
 \newcommand{\im}{\operatorname{Im}\nolimits}
 
-\usepackage[english, russian]{babel}
-\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}\bibliography{literature}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
 
 \newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
-\selectlanguage{english}
+% \selectlanguage{english}
 
 \title{Studying Self-similar Processes Using the Croosing Tree}
 \author{Nazarov Ivan, \rus{101мНОД(ИССА)}}
@@ -60,6 +64,8 @@ increments (known as H-SSSI processes) using the crossing tree. It is expected t
 for this class of processes, the crossing tree presents common features which need
 to be extracted.
 \end{abstract}
+
+\selectlanguage{english}
 \tableofcontents
 \clearpage
 \pagenumbering{arabic}
@@ -75,7 +81,59 @@ to be extracted.
 \chapter{Crossing tree formalism} % (fold)
 \label{cha:crossing_tree_formalism}
 
-Foreword: crossing tree
+\section{Stochastic self-similarity} % (fold)
+\label{sec:stochastic_self_similarity}
+
+\subsection{General definition} % (fold)
+\label{sub:general_definition}
+
+% subsection general_definition (end)
+
+\subsection{Hurst self-similar stochastic processes} % (fold)
+\label{sub:hurst_self_similar_stochastic_processes}
+
+% subsection hurst_self_similar_stochastic_processes (end)
+
+% section stochastic_self_similarity (end)
+
+\section{the Crossing tree} % (fold)
+\label{sec:the_crossing_tree}
+
+\subsection{Definition} % (fold)
+\label{sub:definition}
+Cite the orginal papers \cite{jones2004} and \cite{jonesshen2005}.
+
+% subsection definition (end)
+
+\subsection{Practical construction} % (fold)
+\label{sub:practical_construction}
+
+% subsection practical_construction (end)
+
+% section the_crossing_tree (end)
+
+\section{Fractional Brownian Motion} % (fold)
+\label{sec:fractional_brownian_motion}
+
+\subsection{Definiton} % (fold)
+\label{sub:definiton}
+Brief history, relation to H-SSSI processes.
+
+Mention that BM is fBM for $H=0.5$.
+
+\subsubsection{Sample paths} % (fold)
+\label{ssub:sample_paths}
+
+Reference the generation circulant embedding generation algorithm with complexity.
+
+% subsubsection sample_paths (end)
+
+% subsection definiton (end)
+
+% section fractional_brownian_motion (end)
+
+\section{Brownian Motion} % (fold)
+\label{sec:brownian_motion}
 
 \section{Literature review} % (fold)
 \label{sec:literature_review}
@@ -83,23 +141,30 @@ Reviewed papers \cite{jones2004}, \cite{jonesshen2005} and \cite{decrouez2013}.
 
 % section literature_review (end)
 
-\section{Simulation study} % (fold)
-\label{sec:simulation_study}
+\subsection{Properties of the crossing tree} % (fold)
+\label{sub:properties_of_the_crossing_tree}
 
-\subsection{Technical implementation} % (fold)
-\label{sub:technical_implementation}
-Write about the crossing tree construction alg
+% subsection properties_of_the_crossing_tree (end)
 
-% subsection technical_implementation (end)
+\subsection{Simulation study} % (fold)
+\label{sub:simulation_study_bm}
 
-\subsection{Parameters of the study} % (fold)
-\label{sub:parameters_of_the_study}
+% subsection simulation_study_bm (end)
+
+% section brownian_motion (end)
+
+\section{Conjecture for FBM with $H\in (\sfrac{1}{2},1)$} % (fold)
+\label{sec:conjecture_for_fbm}
+
+\subsection{Statement} % (fold)
+\label{sub:statement}
+
+% subsection statement (end)
+
+\subsection{Simulation study} % (fold)
+\label{sub:simulation_study_fbm}
+
 See the paper by Owen Jones and Shen (2005) for the outline.
-
-% subsection parameters_of_the_study (end)
-
-\subsection{Results} % (fold)
-\label{sub:results}
 
 Each MonteCarlo realisation generates a discretized sample path $(t_i, X_i)_{i=0}^N$ of
 a particular continuous stochastc process $X(t)$, where $X_i = X(t_i)$ and $(t_i)_{i=0}^N\in [0,1]$
@@ -140,56 +205,29 @@ Each group of plots should have: \begin{itemize}
 	of resolution $\delta 2^{n+1}$ is $\frac{1}{\sqrt{\mu}}$.
 \end{itemize}
 
-% subsection results (end)
+% subsection simulation_study_fbm (end)
 
-\section{Discussion and further work} % (fold)
-\label{sec:discussion_and_further_work}
+\subsection{Discussion} % (fold)
+\label{sub:discussion}
 
-% section discussion_and_further_work (end)
+% subsection discussion (end)
 
-% section simulation_study (end)
-
-% chapter crossing_tree_formalism (end)
-
-\chapter{Multifractal formalism} % (fold)
-\label{cha:multifractal_formalism}
-
-Foreword: Lorem ipsum dolor sit amet...
-
-\section{Theory and literature review} % (fold)
-\label{sec:theory_and_literature_review}
-
-Dimensionality: Box, Hausdorf. (see lectures and Reidi)
-Mutlifractality: definitnion, practical ways to measure:
-\begin{itemize}
-	\item binning;
-	\item wavelets;
-	\item crossing tree.
-\end{itemize}
-
-% section theory_and_literature_review (end)
-
-\section{Simulation study} % (fold)
-\label{sec:simulation_study_multifractals}
-
-% section simulation_study_multifractals (end)
-
-\section{Application to \textbf{SOME PROBLEM}} % (fold)
-\label{sec:application_to_some_problem}
-
-% section application_to_some_problem (end)
-
-% chapter multifractal_formalism (end)
+% section conjecture_for_fbm (end)
 
 %% End of the report: lists of object and references
 % \clearpage \listoffigures
 % \clearpage \listoftables
 
 \clearpage
+
 \selectlanguage{english}
-\bibliographystyle{amsplain}
+
+% \bibliographystyle{amsplain}
+\bibliographystyle{ugost2008ls}
 \bibliography{literature}
 
 %% Supplementary material
+% \selectlanguage{english}
 % \include{appendix}
+
 \end{document}
