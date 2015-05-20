@@ -76,32 +76,19 @@ to be extracted.
 \chapter*{Introduction} % (fold)
 \label{cha:introduction}
 
-% chapter introduction (end)
+% chapter* introduction (end)
 
 \chapter{Crossing tree formalism} % (fold)
 \label{cha:crossing_tree_formalism}
 
-\section{Stochastic self-similarity} % (fold)
-\label{sec:stochastic_self_similarity}
-
-\subsection{General definition} % (fold)
-\label{sub:general_definition}
-
-% subsection general_definition (end)
-
-\subsection{Hurst self-similar stochastic processes} % (fold)
-\label{sub:hurst_self_similar_stochastic_processes}
-
-% subsection hurst_self_similar_stochastic_processes (end)
-
-% section stochastic_self_similarity (end)
-
 \section{the Crossing tree} % (fold)
 \label{sec:the_crossing_tree}
 
+Brief history in the literature. Cite the original papers \cite{jones2004}
+and \cite{jonesshen2005}.
+
 \subsection{Definition} % (fold)
 \label{sub:definition}
-Cite the original papers \cite{jones2004} and \cite{jonesshen2005}.
 
 Consider a path of real-valued continuous process $(X_t)_{t\in T}$ on $T = [0,+\infty)$.
 Let $(G_n)_{n\geq0}$ be a collection of increasingly coarser uniformly spaced grids
@@ -109,10 +96,8 @@ on $\Real$ centred at $x_0\in \Real$ given by $G_n = x_0 + \delta 2^n \mathbb{Z}
 for any $n\geq 0$ and some base grid spacing $\delta>0$.\footnotemark
 Each element of this family of nested grids represents the ``resolution'' through
 which sample paths of $X_t$ are studied.
-\footnotetext{
-The addition $x_0+A$, for $A$ in an affine space such as $\Real$ represents shifting
-of every element of the set $A$ by a common value $x_0$.
-}
+\footnotetext{ The addition $x_0+A$, for $A$ in an affine space such as $\Real$
+represents shifting of every element of the set $A$ by a common value $x_0$.}
 
 At the heart of the crossing tree lie crossing times of each particular grid $G_n$
 properly aligned by $x_0$. The crossing times $T_k^n$ of process $X_t$ of grid $n\geq 0$
@@ -128,62 +113,142 @@ The forcing of the zero-th crossing time to $0$ automatically aligns the grid $G
 with the process, so in effect, without loss of generality one may consider processes
 $X_t$, which start at the origin $X(0) = 0$.
 
+%%%% Discuss subcrossings
+%%%% More or less relevant
+By construction, for a binary crossing grid, $N^l_k$, the number of subcrossings in
+any complete crossing between $T^l_k$ and $T^l_{k+1}$ is always an even number. This
+is due to the fact, that each crossing is registered as soon as two unidirectional
+subcrossings are encountered, as seen by the following.
 
+Suppose $T^{n+1}_k$ and $T^n_m$ are aligned so that $T^{n+1}_k=T^n_m$ and
+$T^{n+1}_{k+1}<+\infty$, i.e. the $k$-th crossing of the $n+1$ grid is complete.
+First of all, $T^n_{m+1}, T^n_{m+2} \leq T^{n+1}_{k+1}$, since otherwise the process
+would have left the $\pm \delta 2^n$ band before it left the $\pm \delta 2^{n+1}$
+band, which is twice as wide.
 
+The process is continuous at $T^n_{m+1}$ which means that almost surely for any
+$\epsilon>0$ there is $\eta>0$ such that for any $t$ with $\bigl|t - T^n_{m+1}\bigr| < \eta$
+it holds that $\bigl|X_{T^n_{m+1}} - X_t \bigl| < \epsilon$. Also for every $t \in \bigl[ T^n_k, T^n_{k+1} \bigr)$
+it cannot be otherwise but $\big | X_t - X_{T^n_k} \big | < \delta 2^n$.  In particular,
+for $\epsilon = \frac{1}{2}\delta 2^n$ it means that for a small while after $T^n_{m+1}$
+the process is almost surely still within the $\pm \delta 2^{n+1}$ band. Therefore
+\[ T^n_{m+1} < T^{n+1}_{k+1} \]
+and a crossing of a finer grid occurs almost surely before the crossing of a coarser
+grid. Thus it is true that 
+\[ 1 \leq \biggl| \frac{1}{\delta 2^n} \bigl( X_{T^n_{m+1}} - X_{T^n_m} \bigr) \biggr| < 2 \]
 
-The parameter $\delta$ is the spacing of the finest grid, with respect to which the leaves of the crossing tree are computed. Parent nodes of these leaves represent crossings of a coarser grid, namely $2\delta$. The choice of $\delta$ affects the tree in the following way in the case of a sampled process:
+\noindent The next crossing of $\pm\delta 2^n$ takes place at $T^n_{m+2}$ and there
+are two possibilities:
+\begin{enumerate}
+	\item the process crossed a new $\pm\delta 2^{n+1}$ line of $n+1$-st grid: 
+	\[ \big|X_{T^n_{m+2}} - X_{T^n_m}\big|\geq 2\cdot\delta 2^n\] in which case
+	$T^{n+1}_{k+1}\leq T^n_{m+2}$ and there are \emph{two} subcrosings in a crossing
+	of grid $n+1$.
+	\item the process moved back to the level $X_{T^n_m}$, which does not incur a
+	crossing of $\pm\delta 2^{n+1}$ grid line, yet is registered by the $\pm\delta 2^n$
+	grid. In this case $T^n_{m+2} < T^{n+1}_{k+1}$ and $X_{T^n_{m+2}} = X_{T^{n+1}_{k+1}}$,
+	which brings one back to the beginning of this argument.
+\end{enumerate}
 
-1. The grid with too low a value of $\delta$ would be crossed by straight line segments between each pair consecutive sample observations. This could poison the distribution with some unfavourable yet unknown mixture and lead to excessive number of seemingly meaningless crossings.
-2. Too large $\delta$ lead to a very poor and under sampled crossing tree.
+Since the crossing is complete, $T^{n+1}_{k+1} < +\infty$ implies that sooner or later
+a crossing of $\pm\delta 2^{n+1}$ grid occurs, in which case $T^{n+1}_{k+1} = T^n_{m+2p}$,
+meaning that there were exactly $2p$ subcrossings in a crossing of grid $n+1$.
 
-By construction, for a binary crossing grid, $N^l_k$, the number of subcrossings in any complete crossing between $T^l_k$ and $T^l_{k+1}$ is always an even number. This is due to the fact, that each crossing is registered as soon as two unidirectional subcrossings are encountered, as seen by the following.
+%%%% Given this relationship between the crossing times of neighbouring grid
+%%%% contruct a crossing tree.
+The exposed relationship between the crossing times enables a natural construction
+of a crossing tree: each crossing of grig $n$ is a child of a grander crossing of
+grid $n+1$, during which it took place.
 
-Suppose $T^{n+1}_k$ and $T^n_m$ are aligned in that $T^{n+1}_k=T^n_m$, and $T^{n+1}_{k+1}<+\infty$, i.e. the $n+1$ grid crossing is complete. First of all $T^n_{m+1},T^n_{m+2}\leq T^{n+1}_{k+1}$, since otherwise the process would have crossed left the $\pm\delta 2^n$ band before it left the $\pm \delta 2^{n+1}$ band, which is twice as wide.
+%%%% Rewrite, as it is irrelevant
+The parameter $\delta$ is the spacing of the finest grid, with respect to which
+the leaves of the crossing tree are computed. Parent nodes of these leaves represent
+crossings of a coarser grid, namely $2\delta$. The choice of $\delta$ affects the tree
+in the following way in the case of a sampled process:
+\begin{itemize}
+	\item the grid with too low a value of $\delta$ would be crossed by straight
+	line segments between each pair of consecutive sample observations. This could
+	poison the distribution with some unfavourable yet unknown mixture and leads
+	to excessive number of seemingly meaningless crossings.
+	\item Too large $\delta$ leads to a very poor and under sampled crossing tree.
+\end{itemize}
 
-The process is continuous which means that almost surely for any $\epsilon>0$ there is $\eta>0$ such that for any $t$ with $\big|t-T^n_{m+1}\big| < \eta$ it holds that $\big |X_{T^n_{m+1}}-X_t\big|<\epsilon$.
-Also for every $t\in\big[T^n_k, T^n_{k+1}\big)$ it cannot be otherwise but $\big | X_t - X_{T^n_k} \big | < \delta 2^n$. 
-In particular, for $\epsilon = \frac{1}{2}\delta 2^n$ it means that for a small while after $T^n_{m+1}$ the process is almost surely still within the $\pm \delta 2^{n+1}$ band. Therefore $T^n_{m+1} < T^{n+1}_{k+1}$.
-
-Thus it is true that $$1\leq \bigg | \frac{1}{\delta 2^n} \big(X_{T^n_{m+1}} - X_{T^n_m}\big)\bigg | < 2$$. The next crossing of $\pm\delta 2^n$ takes place at $T^n_{m+2}$ and there are two possibilities:
-1. the process crossed a new $\pm\delta 2^{n+1}$ grid line: $\big|X_{T^n_{m+2}} - X_{T^n_m}\big|\geq 2\cdot\delta 2^n$. In this case $T^{n+1}_{k+1}\leq T^n_{m+2}$ and there are \emph{two} subcrosings.
-2. the process moved back to the level $X_{T^n_m}$, which does not incur a crossing of $\pm\delta 2^{n+1}$ grid line, yet is registered by the $\pm\delta 2^n$ grid. In this case $T^n_{m+2} < T^{n+1}_{k+1}$ and $X_{T^n_{m+2}} = X_{T^{n+1}_{k+1}}$ -- back to the beginning of this argument.
-
-Since the crossing is complete, $T^{n+1}_{k+1}<+\infty$ implies that sooner that later a crossing of $\pm\delta 2^{n+1}$ grid occurs, in which case $T^{n+1}_{k+1}=T^n_{m+2p}$, meaning that there were exactly $2p$ subcrossings.
 
 \noindent \textbf{A model of the offspring distribution} \hfill \\
 
-Let's test the hypothesis that the number of subcrossings follows a distribution similar to geometric. Recall that $G$ is a geometrically distributed random variable, $G\sim \text{Geom}(\theta)$, if $\mathbb{P}(G=k) = {(1-\theta)}^{k-1}\theta$ for all $k\geq1$. Other properties of geometrically distributed random variables include
+Let's test the hypothesis that the number of subcrossings follows a distribution
+similar to geometric. Recall that $G$ is a geometrically distributed random variable,
+$G\sim \text{Geom}(\theta)$, if $\mathbb{P}(G=k) = {(1-\theta)}^{k-1}\theta$ for all
+$k\geq1$. Other properties of geometrically distributed random variables include
 \begin{itemize}
-	\item Complimentary CDF $\mathbb{P}(G\geq k) = {(1-\theta)}^{k-1}$ for any $k\geq1$;
+	\item Complimentary CDF $\mathbb{P}(G\geq k) = (1-\theta)^{k-1}$ for any $k\geq1$;
 	\item Expectation $\mathbb{E}(G) = \theta^{-1}$;
-	\item memorylessness.
+	\item Memorylessness: for $m\geq 0$
+	\begin{align*}
+		\pr\bigl( G \geq n + m \bigr\rvert\bigl. G \geq n \bigr)
+		&= \frac{\pr(G \geq n+m)}{\pr(G \geq n)} = \frac{(1-\theta)^{n+m-1}}{(1-\theta)^{n-1}} \\
+		& = (1-\theta)^{m-1} = \pr(G \geq m)
+	\end{align*}
 \end{itemize}
 
-The number of offspring of any $\delta 2^n$-grid crossing is the number of subcrossings of a finer grid with spacing $\delta 2^{n-1}$ during a typical crossing.
+The number of offspring of any $\delta 2^n$-grid crossing is the number of subcrossings
+of a finer grid with spacing $\delta 2^{n-1}$ during a typical crossing.
 
-Our hypothesis is that $N$, the number of offspring, follows a geometric distribution on the even numbers, i.e. $\frac{1}{2}N\sim \text{Geom}(\theta)$. To test it we utilize a truncated geometric distribution with a fixed threshold $\bar{k}$, because this approach  naturally and easily handles unbounded random variables. Truncating the data effectively means that two kinds of observations are registered:
- * a value less than $\bar{k}$;
- * an event $\big\{N\geq \bar{k}\big\}$, indicating that the value has not been less than $\bar{k}$.
-Basically such truncated random variable behaves like a typical geometric one on the values $\big\{ \left . 2m\right \rvert 2m < \bar{k}\big\}$, but happens to have an unusual concentration of probability at the upper truncation level $\bar{k}$.
+Our hypothesis is that $N$, the number of offspring, follows a geometric distribution
+on the even numbers, i.e. $\frac{1}{2}N \sim \text{Geom}(\theta)$. To test it we
+utilize a truncated geometric distribution with a fixed threshold $\bar{k}$, because
+this approach naturally and easily handles unbounded random variables. Truncating the
+data effectively means that two kinds of observations are registered:
+\begin{itemize}
+	\item a value less than $\bar{k}$;
+	\item an event $\big\{N\geq \bar{k}\big\}$, indicating that the value has not
+	been less than $\bar{k}$.
+\end{itemize}
+Basically such truncated random variable behaves like a typical geometric one on
+the values $\bigl\{ 2m \bigr\rvert \bigl. 2m < \bar{k}\bigr\}$, but happens to have
+an unusual concentration of probability at the upper truncation level $\bar{k}$.
 
-Therefore for even integers $k=2,4,\ldots\bar{k}$ the distribution of the number of offspring is given by
-$$\mathbb{P}(N=k) = {(1-\theta)}^{\frac{k}{2}-1}\theta\,1_{k<\bar{k}} + {(1-\theta)}^{\frac{\bar{k}}{2}-1}\,1_{k = \bar{k}}$$
+Therefore for even integers $k=2,4,\ldots\bar{k}$ the distribution of the number
+of offspring is given by
+\[
+\mathbb{P}(N=k)
+= (1-\theta)^{\frac{k}{2}-1} \theta 1_{k<\bar{k}}
++ (1-\theta)^{\frac{\bar{k}}{2}-1} 1_{k = \bar{k}}
+\]
 where $1_{(\cdot)}$ -- is the $0-1$ indicator.
 
 \noindent \textbf{Maximum Likelihood Estimation} \hfill \\
-
-Suppose ${(g_i)}_{i=1}^N$ a sample of independent geometric random variables, with distribution truncated by $\bar{k}$. Due to truncation there is a finite number of distinct values that are observed in any given sample. Therefore it is convenient to represent every sample in an equivalent value-frequency form: ${\Big(j, f_j\Big)}$ for even $j$ not greater than $\bar{k}$ and 
-$f_j = \bigg\lvert\big\{\big.i\,\big\rvert\,g_i=j\big\}\bigg\rvert$ -- the number of observations with the specified value. Without the loss of generality, $f_j$ can be set to zero for those $j$ that were not observed.
+Suppose ${(g_i)}_{i=1}^N$ a sample of independent geometric random variables, with
+distribution truncated by $\bar{k}$. Due to truncation there is a finite number of
+distinct values that are observed in any given sample. Therefore it is convenient to
+represent every sample in an equivalent value-frequency form: ${\bigl(j, f_j\bigr)}$
+for even $j$ not greater than $\bar{k}$ and 
+$f_j = \Bigl| \bigl\{ i\bigr\rvert \bigl.g_i = j\bigr\}\Bigr|$ -- the number of
+observations with the specified value. Without the loss of generality, $f_j$ can
+be set to zero for those $j$ that were not observed.
 
 The log-likelihood function is given by
-$$\ln\mathcal{L} = \sum_{j\neq \bar{k}} f_j {\Big(\frac{j}{2}-1\Big)} \ln {(1-\theta)} + \sum_{j\neq \bar{k}} f_j \ln \theta + f_{\bar{k}} {\Big(\frac{\bar{k}}{2} - 1\Big)} \ln {(1-\theta)}$$
-where the summation is done over the all possible distinct values. The first-order condition on optimal $\theta$ is given by
-$$\frac{d}{d \theta} \ln\mathcal{L}\,:\quad-\sum_j f_j {\Big(\frac{j}{2}-1\Big)} \frac{1}{1-\theta} + \sum_{j\neq \bar{k}} f_j \frac{1}{\theta} = 0$$
-This is equivalent to $\frac{S-N}{1-\theta} = \frac{N-f_{\bar{k}}}{\theta}$, where $S = \sum_j \frac{j}{2} f_j$ and $N = \sum_j f_j$ because the frequencies sum up to the the total number of observations. Therefore the desired ML estimator of the probability parameter $\theta$ is
-$$\hat{\theta} = \frac{N-f_{\bar{k}}}{S-f_{\bar{k}}}$$
+\[
+\ln\mathcal{L}
+= \sum_{j\neq \bar{k}} f_j \Bigl(\frac{j}{2}-1\Bigr) \ln(1-\theta)
++ \sum_{j\neq \bar{k}} f_j \ln \theta
++ f_{\bar{k}} \Bigl( \frac{\bar{k}}{2} - 1 \Bigr) \ln(1-\theta)
+\]
+where the summation is done over the all possible distinct values. The first-order
+condition on optimal $\theta$ is given by
+\[
+\frac{d}{d \theta} \ln\mathcal{L} \,:\quad
+-\sum_j f_j \Bigl(\frac{j}{2}-1\Bigr) \frac{1}{1-\theta} + \sum_{j\neq \bar{k}} f_j \frac{1}{\theta} = 0
+\]
+This is equivalent to $\frac{S-N}{1-\theta} = \frac{N-f_{\bar{k}}}{\theta}$, where
+$S = \sum_j \frac{j}{2} f_j$ and $N = \sum_j f_j$ because the frequencies sum up to
+the total number of observations. Therefore the desired ML estimator of the probability
+parameter $\theta$ is
+\[ \hat{\theta} = \frac{N-f_{\bar{k}}}{S-f_{\bar{k}}} \]
 
-I strongly suspect that the MLE of the truncated geometric distribution is biased. If so, this renders it useless for Monte-Carlo estimation purposes. Clearly the bias should depend on the truncation threshold, and $\hat{\theta}_T \to \hat{\theta}$ as $T\to \infty$.
-
+I strongly suspect that the MLE of the truncated geometric distribution is biased. If so,
+this renders it useless for Monte-Carlo estimation purposes. Clearly the bias should depend
+on the truncation threshold, and $\hat{\theta}_T \to \hat{\theta}$ as $T\to \infty$.
 
 %%%%%%%%%%%%
 
@@ -201,8 +266,27 @@ anchored $X_0 = 0$ with $t_0 = 0$ and $X_i = X(t_i)$.
 
 % section the_crossing_tree (end)
 
+\section{Stochastic self-similarity} % (fold)
+\label{sec:stochastic_self_similarity}
+
+\subsection{General definition} % (fold)
+\label{sub:general_definition}
+
+For self-ssimilarity and H-ss see \cite{embrechtsselfsimilar} pp. 1-3 and \cite{embrechts2000introduction} pp. 2-5, 19
+
+% subsection general_definition (end)
+
+\subsection{Hurst self-similar stochastic processes} % (fold)
+\label{sub:hurst_self_similar_stochastic_processes}
+
+% subsection hurst_self_similar_stochastic_processes (end)
+
+% section stochastic_self_similarity (end)
+
 \section{Fractional Brownian Motion} % (fold)
 \label{sec:fractional_brownian_motion}
+
+For BM and FBM refer to \cite{embrechtsselfsimilar} pp. 4-5 and \cite{embrechts2000introduction} pp. 5-8
 
 \subsection{Definiton} % (fold)
 \label{sub:definiton}
