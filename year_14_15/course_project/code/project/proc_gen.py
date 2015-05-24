@@ -33,7 +33,8 @@ if __name__ == '__main__' :
 ## Parameters of the process to be generated
 	N, K, M = 2**20 + 1, 2**5, 1000
 ## Iterate over the degrees and the hurst indices
-	for D in [ 2, 3, 4 ] :
+	# for D in [ 2, 3, 4 ] :
+	for D in [ 3, 4 ] :
 		for H in np.linspace( .5, .9, num = 5 ) :
 ## Make the necessary directory structure
 			target_path = os.path.join( path, "HRM_%d_%d-%d" % (

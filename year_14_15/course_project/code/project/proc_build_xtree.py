@@ -1,4 +1,7 @@
 # -*- coding: UTF-8 -*-
+## This is a very poor and ill informed solution: disk IO should better
+##  be sequential!
+
 ## Base modules
 import os, re, gc
 import numpy as np
@@ -22,21 +25,27 @@ def offline_kernel( file, generator, **op ) :
 	return path_kernel( T, X, **op )
 
 if __name__ == '__main__' :
-	delta_method, path = 'med', './output/raw/'
+	basepath = os.path.join( '.', 'output', 'HRM_2_20-32' )
+	path = [ os.path.join( basepath, H ) for H in [
+		'0.6000', '0.7000', '0.8000', '0.9000', '0.5000',  ] ]
+	for p in path :
 ## Go!
-	files = list_files( path, pattern = r"\.mat$" )
+		files = list_files( p, pattern = r"\.mat$" )
+		print( "Sweeping through %s: %d files found." %( p, len( files ), ) )
 ## Pick the first file and extract as much information as possible from its filename
-	prefix, degree, size, hurst = os.path.basename( files[0] ).split( "_" )[:4]
-	prefix += "-%s"%( degree, )
+		prefix, degree, size, hurst = os.path.basename( files[0] ).split( "_" )[:4]
+		prefix += "-%s"%( degree, )
+## Loop thorugh all the possible base scale calculation methods
+		for delta_method in [ 'std', 'iqr', 'med', ] :
 ## Get the current timestamp
-	run_dttm = datetime.utcnow( )
+			run_dttm = datetime.utcnow( )
 ## Run the analyzer in parallel
-	result = montecarlo( empty( ), offline_kernel,
-		processes = 2, debug = False, quiet = False, parallel = True,
-		replications = files, delta = delta_method, L = 20, K = 40 )
+			result = montecarlo( empty( ), offline_kernel,
+				processes = 1, debug = False, quiet = False, parallel = False,
+				replications = files, delta = delta_method, L = 20, K = 40 )
 ## Get the datetime after the simulation has finished
-	end_dttm = datetime.utcnow( )
+			end_dttm = datetime.utcnow( )
 ## Create a meaningful name for the output data blob
-	sim_save( "./output/%s_%s_%s_%s_%s_%d" % ( prefix, delta_method.lower( ),
-		run_dttm.strftime( "%Y%m%d-%H%M%S" ), size, hurst, len( files ) ),
-		result, save_durations = True )
+			sim_save( os.path.join( basepath, "%s_%s_%s_%s_%s_%d" % ( prefix, delta_method.lower( ),
+				run_dttm.strftime( "%Y%m%d-%H%M%S" ), size, hurst, len( files ) ) ),
+				result, save_durations = True )
