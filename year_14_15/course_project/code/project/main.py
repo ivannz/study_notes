@@ -33,12 +33,19 @@ def mc_kernel( generate_sample, **op ) :
 ## By default, delta is set to 1, which is the most inferior chice, since it disregards
 ##  the base scale of the sample path.
 		delta = 1.0
-## max_levels -- the number of level of the tree to construct (from the finest grid)
-##  beyond this level (L+1, L+2, ...) the levels are pooled.
-## max_crossing -- the threshold for the number of subcrossings beyond which they
-##  are considered to be in the tail. The distribution data would contain bins:
-##  {2}, {4}, ... {2k}, ... {2K, 2(K+1), ...}, where K = max_crossing
 	max_levels, max_crossings = op.get( 'L', 6 ), op.get( 'K', 20 )
+## Analyze the sample path
+	return path_analyse( T, X, delta, max_levels, max_crossings )
+
+## This procedure runs a single replication of the monte carlo experiment.
+## delta -- the base scale of the crossing tree. The larger, the more biased the lower
+##  tree levels are.
+## max_levels -- the number of levels of the tree to construct (from the finest grid up)
+##  Beyond this level (L+1, L+2, ...) the levels are pooled.
+## max_crossings -- the threshold for the number of subcrossings beyond which they are
+##  considered to be in the "tail". The distribution data would contain bins :
+##  [ {2}, {4}, ... {2k}, ... {2K, 2(K+1), ...}], where K = max_crossing
+def path_analyse( T, X, delta = 1.0, max_levels = 6, max_crossings = 20 ) :
 ## Tnk[n][k] -- the time (approximate) of the k-th crossing of the gird with resolution
 ##  \delta 2^n. Xnk[n][k] -- the value of the process at the time of the crossing:
 ##  alwayts equal to the shifted and scaled grid level crossed.
@@ -114,6 +121,19 @@ def sim_load( file_name, return_durations = False ) :
 ## return the results of the simulation : basic plus summary of duration data
 		return float( par[ -2 ] ), data[ 'Njn' ], data[ 'Djnk' ], data[ 'Vjnde' ], Wjnp, Wbarjn, Wstdjn
 
+## A procedure for saving the results of the Monte-Carlo simulation
+def sim_save( filename, result, save_durations = False, **extra ) :
+	npz_data = dict( **extra )
+	npz_data[ "Njn" ]     = np.array( [ n for wrk, j, ( n, _, _, _ ) in result ] )
+	npz_data[ "Djnk" ]    = np.array( [ d for wrk, j, ( _, d, _, _ ) in result ] )
+	npz_data[ "Vjnde" ]   = np.array( [ v for wrk, j, ( _, _, v, _ ) in result ] )
+## If requested save the masured parameters of durations as well
+	if save_durations :
+		npz_data["Wjnp"]    = np.array( [ w for wrk, j, ( _, _, _, ( w, _, _ ) ) in result ] )
+		npz_data["Wbarjn"]  = np.array( [ b for wrk, j, ( _, _, _, ( _, b, _ ) ) in result ] )
+		npz_data["Wstdjn"]  = np.array( [ s for wrk, j, ( _, _, _, ( _, _, s ) ) in result ] )
+	np.savez_compressed( filename, **npz_data )
+
 ## A service procedure for dumping a directory
 def list_files( path = './', pattern = r'\.npz$' ) :
 ## If the regular expression fails to compile, return an empty list of files,
@@ -143,15 +163,10 @@ if __name__ == '__main__' :
 ## Get the datetime after the simulation has finished
 			end_dttm = datetime.utcnow( )
 ## Create a meaningful name for the output data blob
-			np.savez_compressed( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
-			# np.savez_compressed( "./output/fbm_%s_%s_%d_%.4f_%d" % (
+			sim_save( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
+			# sim_save( "./output/fbm_%s_%s_%d_%.4f_%d" % (
 					delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ),
-				Njn     = np.array( [ n for wrk, j, ( n, _, _, ( _, _, _ ) ) in result ] ),
-				Djnk    = np.array( [ d for wrk, j, ( _, d, _, ( _, _, _ ) ) in result ] ),
-				Vjnde   = np.array( [ v for wrk, j, ( _, _, v, ( _, _, _ ) ) in result ] ),
-				Wjnp    = np.array( [ w for wrk, j, ( _, _, _, ( w, _, _ ) ) in result ] ),
-				Wbarjn  = np.array( [ b for wrk, j, ( _, _, _, ( _, b, _ ) ) in result ] ),
-				Wstdjn  = np.array( [ s for wrk, j, ( _, _, _, ( _, _, s ) ) in result ] ) )
+				result, save_durations = True )
 ## To access use: dat = np.load(..) ; dat['Djnk'], dat['Njn'], dat['Vjnde']
 ## For analysis:
 ##  Vnd = np.sum( Vnde, axis = 2, dtype = np.float ).reshape( VDn.shape[:2] + ( 1, ) )
