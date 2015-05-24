@@ -80,7 +80,7 @@ class fgn( object ) :
 		self.__np_rand = numpy_random
 
 
-class fbm( fgn ):
+class fbm( fgn ) :
 	"""A derived class to produce sample paths of a Fractional Brownian Motion with
 	a specified fractional integration parameter (the Hurst exponent). For the best
 	performance N-1 should be a power of two."""
@@ -98,7 +98,7 @@ class fbm( fgn ):
 
 
 
-class test_gen(object):
+class test_gen( object ) :
 	def __init__( self, N, **kwargs ) :
 		self.__cache = list( )
 		self.__N = N
