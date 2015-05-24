@@ -79,7 +79,7 @@ class fgn( object ) :
 		self.reset( )
 		self.__np_rand = numpy_random
 
-
+## Now derive the fractional Brownian motion for the fractional Gaussian Noise
 class fbm( fgn ) :
 	"""A derived class to produce sample paths of a Fractional Brownian Motion with
 	a specified fractional integration parameter (the Hurst exponent). For the best
@@ -95,23 +95,3 @@ class fbm( fgn ) :
 	def set_rnd( self, numpy_random ) :
 		super( fbm, self ).set_rnd( numpy_random )
 		self.reset( )
-
-
-
-class test_gen( object ) :
-	def __init__( self, N, **kwargs ) :
-		self.__cache = list( )
-		self.__N = N
-		self.__np_rand = None
-	def set_rnd( self, numpy_random ) :
-		self.__np_rand = numpy_random
-	def __call__( self ) :
-		if not self.__cache :
-			self.__cache.extend( self.__gen( )[::-1] )
-		return self.__cache.pop( )
-	def reset( self ) :
-		del self.__cache[ : ]
-	def __gen( self ) :
-		return [( 0, self.__np_rand.randn( 1 ), ) for i in range( self.__N ) ]
-	def info( self ) :
-		return ( id( self.__cache ), )

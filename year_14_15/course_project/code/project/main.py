@@ -10,9 +10,13 @@ from montecarlo import mc_run as montecarlo
 from crossing_tree import xtree_build
 
 ## This procedure runs a single replication of the monte carlo experiment.
-def mc_kernel( generate_sample, **op ) :
+def mc_kernel( replication, generate_sample, **op ) :
 ## Generate a replication of the process -- a sample path
 	T, X = generate_sample( )
+	return path_kernel( T, X, **op )
+
+## This routine just unpacks the arguments and performs necessary pre computations
+def path_kernel( T, X, **op ) :
 ## G. Decrouez 2015-02-12: the selection of the spacing of the finest grid based on
 ##  the scale of the process is crucial as it allows comparison of the crossing tree
 ##  between different sample paths.
