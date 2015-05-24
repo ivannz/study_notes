@@ -45,5 +45,5 @@ if __name__ == '__main__' :
 			gen.set_rnd( RandomState( ) )
 ## Generate the data
 			kernel( gen, path = target_path, replications = M,
-				prefix = "HRM_%d_%d-%d_%.4f" % ( D,
+				prefix = "HRM-%d_%d-%d_%.4f" % ( D,
 					int( np.log2( N - 1 ) ), K, H, ) )
