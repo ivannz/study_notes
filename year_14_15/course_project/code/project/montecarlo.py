@@ -18,7 +18,7 @@ def mc_run( generator, kernel, replications, **op ) :
 		else :
 ## The main problem is that it is possible that each worker reads its seed from
 ##  the same source and at the same time, which would make each worker process
-##  gnerate identical samples. In nix and like systems the os.fork() actually makes
+##  gnerate identickal samples. In nix and like systems the os.fork() actually makes
 ##  a clone of the calling process, which includes duplicating the internal state
 ##  of the random number generator. Therefore each worker must reinitilize the
 ##  cricual components wit hthe entropy "hints" provided by the parent process.
@@ -32,34 +32,35 @@ def mc_run( generator, kernel, replications, **op ) :
 		worker_pool = mp.Pool( processes = num_workers,
 			initializer = wrk_startup, initargs = (
 				worker_id, entropy, generator, kernel, op ) )
-## The pool is ready
+## The pool is ready: get the replications and the chunksize
+		if type( replications ) == int :
+			replications = range( replications )
+		chunksize = int( np.sqrt( ( len( replications ) + num_workers - 1 ) // num_workers ) )
+## Launch the pool
 		if op.get( 'quiet', True ) :
 ## Run the experiment synchronously
-			result = worker_pool.map( wrk_kernel, xrange( replications ),
-				chunksize = int( np.sqrt( replications // num_workers ) + 1 ) )
+			result = worker_pool.map( wrk_kernel, replications, chunksize = chunksize )
 		else :
 ## Run the experiment asynchronously
-			result = worker_pool.map_async( wrk_kernel, xrange( replications ),
-				chunksize = int( np.sqrt( replications // num_workers ) + 1 ) )
+			result = worker_pool.map_async( wrk_kernel, replications, chunksize = chunksize )
 ## Wait until the jobs are complete
-			tic = tm.time( )
+			tick = tm.time( )
 			while not result.ready( ) :
 				tm.sleep( 1 )
 ## Track the progress
-				print( "%.3f\r" % ( tm.time( ) - tic ) )
+				print( "%.3f\r" % ( tm.time( ) - tick ) )
 			result = result.get( )
-		worker_pool.close()
-		worker_pool.join()
+		worker_pool.close( )
+		worker_pool.join( )
 		return result
 	else :
 ## For a serieal run, just do the same initialization steps
 		rnd = RandomState( )
 		generator.set_rnd( rnd )
-		tic = tm.time( )
-		result = [ ( 0, i, kernel( generator, **op ), )
-			for i in xrange( replications ) ]
+		tick = tm.time( )
+		result = [ ( 0, i, kernel( i, generator, **op ), ) for i in replications ]
 		if not op.get( 'quiet', True ) :
-			print( "%.3f\r" % ( tm.time( ) - tic ) )
+			print( "%.3f\r" % ( tm.time( ) - tick ) )
 		return result
 
 local_id = None ; rnd = None ; generator = None ; kernel = None
@@ -78,4 +79,4 @@ def wrk_startup( WRK, seed, gen, ker, op = dict() ) :
 
 def wrk_kernel( i ) :
 	global local_id, kernel, generator, arguments
-	return ( local_id, i, kernel( generator, **arguments ) )
+	return ( local_id, i, kernel( i, generator, **arguments ) )
