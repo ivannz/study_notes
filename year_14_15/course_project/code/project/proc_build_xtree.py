@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-## This is a very poor and ill informed solution: disk IO should better
+## This is a very poor and ill informed solution: disk IO had better
 ##  be sequential!
 
 ## Base modules
@@ -25,7 +25,8 @@ def offline_kernel( file, generator, **op ) :
 	return path_kernel( T, X, **op )
 
 if __name__ == '__main__' :
-	basepath = os.path.join( '.', 'output', 'HRM_2_20-32' )
+	# basepath = os.path.join( '.', 'output', 'HRM_2_20-32' )
+	basepath = os.path.join( '.', 'output', 'HRM_4_16-128' )
 	path = [ os.path.join( basepath, H ) for H in [
 		'0.6000', '0.7000', '0.8000', '0.9000', '0.5000',  ] ]
 	for p in path :

@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 import numpy as np
-from numpy.fft import rfft, fft
+from numpy.fft import fft
 
 class fgn( object ) :
 	"""A class to generate fractional Gaussian process of fixed length using
@@ -26,17 +26,14 @@ class fgn( object ) :
 			- 2 * np.abs( R ) ** ( 2.0 * H ) )
 ## Generate the first row of the 2Mx2M Toeplitz matrix, where 2M = N + N-2: it should
 ##  be [ r_0, ..., r_{N-1}, r_{N-2}, ..., r_1 ]
-		Z = np.real( rfft( np.append( R, R[::-1][1:-1] ) ) )
-		del R
+		R = np.append( R, R[::-1][1:-1] )
 ## The circulant matrix, defined by the autocorrelation structure above is necessarily
 ##  positive definite, which is equivalent to the FFT of any its row being non-negative.
-## Due to numerical round-off errors we truncate close to zero negative Fourier
+		Z = np.real( fft( R ) )
+		del R
+## Due to numerical round-off errors we truncate close to zero negative real Fourier
 ##  coefficients.
-		Z = np.sqrt( np.maximum( Z, 0.0 ) / ( 2 * N - 2 ) )
-## Collect the frequencies of the specialized real FFT output by concatenating Z with
-##  Z[::-1][1:-1] so that it matches the output of the complex FFT. Real FFT returns
-##  a vector of (2*N-2)/2+1 = N coefficients.
-		self.__acf_ft = np.append( Z, Z[::-1][1:-1] )
+		self.__acf_ft = np.sqrt( np.maximum( Z, 0.0 ) / ( 2 * N - 2 ) )
 		del Z
 ## The circulant embedding method actually generates a pair of independent long-range
 ##  dependent processes.
@@ -52,19 +49,22 @@ class fgn( object ) :
 ##  Gaussian white noise in the frequency domain and then get back to the time domain.
 ##    cf. \url{ http://www.thefouriertransform.com/transform/properties.php }
 ## Begin with generation of the Gaussian white noise with unit variance and zero mean.
-		Wr = self.__acf_ft * self.__np_rand.randn( 2 * self.__N - 2 )
-		Wi = self.__acf_ft * self.__np_rand.randn( 2 * self.__N - 2 )
+		C  = self.__np_rand.randn( 2 * self.__N - 2 ) + 1j * self.__np_rand.randn( 2 * self.__N - 2 )
 ## Compute the convolution of the circulant row (of autocorrelations) with the noise.
+		C *= self.__acf_ft
 ## "%% ATTENTION: ne pas utiliser ifft, qui utilise une normalisation differente"
 ## Compute this (see p.~1091 [Dietrich, Newsam; 1997]) :
 ##  F \times (\frac{1}{2M}\Lambda)^\frac{1}{2} \times w
-		W = fft( Wr + Wi * 1j )
-		del Wr, Wi
+		W = fft( C )
+		del C
 ## [Dietrich, Newsam; 1997] write : "In our case the real and imaginary parts of any N
 ##  consecutive entries yield two independent realizations of \mathcal{N}_N(0,R) where
 ##  $R$ is the autocorrelation structure of an fBM."
 ##  Therefore take the first N complex draws to get a pair of independent realizations.
 		return ( np.real( W[ :self.__N ] ), np.imag( W[ :self.__N ] ) )
+	def __del__( self ) :
+		self.reset( )
+		del self.__acf_ft
 ## Reset the internal state of the generator
 	def reset( self ) :
 		del self.__cache[:]
