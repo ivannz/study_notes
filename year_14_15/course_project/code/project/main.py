@@ -6,6 +6,7 @@ from datetime import datetime
 
 ## Project modules
 from fgn import fbm
+from hermite import hermite
 from montecarlo import mc_run as montecarlo
 from crossing_tree import xtree_build
 
@@ -151,25 +152,29 @@ def list_files( path = './', pattern = r'\.npz$' ) :
 		return [ ]
 
 if __name__ == '__main__' :
-	N = 2**21+1 ; M = 1000
-	for delta_method in [ 'std', 'iqr', 'med', ] :
-		for H in np.linspace( .5, .95, num = 10 ) :
+	# N = 2**21+1 ; M = 1000
+	N, D, K = 2**18+1, 3, 2**4 ; M = 100
+	# for delta_method in [ 'std', 'iqr', 'med', ] :
+	for delta_method in [ 'med', ] :
+		# for H in np.linspace( .5, .95, num = 10 ) :
+		for H in np.linspace( .5, .9, num = 5 ) :
 			P = int( np.log2( N - 1 ) )
-			print "Monte carlo (%d) for FBM(2**%d+1, %.4f):" % ( M, P, H )
+			print "Monte carlo (%d) for FBM(2**%d+1, %.4f), %s:" % ( M, P, H, delta_method, )
 ## Get the current timestamp
 			run_dttm = datetime.utcnow( )
 ## Iinitalize the generator
-			generator = fbm( N = N, H = H, time = False )
+			# generator = fbm( N = N, H = H, time = False )
+			generator = hermite( N = N, d = D, H = H, K = K, time = False )
 ## Run the experiment
 			result = montecarlo( generator, mc_kernel,
-				processes = 7, debug = False, quiet = False, parallel = True,
+				processes = 2, debug = False, quiet = False, parallel = True,
 				replications = M, delta = delta_method, L = 20, K = 40 )
 ## Get the datetime after the simulation has finished
 			end_dttm = datetime.utcnow( )
 ## Create a meaningful name for the output data blob
-			sim_save( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
-			# sim_save( "./output/fbm_%s_%s_%d_%.4f_%d" % (
-					delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ),
+			# sim_save( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
+			sim_save( "./output/HRM-%d_%s_%s_%d-%d_%.4f_%d" % ( D,
+					delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, K, H, M ),
 				result, save_durations = True )
 ## To access use: dat = np.load(..) ; dat['Djnk'], dat['Njn'], dat['Vjnde']
 ## For analysis:

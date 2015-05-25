@@ -7,7 +7,7 @@ class fgn( object ) :
 	a circulant matrix method suggested by Dietrich and Newsam (1997). For the
 	best performance N-1 should be a power of two."""
 ## For better performance N-1 should be a power of two.
-	def __init__( self, N, H = .5, sigma = 1.0, cache = list( ) ) :
+	def __init__( self, N, H = .5, sigma = 1.0, cache = None ) :
 ## The autocorrelation structure for the fBM is constant provided the Hurst exponent
 ##  and the size sample are fixed. "Synthese de la covariance du fGn", Synthesise
 ##  the covariance of the fractional Gaussian noise. This autocorrelation function
@@ -37,7 +37,7 @@ class fgn( object ) :
 		del Z
 ## The circulant embedding method actually generates a pair of independent long-range
 ##  dependent processes.
-		self.__cache = cache
+		self.__cache = list( ) if cache is None else cache
 ## Remember the sample size
 		self.__N = N
 ## Setup a local rng
