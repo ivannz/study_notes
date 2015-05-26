@@ -10,7 +10,7 @@ from hermite import hermite
 from montecarlo import mc_run as montecarlo
 from crossing_tree import xtree_build
 
-## This procedure runs a single replication of the monte carlo experiment.
+## This procedure runs a single replication of the Monte-Carlo experiment.
 def mc_kernel( replication, generate_sample, **op ) :
 ## Generate a replication of the process -- a sample path
 	T, X = generate_sample( )
@@ -35,14 +35,14 @@ def path_kernel( T, X, **op ) :
 ## Use the median as suggested in [Jones, Rolls; 2009] p. 11 (0911.5204v2)
 		delta = np.median( np.abs( np.diff( X ) ) )
 	else :
-## By default, delta is set to 1, which is the most inferior chice, since it disregards
+## By default, delta is set to 1, which is the most inferior choice, since it disregards
 ##  the base scale of the sample path.
 		delta = 1.0
 	max_levels, max_crossings = op.get( 'L', 6 ), op.get( 'K', 20 )
-## Analyze the sample path
+## Analyse the sample path
 	return path_analyse( T, X, delta, max_levels, max_crossings )
 
-## This procedure runs a single replication of the monte carlo experiment.
+## This procedure runs a single replication of the Monte-Carlo experiment.
 ## delta -- the base scale of the crossing tree. The larger, the more biased the lower
 ##  tree levels are.
 ## max_levels -- the number of levels of the tree to construct (from the finest grid up)
@@ -55,14 +55,14 @@ def path_analyse( T, X, delta = 1.0, max_levels = 6, max_crossings = 20 ) :
 ##  \delta 2^n. Xnk[n][k] -- the value of the process at the time of the crossing:
 ##  alwayts equal to the shifted and scaled grid level crossed.
 ## Znk[n][k] -- the number of subcrossings of a finer grid (crossings of
-##  \delta 2^{n-1}) that make up the k-th corssing of a coarser grid (\delta 2^n).
+##  \delta 2^{n-1}) that make up the k-th crossing of a coarser grid (\delta 2^n).
 ##  Undefined (empty array) for n = 0.
 ## Vnk[n][k] -- the number of up-down and down-up excursions in the k-th crossing
 ##  of size \delta 2^n. Undefined for n = 0. The format is (# of /\, # of \/, ±1).
 ## Wnk[n][k] -- the waiting time between the k-th and k+1-st crossing of the grid
 ##  of spacing \delta 2^n
 	Tnk, Xnk, Znk, Vnk, Wnk = xtree_build( T, X, delta = delta )
-## Get the total number of crosssings of \delta 2^n resolution
+## Get the total number of crossings of \delta 2^n resolution
 ## Nn[n] -- the total number of crossings of grid with spacing \delta 2^n
 	Nn = np.zeros( ( 1 + max_levels + 1, 1 ), dtype = np.int )
 	for n, Xk in enumerate( Xnk, 0 ) :
@@ -86,7 +86,7 @@ def path_analyse( T, X, delta = 1.0, max_levels = 6, max_crossings = 20 ) :
 ## Vnde[n][d][e] -- the total number of up-down(e=0) and down-up(e=1) excursions
 ##  (/\ and \/ subcrosssings od \delta 2^n respectively) in a downward(d=0) or
 ##  upward(d=1) crossing of spacing \delta 2^{n+1} (level n+1). Levels beyond
-##  max_levels are agregated.
+##  max_levels are aggregated.
 	Vnde = np.zeros( ( max_levels + 1, 2, 2 ), dtype = np.int )
 	for n, Vk in enumerate( Vnk[ 1: ], 0 ) :
 		n = max_levels if n > max_levels else n
@@ -132,7 +132,7 @@ def sim_save( filename, result, save_durations = False, **extra ) :
 	npz_data[ "Njn" ]     = np.array( [ n for wrk, j, ( n, _, _, _ ) in result ] )
 	npz_data[ "Djnk" ]    = np.array( [ d for wrk, j, ( _, d, _, _ ) in result ] )
 	npz_data[ "Vjnde" ]   = np.array( [ v for wrk, j, ( _, _, v, _ ) in result ] )
-## If requested save the masured parameters of durations as well
+## If requested save the measured parameters of durations as well
 	if save_durations :
 		npz_data["Wjnp"]    = np.array( [ w for wrk, j, ( _, _, _, ( w, _, _ ) ) in result ] )
 		npz_data["Wbarjn"]  = np.array( [ b for wrk, j, ( _, _, _, ( _, b, _ ) ) in result ] )
@@ -152,30 +152,35 @@ def list_files( path = './', pattern = r'\.npz$' ) :
 		return [ ]
 
 if __name__ == '__main__' :
-	# N = 2**21+1 ; M = 1000
-	N, D, K = 2**18+1, 3, 2**4 ; M = 100
+	# basepath = os.path.realpath( "./output" )
+	basepath = os.path.realpath( r"C:\Users\ivannz\Dropbox\study_notes\year_14_15\course_project\code\output" )
+	# N, M = 2**21+1, 1000
+	N, K, M = 2**19+1, 2**5, 1000
 	# for delta_method in [ 'std', 'iqr', 'med', ] :
-	for delta_method in [ 'med', ] :
-		# for H in np.linspace( .5, .95, num = 10 ) :
-		for H in np.linspace( .5, .9, num = 5 ) :
-			P = int( np.log2( N - 1 ) )
-			print "Monte carlo (%d) for FBM(2**%d+1, %.4f), %s:" % ( M, P, H, delta_method, )
+	for delta_method in [ 'med', 'iqr', ] :
+		for D in [ 3, 4, 2, ] :
+			# for H in np.linspace( .5, .95, num = 10 ) :
+			for H in np.linspace( .5, .9, num = 5 ) :
+				P = int( np.log2( N - 1 ) )
+				# print "Monte carlo (%d) for FBM(2**%d+1, %.4f), %s:" % ( M, P, H, delta_method, )
+				print "Monte carlo (%d) for HRM-%d(2**%d+1-%d, %.4f), %s:" % ( M, D, P, K, H, delta_method, )
 ## Get the current timestamp
-			run_dttm = datetime.utcnow( )
-## Iinitalize the generator
-			# generator = fbm( N = N, H = H, time = False )
-			generator = hermite( N = N, d = D, H = H, K = K, time = False )
+				run_dttm = datetime.utcnow( )
+## Initalize the generator
+				# generator = fbm( N = N, H = H, time = False )
+				generator = hermite( N = N, d = D, H = H, K = K, time = False )
 ## Run the experiment
-			result = montecarlo( generator, mc_kernel,
-				processes = 2, debug = False, quiet = False, parallel = True,
-				replications = M, delta = delta_method, L = 20, K = 40 )
+				result = montecarlo( generator, mc_kernel,
+					processes = 2, debug = False, quiet = False, parallel = True,
+					replications = M, delta = delta_method, L = 20, K = 40 )
 ## Get the datetime after the simulation has finished
-			end_dttm = datetime.utcnow( )
+				end_dttm = datetime.utcnow( )
 ## Create a meaningful name for the output data blob
-			# sim_save( "C:/Users/ivannz/Dropbox/study_notes/year_14_15/course_project/code/output/fbm_%s_%s_%d_%.4f_%d" % (
-			sim_save( "./output/HRM-%d_%s_%s_%d-%d_%.4f_%d" % ( D,
-					delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, K, H, M ),
-				result, save_durations = True )
+				# sim_save( os.path.join( basepath, "fbm_%s_%s_%d_%.4f_%d" % (
+						# delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ) ),
+				sim_save( os.path.join( basepath, "HRM-%d_%s_%s_%d-%d_%.4f_%d" % ( D,
+						delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, K, H, M ) ),
+					result, save_durations = False )
 ## To access use: dat = np.load(..) ; dat['Djnk'], dat['Njn'], dat['Vjnde']
 ## For analysis:
 ##  Vnd = np.sum( Vnde, axis = 2, dtype = np.float ).reshape( VDn.shape[:2] + ( 1, ) )
