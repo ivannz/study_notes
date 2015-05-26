@@ -156,14 +156,19 @@ if __name__ == '__main__' :
 	basepath = os.path.realpath( r"C:\Users\ivannz\Dropbox\study_notes\year_14_15\course_project\code\output" )
 	# N, M = 2**21+1, 1000
 	N, K, M = 2**19+1, 2**5, 1000
+	P = int( np.log2( N - 1 ) )
 	# for delta_method in [ 'std', 'iqr', 'med', ] :
 	for delta_method in [ 'med', 'iqr', ] :
 		for D in [ 3, 4, 2, ] :
+## Make the necessary directory structure
+			target_path = os.path.join( basepath,
+				"HRM-%d_%d-%d" % ( D, P, K, ),
+				delta_method )
+			os.makedirs( target_path )
 			# for H in np.linspace( .5, .95, num = 10 ) :
 			for H in np.linspace( .5, .9, num = 5 ) :
-				P = int( np.log2( N - 1 ) )
-				# print "Monte carlo (%d) for FBM(2**%d+1, %.4f), %s:" % ( M, P, H, delta_method, )
-				print "Monte carlo (%d) for HRM-%d(2**%d+1-%d, %.4f), %s:" % ( M, D, P, K, H, delta_method, )
+				# print "Monte-Carlo (%d) for FBM(2**%d+1, %.4f), %s:" % ( M, P, H, delta_method, )
+				print "Monte-Carlo (%d) for HRM-%d(2**%d+1-%d, %.4f), %s:" % ( M, D, P, K, H, delta_method, )
 ## Get the current timestamp
 				run_dttm = datetime.utcnow( )
 ## Initalize the generator
@@ -176,9 +181,9 @@ if __name__ == '__main__' :
 ## Get the datetime after the simulation has finished
 				end_dttm = datetime.utcnow( )
 ## Create a meaningful name for the output data blob
-				# sim_save( os.path.join( basepath, "fbm_%s_%s_%d_%.4f_%d" % (
+				# sim_save( os.path.join( target_path, "fbm_%s_%s_%d_%.4f_%d" % (
 						# delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ) ),
-				sim_save( os.path.join( basepath, "HRM-%d_%s_%s_%d-%d_%.4f_%d" % ( D,
+				sim_save( os.path.join( target_path, "HRM-%d_%s_%s_%d-%d_%.4f_%d" % ( D,
 						delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, K, H, M ) ),
 					result, save_durations = False )
 ## To access use: dat = np.load(..) ; dat['Djnk'], dat['Njn'], dat['Vjnde']
