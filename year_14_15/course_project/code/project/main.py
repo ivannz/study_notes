@@ -152,10 +152,10 @@ def list_files( path = './', pattern = r'\.npz$' ) :
 		return [ ]
 
 if __name__ == '__main__' :
-	# basepath = os.path.realpath( "./output" )
-	basepath = os.path.realpath( r"C:\Users\ivannz\Dropbox\study_notes\year_14_15\course_project\code\output" )
+	basepath = os.path.realpath( "./output" )
+	# basepath = os.path.realpath( r"C:\Users\ivannz\Dropbox\study_notes\year_14_15\course_project\code\output" )
 	# N, M = 2**21+1, 1000
-	N, K, M = 2**19+1, 2**5, 1000
+	N, K, M = 2**18+1, 2**4, 100
 	P = int( np.log2( N - 1 ) )
 	# for delta_method in [ 'std', 'iqr', 'med', ] :
 	for delta_method in [ 'med', 'iqr', ] :

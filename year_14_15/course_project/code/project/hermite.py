@@ -24,6 +24,7 @@ class hermite( fgn ) :
 ##  tend to infinity. This is a serious drawback.
 ## c.f. [Abry, Pipiras; 2005]
 		self.__K = K
+		self.__H = H
 ## Define the order of the Hermite polynomial
 		self.__coef = np.zeros( d + 1, np.float )
 		self.__coef[ d ] = 1
@@ -32,7 +33,8 @@ class hermite( fgn ) :
 ##  of a fractional Gaussian Noise with the specified hurst index.
 		increments = hermeval( fgn.__call__( self ), self.__coef )
 ## The renorm-group transformation, without the renormalisation by the n^{-H}
-		increments = np.cumsum( increments )[ self.__K-1::self.__K ]
+		increments = np.cumsum( increments )[ self.__K-1::self.__K ] / ( self.__K ** self.__H )
+		# return self.__t, np.concatenate( ( [ 0 ], increments ) )
 		return self.__t, np.concatenate( ( [ 0 ], increments / np.max( increments ) ) )
 	def reset( self ):
 		super( hermite, self ).reset( )
