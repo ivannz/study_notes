@@ -16,7 +16,6 @@ path = [ os.path.join( basepath, H ) for H in [
 
 delta_method = 'med'
 
-result = list( )
 for p in path :
 	files = list_files( p, pattern = r"\.mat$" )
 ## Pick the first file and pares its name
@@ -26,6 +25,7 @@ for p in path :
 	hurst = "%0.5f" % ( float( hurst ), )
 ## Get the current timestamp
 	run_dttm = datetime.utcnow( )
+	result = list( )
 	for f in files :
 ## Load the Matlab data
 		mat = io.loadmat( f )
@@ -40,3 +40,4 @@ for p in path :
 	sim_save( os.path.join( basepath, "%s_%s_%s_%s_%s_%d" % ( prefix, delta_method.lower( ),
 		run_dttm.strftime( "%Y%m%d-%H%M%S" ), size, hurst, len( files ) ) ),
 		result, save_durations = True )
+	del result[:]
