@@ -26,9 +26,9 @@ def offline_kernel( file, generator, **op ) :
 
 if __name__ == '__main__' :
 	# basepath = os.path.join( '.', 'output', 'HRM_2_20-32' )
-	basepath = os.path.join( '.', 'output', 'HRM_4_16-128' )
+	basepath = os.path.join( '.', 'output', 'HRM_3_20-32' )
 	path = [ os.path.join( basepath, H ) for H in [
-		'0.6000', '0.7000', '0.8000', '0.9000', '0.5000',  ] ]
+		'0.5000', '0.6000', '0.7000', '0.8000',  ] ]
 	for p in path :
 ## Go!
 		files = list_files( p, pattern = r"\.mat$" )
