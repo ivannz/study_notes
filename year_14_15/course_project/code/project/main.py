@@ -7,6 +7,7 @@ from datetime import datetime
 ## Project modules
 from fgn import fbm
 from hermite import hermite
+from weierstrass import weierstrass
 from montecarlo import mc_run as montecarlo
 from crossing_tree import xtree_build
 
@@ -31,6 +32,9 @@ def path_kernel( T, X, **op ) :
 	elif delta_method == 'iqr' :
 ## Use the interquartile range
 		delta = np.subtract( *np.percentile( np.diff( X ), [ 75, 25 ] ) )
+	elif delta_method == 'rng' :
+## Use the range estimate as suggested by Geoffrey on 2015-05-28
+		delta = np.subtract( *np.percentile( X, [ 100, 0 ] ) ) * 2**( -6 )
 	elif delta_method == 'med' :
 ## Use the median as suggested in [Jones, Rolls; 2009] p. 11 (0911.5204v2)
 		delta = np.median( np.abs( np.diff( X ) ) )
@@ -152,40 +156,87 @@ def list_files( path = './', pattern = r'\.npz$' ) :
 		return [ ]
 
 if __name__ == '__main__' :
-	basepath = os.path.realpath( "./output" )
-	# basepath = os.path.realpath( r"C:\Users\ivannz\Dropbox\study_notes\year_14_15\course_project\code\output" )
-	# N, M = 2**21+1, 1000
-	N, K, M = 2**18+1, 2**4, 100
+## The base path of the the results
+	basepath = os.path.realpath( "./output/final" )
+####################################################################################################
+## Fractional Brownian Motion
+	N, M = 2**16+1, 50
 	P = int( np.log2( N - 1 ) )
-	# for delta_method in [ 'std', 'iqr', 'med', ] :
-	for delta_method in [ 'med', 'iqr', ] :
-		for D in [ 3, 4, 2, ] :
-## Make the necessary directory structure
-			target_path = os.path.join( basepath,
-				"HRM-%d_%d-%d" % ( D, P, K, ),
-				delta_method )
-			os.makedirs( target_path )
-			# for H in np.linspace( .5, .95, num = 10 ) :
-			for H in np.linspace( .5, .9, num = 5 ) :
-				# print "Monte-Carlo (%d) for FBM(2**%d+1, %.4f), %s:" % ( M, P, H, delta_method, )
-				print "Monte-Carlo (%d) for HRM-%d(2**%d+1-%d, %.4f), %s:" % ( M, D, P, K, H, delta_method, )
-## Get the current timestamp
-				run_dttm = datetime.utcnow( )
+## Loop over the base scale methods
+	for delta_method in [ 'rng', 'iqr', 'med', ] :
+## Create the necessary directory structure
+		target_path = os.path.join( basepath, "FBM_%d" % ( P, ), delta_method )
+		os.makedirs( target_path )
+## Run simulations for different Hurst exponents
+		for H in np.linspace( .5, .9, num = 5 ) :
 ## Initalize the generator
-				# generator = fbm( N = N, H = H, time = False )
-				generator = hermite( N = N, d = D, H = H, K = K, time = False )
+			generator = fbm( N = N, H = H, time = True )
+			print "Monte-Carlo (%d) for FBM(2**%d+1, %.4f), %s:" % ( M, P, H, delta_method, )
+## Get the current timestamp
+			start_dttm = datetime.utcnow( )
 ## Run the experiment
-				result = montecarlo( generator, mc_kernel,
+			results = montecarlo( generator, mc_kernel,
+				processes = 2, debug = False, quiet = False, parallel = True,
+				replications = M, delta = delta_method, L = 20, K = 40 )
+## Create a meaningful name for the output data blob
+			file_name = "FBM_%s_%s_%d_%.4f_%d" % ( delta_method.lower( ),
+				start_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M )
+## Save the data blob
+			sim_save( os.path.join( target_path, file_name ), results, save_durations = True )
+####################################################################################################
+## Hermite processes
+## The parameters of the simulation
+	N, K, M = 2**16+1, 2**4, 50
+	P = int( np.log2( N - 1 ) )
+	for delta_method in [ 'rng', 'iqr', 'med', ] :
+		for D in [ 2, 3, 4, ] :
+			target_path = os.path.join( basepath,
+				"HRM-%d_%d-%d" % ( D, P, K, ), delta_method )
+			os.makedirs( target_path )
+			for H in np.linspace( .6, .9, num = 4 ) :
+## Initialize the Hermite process generator
+				generator = hermite( N = N, d = D, H = H, K = K, time = True )
+				print "Monte-Carlo (%d) for HRM-%d(2**%d+1-%d, %.4f), %s:" % ( M, D, P, K, H, delta_method, )
+				start_dttm = datetime.utcnow( )
+				results = montecarlo( generator, mc_kernel,
 					processes = 2, debug = False, quiet = False, parallel = True,
 					replications = M, delta = delta_method, L = 20, K = 40 )
-## Get the datetime after the simulation has finished
-				end_dttm = datetime.utcnow( )
+				file_name = "HRM-%d_%s_%s_%d-%d_%.4f_%d" % ( D, delta_method.lower( ),
+					start_dttm.strftime( "%Y%m%d-%H%M%S" ), P, K, H, M )
+				sim_save( os.path.join( target_path, file_name ), results, save_durations = True )
+####################################################################################################
+## Weierstrass processes
+	N, M = 2**16+1, 50
+	P = int( np.log2( N - 1 ) )
+## Loop over the base scale methods
+	for delta_method in [ 'rng', 'iqr', 'med', ] :
+## Create the necessary directory structure
+		target_path = os.path.join( basepath, "WEI_%d" % ( P, ), delta_method )
+		os.makedirs( target_path )
+## Run simulations for different Hurst exponents
+		for H in np.linspace( .6, .9, num = 4 ) :
+## Initalize the generator
+			generator = weierstrass( N = N, H = H, nu0 = 1.2, nue = 1000 )
+			print "Monte-Carlo (%d) for WEI(2**%d+1, %.4f), %s:" % ( M, P, H, delta_method, )
+## Get the current timestamp
+			start_dttm = datetime.utcnow( )
+## Run the experiment
+			results = montecarlo( generator, mc_kernel,
+				processes = 2, debug = False, quiet = False, parallel = True,
+				replications = M, delta = delta_method, L = 20, K = 40 )
 ## Create a meaningful name for the output data blob
-				# sim_save( os.path.join( target_path, "fbm_%s_%s_%d_%.4f_%d" % (
-						# delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M ) ),
-				sim_save( os.path.join( target_path, "HRM-%d_%s_%s_%d-%d_%.4f_%d" % ( D,
-						delta_method.lower( ), run_dttm.strftime( "%Y%m%d-%H%M%S" ), P, K, H, M ) ),
-					result, save_durations = False )
+			file_name = "WEI_%s_%s_%d_%.4f_%d" % ( delta_method.lower( ),
+				start_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M )
+## Save the data blob
+			sim_save( os.path.join( target_path, file_name ), results, save_durations = True )
+
+
+
+
+
+
+####################################################################################################
+####################################################################################################
 ## To access use: dat = np.load(..) ; dat['Djnk'], dat['Njn'], dat['Vjnde']
 ## For analysis:
 ##  Vnd = np.sum( Vnde, axis = 2, dtype = np.float ).reshape( VDn.shape[:2] + ( 1, ) )
@@ -193,4 +244,4 @@ if __name__ == '__main__' :
 ##  Dn = np.sum( Dnm, axis = 1, dtype = np.float ).reshape( Dnm.shape[:1] + ( 1, ) )
 ##  Dnk / Dn <- the subcrossing number distribution
 ## Generate default name for each Monte Carlo result
-	# np.savez_compressed( './test.out', **{ "rep%04d"%(i,): d for _, i, (d, _) in result } )
+## 	np.savez_compressed( './test.out', **{ "rep%04d"%(i,): d for _, i, (d, _) in result } )

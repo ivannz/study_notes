@@ -17,8 +17,7 @@ def load_files( files ) :
 ## The list of loaded results
 	results = list( [ ] )
 	for file_name in files :
-## HRM-3_iqr_20150528-030831_20-16_0.5500_1000.npz
-## HRM-2_med_20150527-220130_20-16_0.60000_1000.npz
+## Parse file name
 		prefix, method, run_dtttm, size, hurst, replications = re.sub(
 			r'(.*)\.npz$', r'\1', os.path.basename( file_name ) ).split( '_' )
 ## Make the hurst exponent in the filename into a float
@@ -39,19 +38,7 @@ def xing_probs( Djnk, H, p = 5, q = 7 ) :
 	Pk = theta * ( 1 - theta )**( Zk - 1 )
 	return 2*Zk.flatten(), Pk.flatten(), np.average( Pjk, axis = ( 0, ) ), np.std( Pjk, axis = ( 0, ) )
 
-def xing_hurst( file_name, p = 5, q = 7 ) :
-	levels = np.arange( p, q + 1 ) - 1
-	H, Njn, Djnk, Vjnde = sim_load( file_name )
-	Cjn = np.reshape( np.sum( Djnk, axis = ( 2, ), dtype = np.float ), Djnk.shape[ :-1 ] + ( 1, ) )
-	Zk = 2 * np.reshape( 1 + np.arange( Djnk.shape[ -1 ] ), ( 1, 1, Djnk.shape[ -1 ] ) )
-	Pjnk = np.where( Cjn > 0, Djnk / Cjn, 0 )
-	Mjn = np.reshape( np.sum( Pjnk * Zk, axis = ( 2, ) ), Cjn.shape )
-	Hjn = np.log( 2 ) / np.log( Mjn )
-	return ( ( 1 + np.arange( Djnk.shape[ -2 ] ) )[levels], H,
-		np.average( Hjn, axis = (0, ) ).flatten( )[levels],
-		np.std( Hjn, axis = (0, ) ).flatten( )[levels] )
-
-def __draw_probs( ax, sim_data, theor_color = 'gray' ) :
+def __draw_probs( ax, sim_data, p = 2, q = 3, theor_color = 'gray' ) :
 	ax.set_xticks( np.arange( 2, 42, 2 ) ) ; ax.grid( )
 	ax.set_color_cycle( plt.cm.rainbow( np.linspace( 0, 1, max( len( files ), 10 ) )[ ::-1 ] ) )
 	for L, H, Njn, Djnk, Vjnde in sim_data :
@@ -70,7 +57,7 @@ def draw_probs( sim_data ) :
 	ax = plt.subplot( 111 )
 ## Setup view of the polt's main area
 	__draw_probs( ax, sim_data, theor_color = 'black' )
-	ax.set_yscale( 'log' ) ; ax.set_ylim( 1e-8, 1 ) ; ax.set_xlim( 2, 40 )
+	ax.set_yscale( 'log' ) ; ax.set_ylim( 1e-3, 1 ) ; ax.set_xlim( 2, 10 )
 ## Add proper labels and titles
 	ax.set_title( r"""Subcrossing size distribution: empirical against conjectured $\mathbb{P}(Z=2k) = \theta \cdot (1-\theta)^{k-1}$ with $\theta = 2^{1-H^{-1}}$""" )
 	ax.set_ylabel( r'Probability (log)' ) ; ax.set_xlabel( r'Subcrossing size' )
@@ -86,10 +73,25 @@ def draw_probs( sim_data ) :
 ## Output
 	return fig
 
+## Now do the hurst plots
+def xing_hurst( file_name, p = 5, q = 7 ) :
+	levels = np.arange( p, q + 1 ) - 1
+	H, Njn, Djnk, Vjnde = sim_load( file_name )
+	Cjn = np.reshape( np.sum( Djnk, axis = ( 2, ), dtype = np.float ), Djnk.shape[ :-1 ] + ( 1, ) )
+	Zk = 2 * np.reshape( 1 + np.arange( Djnk.shape[ -1 ] ), ( 1, 1, Djnk.shape[ -1 ] ) )
+	Pjnk = np.where( Cjn > 0, Djnk / Cjn, 0 )
+	Mjn = np.reshape( np.sum( Pjnk * Zk, axis = ( 2, ) ), Cjn.shape )
+	Hjn = np.log( 2 ) / np.log( Mjn )
+	return ( ( 1 + np.arange( Djnk.shape[ -2 ] ) )[levels], H,
+		np.average( Hjn, axis = (0, ) ).flatten( )[levels],
+		np.std( Hjn, axis = (0, ) ).flatten( )[levels] )
 
+
+# files = list_files( './output/recent/HRM-3_20-16/iqr/' )
+files = list_files( './output/HRM-2_16-16/rng/' )
 results = load_files( files )
 fig_01 = draw_probs( results )
-# plt.savefig( './output/HRM-4_18-16-log_probs.png', fig )
-plt.show( fig_01 )
+plt.savefig( './output/plots/HRM-2_16-16-rng-log_probs.png', fig )
+
 
 

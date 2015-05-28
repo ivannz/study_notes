@@ -35,7 +35,7 @@ class hermite( fgn ) :
 ## The renorm-group transformation, without the renormalisation by the n^{-H}
 		increments = np.cumsum( increments )[ self.__K-1::self.__K ] / ( self.__K ** self.__H )
 		# return self.__t, np.concatenate( ( [ 0 ], increments ) )
-		return self.__t, np.concatenate( ( [ 0 ], increments / np.max( increments ) ) )
+		return self.__t, np.concatenate( ( [ 0 ], increments / np.max( np.abs( increments ) ) ) )
 	def reset( self ):
 		super( hermite, self ).reset( )
 	def set_rnd( self, numpy_random ) :
