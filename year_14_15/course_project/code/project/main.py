@@ -159,76 +159,79 @@ if __name__ == '__main__' :
 ## The base path of the the results
 	basepath = os.path.realpath( "./output/final" )
 ####################################################################################################
+	if False :
 ## Fractional Brownian Motion
-	N, M = 2**16+1, 50
-	P = int( np.log2( N - 1 ) )
+		N, M = 2**20+1, 100
+		P = int( np.log2( N - 1 ) )
 ## Loop over the base scale methods
-	for delta_method in [ 'rng', 'iqr', 'med', ] :
+		for delta_method in [ 'med', ] :
 ## Create the necessary directory structure
-		target_path = os.path.join( basepath, "FBM_%d" % ( P, ), delta_method )
-		os.makedirs( target_path )
-## Run simulations for different Hurst exponents
-		for H in np.linspace( .5, .9, num = 5 ) :
-## Initalize the generator
-			generator = fbm( N = N, H = H, time = True )
-			print "Monte-Carlo (%d) for FBM(2**%d+1, %.4f), %s:" % ( M, P, H, delta_method, )
-## Get the current timestamp
-			start_dttm = datetime.utcnow( )
-## Run the experiment
-			results = montecarlo( generator, mc_kernel,
-				processes = 2, debug = False, quiet = False, parallel = True,
-				replications = M, delta = delta_method, L = 20, K = 40 )
-## Create a meaningful name for the output data blob
-			file_name = "FBM_%s_%s_%d_%.4f_%d" % ( delta_method.lower( ),
-				start_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M )
-## Save the data blob
-			sim_save( os.path.join( target_path, file_name ), results, save_durations = True )
-####################################################################################################
-## Hermite processes
-## The parameters of the simulation
-	N, K, M = 2**16+1, 2**4, 50
-	P = int( np.log2( N - 1 ) )
-	for delta_method in [ 'rng', 'iqr', 'med', ] :
-		for D in [ 2, 3, 4, ] :
-			target_path = os.path.join( basepath,
-				"HRM-%d_%d-%d" % ( D, P, K, ), delta_method )
+			target_path = os.path.join( basepath, "FBM_%d" % ( P, ), delta_method )
 			os.makedirs( target_path )
-			for H in np.linspace( .6, .9, num = 4 ) :
-## Initialize the Hermite process generator
-				generator = hermite( N = N, d = D, H = H, K = K, time = True )
-				print "Monte-Carlo (%d) for HRM-%d(2**%d+1-%d, %.4f), %s:" % ( M, D, P, K, H, delta_method, )
+## Run simulations for different Hurst exponents
+			for H in np.linspace( .5, .9, num = 5 ) :
+## Initalize the generator
+				generator = fbm( N = N, H = H, time = True )
+				print "Monte-Carlo (%d) for FBM(2**%d+1, %.4f), %s:" % ( M, P, H, delta_method, )
+## Get the current timestamp
 				start_dttm = datetime.utcnow( )
+## Run the experiment
 				results = montecarlo( generator, mc_kernel,
 					processes = 2, debug = False, quiet = False, parallel = True,
 					replications = M, delta = delta_method, L = 20, K = 40 )
-				file_name = "HRM-%d_%s_%s_%d-%d_%.4f_%d" % ( D, delta_method.lower( ),
-					start_dttm.strftime( "%Y%m%d-%H%M%S" ), P, K, H, M )
+## Create a meaningful name for the output data blob
+				file_name = "FBM_%s_%s_%d_%.4f_%d" % ( delta_method.lower( ),
+					start_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M )
+## Save the data blob
 				sim_save( os.path.join( target_path, file_name ), results, save_durations = True )
 ####################################################################################################
+	if False :
+## Hermite processes
+## The parameters of the simulation
+		N, K, M = 2**18+1, 2**4, 100
+		P = int( np.log2( N - 1 ) )
+		for delta_method in [ 'med', ] :
+			for D in [ 2, 3, 4, ] :
+				target_path = os.path.join( basepath,
+					"HRM-%d_%d-%d" % ( D, P, K, ), delta_method )
+				os.makedirs( target_path )
+				for H in np.linspace( .6, .9, num = 4 ) :
+## Initialize the Hermite process generator
+					generator = hermite( N = N, d = D, H = H, K = K, time = True )
+					print "Monte-Carlo (%d) for HRM-%d(2**%d+1-%d, %.4f), %s:" % ( M, D, P, K, H, delta_method, )
+					start_dttm = datetime.utcnow( )
+					results = montecarlo( generator, mc_kernel,
+						processes = 2, debug = False, quiet = False, parallel = True,
+						replications = M, delta = delta_method, L = 20, K = 40 )
+					file_name = "HRM-%d_%s_%s_%d-%d_%.4f_%d" % ( D, delta_method.lower( ),
+						start_dttm.strftime( "%Y%m%d-%H%M%S" ), P, K, H, M )
+					sim_save( os.path.join( target_path, file_name ), results, save_durations = True )
+####################################################################################################
+	if True :
 ## Weierstrass processes
-	N, M = 2**16+1, 50
-	P = int( np.log2( N - 1 ) )
+		N, M = 2**16+1, 100
+		P = int( np.log2( N - 1 ) )
 ## Loop over the base scale methods
-	for delta_method in [ 'rng', 'iqr', 'med', ] :
+		for delta_method in [ 'med', 'iqr', 'rng', ] :
 ## Create the necessary directory structure
-		target_path = os.path.join( basepath, "WEI_%d" % ( P, ), delta_method )
-		os.makedirs( target_path )
+			target_path = os.path.join( basepath, "WEI_%d" % ( P, ), delta_method )
+			os.makedirs( target_path )
 ## Run simulations for different Hurst exponents
-		for H in np.linspace( .6, .9, num = 4 ) :
+			for H in [0.5] :#np.linspace( .5, .9, num = 5 ) :
 ## Initalize the generator
-			generator = weierstrass( N = N, H = H, nu0 = 1.2, nue = 1000 )
-			print "Monte-Carlo (%d) for WEI(2**%d+1, %.4f), %s:" % ( M, P, H, delta_method, )
+				generator = weierstrass( N = N, H = H, nu0 = 1.2, nue = 1000 )
+				print "Monte-Carlo (%d) for WEI(2**%d+1, %.4f), %s:" % ( M, P, H, delta_method, )
 ## Get the current timestamp
-			start_dttm = datetime.utcnow( )
+				start_dttm = datetime.utcnow( )
 ## Run the experiment
-			results = montecarlo( generator, mc_kernel,
-				processes = 2, debug = False, quiet = False, parallel = True,
-				replications = M, delta = delta_method, L = 20, K = 40 )
+				results = montecarlo( generator, mc_kernel,
+					processes = 2, debug = False, quiet = False, parallel = True,
+					replications = M, delta = delta_method, L = 20, K = 40 )
 ## Create a meaningful name for the output data blob
-			file_name = "WEI_%s_%s_%d_%.4f_%d" % ( delta_method.lower( ),
-				start_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M )
+				file_name = "WEI_%s_%s_%d_%.4f_%d" % ( delta_method.lower( ),
+					start_dttm.strftime( "%Y%m%d-%H%M%S" ), P, H, M )
 ## Save the data blob
-			sim_save( os.path.join( target_path, file_name ), results, save_durations = True )
+				sim_save( os.path.join( target_path, file_name ), results, save_durations = True )
 
 
 
