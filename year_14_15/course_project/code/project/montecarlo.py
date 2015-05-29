@@ -75,6 +75,7 @@ def wrk_startup( WRK, seed, gen, ker, op = dict() ) :
 ## Initialize own context: this works since the processes live in separate address spaces.
 	rnd = RandomState( seed[ local_id ] )
 	generator, kernel, arguments = cp.deepcopy( gen ), cp.deepcopy( ker ), cp.deepcopy( op )
+	generator.initialize( )
 	generator.set_rnd( rnd )
 
 def wrk_kernel( i ) :

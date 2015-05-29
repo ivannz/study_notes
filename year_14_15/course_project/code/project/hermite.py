@@ -28,6 +28,8 @@ class hermite( fgn ) :
 ## Define the order of the Hermite polynomial
 		self.__coef = np.zeros( d + 1, np.float )
 		self.__coef[ d ] = 1
+	def initialize( self ) :
+		super( hermite, self ).initialize( )
 	def __call__( self ) :
 ## Generate values of a hermite polynomial of the given order at the values
 ##  of a fractional Gaussian Noise with the specified hurst index.
@@ -36,6 +38,8 @@ class hermite( fgn ) :
 		increments = np.cumsum( increments )[ self.__K-1::self.__K ] / ( self.__K ** self.__H )
 		# return self.__t, np.concatenate( ( [ 0 ], increments ) )
 		return self.__t, np.concatenate( ( [ 0 ], increments / np.max( np.abs( increments ) ) ) )
+	def __del__( self ):
+		super( hermite, self ).__del__( )
 	def reset( self ):
 		super( hermite, self ).reset( )
 	def set_rnd( self, numpy_random ) :
