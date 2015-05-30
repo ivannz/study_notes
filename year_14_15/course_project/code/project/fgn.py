@@ -24,8 +24,8 @@ class fgn( object ) :
 		self.__cplx_input  = pyfftw.n_byte_align_empty( 2 * self.__N - 2, 32, dtype = np.complex128 )
 		self.__cplx_output = pyfftw.n_byte_align_empty( 2 * self.__N - 2, 32, dtype = np.complex128 )
 ## Initialize the FFT object: N - 1 is a power of two!!!
-		self.__fft_object = pyfftw.FFTW( self.__cplx_input,
-			self.__cplx_output, direction = 'FFTW_FORWARD', flags = ( 'FFTW_DESTROY_INPUT', ) )
+		self.__fft_object = pyfftw.FFTW( self.__cplx_input, self.__cplx_output,
+			threads = 1, direction = 'FFTW_FORWARD', flags = ( 'FFTW_DESTROY_INPUT', ) )
 ## The autocorrelation structure for the fBM is constant provided the Hurst exponent
 ##  and the size sample are fixed. "Synthese de la covariance du fGn", Synthesise
 ##  the covariance of the fractional Gaussian noise. This autocorrelation function
@@ -73,7 +73,7 @@ class fgn( object ) :
 		return ( np.real( self.__cplx_output[ :self.__N ] ), np.imag( self.__cplx_output[ :self.__N ] ) )
 	def __del__( self ) :
 		self.reset( )
-		del self.__acf_ft
+		# del self.__acf_ft
 ## Reset the internal state of the generator
 	def reset( self ) :
 		del self.__cache[:]

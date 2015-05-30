@@ -17,15 +17,16 @@ class weierstrass( object ) :
 ## I don't understand the mathematics behind these prameters -- must
 ##  investigate further!
   def __init__( self, N, H, nu0 = 1.2, nue = 1000, **kwargs ) :
+    self.__N, self.__H, self.__nu0, self.__nue = N, H, nu0, nue
+    self.__np_rand = None
+  def initialize( self ) :
 ## Get the approximation detail
-    nmax = int( np.fix( np.log( N * 0.5 ) / np.log( nu0 ) ) )
+    nmax = int( np.fix( np.log( self.__N * 0.5 ) / np.log( self.__nu0 ) ) )
 ## Generate time points
-    self.__t = np.arange( N, dtype = np.float ) / nue
+    self.__t = np.arange( self.__N, dtype = np.float ) / self.__nue
 ## Precompute values unchanged from call to call
     levels = np.arange( -nmax, nmax + 1, dtype = np.float )
-    self.__scale, self.__length = nu0 ** ( - levels * H ), 2 * np.pi * ( nu0 ** levels )
-## Setup a local rng
-    self.__np_rand = None
+    self.__scale, self.__length = self.__nu0 ** ( - levels * self.__H ), 2 * np.pi * ( self.__nu0 ** levels )
   def __call__( self ) :
 ## The implementation below basically constructs a fine mesh on the time axis $(t_k)_{i=0}^N\\in [0,1]$ with  
 ##   $$0 = t_0< t_1 < \\ldots < t_{N-1} < t_N = 1$$

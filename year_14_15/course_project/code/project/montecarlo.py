@@ -57,6 +57,7 @@ def mc_run( generator, kernel, replications, **op ) :
 ## For a serieal run, just do the same initialization steps
 		rnd = RandomState( )
 		generator.set_rnd( rnd )
+		generator.initialize( )
 		tick = tm.time( )
 		result = [ ( 0, i, kernel( i, generator, **op ), ) for i in replications ]
 		if not op.get( 'quiet', True ) :
@@ -75,8 +76,8 @@ def wrk_startup( WRK, seed, gen, ker, op = dict() ) :
 ## Initialize own context: this works since the processes live in separate address spaces.
 	rnd = RandomState( seed[ local_id ] )
 	generator, kernel, arguments = cp.deepcopy( gen ), cp.deepcopy( ker ), cp.deepcopy( op )
-	generator.initialize( )
 	generator.set_rnd( rnd )
+	generator.initialize( )
 
 def wrk_kernel( i ) :
 	global local_id, kernel, generator, arguments
