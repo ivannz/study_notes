@@ -2,7 +2,7 @@
 import numpy as np
 
 ## This module handles the task of computing the hitting times, points and
-##  subcrossings for continuous processes
+##  subcrossings for processes with continuous paths.
 
 def xtree_integer_crossings( T, X, y_eps = 0.0 ) :
 ## Compute movement directions
@@ -74,6 +74,7 @@ def xtree_integer_crossings( T, X, y_eps = 0.0 ) :
 ## To normalise the usage, return both the crossing levels and the crossing times.
 	return X_times, X_values
 
+####################################################################################################
 ## Adaptive selection of the basic (finest) grid scale is based on the standard
 ##  deviation of increments of the sample path of process. This verson requires
 ##  that the process be supplied with sampling times.

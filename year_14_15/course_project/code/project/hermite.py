@@ -1,8 +1,6 @@
 # -*- coding: UTF-8 -*-
 import numpy as np
-
 from fgn import fgn
-
 from numpy.polynomial.hermite_e import hermeval
 
 class hermite( fgn ) :
@@ -28,16 +26,16 @@ class hermite( fgn ) :
 ## Define the order of the Hermite polynomial
 		self.__coef = np.zeros( d + 1, np.float )
 		self.__coef[ d ] = 1
-	def initialize( self ) :
-		super( hermite, self ).initialize( )
 	def __call__( self ) :
 ## Generate values of a hermite polynomial of the given order at the values
 ##  of a fractional Gaussian Noise with the specified hurst index.
 		increments = hermeval( fgn.__call__( self ), self.__coef )
 ## The renorm-group transformation, without the renormalisation by the n^{-H}
-		increments = np.cumsum( increments )[ self.__K-1::self.__K ] / ( self.__K ** self.__H )
-		# return self.__t, np.concatenate( ( [ 0 ], increments ) )
+		increments = np.cumsum( increments )[ self.__K-1::self.__K ] ## / ( self.__K ** self.__H )
 		return self.__t, np.concatenate( ( [ 0 ], increments / np.max( np.abs( increments ) ) ) )
+## Use explicit initialization
+	def initialize( self ) :
+		super( hermite, self ).initialize( )
 	def __del__( self ):
 		super( hermite, self ).__del__( )
 	def reset( self ):

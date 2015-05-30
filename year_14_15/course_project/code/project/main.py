@@ -161,7 +161,7 @@ if __name__ == '__main__' :
 ####################################################################################################
 	if False :
 ## Fractional Brownian Motion
-		N, M = 2**20+1, 100
+		N, M = 2**18+1, 1000
 		P = int( np.log2( N - 1 ) )
 ## Loop over the base scale methods
 		for delta_method in [ 'med', ] :
@@ -188,7 +188,7 @@ if __name__ == '__main__' :
 	if False :
 ## Hermite processes
 ## The parameters of the simulation
-		N, K, M = 2**18+1, 2**4, 100
+		N, K, M = 2**18+1, 2**4, 1000
 		P = int( np.log2( N - 1 ) )
 		for delta_method in [ 'med', ] :
 			for D in [ 2, 3, 4, ] :
@@ -209,7 +209,7 @@ if __name__ == '__main__' :
 ####################################################################################################
 	if True :
 ## Weierstrass processes
-		N, M = 2**16+1, 100
+		N, M = 2**18+1, 1000
 		P = int( np.log2( N - 1 ) )
 ## Loop over the base scale methods
 		for delta_method in [ 'med', 'iqr', 'rng', ] :

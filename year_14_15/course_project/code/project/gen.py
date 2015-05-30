@@ -4,6 +4,8 @@ import numpy as np
 class empty( object ) :
 	def __init__( self, *wargs, **kwargs ) :
 		pass
+	def initialize( self, *wargs, **kwargs ) :
+		pass
 	def set_rnd( self, *wargs, **kwargs ) :
 		pass
 	def __call__( self, *wargs, **kwargs ) :
@@ -16,6 +18,8 @@ class test_gen( object ) :
 		self.__cache = list( )
 		self.__N = N
 		self.__np_rand = None
+	def initialize( self ) :
+		pass
 	def set_rnd( self, numpy_random ) :
 		self.__np_rand = numpy_random
 	def __call__( self ) :
