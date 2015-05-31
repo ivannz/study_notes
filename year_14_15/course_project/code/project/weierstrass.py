@@ -40,9 +40,10 @@ class weierstrass( object ) :
     x = np.zeros( len( self.__t ), dtype = np.float )
 ## Draw uniform phase shifts
     phase = 2 * np.pi * self.__np_rand.uniform( size = len( self.__scale ) )
+    cos_phase = np.cos( phase )
 ## For each layer evaluate the trigonometric funcitons
     for k in xrange( len( phase ) ) :
-      x += self.__scale[ k ] * ( np.cos( phase[ k ] ) - np.cos( self.__length[ k ] * self.__t + phase[ k ] ) )
+      x += self.__scale[ k ] * ( cos_phase[ k ] - np.cos( self.__length[ k ] * self.__t + phase[ k ] ) )
     return self.__t, x
   def reset( self ):
     pass

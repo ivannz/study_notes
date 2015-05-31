@@ -351,12 +351,20 @@ def figure_07( figure, method, p, q ) :
 ####################################################################################################
 ####################################################################################################
 ####################################################################################################
-base_path = os.path.realpath( "./output/final/1000-19" )
-process_folders = [ 'HRM-2_19-16', 'HRM-3_19-16', 'HRM-4_19-16', 'WEI_19', 'FBM_19', ]
-# base_path = os.path.realpath( "./output/final/100-16" )
-# process_folders = [ 'FBM_16', 'HRM-2_16-16', 'HRM-3_16-16', 'HRM-4_16-16', 'WEI_16', ]
+# base_path = os.path.realpath( "./output/final/1000-19" )
+# process_folders = [ 'HRM-2_19-16', 'HRM-3_19-16', 'HRM-4_19-16', 'WEI_19', 'FBM_19', ]
+# base_path = os.path.realpath( "./output/final/10000-17" )
+# process_folders = [ 'FBM_17', 'HRM-2_17-16', 'HRM-3_17-16', 'HRM-4_17-16', 'WEI_17', ]
 # base_path = os.path.realpath( "./output/final/100-18" )
 # process_folders = [ 'FBM_20', 'HRM-2_18-16', 'HRM-3_18-16', 'HRM-4_18-16', 'WEI_20', ]
+####################################################################################################
+# base_path = os.path.realpath( "./output/final/1000-18" )
+# process_folders = [ 'HRM-2_18-16', 'HRM-3_18-16', 'HRM-4_18-16', 'WEI_18', 'FBM_18', ]
+# base_path = os.path.realpath( "./output/final/1000-21" )
+# process_folders = [ 'WEI_21', 'FBM_21', ]
+base_path = os.path.realpath( "./output/final/10000-20" )
+process_folders = [ 'FBM_20', ]
+
 
 ## Quickly extract the info
 kinds = [ process.split( '_' )[ 0 ] for process in process_folders ]
