@@ -2,7 +2,7 @@
 %% http://bibdesk.sourceforge.net/
 
 
-%% Created for Ivan Nazarov at 2015-05-26 14:00:37 +0300 
+%% Created for Ivan Nazarov at 2015-06-01 08:24:28 +0300 
 
 
 %% Saved with string encoding Unicode (UTF-8) 
@@ -113,61 +113,59 @@
 	Bdsk-Url-2 = {http://dx.doi.org/10.1016/j.spa.2013.12.011}}
 
 @book{bulinskii2005teoriya2516755,
-    author = "Булинский, А.В. and Ширяев, А.Н.",
-    title = "Теория случайных процессов",
-    year = "2005",
-    isbn = "5-9221-0335-0",
-    pages = "400",
-    publisher = "ФИЗМАТЛИТ Москва",
-    annote = "Книга включена в серию {"}Классический университетский учебник{"} (первое издание - ФИЗМАТЛИТ, 2003). Она создана на основе лекций, прочитанных авторами в разные годы на механико-математическом факультете МГУ им. М.В.Ломоносова. Материал значительно превышает рамки учебного курса, чтобы дать более глубокое представление о разнообразных разделах теории и ее применениях. Сложные доказательства отнесены в {"}Приложения{"}. {"}Дополнения и упражнения{"}  помогают в усвоении материала. Для профессорско-преподавательского состава, научных работников, аспиранттов и студентов старших курсов университетов. Иллюстраций - 19, библиография - 198 названий.",
-    language = "russian"
-}
+	Annote = {Книга включена в серию {}},
+	Author = {Булинский, А.В. and Ширяев, А.Н.},
+	Isbn = {5-9221-0335-0},
+	Language = {russian},
+	Pages = {400},
+	Publisher = {ФИЗМАТЛИТ Москва},
+	Title = {Теория случайных процессов},
+	Year = {2005},}
 
 @article{Dietrich:1997:FES:257708.257735,
- author = {Dietrich, C. R. and Newsam, G. N.},
- title = {Fast and Exact Simulation of Stationary Gaussian Processes Through Circulant Embedding  of the Covariance Matrix},
- journal = {SIAM J. Sci. Comput.},
- issue_date = {July 1997},
- volume = {18},
- number = {4},
- month = jul,
- year = {1997},
- issn = {1064-8275},
- pages = {1088--1107},
- numpages = {20},
- url = {http://dx.doi.org/10.1137/S1064827592240555},
- doi = {10.1137/S1064827592240555},
- acmid = {257735},
- publisher = {Society for Industrial and Applied Mathematics},
- address = {Philadelphia, PA, USA},
- keywords = {Monte Carlo simulations, geostatistics, random fields, time series},
- Abstract = {Geostatistical simulations often require the generation of numerous realizations of a stationary Gaussian process over a regularly meshed sample grid $\Omega$. This paper shows that for many important correlation functions in geostatistics, realizations of the associated process over $m+1$ equispaced points on a line can be produced at the cost of an initial FFT of length $2m$ with each new realization requiring an additional FFT of the same length. In particular, the paper first notes that if an $(m+1)\times(m+1) $ Toeplitz correlation matrix $R$ can be embedded in a nonnegative definite $2M\times2M$ circulant matrix $S$, exact realizations of the normal multivariate $y \sim {\cal N}(0,R)$ can be generated via FFTs of length $2M$. Theoretical results are then presented to demonstrate that for many commonly used correlation structures the minimal embedding in which $M = m$ is nonnegative definite. Extensions to simulations of stationary fields in higher dimensions are also provided and illustrated.},
-} 
+	Abstract = {Geostatistical simulations often require the generation of numerous realizations of a stationary Gaussian process over a regularly meshed sample grid $\Omega$. This paper shows that for many important correlation functions in geostatistics, realizations of the associated process over $m+1$ equispaced points on a line can be produced at the cost of an initial FFT of length $2m$ with each new realization requiring an additional FFT of the same length. In particular, the paper first notes that if an $(m+1)\times(m+1) $ Toeplitz correlation matrix $R$ can be embedded in a nonnegative definite $2M\times2M$ circulant matrix $S$, exact realizations of the normal multivariate $y \sim {\cal N}(0,R)$ can be generated via FFTs of length $2M$. Theoretical results are then presented to demonstrate that for many commonly used correlation structures the minimal embedding in which $M = m$ is nonnegative definite. Extensions to simulations of stationary fields in higher dimensions are also provided and illustrated.},
+	Acmid = {257735},
+	Address = {Philadelphia, PA, USA},
+	Author = {Dietrich, C. R. and Newsam, G. N.},
+	Doi = {10.1137/S1064827592240555},
+	Issn = {1064-8275},
+	Issue_Date = {July 1997},
+	Journal = {SIAM J. Sci. Comput.},
+	Keywords = {Monte Carlo simulations, geostatistics, random fields, time series},
+	Month = jul,
+	Number = {4},
+	Numpages = {20},
+	Pages = {1088--1107},
+	Publisher = {Society for Industrial and Applied Mathematics},
+	Title = {Fast and Exact Simulation of Stationary Gaussian Processes Through Circulant Embedding of the Covariance Matrix},
+	Url = {http://dx.doi.org/10.1137/S1064827592240555},
+	Volume = {18},
+	Year = {1997},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1137/S1064827592240555}}
 
-@ARTICLE{Perrin:1058211, 
-author={Perrin, E. and Harba, R. and Jennane, R. and Iribarren, I.}, 
-journal={Signal Processing Letters, IEEE}, 
-title={Fast and exact synthesis for 1-D fractional Brownian motion and fractional Gaussian noises}, 
-year={2002}, 
-month={Nov}, 
-volume={9}, 
-number={11}, 
-pages={382-384}, 
-abstract={In this letter, it is shown that fast and exact fractional Brownian motion (fBm) and fractional Gaussian noise (fGn) signals can be synthesized by the circulant embedding method (CEM). CEM consists in embedding the N/spl times/N covariance matrix of the stationary fGn process in a larger 2M/spl times/2M circulant matrix such that M /spl ges/N-1. CEM is exact, since second-order statistics of the generated data are those of the Gaussian fGn. CEM is fast, since the optimal case M=N-1 can be reached. Fast and exact fBm sequences can be easily recovered from fGn ones.}, 
-keywords={Brownian motion;Gaussian noise;covariance matrices;signal synthesis;1D fractional Brownian motion;circulant embedding method;circulant matrix;covariance matrix;exact sequences;fast sequences;fractional Gaussian noise;second-order statistics;signal synthesis;1f noise;Autocorrelation;Brownian motion;Covariance matrix;Gaussian noise;Gaussian processes;Laboratories;Nuclear electronics;Signal generators;Signal synthesis}, 
-doi={10.1109/LSP.2002.805311}, 
-ISSN={1070-9908},}
+@article{Perrin:1058211,
+	Abstract = {In this letter, it is shown that fast and exact fractional Brownian motion (fBm) and fractional Gaussian noise (fGn) signals can be synthesized by the circulant embedding method (CEM). CEM consists in embedding the N/spl times/N covariance matrix of the stationary fGn process in a larger 2M/spl times/2M circulant matrix such that M /spl ges/N-1. CEM is exact, since second-order statistics of the generated data are those of the Gaussian fGn. CEM is fast, since the optimal case M=N-1 can be reached. Fast and exact fBm sequences can be easily recovered from fGn ones.},
+	Author = {Perrin, E. and Harba, R. and Jennane, R. and Iribarren, I.},
+	Doi = {10.1109/LSP.2002.805311},
+	Issn = {1070-9908},
+	Journal = {Signal Processing Letters, IEEE},
+	Keywords = {Brownian motion;Gaussian noise;covariance matrices;signal synthesis;1D fractional Brownian motion;circulant embedding method;circulant matrix;covariance matrix;exact sequences;fast sequences;fractional Gaussian noise;second-order statistics;signal synthesis;1f noise;Autocorrelation;Brownian motion;Covariance matrix;Gaussian noise;Gaussian processes;Laboratories;Nuclear electronics;Signal generators;Signal synthesis},
+	Month = {Nov},
+	Number = {11},
+	Pages = {382-384},
+	Title = {Fast and exact synthesis for 1-D fractional Brownian motion and fractional Gaussian noises},
+	Volume = {9},
+	Year = {2002},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1109/LSP.2002.805311}}
 
 @proceeding{doi:10.1117/12.638404,
-author = {Arroum, W. and Jones, O.D.},
-title = {Estimation for time-changed self-similar stochastic processes},
-journal = {Proc. SPIE},
-volume = {6039},
-number = {},
-pages = {60390F-60390F-12},
-abstract = {We consider processes of the form X(t) = X~(θ(t )) where X~ is a self-similar process with stationary increments and θ is a deterministic subordinator with a periodic activity function a  = θ'&gt; 0. Such processes have been proposed as models for high-frequency financial data, such as currency exchange rates, where there are known to be daily and weekly periodic fluctuations in the volatility, captured here by the periodic activity function. We review an existing estimator for the activity function then propose three new methods for estimating it and present some experimental studies of their performance. We finish with an application to some foreign exchange and FTSE100 futures data.},
-year = {2005},
-doi = {10.1117/12.638404},
-URL = { http://dx.doi.org/10.1117/12.638404},
-eprint = {},
-}
+	Abstract = {We consider processes of the form X(t) = X~(θ(t )) where X~ is a self-similar process with stationary increments and θ is a deterministic subordinator with a periodic activity function a  = θ'&gt; 0. Such processes have been proposed as models for high-frequency financial data, such as currency exchange rates, where there are known to be daily and weekly periodic fluctuations in the volatility, captured here by the periodic activity function. We review an existing estimator for the activity function then propose three new methods for estimating it and present some experimental studies of their performance. We finish with an application to some foreign exchange and FTSE100 futures data.},
+	Author = {Arroum, W. and Jones, O.D.},
+	Doi = {10.1117/12.638404},
+	Journal = {Proc. SPIE},
+	Pages = {60390F-60390F-12},
+	Title = {Estimation for time-changed self-similar stochastic processes},
+	Url = {http://dx.doi.org/10.1117/12.638404},
+	Volume = {6039},
+	Year = {2005},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1117/12.638404}}
