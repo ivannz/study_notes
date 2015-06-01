@@ -71,73 +71,105 @@ and $X(0)$ are jointly independent.
 
 % section definition (end)
 
-\subsection{Brownian Motion} % (fold)
-\label{sub:brownian_motion}
+\section{Fractional Brownian Motion} % (fold)
+\label{sec:fractional_brownian_motion}
 
-One of most well studied processes is the Brownian motion. Usually it is axiomatically
-as a stochastic process $\bigl\{W(t)\bigr\}$ with the following four properties: \begin{itemize}
-	\item $W(t)$ is almost surely $0$ at $t=0$;
-	\item $\{W(t)\}$ has independent and stationary increments;
-	\item for all $t\geq 0$ the random variable $W(t)$ has Gaussian distribution with
-	parameters mean $0$ and variance $t$;
-	\item the sample paths of $\{W(t)\}$ are almost surely continuous functions.
-\end{itemize}
-
-It is easy to see that $\{W(t)\}$ is an $\sfrac{1}{2}$-SSSI process. Indeed, let $a>0$
-and consider a process $V(t) = \frac{1}{\sqrt{a}} W(at)$. Obviously $V(0) = 0$ almost
-surely, since $V(0) = \sfrac{1}{\sqrt{a}} W(a 0) = 0$. Furthermore this process inherits
-stationary increments from $W(t)$ : \begin{align*}
-	\{ V(t+s) - V(t) \} &= \biggl\{ \frac{1}{\sqrt{a}}( W(at+as) - W(at) ) \biggr\}\\
-	&\overset{\Dcal}{=} \biggl\{ \frac{1}{\sqrt{a}}( W(as) ) \biggr\} \\
+It was mentionend in section~\ref{sec:the_crossing_tree_of_brownian_motion} theat Brownina
+Motion is an example of a self-similar process. In fact it is an $\sfrac{1}{2}$-SSSI process.
+Indeed, let $a>0$ and consider a process $V(t) = \frac{1}{\sqrt{a}} B(at)$. Obviously $V(0) = 0$ almost
+surely, since $V(0) = \sfrac{1}{\sqrt{a}} B(a 0) = 0$. Furthermore this process inherits
+stationary increments from $B(t)$ : \begin{align*}
+	\{ V(t+s) - V(t) \} &= \biggl\{ \frac{1}{\sqrt{a}}( B(at+as) - B(at) ) \biggr\}\\
+	&\overset{\Dcal}{=} \biggl\{ \frac{1}{\sqrt{a}}( B(as) ) \biggr\} \\
 	&= \{ V(s) \}
 \end{align*}
 and independence of increments as well -- just pick $(t_k)_{k=1}^n$ with $t_k<t_{k+1}$ and
 observe that $\bigl(V(t_{k+1}) - V(t_k)\bigr)_{k=1}^n$ are mutually independent since
-$\bigl(W(s_{k+1}) - W(s_k)\bigr)_{k=1}^n$ for $s_k = a t_k$ are. Path continuity follows
-from continuity of sampel paths of $W(t)$ and the fact that $t\to a t$ is a continuous map. 
+$\bigl(B(s_{k+1}) - B(s_k)\bigr)_{k=1}^n$ for $s_k = a t_k$ are. Path continuity follows
+from continuity of sampel paths of $B(t)$ and the fact that $t\to a t$ is a continuous map. 
 Finally $\mathcal{N}(0, at) \sim \sqrt{a} \mathcal{N}(0,t)$ implies that $V(t)$ is Brownian
 Motion as well.
 
-\subsection{Fractional Brownian Motion} % (fold)
-\label{sub:fractional_brownian_motion}
-
 Another example of an $H$-SSSI process, which is frequently used as a reference for
 self-similarity and scale invariance studies is the \textbf{f}ractional \textbf{B}rownian
-\textbf{M}otion a generalisation of the $\tfrac{1}{2}$-SS Brownian Motion to a general
-$H$-SS Gaussian process with $H\in (\sfrac{1}{2}, 1)$.
+\textbf{M}otion, -- a generalisation of the $\tfrac{1}{2}$-SS Brownian Motion to a general
+$H$-SS Gaussian process with $H\in (0, 1)$.
 
-Formally, fractional Brownian Motion is a mean zero Gaussian process $\bigl\{X(t)\bigr\}$,
-(its every finite-dimensional joint distributions are multivariate normal), with
-the following covariance structure of a general zero-mean $H$-SSSI stochastic process:
+Formally, fractional Brownian Motion introduced in \cite{doi:10.1137/1010093} is a
+mean zero Gaussian process $\bigl\{X(t)\bigr\}$, (its every finite-dimensional joint
+distributions are multivariate normal), with the covariance structure of a general
+zero-mean $H$-SSSI stochastic process:
 \[ \ex X(s) X(t) = \frac{1}{2} \bigl(t^{2H} + s^{2H} - |t-s|^{2H}\bigr) \]
-
-
-
-% subsection fractional_brownian_motion (end)
-
 %% bulinskii2005teoriya2516755 p.51
-A random vector $X\in \Real^d$ is Gaussian, or $X\sim \mathcal{N}_d(\mu,\Sigma)$, if
-there exists $\mu\in \Real^d$ and a positive definite matrix $\Sigma\in \Real^{d\times d}$
-such that the probability density of $X$ is given by
-\[ p_X(x) = (2\pi)^{-\frac{n}{2}}|\Sigma|^{-\frac{1}{2}}\text{exp}\bigl\{ - (x-\mu)'\Sigma^{-1}(x-\mu) \bigr\} \]
-Now, 
 
- is an example of an $H$-SSSI
-process with $H = \tfrac{1}{2}$. Recall that a 
+Theorem 1.3.3 on p.~6 of \cite{embrechtsselfsimilar} establishes that a fractional
+Browninan Motion $\{B_h(t)\}_{t\geq 0}$ is an $H$-SSSI process, for the follwing integral
+representation up to a mutliplicative constant
+\[
+\int_{-\infty}^0 (t-s)^{H-\tfrac{1}{2}} - (-s)^{H-\tfrac{1}{2}} dB(s)
++ \int_0^t |t-s|^{H-\tfrac{1}{2}} dB(s)
+\]
+If $H = 1$ then the fractional broader motion degenreates to $B_1(t) = tB(1)$ almost
+surely. The class of all Fractional Brownian motions conides with the class of all
+Gaussian self-similar processes with stationary incerments, see \cite{embrechtsselfsimilar}. 
 
-% subsection brownian_motion (end)
+In fact, fractional Brownian motion is an example of a broader class of self-similar
+processes known as the \textbf{Hermite} processes. They exhibit non-Gaussianity and have
+strongly dependent incerments.
 
-$\bigl\{X(t)\bigr\}$ have similar
-correlation structure:
+% section fractional_brownian_motion (end)
 
+\section{Hermite processes} % (fold)
+\label{sec:hermite_processes}
 
+Hermite processes inherit their name from the stochastic integral kernel used
+in their definition, and are an extremenly important example of processes finite-
+dimensional joint distributions of which depart significantly Gaussian. 
 
-The exponential form of $b$
-follows from $X(t) \sim X(0)+o_\pr(t)$ (by stochastic continuity) and the following observation: by self-similarity
-for any $a_1, a_2>0$ there exist $b_1,b_2>0$ such that
-\[ \bigl\{X(\tfrac{a_1}{a_2}t)\bigr\} \overset{\Dcal}{=} \bigl\{\tfrac{b_1}{b_2} X(t)\bigr\} \]
+A probabilistic Hermite polynomial of order $k\geq0$ is defined as 
+\[ H_k(x) = (-1)^k e^{-\frac{x^2}{2}} \frac{d^k}{dx^k} e^{-\frac{x^2}{2}} \]
+and is a solution to the following differential equation
+\[
+ \frac{d}{dx}\biggl( e^{-\frac{x^2}{2}} \frac{d}{dx} f\biggr) + \lambda e^{-\frac{x^2}{2}} f = 0
+\]
+These polynomials constitute an orthogonal basis of the Hilbert space $\Lcal^2(\Real, \mu)$
+with measure $\mu$ being the Lebesgue integral $\int e^{-\frac{x^2}{2}} dx$ and the inner
+product given by
+\[
+\langle f, g\rangle = \int_\Real f g d\mu = \int_\Real f g e^{-\frac{x^2}{2}} dx
+\]
 
-, i.e $\ex\bigl(X(t)\bigr) = 0$ for all $t$,
+The Hermite process of order $m$ with self-similarity parameter $H\in(\tfrac{1}{2},1)$,
+denoted by $\bigl\{Z_H^p(t)\bigr\}_{t\geq 0}$, is defined via s mutlivaraive stochastic
+integral
+\[
+Z_H^p(t) = \underset{\Real^m}{\int \cdots \int} \Biggl(
+\int^t_0 \prod_{k=1}^m (u-x_k)_+^{-\frac{1}{2}-\frac{1-H}{m}} du\Biggr) dB(x_1) \ldots dB(x_q)
+\]
+over independent realizations of Gaussain white moise $dB(x_j)$.
+The Hermite process of order $1$ is fractional Brownian Motion, whereas higher order
+Hermite processes correspond to non-Gaussian $H$-SSSI, \cite{Bai20141710}.
 
+% section hermite_processes (end)
+
+\section{Weierstrass function} % (fold)
+\label{sec:weierstrass_function}
+
+Yet another example of non-Gaussian $H$-SSSI process is the random Weierstrass function
+defined as the limiting random function of the sum of randomly phase shifted and scaled
+cosines
+\[
+f(t)
+= \sum_{k\in \mathbb{Z}} \lambda_0^{-kH}\bigl\{ \cos(\phi_k)
+- \cos(2\pi \lambda_0^k t + \phi_k) \bigr\} 
+\]
+for $(\phi_k)_{k\in\mathbb{Z}}\sim \mathcal{U}(0,2\pi)$ iid -- the random phase shift of
+the $k$-th layer harmonics. The parameter $\lambda_0$ govern the base scale of the
+process and is knows as ``the fundamental harmonic''. The function $f_h(t)$ has
+continuous paths, yet is nowhere differentiable, even in the deterministic case
+when all phase shifts are identically zero. The Weierstrass function is known to be
+$H$-self similar (see~\cite{decrouez2013estimation}).
+
+% section weierstrass_function (end)
 
 % chapter h_sssi_processes (end)

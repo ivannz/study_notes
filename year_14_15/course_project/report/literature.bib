@@ -2,7 +2,7 @@
 %% http://bibdesk.sourceforge.net/
 
 
-%% Created for Ivan Nazarov at 2015-06-01 08:24:28 +0300 
+%% Created for Ivan Nazarov at 2015-06-01 14:27:28 +0300 
 
 
 %% Saved with string encoding Unicode (UTF-8) 
@@ -120,7 +120,7 @@
 	Pages = {400},
 	Publisher = {ФИЗМАТЛИТ Москва},
 	Title = {Теория случайных процессов},
-	Year = {2005},}
+	Year = {2005}}
 
 @article{Dietrich:1997:FES:257708.257735,
 	Abstract = {Geostatistical simulations often require the generation of numerous realizations of a stationary Gaussian process over a regularly meshed sample grid $\Omega$. This paper shows that for many important correlation functions in geostatistics, realizations of the associated process over $m+1$ equispaced points on a line can be produced at the cost of an initial FFT of length $2m$ with each new realization requiring an additional FFT of the same length. In particular, the paper first notes that if an $(m+1)\times(m+1) $ Toeplitz correlation matrix $R$ can be embedded in a nonnegative definite $2M\times2M$ circulant matrix $S$, exact realizations of the normal multivariate $y \sim {\cal N}(0,R)$ can be generated via FFTs of length $2M$. Theoretical results are then presented to demonstrate that for many commonly used correlation structures the minimal embedding in which $M = m$ is nonnegative definite. Extensions to simulations of stationary fields in higher dimensions are also provided and illustrated.},
@@ -169,3 +169,54 @@
 	Volume = {6039},
 	Year = {2005},
 	Bdsk-Url-1 = {http://dx.doi.org/10.1117/12.638404}}
+
+@article{ECP1673,
+	Abstract = {We give characterisations for Brownian motion and continuous local martingales, using the crossing tree, which is a sample-path decomposition based on first-passages at nested scales. These results are based on ideas used in the construction of Brownian motion on the Sierpinski gasket (Barlow and Perkins 1988). Using our characterisation we propose a test for the continuous martingale hypothesis, that is, that a given process is a continuous local martingale. The crossing tree gives a natural break-down of a sample path at different spatial scales, which we use to investigate the scale at which a process looks like a continuous local martingale. Simulation experiments indicate that our test is more powerful than an alternative approach which uses the sample quadratic variation.},
+	Author = {Owen Jones and David Rolls},
+	Doi = {10.1214/ECP.v16-1673},
+	Fjournal = {Electronic Communications in Probability},
+	Issn = {1083-589X},
+	Journal = {Electron. Commun. Probab.},
+	Keywords = {continuous martingale hypothesis; crossing-tree; realised volatility; time-change},
+	Pages = {no. 56, 638-651},
+	Title = {A characterisation of, and hypothesis test for, continuous local martingales},
+	Url = {http://ecp.ejpecp.org/article/view/1673},
+	Volume = {16},
+	Year = {2011},
+	Bdsk-Url-1 = {http://ecp.ejpecp.org/article/view/1673},
+	Bdsk-Url-2 = {http://dx.doi.org/10.1214/ECP.v16-1673}}
+
+@article{doi:10.1137/1010093,
+	Author = {Benoit B. Mandelbrot and John W. Van Ness},
+	Doi = {10.1137/1010093},
+	Eprint = {http://dx.doi.org/10.1137/1010093},
+	Journal = {SIAM Review},
+	Number = {4},
+	Pages = {422-437},
+	Title = {Fractional Brownian Motions, Fractional Noises and Applications},
+	Url = {http://dx.doi.org/10.1137/1010093},
+	Volume = {10},
+	Year = {1968},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1137/1010093}}
+
+@inproceedings{decrouez2013estimation,
+	Author = {Decrouez, Geoffrey and Amblard, Pierre-Olivier and Jones, OD},
+	Booktitle = {XXIV{\`e}me colloque GRETSI (GRETSI 2013)},
+	Pages = {cdrom},
+	Title = {Estimation of the multifractal spectrum using the crossing tree},
+	Year = {2013}}
+
+@article {WRCR:WRCR6232,
+author = {Dietrich, C. R. and Newsam, G. N.},
+title = {A fast and exact method for multidimensional gaussian stochastic simulations},
+journal = {Water Resources Research},
+volume = {29},
+number = {8},
+issn = {1944-7973},
+url = {http://dx.doi.org/10.1029/93WR01070},
+doi = {10.1029/93WR01070},
+pages = {2861--2869},
+keywords = {Stochastic hydrology, Groundwater/surface water interaction, Techniques applicable in three or more fields},
+year = {1993},
+abstract = {To generate multidimensional Gaussian random fields over a regular sampling grid, hydrogeologists can call upon essentially two approaches. The first approach covers methods that are exact but computationally expensive, e.g., matrix factorization. The second covers methods that are approximate but that have only modest computational requirements, e.g., the spectral and turning bands methods. In this paper, we present a new approach that is both exact and computationally very efficient. The approach is based on embedding the random field correlation matrix R in a matrix S that has a circulant/block circulant structure. We then construct products of the square root S1/2 with white noise random vectors. Appropriate sub vectors of this product have correlation matrix R, and so are realizations of the desired random field. The only conditions that must be satisfied for the method to be valid are that (1) the mesh of the sampling grid be rectangular, (2) the correlation function be invariant under translation, and (3) the embedding matrix S be nonnegative definite. These conditions are mild and turn out to be satisfied in most practical hydrogeological problems. Implementation of the method requires only knowledge of the desired correlation function. Furthermore, if the sampling grid is a d-dimensional rectangular mesh containing n points in total and the correlation between points on opposite sides of the rectangle is vanishingly small, the computational requirements are only those of a fast Fourier transform (FFT) of a vector of dimension 2dn per realization. Thus the cost of our approach is comparable with that of a spectral method also implemented using the FFT. In summary, the method is simple to understand, easy to implement, and is fast.},
+}

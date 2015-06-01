@@ -11,6 +11,8 @@
 \usepackage{amsmath, amsfonts, xfrac}
 \usepackage{mathtools}
 
+\usepackage{multirow}
+
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 
@@ -58,13 +60,13 @@
 \begin{abstract}
 Дерево пересечеинй -- сарвнительно недавно созданный иструмент анализа самоподобия
 и масштадной инвариантности даных сетеовго трафика, финиасовый временных рядов, а
-также временных данных естественных явялений, таких как земелтрясения, турбулентность
+также временных данных естественных явялений, таких как землетрясения, турбулентность
 и пульс. Данный инструмент является специальным представлением данных в широком
 диапазоне масштабов и независимое от временных параметров ряда. В данной работе
 приводится описание дерева пересечений, даётся его теоретическая и практическая
 конструкция. Затем данный инструмент прменяется к самоподобным процессам со стацонарными
-приращениями для вявления общих характеристик дерева в данном классе стохастических
-процессов.
+приращениями для получения эмпирических свидетельств касательно общих 
+дерева пересечений в данном классе стохастических процессов.
 \end{abstract}
 
 \selectlanguage{english}
@@ -75,8 +77,8 @@ and biology, such as turbulence, earthquakes and heart beat. It provides an ad-h
 representation of the data across a wide range of resolutions and independent of
 its time scale. In this paper theoretical and practical construction of the Crossing
 Tree is presented. This tool is applied to analyse self-similar signals of processes
-known as Hurst self-similar processes with stationary increments to study the common
-features of the constructed tree in this class of processes.
+known as Hurst self-similar processes with stationary increments to gather evidence 
+of the common features of the constructed crossing trees in this class of processes.
 \end{abstract}
 
 \selectlanguage{english}
@@ -87,18 +89,28 @@ features of the constructed tree in this class of processes.
 %% The project itself
 \selectlanguage{english}
 
-\chapter*{Introduction} % (fold)
+\chapter{Introduction} % (fold)
 \label{cha:introduction}
 
-% chapter* introduction (end)
+Write something here....
+
+% chapter introduction (end)
 
 %% Include the contents of the second chapter
 \clearpage
- \include{Chapter2}
+\include{Chapter2}
 
 %% Include the contents of the third chapter
 \clearpage
 \include{Chapter3}
+
+%% The contents of the fourth chapter
+\clearpage
+\include{Chapter4}
+
+%% Include the conclusions
+\clearpage
+\include{conclusion}
 
 %% End of the report: lists of object and references
 % \clearpage \listoffigures
