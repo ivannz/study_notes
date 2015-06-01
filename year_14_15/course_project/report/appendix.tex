@@ -1,0 +1,70 @@
+\chapter*{Appendix} % (fold)
+\label{cha:appendix}
+
+\section*{Details on the practical procedure} % (fold)
+\label{sec:details_on_the_practical_procedure}
+
+In the appendix a brief description of the parctical crossing tree costruction
+procedure is given.
+
+Recall that the tree is constructed in two passes: initial detection passages over
+levels of $\delta \mathbb{Z}$ grid, which also discrds within-band movements, and
+the pruning phase, where re-crossings are eliminated.
+
+Before the first pass through the data the time series $x_j$ is shifted and scaled to
+series $z_i = \frac{1}{ \delta }\bigl(x_j - x_0\bigr)$, so that the constructed 
+is rooted at $t=0$, since the process sets off from the origin.
+
+The first pass sweeps through consecutive increments of the series given by pairs
+$(t_i, z_i)$ and $(t_{i+1}, z_{i+1})$ for $i=1, \ldots, N-1$. For each increment
+its direction is determined by the sign of the difference $\Delta_i=z_{i+1}-z_i$,
+and depending on it, the range of grid levels passed is computed. The range of an
+increment $i$ a subset of integers $R_i = [a_i,b_i]\cup\mathbb{Z}$, where the
+boundaries $a_i$ and $b_i$ are determined using the following logic
+\begin{description}
+    \item[Upcrossing] if $\Delta_i > 0$ then $a_i = \lceil z_i \rceil$
+    and $b_i = \lfloor z_{i+1}\rfloor$;
+    \item[Downcrossing] for $\Delta_i < 0$ the range given by $b_i = \lceil z_{i+1} \rceil$
+    and $a_i = \lfloor z_i\rfloor$.
+\end{description}
+In an rare case of sideways movement, $R_i = \emptyset$. Also note that $[a,b] = \emptyset$
+whenever $b<a$. During the first pass,
+
+Movements of the normalised process $(z_i)$ that wiggle strictly within a band
+between levels of the grid $\delta \mathbb{Z}$ and do not do not pass or touch
+through a level have empty range, and are discarded.
+
+The second pass checks if $b_{j-} = a_j$ for any crossing $j\in J$, where
+$J = \{j : R_j\neq \emptyset\}$ and the index $j-$ for any $j\in J$ is defined as
+$j- = \max\{i\in J : i < j\}$, or $-\infty$ if $j\in J$ is the very first apparent
+crossing of the grid $\delta \mathbb{Z}$, and $a_{j-}$ is taken to be $-\infty$.
+
+If the first level passed by $j\in J$ coincides with the last levels crossed by $j-$
+then the very first crossing event in the $j$-th increment is a re-crossing evnet,
+and thus should be eliminated. This is done by adjusting the $a_i$ in the direction
+of the increment $j$. The ranges are undated accordingly and empty ones are discarded.
+
+These passes compute the levels the sample path apparently crossed, and the crossing
+times are estimated using linear interpolation between times $t_i$ and $t_{i+1}$ with
+weights determined by passed level. The formula the crossing time of level $l\in R_i$
+during the $i$-th increment is
+\[
+\tau_{il} = t_i + \bigl(t_{i+1} - t_i\bigr) \frac{l - z_i}{z_{i+1} - z_i}
+\]
+
+The crossing times of a coarser resolution grid are computed based on the 
+data provided the next finer resolution in the same way the second pass functions:
+since the resolution is halved between successive tree levels, the crossing times
+estimated at resolution $\delta 2^{n+1}$ are by construction a subset of crossing
+times of a grid $\delta 2^n$. Inded, if an increment $j$ passed a line $m \delta 2^{n+1}$
+then this very same passed a line $2m \delta 2^n$ of the finer grid and the interpolation
+coefficient used to compute the crossing time is unchanged
+\begin{align*}
+	\frac{m - \frac{x_j - x_0}{\delta 2^{n+1}}}{ \frac{x_{j+1} - x_j}{\delta 2^{n+1}} }
+	&= \frac{2m - \frac{x_j - x_0}{\delta 2^n}}{ \frac{x_{j+1} - x_j}{\delta 2^n} } \\
+\end{align*}
+Thus, since the incrementis the same, the corrins time reamins the same.
+
+% section* details_on_the_practical_procedure (end)
+
+% chapter* appendix (end)

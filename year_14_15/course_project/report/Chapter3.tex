@@ -1,0 +1,143 @@
+\chapter{$H$-SSSI processes} % (fold)
+\label{cha:h_sssi_processes}
+
+This section will cover the basic definitions and properties of self-similar processes
+studied in this paper. In general we will consider a process $\bigl\{X(t)\bigr\}$ to be
+a continuous-time real-valued stochastic processes defined for all $t\in [0,+\infty)$.
+The contents of this section are quite general and are based on the following papers and
+text books: \cite{bulinskii2005teoriya2516755}, \cite{Bai20141710}, \cite{Chronopoulou:1114288}
+\cite{embrechts2000introduction} and \cite{embrechtsselfsimilar} to name a few.
+
+\section{Definition} % (fold)
+\label{sec:definition}
+
+Before proceeding with the definitions and properties, it is necessary to clarify, what
+is meant by stochastic equivalence of random processes. Processes $\bigl\{X(t)\bigr\}$ and
+$\bigl\{Y(t)\bigr\}$ are equivalent in finite-dimensional distributions, or symbolically
+$\{X(t)\} \overset{\Dcal}{=} \{Y(t)\}$, if for all $n\geq1$ and all $(t_k)_{k=1}^n\in [0,+\infty)$
+with $t_k<t_{k+1}$ it is true that
+\[ \bigl(X(t_k)\bigr)_{k=1}^n \overset{\Dcal}{\sim} \bigl(Y(t_k)\bigr)_{k=1}^n \]
+where $A\overset{\Dcal}{\sim} B$ denotes equality of distribution of random variables
+$A$ and $B$.
+
+A process $\bigl\{X(t)\bigr\}_{t\geq 0}$ is called \textbf{self-similar}, of \textbf{SS} for
+short, if for any $a>0$ there exists $b>0$ such that
+\[ \bigl\{X(at)\bigr\} \overset{\Dcal}{=} \bigl\{b X(t)\bigr\} \]
+their finite-dimensional distributions coincide.
+
+A process $\bigl\{X(t)\bigr\}$ is said to be stochastically continuous at $t\geq0$ if
+$\lim_{h\to 0} \pr\bigl\{ |X(t+h)-X(t)| \geq \epsilon \bigr\} = 0$ for arbitrary
+$\epsilon > 0$.
+
+It was shown by Lamperti in 1962 that whenever a self-similar process $\bigl\{X(t)\bigr\}$
+has non-degenerate point distributions (non-trivial), and is stochastically continuous
+at $t=0$, there necessarily exists a constant $H\geq 0$ such that any $a>0$ the constant
+$b$ in the definition of self-similarity is given by $b=a^H$, i.e
+\[ \bigl\{X(at)\bigr\} \overset{\Dcal}{=} \bigl\{a^H X(t)\bigr\} \]
+Uniqueness of $H$ follows from the fact that $b_1 X\overset{\Dcal}{\sim} b_2 X$ implies
+$b_1=b_2$ for any non-degenerate random variable $X$.
+
+This theorem gives the definition of an $H$-\textbf{S}elf-\textbf{S}imilarity: a process
+$\bigl\{X(t)\bigr\}$ is $H$-SS with Hurst exponent $H$ if for all $a>0$ it holds
+\[ \bigl\{X(t)\bigr\} \overset{\Dcal}{=} \bigl\{a^{-H} X(at)\bigr\} \]
+
+%% bulinskii2005teoriya2516755 p.105
+The processes, to which the crossing tree is applied in this paper, also have stationary
+increments. A stochastic processes $\bigl\{X(t)\bigr\}$ is said to have \textbf{S}tationary
+\textbf{I}ncrements, or SI, if all finite-dimensional distributions of the process
+$\bigl\{X(t+s) - X(t)\bigr\}_{s\geq0}$ are independent of $t$, which equivalently means
+that
+\[ \bigl\{X(t+s)-X(t)\bigr\} \overset{\Dcal}{=} \bigl\{X(s)-X(0)\bigr\} \]
+
+Particularly nice corollary to the definition of an $H$-self similarity process is that
+if $\bigl\{X(t)\bigr\}$ is $H$-SS then $X(t)\overset{\Dcal}{\sim}t^H X(1)$. In turn,
+this allows, for example to show that all zero-mean stochastic processes with stationary
+increments share a similar auto-correlation pattern for all $t\neq s$
+\[ \ex X(s) X(t) = \frac{1}{2}\Bigl( t^{2H} + s^{2H} - |t-s|^{2H}\Bigr) \ex|X(1)|^2 \]
+Indeed, the identity $2 a b = a^2 + b^2 - (a-b)^2$ implies that\begin{align*}
+	\ex X(s) X(t)
+	&= \frac{1}{2}\biggl( \ex X(s)^2 + \ex X(t)^2 - \ex\bigl( X(s) - X(t) \bigr)^2 \biggr) \\
+	&= \frac{1}{2}\biggl( \ex X(s)^2 + \ex X(t)^2 - \ex X(|s-t|)^2 \biggr) \\
+	&= \frac{1}{2}\biggl( |s|^{2H} \ex X(1)^2 + |t|^{2H} \ex X(1)^2 - |s-t|^{2H} \ex X(1)^2 \biggr)
+\end{align*}
+where the second and the third lines follow from stationarity of increments and the
+mentioned corollary respectively.
+
+%% bulinskii2005teoriya2516755 p.47
+Lastly, recall that a process $\bigl\{X(t)\bigr\}$ is said to have \textbf{I}ndependent
+\textbf{I}ncrements if for any integer $n\geq1$ and every $(t_k)_{k=0}^n\in[0,\infty)$
+with $0=t_0$ and $t_k < t_{k+1}$ the random variables $\bigl(X(t_k) - X(t_{k-1})\bigr){k=1}^n$
+and $X(0)$ are jointly independent.
+
+% section definition (end)
+
+\subsection{Brownian Motion} % (fold)
+\label{sub:brownian_motion}
+
+One of most well studied processes is the Brownian motion. Usually it is axiomatically
+as a stochastic process $\bigl\{W(t)\bigr\}$ with the following four properties: \begin{itemize}
+	\item $W(t)$ is almost surely $0$ at $t=0$;
+	\item $\{W(t)\}$ has independent and stationary increments;
+	\item for all $t\geq 0$ the random variable $W(t)$ has Gaussian distribution with
+	parameters mean $0$ and variance $t$;
+	\item the sample paths of $\{W(t)\}$ are almost surely continuous functions.
+\end{itemize}
+
+It is easy to see that $\{W(t)\}$ is an $\sfrac{1}{2}$-SSSI process. Indeed, let $a>0$
+and consider a process $V(t) = \frac{1}{\sqrt{a}} W(at)$. Obviously $V(0) = 0$ almost
+surely, since $V(0) = \sfrac{1}{\sqrt{a}} W(a 0) = 0$. Furthermore this process inherits
+stationary increments from $W(t)$ : \begin{align*}
+	\{ V(t+s) - V(t) \} &= \biggl\{ \frac{1}{\sqrt{a}}( W(at+as) - W(at) ) \biggr\}\\
+	&\overset{\Dcal}{=} \biggl\{ \frac{1}{\sqrt{a}}( W(as) ) \biggr\} \\
+	&= \{ V(s) \}
+\end{align*}
+and independence of increments as well -- just pick $(t_k)_{k=1}^n$ with $t_k<t_{k+1}$ and
+observe that $\bigl(V(t_{k+1}) - V(t_k)\bigr)_{k=1}^n$ are mutually independent since
+$\bigl(W(s_{k+1}) - W(s_k)\bigr)_{k=1}^n$ for $s_k = a t_k$ are. Path continuity follows
+from continuity of sampel paths of $W(t)$ and the fact that $t\to a t$ is a continuous map. 
+Finally $\mathcal{N}(0, at) \sim \sqrt{a} \mathcal{N}(0,t)$ implies that $V(t)$ is Brownian
+Motion as well.
+
+\subsection{Fractional Brownian Motion} % (fold)
+\label{sub:fractional_brownian_motion}
+
+Another example of an $H$-SSSI process, which is frequently used as a reference for
+self-similarity and scale invariance studies is the \textbf{f}ractional \textbf{B}rownian
+\textbf{M}otion a generalisation of the $\tfrac{1}{2}$-SS Brownian Motion to a general
+$H$-SS Gaussian process with $H\in (\sfrac{1}{2}, 1)$.
+
+Formally, fractional Brownian Motion is a mean zero Gaussian process $\bigl\{X(t)\bigr\}$,
+(its every finite-dimensional joint distributions are multivariate normal), with
+the following covariance structure of a general zero-mean $H$-SSSI stochastic process:
+\[ \ex X(s) X(t) = \frac{1}{2} \bigl(t^{2H} + s^{2H} - |t-s|^{2H}\bigr) \]
+
+
+
+% subsection fractional_brownian_motion (end)
+
+%% bulinskii2005teoriya2516755 p.51
+A random vector $X\in \Real^d$ is Gaussian, or $X\sim \mathcal{N}_d(\mu,\Sigma)$, if
+there exists $\mu\in \Real^d$ and a positive definite matrix $\Sigma\in \Real^{d\times d}$
+such that the probability density of $X$ is given by
+\[ p_X(x) = (2\pi)^{-\frac{n}{2}}|\Sigma|^{-\frac{1}{2}}\text{exp}\bigl\{ - (x-\mu)'\Sigma^{-1}(x-\mu) \bigr\} \]
+Now, 
+
+ is an example of an $H$-SSSI
+process with $H = \tfrac{1}{2}$. Recall that a 
+
+% subsection brownian_motion (end)
+
+$\bigl\{X(t)\bigr\}$ have similar
+correlation structure:
+
+
+
+The exponential form of $b$
+follows from $X(t) \sim X(0)+o_\pr(t)$ (by stochastic continuity) and the following observation: by self-similarity
+for any $a_1, a_2>0$ there exist $b_1,b_2>0$ such that
+\[ \bigl\{X(\tfrac{a_1}{a_2}t)\bigr\} \overset{\Dcal}{=} \bigl\{\tfrac{b_1}{b_2} X(t)\bigr\} \]
+
+, i.e $\ex\bigl(X(t)\bigr) = 0$ for all $t$,
+
+
+% chapter h_sssi_processes (end)
