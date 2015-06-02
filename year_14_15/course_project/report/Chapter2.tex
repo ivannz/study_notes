@@ -1,11 +1,13 @@
-\chapter{the Crossing Tree} % (fold)
+\chapter{The crossing tree} % (fold)
 \label{cha:the_crossing_tree}
 
-The crossing tree as a tool for analysing self-similarity was introduced by Jones
-and Shen in \cite{jones2004}, where it was successfully used in detecting structural
-changes in time-series data, which manifested in a change in the Hurst exponent.
-In this section I describe the theoretic constructon of the crossing tree and how
-it is recovered from the sample time-series data.
+The crossing tree as a tool for analysing self-similarity goes back to the study of
+diffusion on fractal sets \ref{BarlowPerkins88}. It was later reintroduced by Jones
+and Shen in \cite{jones2004} in the context of studying self-similarity and regularity
+patterns in network traffic data, where where it was successfully used in detecting
+structural changes, manifested in changes in local regularity of the time series.
+In this section I describe theoretical construction of the crossing tree and how
+it is recovered from the discrete time series data.
 
 \section{Crossing Times} % (fold)
 \label{sec:crossing_times}
@@ -37,7 +39,7 @@ $T_k^n \leq T_{k+1}^n$ for all $k\geq 0$. However, since the paths of the proces
 almost surely continuous, it is possible to show that $T_k^n < T_{k+1}^n$. Indeed,
 by right-continuity of $X(t)$ (a fixed path of $\{X(t)\}$) for $\delta 2^{n-1}$
 there is $\eta>0$ with $|X(s)-X(T_k^n)| < \delta 2^{n-1}$ for all $s\in [T_k^n, T_k^n + \eta)$.
-However, by definition of $T_{k+1}^n$ there in the $\eta$ vicinity of $T_{k+1}^n$
+However, by definition of $T_{k+1}^n$, in the $\eta$ vicinity of $T_{k+1}^n$,
 there exists $\hat{s}$ such that $|X(\hat{s})-X(T_k^n)|\geq \delta 2^n$. Thus, if
 $T_k^n = T_{k+1}^n$ then one has $\delta 2^n \leq \delta 2^{n-1}$ -- a contradiction.
 
@@ -46,7 +48,7 @@ $|X(T_{k+1}^n)-X(T_k^n)| = \delta 2^n$. Indeed, the definition of $T_{k+1}^n$ im
 that there exits a sequence $s_j\downarrow T_{k+1}^n$ with $|X(T_{k+1}^n)-X(T_k^n)|\geq \delta 2^n$
 . Since the path $X(t)$ is continuous at $T_{k+1}^n$ it must be true that
 \[
-|X(T_{k+1}^n)-X(T_k^n)| = \lim_{j\to \infty} |X(s_j)-X(T_k^n)| \geq \delta 2^n
+|X(T_{k+1}^n)-X(T_k^n)| = \lim_{j\to \infty} |X(s_j)-X(T_k^n)| \geq \delta 2^n\,.
 \]
 Now, since the function $t\to |X(t)-X(T_k^n)| - \delta 2^n$ is continuous at $T_{k+1}^n$,
 $|X(T_{k+1}^n)-X(T_k^n)| > \delta 2^n$ would entail the existence of $s\in [T_k^n, T_{k+1}^n)$
@@ -59,19 +61,18 @@ the following properties (almost surely): \begin{enumerate}
 	\item $|X(T_{k+1}^n)-X(T_k^n)| = \delta 2^n$ for all $k\geq0$ with $T_{k+1}^n<+\infty$.
 \end{enumerate}
 
-In order to see the natural tree structure to the crossings, one has to investigate
-the properties of crossing times at different resolutions. For the following suppose,
-for some integers $k,m\geq 0$ it holds that $T_k^n\in [T_m^{n+1}, T_{m+1}^{n+1})$ and
-$X(T_m^{n+1}) = X(T_k^n)$.
+In order to see the natural tree structure of the crossings, one has to investigate
+the properties of the crossing times at different resolutions. We suppose, that for
+some integers $k,m\geq 0$, $T_k^n\in [T_m^{n+1}, T_{m+1}^{n+1})$ and $X(T_m^{n+1}) = X(T_k^n)$.
 
 By definition of $T_{k+1}^n$ for all $s\in[T_k^n, T_{k+1}^n)$ it must be true that
-\[ |X(s) - X(T_k^n)| < \delta 2^n \]
-fr otherwise $T_{k+1}^n$ would not have been the least lower bound. Since the process
+\[ |X(s) - X(T_k^n)| < \delta 2^n \,,\]
+otherwise $T_{k+1}^n$ would not have been the least lower bound. Since the process
 takes the same value at both times $T_m^{n+1}$ and $T_k^n$, it must be true that
 $|X(s) - X(T_m^{n+1})| < \delta 2^{n+1}$ for such $s$, whence $s\leq T_{m+1}^{n+1}$.
 Therefore $T_{k+1}^n\leq T_{m+1}^{n+1}$.
 
-However, if one further assumes that $T_{m+1}^{n+1} < +\infty$, i.e. that the $n+1$-st
+However, if one further assumes that $T_{m+1}^{n+1} < +\infty$, i.e. that the $(n+1)$-st
 crossing takes place, then $T_{k+1}^n \neq T_{m+1}^{n+1}$. Indeed, \begin{itemize}
 	\item $|X(T_{k+1}^n)-X(T_k^n)| = \delta 2^n$;
 	\item $|X(T_{m+1}^{n+1})-X(T_m^{n+1})| = \delta 2^{n+1}$.
@@ -79,30 +80,30 @@ crossing takes place, then $T_{k+1}^n \neq T_{m+1}^{n+1}$. Indeed, \begin{itemiz
 together with $X(T_m^{n+1}) = X(T_k^n)$ entail a contradiction $\delta 2^n = \delta 2^{n+1}$.
 
 The assumption that a crossing of a level of a coarser grid $\delta 2^{n+1} \mathbb{Z}$
-took place, permits further refinement of crossing times' behaviour: under the assumptions
-above $T_{k+2}^n\leq T_{m+1}^{n+1}$ holds. Indeed, suppose otherwise. Then by definition
+took place allows further refinement of crossing times' behaviour: under the assumptions
+above, $T_{k+2}^n\leq T_{m+1}^{n+1}$ holds. Indeed, suppose otherwise. Then by definition
 of $T_{k+2}^n$ and because $T_{k+1}^n \leq T_{m+1}^{n+1}$, it must be true that
-\[ |X(T_{m+1}^{n+1}) - X(T_{k+1}^n)| < \delta 2^n \]
+\[ |X(T_{m+1}^{n+1}) - X(T_{k+1}^n)| < \delta 2^n \,.\]
 However $|X(T_{m+1}^{n+1}) - X(T_m^{n+1})| = \delta 2^{n+1}$ by the established
 properties of crossing times on the grid of $n+1$ resolution. Then by the triangle
 inequality and the assumption that $X(T_m^{n+1}) = X(T_k^n)$ one gets
 \begin{align*}
     |X(T_{m+1}^{n+1}) - X(T_m^{n+1})| 
     & \leq |X(T_{m+1}^{n+1}) - X(T_{k+1}^n)| + |X(T_{k+1}^n) - X(T_m^{n+1})| \\
-    & = |X(T_{m+1}^{n+1}) - X(T_{k+1}^n)| + |X(T_{k+1}^n) - X(T_k^n)|
+    & = |X(T_{m+1}^{n+1}) - X(T_{k+1}^n)| + |X(T_{k+1}^n) - X(T_k^n)|\,,
 \end{align*}
 whence the following contradiction emerges
 \[
 \delta 2^{n+1}
 \leq |X(T_{m+1}^{n+1}) - X(T_{k+1}^n)| + \delta 2^n
-< \delta 2^{n+1}
+< \delta 2^{n+1}\,.
 \]
 Therefore, under the stated conditions $T_{k+2}^n\leq T_{m+1}^{n+1}$.
 
 % section crossing_times (end)
 
-\section{a Tree Structure} % (fold)
-\label{sec:a_tree_structure}
+\section{Tree Structure} % (fold)
+\label{sec:tree_structure}
 
 Let's define the \emph{$n$-th level crossing} as the slice of the path of the process
 $\{X(t)\}$ over the time half-interval $[T_k^n,T_{k+1}^n)$ for some integer $k\geq 0$,
@@ -111,25 +112,25 @@ crossing times of consecutive levels imply that if $T_k^n \in [T_m^{n+1}, T_{m+1
 with $X(T_m^{n+1}) = X(T_k^n)$ and $T_{m+1}^{n+1} < +\infty$ then
 \[
 \bigl[T_k^n,T_{k+1}^n\bigr) \cup \bigl[T_{k+1}^n,T_{k+2}^n\bigr)
-\subseteq \bigl[T_m^{n+1},T_{m+1}^{n+1}\bigr)
+\subseteq \bigl[T_m^{n+1},T_{m+1}^{n+1}\bigr) \,.
 \]
 The first condition, $X(T_m^{n+1}) = X(T_k^n)$ aligns the different resolution grid
 with one another. The last requirement that $[T_m^{n+1}, T_{m+1}^{n+1})$ be a finite
-interval is natural, since it actually means that the $n+1$-st level crossing actually
+interval is natural, since it actually means that the $(n+1)$-st level crossing actually
 occurred.
 
-These observations actually state that within the $n+1$-st level crossing there musts
+These observations actually state that within the $(n+1)$-st level crossing there musts
 be exactly an even number of crossing of the $n$-th level (subcrossings). Indeed,
 if $T_k^n = T_m^{n+1}$ and $T_{m+1}^{n+1}<+\infty$, then there are two possibilities
 for the crossing time $T_{k+2}^n$: \begin{enumerate}
-	\item the process crossed a new level of $n+1$-st grid $\delta 2^{n+1}$ in which
+	\item the process crossed a new level of $(n+1)$-st grid $\delta 2^{n+1}$ in which
 	case $T_{m+1}^{n+1}\leq T_{k+2}^n$. Hence there are exactly \emph{two} subcrossings.
 	\item the process moved back to the level $X(T_k^n)$, which did not incur a crossing
-	of $n+1$-st grid, since $X(T_{k+2}^n)=X(T_m^{n+1})$. Yet this fluctuation was
-	registered by the grid of resolution $n$. In this case, the properties of crossing]
-	times entail \[ T_{k+2}^n < T_{k+3}^n < T_{k+4}^n \leq T_{m+1}^{n+1} \]
-	Since $T_{m+1}{n+1}$ is finite, recurent application of this argument implies that
-	there must be exactly an even number of $n$-th level subcrossings in an $n+1$-st
+	of $(n+1)$-st grid, since $X(T_{k+2}^n)=X(T_m^{n+1})$. Yet this fluctuation was
+	registered by the grid of resolution $n$. In this case, the properties of crossing
+	times entail \[ T_{k+2}^n < T_{k+3}^n < T_{k+4}^n \leq T_{m+1}^{n+1} \,. \]
+	Since $T_{m+1}^{n+1}$ is finite, recurrent application of this argument implies that
+	there must be exactly an even number of $n$-th level subcrossings in an $(n+1)$-st
 	level crossing.
 \end{enumerate}
 This described behaviour is depicted in figure~\ref{fig:xing_tree_structure}.
@@ -177,22 +178,23 @@ This described behaviour is depicted in figure~\ref{fig:xing_tree_structure}.
 \end{center}\end{figure}
 
 Thus the properties of crossing times of a continuous process permit a natural tree
-structure to crossings. If tree levels are enumerated from bottom up then \begin{itemize}
-	\item a node at the $n+1$-st tree level represents a crossing of the $\delta 2^{n+1} \mathbb{Z}$;
-	\item $n$-th level children (offspring) of an $n+1$-st level node represent the
+structure of crossings. If tree levels are enumerated from bottom up then \begin{itemize}
+	\item a node at the $(n+1)$-st tree level represents a crossing of the $\delta 2^{n+1} \mathbb{Z}$;
+	\item $n$-th level children (offspring) of an $(n+1)$-st level node represent the
 	multiple crossings of a finer gird $\delta 2^n \mathbb{Z}$ that took place during
 	the larger crossing. 
 \end{itemize}
 
 The above exposition considered the crossing tree for successively coarser resolutions
-$\delta 2^n \mathbb{Z}$ for $n\geq0$. This has been done purely for the following reason:
+$\delta 2^n \mathbb{Z}$ for $n\geq0$. For example in~\ref{decrouez2013estimation} the
+crossing tree is defined for crossing times on this grid for any $n\in\mathbb{Z}$.
+The restriction to non-negative levels in this paper was motivated by the fact, that
 in practice, on real sample path of some supposedly continuous process it is never
 possible no meaningfully go beyond some basic finest resolution given by $\delta>0$.
 This has to do with the fact that processes are sampled at finite frequency or over
-regularly spaced but finitely many point in time. Nevertheless theoretical crossing
-tree can be extended to crossings of $\delta 2^n$ grid for all integer $n\in\mathbb{Z}$.
+regularly spaced but finitely many point in time.
 
-% section a_tree_structure (end)
+% section tree_structure (end)
 
 \section{Crossing tree on time series data} % (fold)
 \label{sec:crossing_tree_on_time_series_data}
@@ -200,21 +202,22 @@ tree can be extended to crossings of $\delta 2^n$ grid for all integer $n\in\mat
 In this section I briefly describe how the crossing tree is constructed for a sample
 path of some continuous process, given by time series data $(t_i, x_i)_{i=0}^N$.
 
-In practice the crossing trees are built iteratively from the finest resolution
+In practice the crossing tree is built iteratively from the finest resolution
 specified by the base grid spacing $\delta > 0$. The crossing times of the leaves
-of the tree are computed for a given fixed $\delta>0$ in two passes: the firs pass
-computes passage times on the passed $\delta \mathbb{Z}$ grid levels, and the second
-pass adjusts the passage times and passed levels to eliminate re-crossings of the
-same level. The assumption that the time series data came from a continuous process
-is the main reason, that enables a sequential procedure for estimation of the crossing
-times of grid $\delta\mathbb{Z}$: $X(T_{k+1})^n = X(T_k^n)+\pm\delta2^n$ if $T_{k+1}^n<\infty$.
-One is encouraged to refer to appendix for details of the procedure.
+of the tree are computed for a given fixed $\delta>0$ in two passes: the first pass
+computes passage times on the passed $x_0+\delta \mathbb{Z}$ grid levels, and the
+second pass adjusts the passage times and passed levels to eliminate re-crossings
+of the same level (recrossing events). The assumption that the time series data
+came from a continuous process is the main reason, that enables a sequential procedure
+for estimation of the crossing times of grid $\delta\mathbb{Z}$: recall, that
+$X(T_{k+1})^n = X(T_k^n) \pm\delta2^n$ if $T_{k+1}^n<\infty$. We refer to the
+appendix for details of the procedure.
 
 The choice of $\delta$ is extremely important as it affects the estimates of the
 crossing times and levels in the following way, reminiscent of the bias-variance
 trade-off:
 \begin{itemize}
-    \item the grid with too low a value of $\delta$ would make the resolution so fine
+    \item the grid with too low value of $\delta$ would make the resolution so fine
     as to regard the studied process as a continuous piecewise linear function. Each
     increment would be very likely to produce long consecutive unidirectional streaks
     of crossed levels, which would overestimate the number of crossings with only 2
@@ -222,10 +225,14 @@ trade-off:
     \item Too large $\delta$ leads to a tree with fewer crossings and offspring, which
     is insufficient for reliable estimates of tree features.
 \end{itemize}
+One approach to selection of $\delta$ is to consider the increments of the time
+series and measure either their standard deviation, or inter-quartile range, or
+compute the median of their absolute values. In fact the effect of the base scale
+decreases with the level of the tree, provided the tree is tall enough.
 
 % section crossing_tree_on_time_series_data (end)
 
-\section{Analysis using the Crossing Tree} % (fold)
+\section{Analysis using the crossing tree} % (fold)
 \label{sec:analysis_using_the_crossing_tree}
 
 Once a crossing tree has been constructed for a particular sample path of a continuous
@@ -234,14 +241,14 @@ scale-invariance of the given realisation. Recall that the nodes of level $n$ of
 the tree are crossings of the grid $\delta 2^n$, and the offspring of each level
 $n+1$ node correspond to the subcrossings of a finer grid $\delta 2^n$ that constitute
 the parent crossing. An example of a sample path of a process with superimposed
-crossing times and levels is given on figure~\ref{fig:sample_path}
-%% An illustration is due
+crossing times and levels is given on figure~\ref{fig:sample_path}.
+
 \begin{figure}[htb]\begin{center}
     \includegraphics[width=6in]{images/sample_path}
     \caption{The crossing times and levels of a sample trajectory of a continuous process.}
 \label{fig:sample_path}
 \end{center}\end{figure}
-%% Maybe a crossing tree tikz plot should be hrer...
+%% Maybe a crossing tree tikz plot should be here...
 
 Let $Z_k^n$ be the number of subcrossings of a finer grid $\delta 2^{n-1}$ that take
 place during the $k$-th crossing of grid $\delta 2^n$, and $N_n$ be the total number
@@ -249,53 +256,56 @@ of crossings of level $n$. In general $N_n$ is defined as the last $k\geq0$ such
 $T_k^n < +\infty$. Since it is possible that the very last crossing of the $n$-th
 level is incomplete, i.e. the crossing time $T_{N_n}^n = +\infty$, there is the following
 inequality:
-\[ \sum_{k=1}^{N_{n+1}} Z_k^{n+1} \leq N_n \]
+\[ \sum_{k=1}^{N_{n+1}} Z_k^{n+1} \leq N_n \,.\]
 The sequence of numbers of subcrossings, given by $(Z_k)_{k=1}^{N_n}$, can be used to
-estimate the offspring distribution. If the process has scale invariance and is ergodic
+estimate the offspring distribution. If the process is scale invariant and is ergodic,
 it is reasonable to expect that the offspring distributions of crossings of consecutive
-levels of the tree are identical, provided the levels are well sampled. To this end on
-can use a simple $\chi^2$ squared test: \begin{enumerate}
+levels of the tree are identical, provided the levels are well sampled. To this end one
+can use a standard $\chi^2$ squared test: \begin{enumerate}
     \item Take $h$ bins $\{2m\}$ for $m = 1,h-1$ and $\{2h, 2h+2,\ldots\}$ and compute
     the empirical probabilities $\hat{p}_k^n$ of the number of offspring $(Z_k^n)$ on
-    each level $n=p, p+1, \ldots, q$ falling into each bind;
-    \item Then pool all the offspring together into one pool $Z$, and compute the empirical
+    each level $n=p, p+1, \ldots, q$ falling into each bin;
+    \item Pool all the offspring together into one pool $Z$, and compute the empirical
     probabilities $\bar{p}_i$ of the pooled offspring $Z_k$ being in each of the bins;
     \item Provided each bin has sufficiently many observations, the following statistic
     \[ t^{p,q} = \sum_{j=p}^q \sum_{i=1}^h N_i \frac{(\hat{p}_i^n-\bar{p}_i)^2}{\bar{p}_i} \]
-    test the hypothesis that the offspring distributions on all levels from $p$ to $q$
+    tests the hypothesis that the offspring distributions on all levels from $p$ to $q$
     have the same distribution. The test statistic has asymptotic $\chi^2$ distribution
     with $(q-p)(h-1)$ degrees of freedom.
 \end{enumerate}
 
-Another important characteristic of the process made apparent by the crossing tree
-is the distribution of patterns of subcrossings within a parent crossing conditional
+Another important characteristic of the process, which is made apparent by the crossing
+tree, is the distribution of patterns of subcrossings within a parent crossing, conditional
 on its direction. Indeed, subcrossing orientations of a complete crossing come in
-pairs by construction of the the crossing tree itself: orientations $-+$ and $+-$
-correspond to down-up and up-down excursions respectively, whereas $--$ or $++$ -- to
-direct upward or downward crossings. In fact any complete crossing can be broken down
+pairs by construction of the crossing tree itself: orientations $-+$ and $+-$ correspond
+to down-up and up-down excursions respectively, whereas $--$ or $++$ -- to direct
+upward or downward crossings. In fact any complete crossing can be broken down
 into a series of excursions followed by a direct crossing, which actually end the
 current crossing, since they constitute a transitions to a next $\pm\delta 2^{n+1}$
 grid line. Let $V_k^n$ be $0$ if the $k$-th $n$-level excursion (movements within a finer
-$n-1$-th gird) is up-down and $1$ if it is down-up.
+$(n-1)$-st gird) is up-down and $1$ if it is down-up.
 
-Final characteristic of the process the crossing tree contains is the $n$-th level
-crossing durations, given by $W_k^n = T_k^n - T_{k-1}^n$ for $k\geq1$. In fact if
-the process, upon the path of which a crossing tree is constructed, is continuous,
-self-similar and has stationary and ergodic increments (\cite{jonesshen2005}), then
-the sequences of the number of subcrossings $Z^n = (Z_k^n)_{k\geq 0}$ are identically
-distributed, stationary and ergodic. The same result holds for the sequences of deflated
-crossing durations $2^{-n} W^n = (2^{-n} W_k^n)_{k\geq0}$.
+If the process is continuous, self-similar and has stationary and ergodic increments
+(see~\cite{jonesshen2005}), then the sequences of the number of subcrossings $Z^n = (Z_k^n)_{k\geq 0}$
+are identically distributed, stationary and ergodic. The same result holds for
+the sequences of properly scaled crossing durations $2^{-n} W^n = (2^{-n} W_k^n)_{k\geq0}$,
+where $W_k^n$ is the duration of the $k$-th crossing of level $n$ and is defined
+as $W_{k+1}^n = T_{k+1}^n - T_k^n$.
 
-For $H$-SSSI processes one can use the crossing tree to estimate the value of the
-Hurst exponent $H$ by
-\[ \hat{H} = \frac{\log 2}{\log \hat{\mu}} \]
-where $\hat{\mu} = \ex Z_k^n$. In practice, in order to improve the accuracy of
+For $H$-sssi processes (see p.\pageref{def:hsssi}) one can use the crossing tree
+to estimate the value of the Hurst index $H$ by the following formula:
+\[ \hat{H} = \frac{\log 2}{\log \hat{\mu}} \,,\]
+where $\hat{\mu} = \ex Z_k^n$. Intuitively, if we one scales the time of an $H$-sssi
+process by $\mu$, the expected number of finer subcrossings in a cruder crossing,
+then it is necessary to scale down the range of the process by $\tfrac{1}{2}$ --
+the multiplier by which the resolution is decreased when ascending the tree from
+the finest grid $\delta \mathbb{Z}$. In practice, in order to improve the accuracy of
 this estimate one attempts to pool sequences $Z^n$ across several consecutive levels
 of the tree, over which the hypothesis of common distribution cannot be rejected.
 
 % section analysis_using_the_crossing_tree (end)
 
-\section{the crossing tree of Brownian Motion} % (fold)
+\section{The crossing tree of Brownian motion} % (fold)
 \label{sec:the_crossing_tree_of_brownian_motion}
 
 One of most well studied processes is the Brownian motion. Usually it is axiomatically
@@ -307,25 +317,31 @@ as a unique stochastic process $\bigl\{W(t)\bigr\}$ with the following four prop
     parameters mean $0$ and variance $t$;
     \item the sample paths of $\{W(t)\}$ are almost surely continuous functions.
 \end{itemize}
-This process possesses scale-invariance properties, or self-similarity, since for any
-$a>0$ it is true that the process $\bigl\{a^{-\tfrac{1}{2}} B(at)\bigr\}$ and $\{B(t)\}$
-are stochastically equivalent in the sense of equality of all their finite joint
-distributions.
+This process exhibits scale-invariance properties, or self-similarity, since for any
+$a>0$, the process $\bigl\{a^{-\tfrac{1}{2}} B(at)\bigr\}$ and $\{B(t)\}$ are stochastically
+equivalent in the sense of equality of all their finite-dimensional joint distributions.
 
 The paper \cite{ECP1673} gives a rigorous proof of the statistical properties of
 the offspring distribution, crossing lengths and the excursions for crossing trees
-built over paths of Brownian Motion. Theorem 1 of~\cite{ECP1673}, p.~640, states that
-the Brownian Motion is the unique continuous process $\{B(t)\}$ for which the crossing
-tree has infinitely many offspring at each level ($N_n = +\infty$), and: \begin{description}
+built over paths of Brownian motion. Theorem 1 of~\cite{ECP1673}, p.~640, states
+that the Brownian motion is the unique continuous process $\{B(t)\}$ for which the
+crossing tree has infinitely many offspring at each level ($N_n = +\infty$), and:
+\begin{description}
     \item[BM0] $B(0) = 0$;
     \item[BM1] the properly scaled crossing durations $\tfrac{1}{\delta^2 4^n} W_k^n$
     are identically distributed with mean 1 and finite variance, and are mutually
     independent within each level $n$;
-    \item[BM2] the random variables $Z_k^n\sim 2+2\cdot\text{Geom}(\frac{1}{2})$ and are iid;
-    \item[BM3] the $V_k^n$ are iid with $\text{Bern}(\tfrac{1}{2})$.
+    \item[BM2] the random variables $Z_k^n$ are iid with probability distribution
+    \[ \pr\bigl(Z_k^n=2m\bigr) = 2^{1-h^{-1}}\bigl(1-2^{1-h^{-1}}\bigr)^{m-1} \,,\]
+    for all $m=1,2,\ldots$ and for fixed $h=\tfrac{1}{2}$;
+    \item[BM3] the excursions $V_k^n$ are also iid random variables with 
+    $\pr( V_k^n = 1 ) = 2^{-2h^{-1}}$, for $h = \tfrac{1}{2}$.
+    $\text{Bern}(\tfrac{1}{2})$.
 \end{description}
-This theorem crucially depends on the strong Markov property of BM, which makes $Z_k^n$
-independent random variables.
+This theorem crucially depends on the strong Markov property of Bm, which makes $Z_k^n$
+independent random variables. The characterisation of Brownian motion in terms of
+the rpoperties of its crossing tree is based on ideas used in the construction of
+Brownian motion on a nested fractal (see~\ref{BarlowPerkins88}).
 
 % section the_crossing_tree_of_brownian_motion (end)
 
