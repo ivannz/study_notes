@@ -351,7 +351,6 @@ def figure_07( figure, method, p, q ) :
 
 ## Show mean crossing durations and their standard error
 def figure_08( figure, method, kind ) :
-	figure = plt.figure( figsize = ( 16, 9 ) )
 	axis = figure.add_subplot( 111 )
 	axis.set_color_cycle( plt.cm.rainbow( np.linspace( 0, 1, 5 )[ ::-1 ] ) )
 	for L, H, Njn, Djnk, Vjnde, Wjnp, Wbarjn, Wstdjn in results[ method ][ kind ] :
@@ -373,16 +372,58 @@ def figure_08( figure, method, kind ) :
 	frame.set_facecolor( 'whitesmoke' )
 	legend.set_title( r'Processes' )
 
-## For figure 02
+## For figure 09
+def figure_09( figure, method, kind, hurst, max_level ) :
+	figure = plt.figure( figsize = ( 16, 9 ) )
+	axis = figure.add_subplot( 111 )
+	axis.set_ylabel( 'Probability' )
+	axis.set_xlabel( r"""Quantile""", rotation = 00 ) ; axis.set_xscale( 'log' )
+	axis.set_color_cycle( plt.cm.rainbow( np.linspace( 0, 1, max_level )[::-1] ) )
+	simd = find_hurst( method, kind, hurst, results )
+	if simd is None :
+		return
+	L, H, Njn, Djnk, Vjnde, Wjnp, Wbarjn, Wstdjn = simd
+	Wnp = np.average( Wjnp, axis = ( 0, ) ) * 2 ** (
+		- np.arange( Wjnp.shape[1], dtype = np.float  ).reshape( ( Wjnp.shape[ 1 ], 1 ) ) / H )
+	levels = np.arange( 1, max_level + 1 ) - 1
+	for n in levels :
+## These percentiles should be the same as in main
+		axis.plot( Wnp[ n ], [ 0.5, 1.0, 2.5, 5.0, 10, 25, 50, 75, 90, 95, 97.5, 99, 99.5 ],
+			linestyle = '-', marker = 'o', label = "%s (lv.%d)" % ( L, n, ) )
+	axis.set_title( r"""Empirical distribution of crossing durations""" )
+	legend = axis.legend( loc = 'upper left', frameon = 1 )
+	frame = legend.get_frame( )
+	frame.set_facecolor( 'whitesmoke' )
+
+def figure_10( figure, method, kind, p, q ) :
+	figure = plt.figure( figsize = ( 16, 9 ) )
+	levels = np.arange( p, q + 1 ) - 1
+	axis = figure.add_subplot( 111 )
+	axis.set_ylabel( 'Probability' )
+	axis.set_xlabel( r"""Quantile""", rotation = 00 ) ; axis.set_xscale( 'log' )
+	axis.set_color_cycle( plt.cm.rainbow( np.linspace( 0, 1, 5 )[::-1] ) )
+	for L, H, Njn, Djnk, Vjnde, Wjnp, Wbarjn, Wstdjn in results[ method ][ kind ] :
+		scaled_Wjnp = Wjnp * 2**(
+			-np.arange( Wjnp.shape[1], dtype = np.float  ).reshape( ( 1, Wjnp.shape[ 1 ], 1 ) ) / H )
+		Wp = np.average( scaled_Wjnp[:,levels], axis = (0, 1, ) )
+## These percentiles should be the same as in main
+		axis.plot( Wp, [ 0.5, 1.0, 2.5, 5.0, 10, 25, 50, 75, 90, 95, 97.5, 99, 99.5 ],
+			linestyle = '-', marker = 'o', label = L )
+	axis.set_title( r"""Empirical distribution of crossing durations at levels %d-%d""" %(p,q,) )
+	legend = axis.legend( loc = 'upper left', frameon = 1 )
+	frame = legend.get_frame( )
+	frame.set_facecolor( 'whitesmoke' )
+
+
 
 ####################################################################################################
 ####################################################################################################
 ####################################################################################################
 if __name__ == '__main__' :
-	base_path = os.path.realpath( "./output/10000-17" )
-	process_folders = [ 'FBM_17', 'HRM-2_17-16', 'HRM-3_17-16', 'HRM-4_17-16', 'WEI_17', ]
-	# base_path = os.path.realpath( "./output/1000-21" )
-	# process_folders = [ 'FBM_21', ]
+	# base_path = os.path.realpath( "./output/10000-17" )
+	# process_folders = [ 'FBM_17', 'HRM-2_17-16', 'HRM-3_17-16', 'HRM-4_17-16', 'WEI_17', ]
+	base_path = os.path.realpath( "./output/1000-21" )
+	process_folders = [ 'FBM_21', ]
 	# base_path = os.path.realpath( "./output/release/1000-16" )
 	# process_folders = [ 'FBM_16', 'HRM-2_16-16', 'HRM-3_16-16', 'HRM-4_16-16', 'WEI_16', ]
 
@@ -420,7 +461,7 @@ if __name__ == '__main__' :
 				plt.savefig( os.path.join( base_path, 'pdf', "fig_01_%s_%s.pdf" % ( method, kind, ) ) , format = 'pdf' )
 
 	## FIGURE 02
-	if True :
+	if False :
 		for method, p, q in methods :
 			if method in results :
 				figure = plt.figure( figsize = ( 16, 9 ) )
@@ -494,6 +535,29 @@ if __name__ == '__main__' :
 				figure.suptitle( r"""Average scaled crossing durations for fBm""" )
 				figure_08( fig, method, kind )
 				plt.savefig( os.path.join( base_path, 'pdf', "fig_08_%s_%s.pdf" % ( method, kind, ) ) , format = 'pdf' )
+
+	## FIGURE 09
+	if True :
+		hurst = 0.6
+		fig = plt.figure( figsize = ( 16, 9 ) )
+		figure_09( fig, 'med', 'FBM', hurst, max_level = 9 )
+		plt.savefig( os.path.join( base_path, 'pdf', "fig_09_%s_%s_%0.2f.pdf" % ( method, kind, hurst, ) ) , format = 'pdf' )
+		hurst = 0.8
+		fig = plt.figure( figsize = ( 16, 9 ) )
+		figure_09( fig, 'med', 'FBM', hurst, max_level = 9 )
+		plt.savefig( os.path.join( base_path, 'pdf', "fig_09_%s_%s_%0.2f.pdf" % ( method, kind, hurst, ) ) , format = 'pdf' )
+
+	## FIGURE 10
+	if True :
+		for method, p, q in methods :
+			if method not in results :
+				continue
+			for kind in kinds :
+				if kind not in results[ method ] :
+					continue
+				fig = plt.figure( figsize = ( 16, 9 ) )
+				figure_10( fig, method, kind, p, q )
+				plt.savefig( os.path.join( base_path, 'pdf', "fig_10_%s_%s.pdf" % ( method, kind, ) ) , format = 'pdf' )
 
 	if False :
 		Phat, Pstd = xing_probs_empirical( simd[ 4 ], p = p, q = q )

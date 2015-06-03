@@ -111,7 +111,8 @@ def path_analyse( T, X, delta = 1.0, max_levels = 6, max_crossings = 20 ) :
 		Vnde[ n, 0 ] += np.sum( Vk[ Vk[ :, 2 ] < 0 ], axis = 0 )[:2]
 		Vnde[ n, 1 ] += np.sum( Vk[ Vk[ :, 2 ] > 0 ], axis = 0 )[:2]
 ## Make a crude summary of crossing durations:
-	prc = np.array( [ 0.5, 1.0, 2.5, 5.0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 97.5, 99, 99.5 ] )
+	# prc = np.array( [ 0.5, 1.0, 2.5, 5.0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 97.5, 99, 99.5 ] )
+	prc = np.array( [ 0.5, 1.0, 2.5, 5.0, 10, 25, 50, 75, 90, 95, 97.5, 99, 99.5 ] )
 ## Wnp[n][p] -- the p-th empirical quantile of the n-th level crossing durations.
 ##  Crossing durations are not aggregated in the last row of the output.
 	Wnp = np.zeros( ( max_levels, ) + prc.shape, dtype = np.float )
