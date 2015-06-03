@@ -241,7 +241,8 @@ scale-invariance of the given realisation. Recall that the nodes of level $n$ of
 the tree are crossings of the grid $\delta 2^n$, and the offspring of each level
 $n+1$ node correspond to the subcrossings of a finer grid $\delta 2^n$ that constitute
 the parent crossing. An example of a sample path of a process with superimposed
-crossing times and levels is given on figure~\ref{fig:sample_path}.
+crossing times and levels is given on figure~\ref{fig:sample_path}. The corresponding
+crossing tree is depicted on fig.~\ref{fig:sample_tree}.
 
 \begin{figure}[htb]\begin{center}
     \includegraphics[width=6in]{images/sample_path}
@@ -249,6 +250,11 @@ crossing times and levels is given on figure~\ref{fig:sample_path}.
 \label{fig:sample_path}
 \end{center}\end{figure}
 %% Maybe a crossing tree tikz plot should be here...
+\begin{figure}[htb]\begin{center}
+    \includegraphics[width=6in]{images/sample_tree}
+    \caption{The tree structure of the crossing times for the path depicted in fig.~\ref{fig:sample_path}.}
+\label{fig:sample_tree}
+\end{center}\end{figure}
 
 Let $Z_k^n$ be the number of subcrossings of a finer grid $\delta 2^{n-1}$ that take
 place during the $k$-th crossing of grid $\delta 2^n$, and $N_n$ be the total number
@@ -328,9 +334,9 @@ that the Brownian motion is the unique continuous process $\{B(t)\}$ for which t
 crossing tree has infinitely many offspring at each level ($N_n = +\infty$), and:
 \begin{description}
     \item[BM0] $B(0) = 0$;
-    \item[BM1] the properly scaled crossing durations $\tfrac{1}{\delta^2 4^n} W_k^n$
-    are identically distributed with mean 1 and finite variance, and are mutually
-    independent within each level $n$;
+    \item[BM1] the properly scaled crossing durations $\tfrac{1}{\delta^2 4^{\sfrac{n}{2h}}} W_k^n$
+    for $h = \tfrac{1}{2}$ are identically distributed with mean 1 and finite variance,
+    and are mutually independent within each level $n$;
     \item[BM2] the random variables $Z_k^n$ are iid with probability distribution
     \[ \pr\bigl(Z_k^n=2m\bigr) = 2^{1-h^{-1}}\bigl(1-2^{1-h^{-1}}\bigr)^{m-1} \,,\]
     for all $m=1,2,\ldots$ and for fixed $h=\tfrac{1}{2}$;

@@ -13,12 +13,23 @@ durations, the excursion and the offspring distributions in the following way:\\
     identically distributed, with probability distribution
     \[ \pr\bigl(Z_k^n=2m\bigr) = 2^{1-H^{-1}}\bigl(1-2^{1-H^{-1}}\bigr)^{m-1} \,,\]
     for all $m=1,2,\ldots$;
-    \item The distibution of excursion patterns $V_k^n$, conditional on the orientation
+    \item The distribution of excursion patterns $V_k^n$, conditional on the orientation
     of the parent crossing, have the following distribution:
     \[ \pr\bigl( \text{'+-'} \bigr.\bigl\lvert \text{'++'} \bigr)
 	= \pr\bigl( \text{'-+'} \bigr.\bigl\lvert \text{'--'} \bigr)
-	= 2^{-2H^{-1}} \,. \]
+	= 2^{-2H^{-1}} \,.; \]
+	\item The properly scaled crossing durations $4^{-\sfrac{n}{2H}} W_k^n$
+	are identically distributed with finite variance;
 \end{itemize}
+The rational behind the scaling in the crossing duration case is given below. By
+definition, a the duration of a crossing of grid $\delta 2^n \mathbb{Z}$ (level-
+$n$ crossing duration, denoted here by $\tau_n$) is the time needed for the process
+$\{X(t)\}$ to move from some value $X(t)$ to $X(t+\tau_n) = 2^n X(t)$. Therefore one
+can use self-similarity for the following chain of thought:
+\[ X(\tau_n) \overset{\Dcal}{\sim} 2^n X(\tau_1) \overset{\Dcal}{\sim} 2^n \tau_1^H X(\tau_1) \,, \]
+whence follows that $\tau_n^H X(1) \overset{\Dcal}{\sim} 2^n \tau_1^H X(\tau_1)$. This
+observation gives an idea of how should the crossing durations between different
+tree level be related.
 
 In order to gather empirical evidence either supporting or refuting this claim,
 extensive numerical study was in order. The Monte-Carlo simulation was performed
@@ -109,7 +120,7 @@ Before proceeding to the evaluation of statistical properties of the crossing tr
 it is necessary to determine the range of tree levels (grid scales, or resolutions)
 for which self-similarity is apparent.
 \begin{figure}[htb]\begin{center}
-    \includegraphics[width=6in]{images/fbm-fig_05_med_1000-21}
+    \includegraphics[width=6in]{images/fbm_fig_05_med_1000-21}
     \caption{The plot of the estimates of the Hurst index $H$ on the offspring data
     of a single level of the crossing tree based on $10^3$ Monte-Carlo simulations of
     fBm.}
@@ -143,7 +154,7 @@ Restricting the attention to the Brownian motion case (fBm with $H=\tfrac{1}{2}$
 one can easily see that the numerical evidence is well aligned with the theoretical
 result of Jones and Rolls (fig.~\ref{fig:fbm_offspring_distribution}).
 \begin{figure}[htb]\begin{center}
-    \includegraphics[width=6in]{images/fig_01_med_fBm_1000-21}
+    \includegraphics[width=6in]{images/fbm_fig_01_med_1000-21}
     \caption{The log-plot of the offspring distributions estimated on 1000 sample discrete paths
     of the fBm process of length $2^{21}$ and Hurst exponents in the range from $0.5$ to $0.9$.}
 \label{fig:fbm_offspring_distribution}
@@ -153,14 +164,14 @@ is matched very closely by the numerical evidence (fig.~\ref{fig:fbm_offspring_u
 The results are similar in the down-up excursions case (fig.~\ref{fig:fbm_offspring_down_up}).
 
 \begin{figure}[htb]\begin{center}
-    \includegraphics[width=6in]{images/fbm-fig_03_up-down_med_1000-21}
+    \includegraphics[width=6in]{images/fbm_fig_03_up-down_med_1000-21}
     \caption{The estimated conditional probability of an up-down excursion given upward
     orientation of the parent crossing.}
 \label{fig:fbm_offspring_up_down}
 \end{center}\end{figure}
 
 \begin{figure}[htb]\begin{center}
-    \includegraphics[width=6in]{images/fbm-fig_03_down-up_med_1000-21}
+    \includegraphics[width=6in]{images/fbm_fig_03_down-up_med_1000-21}
     \caption{The box-plot of the estimates of the probability of an down-up excursion
     conditional on the orientation of the parent crossing being downward.}
 \label{fig:fbm_offspring_down_up}
@@ -179,6 +190,16 @@ dependence on $H$ should break down for values of $H$ closer to $1$, we attribut
 this discrepancy to numerical issues of discretizing continuous processes and
 simulating fGn with long range dependence. 
 
+Finally, the mean crossing durations, averaged for each replication across all detected
+crossings of a single level indeed demonstrate plausibility of the conjectured scaling
+between levels of the crossing tree, see fig.~\ref{fig:fbm_avg_crossing_durations} for fBm.
+\begin{figure}[htb]\begin{center}
+    \includegraphics[width=6in]{images/fbm_fig_08_med_1000-21}
+    \caption{The average crossing duration at each level of the crossing tree built
+    for fractional Brownian motion processes.}
+\label{fig:fbm_avg_crossing_durations}
+\end{center}\end{figure}
+
 Now let's turn to the Hermite and Weierstrass processes. This time $10^4$ random
 replications of sample paths of size $2^{17}$ were generated for each process.
 This size limitation was dictated by deteriorating numerical accuracy of the procedure,
@@ -189,7 +210,7 @@ points as well.
 Figure~\ref{fig:all_hurst_crossing_tree} suggests that the processes studied share common
 statistical properties of the crossing tree.
 \begin{figure}[htb]\begin{center}
-    \includegraphics[width=6in]{images/fig_05_med_10000-17_7-8}
+    \includegraphics[width=6in]{images/fig_05_med_10000-17}
     \caption{Estimates of the Hurst exponent $H$ based on a single level of the crossing tree for
     the all studied $H$-sssi processes.}
 \label{fig:all_hurst_crossing_tree}
@@ -246,7 +267,7 @@ probability of a crossing of a particular size (in the number of subcrossings) a
 increases to $1$, there is still evidence for similarity of the statistical properties
 of the crossing tree across different self-similar processes.
 \begin{figure}[htb]\begin{center}
-    \includegraphics[width=6in]{images/fig_02_med_10000-17_7-8}
+    \includegraphics[width=6in]{images/fig_02_med_10000-17}
     \caption{Empirical probabilities of the crossing sizes against the hypothesized
     theoretical probabilities for $10^4$ sample paths of length $2^{17}$ points.}
 \label{fig:all_xing_probs}
@@ -299,18 +320,50 @@ quite well with the hypothesised distribution.
 \label{tbl:empirical_probs_02}
 \end{center}\end{table}
 
+Crossing duration also do not seem contradict the hypothesized scaling for $H$-sssi proceses
+and the Weierstrass function (see. fig.~\ref{fig:wei_offspring_down_up} - \ref{fig:hrm_4_offspring_down_up}).
+
 \begin{figure}[htb]\begin{center}
-    \includegraphics[width=6in]{images/fig_03_up-down_med_10000-17_7-8}
+    \includegraphics[width=6in]{images/fig_03_up-down_med_10000-17}
     \caption{The empirical estimates of the probability of an up-down excursion conditional on
     the upward orientation of the parent crossing.}
 \label{fig:all_offspring_up_down}
 \end{center}\end{figure}
 
 \begin{figure}[htb]\begin{center}
-    \includegraphics[width=6in]{images/fig_03_down-up_med_10000-17_7-8}
+    \includegraphics[width=6in]{images/fig_03_down-up_med_10000-17}
     \caption{The same figure as~\ref{fig:all_offspring_up_down} but for down-up excursions
     conditional on the orientation of the parent crossing being downward.}
 \label{fig:all_offspring_down_up}
+\end{center}\end{figure}
+
+\begin{figure}[htb]\begin{center}
+    \includegraphics[width=6in]{images/fig_08_med_WEI_10000-17}
+    \caption{The average crossing duration at each level of the crossing tree built
+    for the Weierstrass processes.}
+\label{fig:wei_offspring_down_up}
+\end{center}\end{figure}
+
+\begin{figure}[htb]\begin{center}
+    \includegraphics[width=6in]{images/fig_08_med_HRM-2_10000-17}
+    \caption{The average crossing duration at each level of the crossing tree built
+    for the Hermite processes of order $2$.}
+\label{fig:hrm_2_offspring_down_up}
+\end{center}\end{figure}
+
+
+\begin{figure}[htb]\begin{center}
+    \includegraphics[width=6in]{images/fig_08_med_HRM-3_10000-17}
+    \caption{The average crossing duration at each level of the crossing tree built
+    for the Hermite processes of order $3$.}
+\label{fig:hrm_3_offspring_down_up}
+\end{center}\end{figure}
+
+\begin{figure}[htb]\begin{center}
+    \includegraphics[width=6in]{images/fig_08_med_HRM-4_10000-17}
+    \caption{The average crossing duration at each level of the crossing tree built
+    for the Hermite processes of order $4$.}
+\label{fig:hrm_4_offspring_down_up}
 \end{center}\end{figure}
 
 % section results (end)
