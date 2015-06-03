@@ -163,22 +163,26 @@ and scaled cosines
 \[
 f_H(t)
 = \sum_{k\in \mathbb{Z}} \lambda_0^{-kH}\bigl\{ \cos(\phi_k)
-- \cos(2\pi \lambda_0^k t + \phi_k) \bigr\} 
+- \cos(2\pi \lambda_0^k t + \phi_k) \bigr\} \,,
 \]
 for $(\phi_k)_{k\in\mathbb{Z}}\sim \mathcal{U}(0,2\pi)$ iid -- the random phase
 shift of the $k$-th layer harmonics. The parameter $\lambda_0$ governs the base
 scale of the process and is knows as ``the fundamental harmonic'' (see~\cite{decrouez2013estimation}).
 The function $f_H(t)$ has continuous paths, yet is nowhere differentiable, even
 in the deterministic case when all phase shifts are identically zero. The Weierstrass
-function is not an $H$-sssi process, but still it exhibits certain self-similarity.
-The $H$ in the definition is in fact not the Hurst index, but a so called H\:older
+function is not an $H$-sssi process, but it exhibits discrete self-similarity, which
+means that there exists $a_0>0$ such that self-similarity holds for values of $a$
+on a discrete grid $a_0\mathbb{N}$, that is for all $t\geq 0$
+\[ f_H(at) = a^H f(t)\,. \]
+
+The $H$ in the definition is in fact not the Hurst index, but a so called H\"older
 exponent, which means that for some $C\in[0,+\infty)$ it is true that for all $s,t\geq0$
 \[ \bigl\lvert f_H(s) - f_H(t) \bigr\rvert \leq C |s-t|^H \,. \]
 Functions, or random processes, for which there exists $H\geq0$ such that this
-condition is satisfied are known as \textbf{H\:older continuous}. This H\:older
-continuity implies a certain degree of scale-invariance of the Weierstrass function.
-Indeed, for any $a>0$ the condition implies that
-\[ a^{-H}\bigl\lvert f_H(as) - f_H(at) \bigr\rvert \leq C |s-t|^H \]
+condition is satisfied are known as \textbf{H\"older continuous}. This H\"older
+continuity implies scale-invariance of the Weierstrass function. Indeed, for any
+$a\in a_0\mathbb{N}$ the condition implies that
+\[ a^{-H}\bigl\lvert f_H(as) - f_H(at) \bigr\rvert \leq C |s-t|^H\,, \]
 for all $s,t\geq 0$. Furthermore, observe that by definition $f_H(0)=0$ and for
 all $t\geq0$:
 \begin{align*}
@@ -188,7 +192,7 @@ all $t\geq0$:
 	&\leq C |a - 1|^H |t|^H + |a^H - 1|\bigl\lvert f_H(t)\bigr\rvert\\
 	&\leq C \bigl( |a - 1|^H  + |a^H - 1| \bigr) |t|^H \,,
 \end{align*}
-which indicates that the Weierstrass function has certain self-similarity.
+which makes it obvious that the Weierstrass function has self-similarity.
 
 % section weierstrass_function (end)
 
