@@ -134,7 +134,7 @@ def figure_01( figure, method, kind, p = 3, q = 4 ) :
 	legend.set_title( r'Processes' )
 
 ## For figure 02
-def find_hurst( method, kind, hurst ) :
+def find_hurst( method, kind, hurst, results ) :
 	if method not in results:
 		return None
 	if kind not in results[ method ] :
@@ -154,12 +154,12 @@ def figure_02( figure, method, p, q ) :
 	Z, P = xing_probs_theoretical( 0.5, 2 * 20 )
 	axis.plot( Z, P, linestyle = '-', color = 'gray' )
 ## fBM
-	simd = find_hurst( method, 'FBM', 0.5 )
+	simd = find_hurst( method, 'FBM', 0.5, results )
 	if simd is not None :
 		Phat, Pstd = xing_probs_empirical( simd[ 3 ], p = p, q = q )
 		axis.plot( Z[ np.where( Phat > 0 )[ 0 ] ], Phat[ Phat > 0 ], linestyle = '-', color = colours[0], marker = 'o', label = simd[ 0 ] )
 ## weierstrass
-	simd = find_hurst( method, 'WEI', 0.5 )
+	simd = find_hurst( method, 'WEI', 0.5, results )
 	if simd is not None :
 		Phat, Pstd = xing_probs_empirical( simd[ 3 ], p = p, q = q )
 		axis.plot( Z[ np.where( Phat > 0 )[ 0 ] ], Phat[ Phat > 0 ], linestyle = ':', color = colours[0], marker = '*', markersize = 10, label = simd[ 0 ] )
@@ -168,27 +168,27 @@ def figure_02( figure, method, p, q ) :
 		Z, P = xing_probs_theoretical( hurst, 2 * 20 )
 		axis.plot( Z, P, linestyle = '-', color = 'gray' )
 ## fBM
-		simd = find_hurst( method, 'FBM', hurst )
+		simd = find_hurst( method, 'FBM', hurst, results )
 		if simd is not None :
 			Phat, Pstd = xing_probs_empirical( simd[ 3 ], p = p, q = q )
 			axis.plot( Z[ np.where( Phat > 0 )[ 0 ] ], Phat[ Phat > 0 ], linestyle = '-', color = col, marker = 'o', label = simd[ 0 ] )
 ## weierstrass
-		simd = find_hurst( method, 'WEI', hurst )
+		simd = find_hurst( method, 'WEI', hurst, results )
 		if simd is not None :
 			Phat, Pstd = xing_probs_empirical( simd[ 3 ], p = p, q = q )
 			axis.plot( Z[ np.where( Phat > 0 )[ 0 ] ], Phat[ Phat > 0 ], linestyle = ':', color = col, marker = '*', markersize = 10, label = simd[ 0 ] )
 ## hermite-2
-		simd = find_hurst( method, 'HRM-2', hurst )
+		simd = find_hurst( method, 'HRM-2', hurst, results )
 		if simd is not None :
 			Phat, Pstd = xing_probs_empirical( simd[ 3 ], p = p, q = q )
 			axis.plot( Z[ np.where( Phat > 0 )[ 0 ] ], Phat[ Phat > 0 ], linestyle = '--', color = col, marker = '^', label = simd[ 0 ] )
 ## hermite-3
-		simd = find_hurst( method, 'HRM-3', hurst )
+		simd = find_hurst( method, 'HRM-3', hurst, results )
 		if simd is not None :
 			Phat, Pstd = xing_probs_empirical( simd[ 3 ], p = p, q = q )
 			axis.plot( Z[ np.where( Phat > 0 )[ 0 ] ], Phat[ Phat > 0 ], linestyle = '--', color = col, marker = 'v', label = simd[ 0 ] )
 ## hermite-4
-		simd = find_hurst( method, 'HRM-4', hurst )
+		simd = find_hurst( method, 'HRM-4', hurst, results )
 		if simd is not None :
 			Phat, Pstd = xing_probs_empirical( simd[ 3 ], p = p, q = q )
 			axis.plot( Z[ np.where( Phat > 0 )[ 0 ] ], Phat[ Phat > 0 ], linestyle = '--', color = col, marker = 's', label = simd[ 0 ] )
@@ -205,17 +205,18 @@ def figure_02( figure, method, p, q ) :
 
 ## The main plotter for the third figure
 def __plot_excursions( axis, method, hurst, p, q, direction = 0 ) :
+	# axis.set_ylim( 0.35, 0.85 )
 	axis.set_ylim( -0.1, 1.1 )
 	axis.spines[ 'top' ].set_visible( False ) ; axis.spines[ 'bottom' ].set_visible( False )
 	axis.xaxis.set_ticks_position( 'none' ) ; axis.yaxis.set_ticks_position( 'left' )
 	axis.axhline( y = 1.0 / np.sqrt( 2 ** ( 1.0 / hurst ) ), linewidth = 2, color = 'black' )
 	boxes, labels = list( ), list( )
 	for kind in [ 'FBM', 'WEI', 'HRM-2', 'HRM-3', 'HRM-4', ] :
-		simd = find_hurst( method, kind, hurst )
+		simd = find_hurst( method, kind, hurst, results )
 		if simd is not None :
 			Pje = xcur_probs_empirical( simd[ 4 ], p, q )
 			boxes.append( Pje[:, direction ] )
-			labels.append( kind )
+			labels.append( simd[ 0 ] )
 	if boxes :
 		axis.boxplot( boxes )
 		axis.set_xticklabels( labels, rotation = -90, position = (0,0.1) )
@@ -257,14 +258,14 @@ def figure_05( figure, method, p, q ) :
 ## Plot H = 0.5
 	axis.axhline( y = 0.5, color = 'gray', linestyle = '-' )
 ## fBM
-	simd = find_hurst( method, 'FBM', 0.5 )
+	simd = find_hurst( method, 'FBM', 0.5, results )
 	if simd is not None :
 		Hhat, Hstd = xing_hurst( simd[ 3 ], p, q )
 		mask = np.where( Hhat > 0.80 * 0.5 )[ 0 ]
 		highest_level = max( np.max( levels[ mask ] ), highest_level )
 		axis.plot( levels[ mask ], Hhat[ mask ], linestyle = '-', color = colours[ 0 ], marker = 'o', label = simd[ 0 ] )
 ## weierstrass
-	simd = find_hurst( method, 'WEI', 0.5 )
+	simd = find_hurst( method, 'WEI', 0.5, results )
 	if simd is not None :
 		Hhat, Hstd = xing_hurst( simd[ 3 ], p, q )
 		mask = np.where( Hhat > 0.80 * 0.5 )[ 0 ]
@@ -274,35 +275,35 @@ def figure_05( figure, method, p, q ) :
 ## Plot H = hurst
 		axis.axhline( y = hurst, color = 'gray', linestyle = '-' )
 ## fBM
-		simd = find_hurst( method, 'FBM', hurst )
+		simd = find_hurst( method, 'FBM', hurst, results )
 		if simd is not None :
 			Hhat, Hstd = xing_hurst( simd[ 3 ], p, q )
 			mask = np.where( Hhat > 0.80 * hurst )[ 0 ]
 			highest_level = max( np.max( levels[ mask ] ), highest_level )
 			axis.plot( levels[ mask ], Hhat[ mask ], linestyle = '-', color = col, marker = 'o', label = simd[ 0 ] )
 ## weierstrass
-		simd = find_hurst( method, 'WEI', hurst )
+		simd = find_hurst( method, 'WEI', hurst, results )
 		if simd is not None :
 			Hhat, Hstd = xing_hurst( simd[ 3 ], p, q )
 			mask = np.where( Hhat > 0.80 * hurst )[ 0 ]
 			highest_level = max( np.max( levels[ mask ] ), highest_level )
 			axis.plot( levels[ mask ], Hhat[ mask ], linestyle = ':', color = col, marker = '*', markersize = 10, label = simd[ 0 ] )
 ## hermite-2
-		simd = find_hurst( method, 'HRM-2', hurst )
+		simd = find_hurst( method, 'HRM-2', hurst, results )
 		if simd is not None :
 			Hhat, Hstd = xing_hurst( simd[ 3 ], p, q )
 			mask = np.where( Hhat > 0.80 * hurst )[ 0 ]
 			highest_level = max( np.max( levels[ mask ] ), highest_level )
 			axis.plot( levels[ mask ], Hhat[ mask ], linestyle = '--', color = col, marker = '^', label = simd[ 0 ] )
 ## hermite-3
-		simd = find_hurst( method, 'HRM-3', hurst )
+		simd = find_hurst( method, 'HRM-3', hurst, results )
 		if simd is not None :
 			Hhat, Hstd = xing_hurst( simd[ 3 ], p, q )
 			mask = np.where( Hhat > 0.80 * hurst )[ 0 ]
 			highest_level = max( np.max( levels[ mask ] ), highest_level )
 			axis.plot( levels[ mask ], Hhat[ mask ], linestyle = '--', color = col, marker = 'v', label = simd[ 0 ] )
 ## hermite-4
-		simd = find_hurst( method, 'HRM-4', hurst )
+		simd = find_hurst( method, 'HRM-4', hurst, results )
 		if simd is not None :
 			Hhat, Hstd = xing_hurst( simd[ 3 ], p, q )
 			mask = np.where( Hhat > 0.80 * hurst )[ 0 ]
@@ -327,7 +328,7 @@ def __plot_mle_probs( axis, method, hurst, p, q, with_atom = False ) :
 	axis.axhline( y = 2.0 ** ( 1.0 - 1.0 / hurst ), linewidth = 2, color = 'black' )
 	boxes, labels = list( ), list( )
 	for kind in [ 'FBM', 'WEI', 'HRM-2', 'HRM-3', 'HRM-4', ] :
-		simd = find_hurst( method, kind, hurst )
+		simd = find_hurst( method, kind, hurst, results )
 		if simd is not None :
 			if not with_atom :
 				theta_j = xing_geom_mle( simd[ 3 ], p, q )
@@ -351,138 +352,120 @@ def figure_07( figure, method, p, q ) :
 ####################################################################################################
 ####################################################################################################
 ####################################################################################################
-# base_path = os.path.realpath( "./output/final/1000-19" )
-# process_folders = [ 'HRM-2_19-16', 'HRM-3_19-16', 'HRM-4_19-16', 'WEI_19', 'FBM_19', ]
-# base_path = os.path.realpath( "./output/final/10000-17" )
-# process_folders = [ 'FBM_17', 'HRM-2_17-16', 'HRM-3_17-16', 'HRM-4_17-16', 'WEI_17', ]
-# base_path = os.path.realpath( "./output/final/100-18" )
-# process_folders = [ 'FBM_20', 'HRM-2_18-16', 'HRM-3_18-16', 'HRM-4_18-16', 'WEI_20', ]
-####################################################################################################
-# base_path = os.path.realpath( "./output/final/1000-18" )
-# process_folders = [ 'HRM-2_18-16', 'HRM-3_18-16', 'HRM-4_18-16', 'WEI_18', 'FBM_18', ]
-# base_path = os.path.realpath( "./output/final/1000-21" )
-# process_folders = [ 'WEI_21', 'FBM_21', ]
-base_path = os.path.realpath( "./output/final/10000-20" )
-process_folders = [ 'FBM_20', ]
+if __name__ == '__main__' :
+	base_path = os.path.realpath( "./output/release/10000-17" )
+	process_folders = [ 'FBM_17', 'HRM-2_17-16', 'HRM-3_17-16', 'HRM-4_17-16', 'WEI_17', ]
+	# base_path = os.path.realpath( "./output/release/1000-21" )
+	# process_folders = [ 'FBM_21', ]
+	# base_path = os.path.realpath( "./output/release/1000-16" )
+	# process_folders = [ 'FBM_16', 'HRM-2_16-16', 'HRM-3_16-16', 'HRM-4_16-16', 'WEI_16', ]
 
 
-## Quickly extract the info
-kinds = [ process.split( '_' )[ 0 ] for process in process_folders ]
+	## Quickly extract the info
+	kinds = [ process.split( '_' )[ 0 ] for process in process_folders ]
 
-## Method name and the tree levels to use (chosen heuristically).
-methods = [ ( 'med', 6, 7 ), ( 'iqr', 6, 7 ), ('rng', 3, 4 ), ]
-# methods = [ ( 'med', 6, 7 ), ]
+	## Method name and the tree levels to use (chosen heuristically).
+	# methods = [ ( 'med', 7, 8 ), ( 'iqr', 6, 7 ), ('rng', 3, 4 ), ]
+	methods = [ ( 'med', 7, 8 ), ]
 
-results = dict( )
-for method, _, _ in methods :
-	for process in process_folders :
-		path = os.path.join( base_path, process, method )
-		if not os.path.exists( path ) :
-			continue
-## Extract the name of the process from its folder name
-		kind = process.split( '_' )[ 0 ]
-## Load the results results
-		results_method = results.get( method, dict( { } ) )
-		results_method[ kind ] = load_files( list_files( path ) )
-		results[ method ] = results_method
-
-## FIGURE 01
-if True :
-	for method, p, q in methods :
-		if method not in results :
-			continue
-		for kind in kinds :
-			if kind not in results[ method ] :
+	results = dict( )
+	for method, _, _ in methods :
+		for process in process_folders :
+			path = os.path.join( base_path, process, method )
+			if not os.path.exists( path ) :
 				continue
-			fig = plt.figure( figsize = ( 16, 9 ) )
-			figure_01( fig, method, kind, p, q )
-			plt.savefig( os.path.join( base_path, 'images', "fig_01_%s_%s.png" % ( method, kind, ) ) )
+	## Extract the name of the process from its folder name
+			kind = process.split( '_' )[ 0 ]
+	## Load the results results
+			results_method = results.get( method, dict( { } ) )
+			results_method[ kind ] = load_files( list_files( path ) )
+			results[ method ] = results_method
 
-## FIGURE 02
-if True :
-	for method, p, q in methods :
-		if method in results :
+	## FIGURE 01
+	if False :
+		for method, p, q in methods :
+			if method not in results :
+				continue
+			for kind in kinds :
+				if kind not in results[ method ] :
+					continue
+				fig = plt.figure( figsize = ( 16, 9 ) )
+				figure_01( fig, method, kind, p, q )
+				plt.savefig( os.path.join( base_path, 'pdf', "fig_01_%s_%s.pdf" % ( method, kind, ) ) , format = 'pdf' )
+
+	## FIGURE 02
+	if False :
+		for method, p, q in methods :
+			if method in results :
+				figure = plt.figure( figsize = ( 16, 9 ) )
+				figure_02( figure, method, p = p, q = q )
+				plt.savefig( os.path.join( base_path, 'pdf', "fig_02_%s.pdf" % ( method, ) ) , format = 'pdf' )
+
+	## FIGURE 03
+	if True :
+		for direction, name in [ (0, 'up-down'), (1, 'down-up') ] :
+			for method, p, q in methods :
+				if method in results :
+					figure = plt.figure( figsize = ( 16, 5 ) )
+					plt.subplots_adjust( hspace = 0.4 )
+					if direction == 0 :
+						figure.suptitle( r"Empirical probability of an %s excursion conditional on an up-crossing" % ( name, ) )
+					else :
+						figure.suptitle( r"Empirical probability of an %s excursion conditional on a down-crossing" % ( name, ) )
+					figure_03( figure, method, p = p, q = q, direction = direction )
+					plt.savefig( os.path.join( base_path, 'pdf', "fig_03_%s_%s.pdf" % ( name, method, ) ) , format = 'pdf' )
+
+	## FIGURE 04
+	if False :
+		for method, p, q in methods :
+			if method not in results :
+				continue
+			for kind in kinds :
+				if kind not in results[ method ] :
+					continue
+				figure = plt.figure( figsize = ( 16, 9 ) )
+				figure_04( figure, method, kind )
+				plt.savefig( os.path.join( base_path, 'pdf', "fig_04_%s_%s.pdf" % ( method, kind, ) ) , format = 'pdf' )
+
+	## FIGURE 05
+	if False :
+		for method, p, q in methods :
+			if method not in results :
+				continue
 			figure = plt.figure( figsize = ( 16, 9 ) )
-			figure_02( figure, method, p = p, q = q )
-			plt.savefig( os.path.join( base_path, 'images', "fig_02_%s.png" % ( method, ) ) )
+			figure_05( figure, method, 1, 20 )
+			plt.savefig( os.path.join( base_path, 'pdf', "fig_05_%s.pdf" % ( method, ) ) , format = 'pdf' )
 
-## FIGURE 03
-if True :
-	for direction, name in [ (0, 'up-down'), (1, 'down-up') ] :
+	## FIGURE 06
+	if False :
 		for method, p, q in methods :
 			if method in results :
 				figure = plt.figure( figsize = ( 16, 5 ) )
 				plt.subplots_adjust( hspace = 0.4 )
-				if direction == 0 :
-					figure.suptitle( r"Empirical probability of an %s excursion conditional on an up-crossing" % ( name, ) )
-				else :
-					figure.suptitle( r"Empirical probability of an %s excursion conditional on a down-crossing" % ( name, ) )
-				figure_03( figure, method, p = p, q = q, direction = direction )
-				plt.savefig( os.path.join( base_path, 'images', "fig_03_%s_%s.png" % ( name, method, ) ) )
+				figure.suptitle( r"""MLE estimate of the $Z_k \sim$Geom$(\theta)$""" )
+				figure_06( figure, method, p = p, q = q )
+				plt.savefig( os.path.join( base_path, 'pdf', "fig_06_%s.pdf" % ( method, ) ) , format = 'pdf' )
 
-## FIGURE 04
-if True :
-	for method, p, q in methods :
-		if method not in results :
-			continue
-		for kind in kinds :
-			if kind not in results[ method ] :
-				continue
-			figure = plt.figure( figsize = ( 16, 9 ) )
-			figure_04( figure, method, kind )
-			plt.savefig( os.path.join( base_path, 'images', "fig_04_%s_%s.png" % ( method, kind, ) ) )
+	## FIGURE 07
+	if False :
+		for method, p, q in methods :
+			if method in results :
+				figure = plt.figure( figsize = ( 16, 5 ) )
+				plt.subplots_adjust( hspace = 0.4 )
+				figure.suptitle( r"""MLE estimate of the $Z_k \sim$Geom$(\theta)$ with atom at $2$""" )
+				figure_07( figure, method, p = p, q = q )
+				plt.savefig( os.path.join( base_path, 'pdf', "fig_07_%s.pdf" % ( method, ) ) , format = 'pdf' )
 
-## FIGURE 05
-if True :
-	for method, p, q in methods :
-		if method not in results :
-			continue
+	if False :
+		Phat, Pstd = xing_probs_empirical( simd[ 4 ], p = p, q = q )
+		axis.plot( Z[ np.where( Phat > 0 )[ 0 ] ], Phat[ Phat > 0 ], linestyle = '--', color = col, marker = 's', label = simd[ 0 ] )
 		figure = plt.figure( figsize = ( 16, 9 ) )
-		figure_05( figure, method, 1, 20 )
-		plt.savefig( os.path.join( base_path, 'images', "fig_05_%s.png" % ( method, ) ) )
-
-## FIGURE 06
-if True :
-	for method, p, q in methods :
-		if method in results :
-			figure = plt.figure( figsize = ( 16, 5 ) )
-			plt.subplots_adjust( hspace = 0.4 )
-			figure.suptitle( r"""MLE estimate of the $Z_k \sim$Geom$(\theta)$""" )
-			figure_06( figure, method, p = p, q = q )
-			plt.savefig( os.path.join( base_path, 'images', "fig_06_%s.png" % ( method, ) ) )
-
-## FIGURE 07
-if True :
-	for method, p, q in methods :
-		if method in results :
-			figure = plt.figure( figsize = ( 16, 5 ) )
-			plt.subplots_adjust( hspace = 0.4 )
-			figure.suptitle( r"""MLE estimate of the $Z_k \sim$Geom$(\theta)$ with atom at $2$""" )
-			figure_07( figure, method, p = p, q = q )
-			plt.savefig( os.path.join( base_path, 'images', "fig_07_%s.png" % ( method, ) ) )
-
-if False :
-	Phat, Pstd = xing_probs_empirical( simd[ 4 ], p = p, q = q )
-	axis.plot( Z[ np.where( Phat > 0 )[ 0 ] ], Phat[ Phat > 0 ], linestyle = '--', color = col, marker = 's', label = simd[ 0 ] )
-	figure = plt.figure( figsize = ( 16, 9 ) )
-	axis = figure.add_subplot( 111 )
-	boxes, labels = list( ), list( )
-	for L, H, Njn, Djnk, Vjnde in results[ 'med' ][ 'WEI' ] :
-		Pje = xcur_probs_empirical( Vjnde, p, q )
-		boxes.append( Pje[:,0] )
-		labels.append( L )
-	axis.boxplot( boxes, labels = labels )
-	plt.show( figure )
-
-	# p, q = 5, 7
-	# method = 'iqr'
-	# kind = 'FBM'
-
-	# L, H, Njn, Djnk, Vjnde = results[ method ][ kind ][ 4 ]
-	# tj, dj = xing_atomic_geom_mle( Djnk, p, q )
-	# gj = xing_geom_mle( Djnk, p, q )
-	# axis = plt.subplot( 111 )
-	# axis.axhline( y = 2.0 ** ( 1.0 - 1.0 / H ), linewidth = 2, color = 'black' )
-	# axis.boxplot( [ gj, tj, dj ] )
-	# plt.show( )
+		axis = figure.add_subplot( 111 )
+		boxes, labels = list( ), list( )
+		for L, H, Njn, Djnk, Vjnde in results[ 'med' ][ 'WEI' ] :
+			Pje = xcur_probs_empirical( Vjnde, p, q )
+			boxes.append( Pje[:,0] )
+			labels.append( L )
+		axis.boxplot( boxes, labels = labels )
+		plt.show( figure )
 
