@@ -1,0 +1,407 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{fullpage}
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts}
+\usepackage{mathtools}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+
+\newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Ical}{\mathcal{I}}
+
+\newcommand{\ex}{{\mathbb{E}}}
+\newcommand{\pr}{{\mathbb{P}}}
+\newcommand{\var}{{\text{var}}}
+
+\newcommand{\defn}{\overset{\Delta}{=}}
+
+\newcommand{\re}{\operatorname{Re}\nolimits}
+\newcommand{\im}{\operatorname{Im}\nolimits}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{\rus{Домашняя работа по курсу \\ ``Теоретико-вероятностные методы в статистике''}}
+\author{\rus{Назаров Иван,} \rus{101мНОД(ИССА)}}
+
+\begin{document}
+\selectlanguage{russian}
+\maketitle
+
+\section{Задание \# 2} % (fold)
+\label{sec:task_2}
+
+Найдём расстояние Кульбака-Лейблера между плотностями $p_1$ и $p_2$, где
+\[
+p_i(x) = (2\pi)^{-\tfrac{1}{2}} (\sigma_i^2)^{-\tfrac{1}{2}}
+\text{exp}\bigl\{ -\frac{1}{2\sigma_i^2} (x-\mu_i)^2 \bigr\}\,.
+\]
+Рассчитаем сначала
+\begin{align*}
+	\log\frac{p_1(X)}{p_2(X)}
+	&= -\frac{1}{2} \log 2\pi - \frac{1}{2} \log \sigma_1^2 - \frac{1}{2\sigma_1^2} (x-\mu_1)^2 \\
+	&-\bigl( -\frac{1}{2} \log 2\pi - \frac{1}{2} \log \sigma_2^2 - \frac{1}{2\sigma_2^2} (x-\mu_2)^2 \bigr)\\
+	&= - \frac{1}{2} \Bigl( \log \frac{\sigma_1^2}{\sigma_2^2}
+		+ \frac{1}{2\sigma_1^2} (x-\mu_1)^2
+		- \frac{1}{2\sigma_2^2} (x-\mu_2)^2 \Bigr )\,.
+\end{align*}
+Итак
+\[ \text{KL}(p_1\|p_2) = \ex_{x\sim p_1} \log\frac{p_1(x)}{p_2(x)}\,, \]
+откуда
+\begin{align*}
+	\text{KL}(p_1\|p_2)
+	&= - \frac{1}{2} \Bigl( \log \frac{\sigma_1^2}{\sigma_2^2} 
+ 		+ \frac{1}{\sigma_1^2} \ex_{x\sim p_1} (x-\mu_1)^2
+		- \frac{1}{\sigma_2^2} \ex_{x\sim p_1} (x-\mu_2)^2
+	  \Bigr )\\
+	&= - \frac{1}{2} \Bigl( \log \frac{\sigma_1^2}{\sigma_2^2} 
+ 		+ \frac{\sigma_1^2}{\sigma_1^2}
+		- \frac{1}{\sigma_2^2} \ex_{x\sim p_1} \bigl[ (x-\mu_1)^2 + 2(x-\mu_1)(\mu_1-\mu_2) + (\mu_1-\mu_2)^2 \bigr]
+	  \Bigr )\\
+	&= - \frac{1}{2} \Bigl( 1 + \log \frac{\sigma_1^2}{\sigma_2^2} 
+ 		- \frac{\sigma_1^2}{\sigma_2^2} - \frac{(\mu_1-\mu_2)^2}{\sigma_2^2} \Bigr )\,,
+\end{align*}
+и аналогично:
+\[
+\text{KL}(p_2\|p_1)
+= - \frac{1}{2} \Bigl( 1 + \log \frac{\sigma_2^2}{\sigma_1^2} 
+- \frac{\sigma_2^2}{\sigma_1^2} - \frac{(\mu_2-\mu_1)^2}{\sigma_1^2} \Bigr ) \,.
+\]
+
+% section task_2 (end)
+
+\section{Задание \# 3} % (fold)
+\label{sec:task_3}
+
+Пусть на отрезке $[0,1]$ имеется процесс $\{Y(t)\}$ заданный
+\[ Y(t) = \theta S(t) + \xi(t)\,, \]
+где $\theta\in\{-1,+1\}$ с равными вероятностями, $S(t)$ известная функция и
+$\xi(t)\sim \text{WN}$.
+
+Пусть в моменты времени $(t_k)_{k=1}^n$ наблюдается выборка значений $y_k = Y(t_k)$
+(вектор $y$) с соответствующими $s_k = S(t_k)$ (вектор $s$), причём $\|s\| > 0$.
+Правдоподобие наблюдений равно:
+\[ p(Y^n;\theta) = (2\pi)^{-\frac{n}{2}} \text{exp}\bigl\{ -\frac{1}{2} \sum_{k=1}^n (y_k - \theta s_k)^2\bigr\}\,. \]
+
+Проверяем гипотезы $H_0:\theta\in\Theta_0 = \{-1\}$ против $H_1:\theta\in \Theta_1 = \{+1\}$.
+Тогда
+\[
+\int_{\Theta_0} p(Y^n;\theta) \pi(\theta) d\theta
+= \frac{1}{2} (2\pi)^{-\frac{n}{2}} \text{exp}\bigl\{ -\frac{1}{2} \sum_{k=1}^n (y_k + s_k)^2 \bigr\} \,,
+\]
+и
+\[
+\int_{\Theta_1} p(Y^n;\theta) \pi(\theta) d\theta
+= \frac{1}{2} (2\pi)^{-\frac{n}{2}} \text{exp}\bigl\{ -\frac{1}{2} \sum_{k=1}^n (y_k - s_k)^2 \bigr\} \,.
+\]
+
+Оптимальный Байесовский тест задаётся функцией
+\[
+\phi(Y^n)
+= \mathbf{1}\biggl\{ \int_{\Theta_1} p(Y^n;\theta) \pi(\theta) d\theta
+\geq \int_{\Theta_0} p(Y^n;\theta) \pi(\theta) d\theta \biggr\} \,,
+\]
+что в нашем случае выражается в
+\[
+\phi(Y^n)
+= \mathbf{1} \bigl\{ \sum_{k=1}^n (y_k + s_k)^2 \geq \sum_{k=1}^n (y_k - s_k)^2 \bigr\} \,,
+\]
+которое вырождается в 
+\[
+\phi(Y^n)
+= \mathbf{1} \bigl\{ \sum_{k=1}^n y_k s_k \geq 0 \bigr\} \,.
+\]
+По сути определяется проекция вектора наблюдений на вектор известных значений.
+
+Рассмотрим ошибки первого и второго рода этого теста: \begin{align*}
+	\alpha &= \ex_\theta \phi(Y^n)\, \text{ \rus{при} } \theta\in\Theta_0\\
+	\beta &= 1-\ex_\theta \phi(Y^n)\, \text{ \rus{при} } \theta\in\Theta_1\,.
+\end{align*}
+В нашем случае
+\begin{align*}
+	\ex_\theta \phi(Y^n)
+	&= \pr\bigl( \sum_{k=1}^n Y_k s_k \geq 0 \bigr) \\
+	&= \pr\bigl( \theta\sum_{k=1}^n s_k^2 + \sum_{k=1}^n\xi_k s_k \geq 0 \bigr) \\
+	&= \pr\bigl( \sum_{k=1}^n \xi_k s_k \geq -\theta\sum_{k=1}^n s_k^2 +  \bigr)\,,
+\end{align*}
+где $\xi_k = \xi(t_k)$ шум в моменты $t_k$ (вектор $\xi$). В силу того, что $\|s\|>0$
+и вектор $\xi$ Гауссовкский, справедливо, что $s'\xi \sim \mathcal{N}(0,s's)$,
+откуда вытекает, что
+\[ \ex_\theta \phi(Y^n) = \pr\bigl( s'\xi \geq -\theta s's ) = 1 - \Phi( -\theta \sqrt{s's} ) \,, \]
+для любых $\theta\in \{-1,+1\}$ где $\Phi(x)$ функция распределения стандартной
+нормальной случайной величины. Таким образом
+\begin{align*}
+	\alpha &= 1 - \Phi\bigl( \sqrt{ \sum_{k=1}^n s_k^2 } \bigr) \\
+	\beta &= \Phi\bigl( -\sqrt{ \sum_{k=1}^n s_k^2 } \bigr) \,,
+\end{align*}
+откуда $\alpha = \beta$, то есть ошибки первого и второго рода совпадают.
+
+% section task_3 (end)
+
+\section{Задание \# 4} % (fold)
+\label{sec:task_4}
+
+Рассмотрим наблюдения случайного процесса в дискретном времени 
+\[ Y_k = \beta_1 + X_k \beta_1 + \sigma \xi_k\,,\,\, k=1,\ldots, n\,, \]
+где $\beta_1$ и $\beta_2$ -- неизвестные параметры, $(X_k)_{k=1}^n$ -- известные числа
+и $\xi_k\sim \mathcal{N}(0,1)$ НОРСЛ.
+
+Правдоподобие наблюдений:
+\[
+\mathcal{L}(Y^n, X^n;\beta_1, \beta_2, \sigma^2)
+= -\frac{n}{2}\log 2\pi - \frac{n}{2} \log \sigma^2 - \frac{1}{2 \sigma^2} \sum_{k=1}^n \bigl(Y_k - \beta_1 - \beta_2 X_k\bigr)^2\,,
+\]
+выпуклая функция от $\beta$ и достигает максимума значениях, удовлетворяющим
+условиям первого порядка:
+\begin{align*}
+	\beta_1:\,& \frac{1}{2\sigma^2} \sum_{k=1}^n \bigl(Y_k - \beta_1 - \beta_2 X_k\bigr) = 0\\
+	\beta_2:\,& \frac{1}{2\sigma^2} \sum_{k=1}^n \bigl(Y_k - \beta_1 - \beta_2 X_k\bigr)X_k  = 0\,,
+\end{align*}
+откуда следует
+\[ \beta_1 = \bar{Y} - \beta_2 \bar{X} \,, \]
+и
+\[ \overline{YX} - \beta_2 \overline{X^2} = \beta_1 \bar{X} \,, \]
+где $\bar{X} = \tfrac{1}{n} \sum_{k=1}^n X_k$ (аналогично для $\overline{XY}$ и $\overline{X^2}$).
+Подставив полученное выражение для $\beta_1$ во второе условие получаем:
+\[
+\overline{YX} - (\bar{Y} - \bar{X} \beta_2) \bar{X} - \beta_2 \overline{X^2} = 0 \,,
+\]
+откуда \[
+\overline{YX} - \bar{Y}\bar{X} = \beta_2 \overline{X^2} - \beta_2 \bar{X}^2\,.
+\]
+Таким образом
+\begin{align*}
+	\hat{\beta}_2 &= \frac{\overline{YX} - \bar{Y}\bar{X}}{ \overline{X^2} - \bar{X}^2 } \\
+	\hat{\beta}_1 &= \bar{Y} - \hat{\beta}_2 \bar{X}\,.
+\end{align*}
+ 
+% section task_4 (end)
+
+\section{Задание \# 5} % (fold)
+\label{sec:task_5}
+
+Рассмотрим стационарный авторрегрессионный процесс первого порядка в дискретном времени:
+\[ Y_k = \alpha Y_{k-1} + \xi_k\,,\]
+где $|\alpha| < 1$ и $\xi_k \sim\text{WN}$.
+
+Во-первых, для любого целого $m\geq 0$ справедливо :
+\[ Y_k = \alpha^m Y_{k-m} + \sum_{i=0}^{m-1} \alpha^i \xi_{k-i}\,. \]
+Во-вторых, в силу стационарности $\ex Y_k = \ex Y_s$ для любых $k,s$. Поскольку
+\[
+\ex Y_k
+= \alpha \ex Y_{k-1} + \ex \xi_k
+= \alpha \ex Y_{k-1}
+= \alpha \ex Y_k\,,\]
+то получаем $\ex Y_k = 0$ для любого $k\geq1$ так как $\alpha < 1$.
+В-третьих, опять-таки в силу стационарности выполняется, что :
+\[
+\ex Y_k^2
+= \alpha^2 \ex Y_{k-1}^2 + 2\ex Y_{k-1} \xi_k + \ex \xi_k^2
+= \alpha^2 \ex Y_{k-1}^2 + 2\ex Y_{k-1} \ex \xi_k + 1
+= \alpha^2 \ex Y_k^2 + 1 \,, \]
+откуда $\ex Y_k^2 = (1-\alpha^2)^{-1}$.
+
+Рассчитаем автоковариационную функцию процесса для $m\geq 0$ :
+\begin{align*}
+	\gamma_m &= \ex Y_k Y_{k-m}
+	 = \alpha^m \ex Y_{k-m}^2 + \sum_{i=0}^{m-1} \alpha^i \ex Y_{k-m} \xi_{k-i} \\
+	&=\biggl[ Y_{k-m} \text{\rus{ и }} (\xi_{k-i})_{i=0}^{m-1} \text{\rus{ независимы }} \biggr] \\
+	&= \alpha^m \ex Y_{k-m}^2 + \sum_{i=0}^{m-1} \alpha^i \ex Y_{k-m} \ex \xi_{k-i} \\
+	&= \frac{\alpha^m}{1-\alpha^2} \,.
+\end{align*}
+в силу стационарности для $m\leq 0$ выполнено
+\[ \ex Y_k Y_{k-m} = \ex Y_k Y_{k-(-m)}  = \gamma_m \,. \]
+
+Спектральная плотность стационарного процесса определяется выражением
+\[
+f_Y(\lambda)
+= \sum_{m=-\infty}^{+\infty} e^{2\pi i\, \lambda m} \ex Y_0 Y_m\,,
+\]
+где $|\lambda| \leq \frac{1}{2}$. В силу симметричности $\gamma_m$ справедливо
+\[
+f_Y(\lambda) = \gamma_0 + \sum_{m\geq 1} \bigl( e^{2\pi i \lambda m} + e^{2\pi i \lambda -m} \bigr) \gamma_m \,.
+\]
+Подставив значение $\gamma_m$ получаем
+\[
+f_Y(\lambda) = \frac{1}{1-\alpha^2} + \frac{1}{1-\alpha^2} \biggl(
+		\sum_{m\geq 1} \bigl( \alpha e^{2\pi i \lambda} \bigr)^m
+		+ \sum_{m\geq 1} \bigl( \alpha e^{ -2\pi i \lambda} \bigr)^m
+	\biggr)\,.
+\]
+
+Заметим, что для любого $\lambda$ комплексное число $z = \alpha e^{\pm 2\pi i \lambda}$
+по модулю строго меньше $1$:
+\[ \bigl\lvert \alpha e^{\pm 2\pi i \lambda}\bigr\rvert = |\alpha| < 1\,. \]
+Поэтому ряды в выражении $f_Y(\lambda)$ сходятся. Следовательно
+\begin{align*}
+	f_Y(\lambda)
+	&= \frac{1}{1-\alpha^2} \biggl( 1
+		+ \frac{\alpha e^{2\pi i \lambda}}{1-\alpha e^{2\pi i \lambda}}
+		+ \frac{\alpha e^{-2\pi i \lambda}}{1-\alpha e^{-2\pi i \lambda}}
+		\biggr)\\
+	&= \frac{1}{1-\alpha^2} \frac{
+		1 - \alpha e^{-2\pi i \lambda} - \alpha e^{2\pi i \lambda } + \alpha^2
+		+ \alpha e^{-2\pi i \lambda} - \alpha^2 + \alpha e^{2\pi i \lambda} - \alpha^2
+	}{1 - \alpha e^{-2\pi i \lambda} - \alpha e^{2\pi i \lambda } + \alpha^2} \\
+	&= \frac{1}{1-\alpha^2} \frac{ 1 - \alpha^2}{1 +
+		\alpha^2 - \alpha e^{-2\pi i \lambda} - \alpha e^{2\pi i \lambda } } \,,
+\end{align*}
+откуда по формуле Эйлера:
+\begin{align*}
+	f_Y(\lambda)
+	&= \biggl( 1 + \alpha^2 - \alpha ( e^{-2\pi i \lambda} + e^{2\pi i \lambda } ) \biggr)^{-1}\\
+	&= \biggl( 1 + \alpha^2 - 2\alpha \cos 2\pi \lambda \biggr)^{-1} \,.
+\end{align*}
+
+% section task_5 (end)
+
+\section{Задание \# 6} % (fold)
+\label{sec:task_6}
+Рассмотри наблюдения заданные
+\[ Y_k  = \theta + \sigma \xi_k\,, \]
+где $\theta$ -- неизвестный случайный параметр с плотностью
+\[\pi(\theta) = \frac{1}{2\lambda} \text{exp}\bigl\{ -\frac{|\theta|}{\lambda} \bigr\} \,,\]
+и $\xi_k\sim \mathcal{N}(0,1)$.
+Найдём оценку, максимизирующую апостериорную плотность $\theta$
+\[ p(\theta|Y^n) \propto p(Y^n|\theta) \pi(\theta) \,,\]
+где константа пропорциональности не зависит от $\theta$.
+
+Правдоподобие наблюдений задаётся следующим выражением:
+\begin{align*}
+	p(Y^n|\theta)
+	&= (2\pi \sigma^2)^{-\frac{n}{2}} \text{exp}\bigl\{ - \frac{1}{2\sigma^2} \sum_{k=1}^n (Y_k - \theta)^2 \bigr\} \\
+	&= (2\pi \sigma^2)^{-\frac{n}{2}}
+		\text{exp}\bigl\{ - \frac{1}{2\sigma^2} \sum_{k=1}^n (Y_k - \bar{Y}_n)^2 \bigr\}
+		\text{exp}\bigl\{ - \frac{n}{2\sigma^2}( \bar{Y}_n - \theta)^2 \bigr\} \,,
+\end{align*}
+поскольку $\sum_{k=1}^n (Y_k - \bar{Y}_n)(\bar{Y}-\theta) = 0$, где 
+\[\bar{Y}_n = \frac{1}{n} \sum_{k=1}^n Y_k \,.\]
+Легко увидеть, что правдоподобие зависит от параметра $\theta$ только через близость
+к выборочному среднему $\bar{Y}_n$. Таким образом оптимальное $\theta$ можно найти
+из решения следующей эквивалентной задачи :
+\[
+\text{exp}\bigl\{ - \frac{n}{2\sigma^2}( \bar{Y}_n - \theta)^2 \bigr\}
+\text{exp}\bigl\{ - \frac{|\theta|}{\lambda} \bigr\} \to \max_\theta \,,
+\]
+которая в свою очередь сводится к
+\[
+(\bar{Y}_n - \theta)^2 + A |\theta| \to \min_\theta \,,
+\]
+где $A = \frac{2\sigma^2}{n\lambda} > 0$.
+
+Эту задачу можно переформулировать в виде условной задачи 
+\begin{align*}
+	(\bar{Y}_n - \theta_+ + \theta_-)^2 + A (\theta_+ + \theta_- ) \to \min_{\theta_-,\theta_+}\\
+	\text{s.t. }\, \theta_-,\theta_+ \geq 0\,,\, \theta_- \theta_+ = 0\,.
+\end{align*}
+Лагранжиан:
+\[
+\mathcal{L} (\theta_-, \theta_+,\lambda_-,\lambda_+,\mu) =
+	(\bar{Y}_n - \theta_+ + \theta_-)^2 + A (\theta_+ + \theta_- )
+	- \lambda_- \theta_- - \lambda_+ \theta_+ - \mu \theta_- \theta_+ \,,
+\]
+Условия первого порядка на $\theta_-$ и $\theta_+$ выражены:
+\begin{align*}
+	\theta_+:\quad & - 2(\bar{Y}_n - \theta_+ + \theta_- ) + A - \lambda_+ - \mu \theta_- = 0\\
+	\theta_-:\quad&   2(\bar{Y}_n - \theta_+ + \theta_- ) + A - \lambda_- - \mu \theta_+ = 0\,.
+\end{align*}
+Домножим условия на $\theta_+$ и $\theta_-$ соответственно. Условие допустимости
+$\theta_- \theta_+ = 0$ и условия дополняющей нежёсткости $\lambda_-\theta_- =0$
+и $\lambda_+\theta_+ = 0$ упрощают условия первого порядка:
+\begin{align*}
+	\theta_+:\, & - 2(\bar{Y}_n - \theta_+ + \theta_- - \frac{A}{2} ) \theta_+ = 0\\
+	\theta_-:\, &   2(\bar{Y}_n - \theta_+ + \theta_- + \frac{A}{2} ) \theta_- = 0\,.
+\end{align*}
+
+Набор $\theta_- = \theta_+ = 0$ удовлетворяет как условиям первого порядка,
+так и допустимости.
+
+Рассмотрим решение $\theta_+ = 0$ и $\theta_- > 0$. Тогда из второго условия
+вытекает:
+\[ \theta_- = - \bar{Y}_n - \frac{A}{2}\,, \]
+что допустимо в случае если $\bar{Y}_n < -\tfrac{A}{2}$.
+
+Для решения $\theta_- = 0$ и $\theta_+ > 0$ из первого условия получаем:
+\[ \theta_+ = \bar{Y}_n - \frac{A}{2} \,, \]
+допустимое когда $\bar{Y}_n > \tfrac{A}{2}$.
+
+Условия $\bar{Y}_n < -\tfrac{A}{2}$ и $\bar{Y}_n > \tfrac{A}{2}$не могут выполняться
+одновременно, откуда вытекает, что :
+\begin{itemize}
+	\item Пара $\theta_- = 0$ и $\theta_+ > 0$ является решением, тогда и только тогда,
+	когда $\bar{Y}_n > \tfrac{A}{2}$;
+	\item Пара $\theta_+ = 0$ и $\theta_- > 0$ -- если и только если $\bar{Y}_n > \tfrac{A}{2}$;
+	\item В случае $\bar{Y}_n\in [-\tfrac{A}{2}, +\tfrac{A}{2}]$ допустимых решений кроме
+	$\theta_- = \theta_+ = 0$ нет.
+\end{itemize}
+Обобщая сделанные замечания получаем следующее решение для $\theta = \theta_+-\theta_-$ :
+\[
+\hat{\theta}
+= \max\bigl\{ \bar{Y}_n - \frac{A}{2}, 0 \bigr\}
++ \min\bigl\{ \bar{Y}_n + \frac{A}{2}, 0 \bigr\}
+\]
+
+% section task_6 (end)
+
+\section{Задание \# 7} % (fold)
+\label{sec:task_7}
+
+Неравенство Чернова состоит в следующем. Пусть $X$ некоторая вещественная случайная
+величина. Тогда для любого $z\in \Real$ выполняется : 
+\[ \pr(X\geq z ) \leq \inf_{\lambda > 0} e^{-\lambda z} \ex e^{\lambda X} \,.\]
+
+Рассмотрим набор $(Y_k)_{k=1}^n \sim\text{Exp}(1)$ независимых и одинаково распределённых
+случайных величин. Заметим, что случайная величина $S_n$ определённая как:
+\[ S_n = \sum_{k=1}^n Y_k \,,\]
+имеет Гамма распределение с параметрами $n$ и $\beta = 1$ с плотностью
+\[ f(x) = \frac{\beta^n}{\Gamma(n)} x^{n-1} e^{-\beta x}\,, x\geq 0\,. \]
+
+В силу независимости и одинаковой распределённости
+\[
+\ex\bigl(e^{\lambda S_n}\bigr)
+= \ex\bigl(\prod_{k=1}^n e^{\lambda Y_k}\bigr)
+= \prod_{k=1}^n \ex\bigl(e^{\lambda Y_k}\bigr)
+= \ex\bigl(e^{\lambda Y_1}\bigr)^n \,.
+\]
+Теперь,
+\[
+\ex e^{\lambda Y_1}
+= \int_0^\infty e^{-(1-\lambda)x} dx
+= \begin{cases}
+	+\infty, &\text{ \rus{если} } \lambda \geq 1\\
+	(1-\lambda)^{-1},&\text{ \rus{иначе}}
+\end{cases}\,.
+\]
+откуда для $\lambda < 1$
+\[ \ex\bigl(e^{\lambda S_n}\bigr) = (1-\lambda)^{-n} \,. \]
+
+Теперь согласно неравенству Чернова для любого $x\geq 0$ (нет смысла рассматривать
+отрицательные $x$) :
+\[ \pr(S_n \geq x )\leq \inf_{\lambda \in (0,1)} e^{-\lambda x} (1-\lambda)^{-n} \,.\]
+
+Найдём хорошее $\lambda$ из эквивалентной выпуклой задачи:
+\[ - \lambda x - n \log(1-\lambda) \to \inf_{\lambda \in (0,1)} \,. \]
+Минимизирующее $\lambda$ задаётся решением уравнения :
+\[ - x + \frac{n}{1-\lambda} = 0\,, \text{--} \]
+то есть выражением $\lambda = 1-\frac{n}{x}$ при условии $\lambda > 0$.
+
+Таким образом при $n < x$ верхняя граница равна
+\[ \pr(S_n \geq x )\leq e^{n - x} \biggr(\frac{n}{x}\biggr)^{-n}\,. \]
+При $n\geq x$ положительность производной выражения под знаком $\inf$ для всех 
+$\lambda \in (0,1)$ означает что оно строго возрастает, откуда следует, что $\inf$ принимает
+значение равное пределу при $\lambda\to 0+$. Таким образом
+\[ \pr(S_n \geq x )\leq 1\,, \]
+в этом случае.
+
+% section task_7 (end)
+
+% [ВШЭ ТВМММ] Зачётная работа Назаров Иван.pdf
+
+\end{document}
+
