@@ -4,7 +4,7 @@
 \usepackage{graphicx, url}
 
 \usepackage{amsmath, amsfonts, amssymb, amsthm}
-\usepackage{xfrac, mathptmx}
+\usepackage{mathptmx}
 
 \newcommand{\obj}[1]{{\left\{ #1 \right \}}}
 \newcommand{\clo}[1]{{\left [ #1 \right ]}}
@@ -26,6 +26,7 @@
 \newcommand{\Ccal}{\mathcal{C}}
 \newcommand{\Ncal}{\mathcal{N}}
 \newcommand{\Lcal}{\mathcal{L}}
+\newcommand{\Hcal}{\mathcal{H}}
 \newcommand{\ex}{\mathbb{E}}
 \newcommand{\pr}[0]{{\mathbb{P}}}
 \newcommand{\Var}[0]{{\text{Var}}}
@@ -56,9 +57,9 @@
 
 \url{http://cs.hse.ru/ai/mmdm}
 
-The folowing topics would be covered in the course:
+The following topics would be covered in the course:
 \begin{itemize}
-	\item Decision theory wit linear regression
+	\item Decision theory with linear regression
 	\item Shrinkage methods (Ridge regression, Lasso, elastic net)
 	\item Polynomial regression, splines
 	\item Model selection techniques, validation methods
@@ -172,12 +173,11 @@ Now put $f(x) \defn \ex_\Dcal y(x,D)$.
 			&\quad + 2( f(x) - \phi(x) ) \ex_\Dcal( y(x,D) - f(x) ) \\
 		& = \ex_\Dcal( y(x,D) - f(x) )^2 + ( f(x) - \phi(x) )^2 \\
 \end{align*}
-
 Therefore the expected value of the loss is 
 \[\ex_\Dcal(\text{Error}_\Dcal) = \text{Noise} + \text{Variance} + \text{Bias}^2\]
-with the variance is due to the fact that the instance of $y$ is not static with
-varying dataset $D$, and the bias is the measure of average closeness of the
-approximation $y(\cdot)$ to the real conditional expectation $\ex(T\rvert X)$.
+with the variance term rooted in the fact that the instance of $y$ is not static
+with varying dataset $D$, and the bias being the measure of how close on average
+the approximation $y(\cdot)$ is to the real conditional expectation $\ex(T\rvert X)$.
 This is the decomposition of the loss into systemic noise, bias and variance.
 
 % Non-parametric approach + low dimension: smoothing local data (kNN -- $k$ nearest neighbours).
@@ -213,42 +213,47 @@ linear functions of $X$.
 \subsection*{Linear regression} % (fold)
 \label{sub:linear_regression}
 
-Suppose $X$ is a $p$-dimensional vector of features and that we attempt to approximate
-the $\ex(T\rvert X)$ with $y(x) \defn \beta_0 + \sum_{k=1}^p \beta_k x_k$.
+Suppose $\mathcal{X}$ is a $p$-dimensional vector of features and that we attempt to approximate
+the $\ex(T\rvert \mathcal{X})$ with $y(x) \defn \beta_0 + \sum_{k=1}^p \beta_k x_k$.
 
 In effect we suppose the following statistical model
-\[T = \beta_0 + \sum_{k=1}^p \beta_k X_p + \epsilon;\,\epsilon\sim\Ncal(0,\sigma^2)\]
-Therefore conditional upon $X$ the target $T$ is distributed like \[\induc{T}X\sim \Ncal(y(X),\sigma^2)\]
+\[T = \beta_0 + \sum_{k=1}^p \beta_k \mathcal{X}_p + \epsilon;\,\epsilon\sim\Ncal(0,\sigma^2)\]
+Therefore conditional upon $\mathcal{X}$ the target $T$ is distributed like
+\[\induc{T}\mathcal{X}\sim \Ncal(y(\mathcal{X}),\sigma^2)\]
 
 In this setting the following questions arise: \begin{itemize}
-	\item How $\beta_{1\times(p+1)}$ is estimated?
+	\item How $\beta\in \Real^{(p+1)\times 1}$ is estimated?
 	\item Which coefficients $\beta_k$ are significant?
 	\item What is their interpretation?
 \end{itemize}
-
-In the matrix form, the linear regression problem is stated as follows:
+For $T,\epsilon\in \Real^{n\times 1}$, $\beta\in \Real^{(p+1)\times 1}$ and
+$X\in \Real^{n\times (p+1)}$, given by $X = \begin{smallmatrix} \one & \mathcal{X} \end{smallmatrix}$
+the linear regression problem is stated as follows:
+\[T = X\beta + \epsilon\]
+Each row of $X$ represents the observations of observed predictors augments by
+a constant term (intercept). The predictors now look like this
 \[
-\underset{n\times 1}{T}
-= \underset{n\times (1+p)}{X}\underset{(1+p)\times 1}{\beta}
-+ \underset{n\times 1}{\epsilon}
+X = \begin{pmatrix}
+\one & \underset{n\times 1}{x_1} & \ldots & \underset{n\times 1}{x_p}
+\end{pmatrix}
 \]
-where the vector $X$ of the predictors of the training set has been altered by
-adding a constant term -- the intercept. The predictors now look like this
-\[
-X = \Bigl( \one \defn \underset{n\times 1}{1}, \underset{n\times 1}{x_1}, \ldots, \underset{n\times 1}{x_p} \Bigr)
-\]
+where $\one \defn \underset{n\times 1}{1}$ is the vector of ones. Effectively, the
+set of predictors of the training set is ``enriched'' by a baseline feature, which
+summarizes the effects on $T$ shielded from the influence of all other predictors --
+the unexplained base value inherent in the target variable. (Such effect brings
+about interpretability issues). 
 
 Two approaches to estimating $\beta$ is possible:
 the \textbf{L}east \textbf{S}quares and the \textbf{M}aximum \textbf{L}ikelihood.
-Effectively the LS approach to parameter estimation is non-probabilistic.
-There are different flavours of least squares: the ordinary, the generalised
-(with a weighting matrix), two-stage least squares (2SLS), to name a few, and others.
-The 2SLS is an extension of the GLS that attempts to battle heteroskedasticity:
-first run OLS to get the squared residuals, then GLS with weights that standardise
-the residuals.
+Effectively the LS approach to parameter estimation is non-probabilistic. There
+are different flavours of least squares: the ordinary, the generalised (with a
+weighting matrix), two-stage least squares (2SLS), to name a few, and others. The
+2SLS is an extension of the GLS that attempts to battle heteroskedasticity: first
+run OLS to get the squared residuals, then GLS with weights that standardise the
+residuals.
 
-The goal of LS is to solve the following problem:
-minimize the \textbf{R}esidual \textbf{S}um of \textbf{S}squares
+The goal of LS is to solve the following problem: minimize the \textbf{R}esidual
+\textbf{S}um of \textbf{S}squares
 \[\RSS \defn \brac{T-X\beta}'\brac{T-X\beta} \to \min_\beta\]
 The first order conditions on the potential minimizer are in the matrix form:
 \begin{align*}
@@ -316,16 +321,17 @@ Regressing $t$ on $z_k$ yields the coefficient $\hat{\beta}_k$ which is not the
 OLS coefficient, but shows new information gained from the $k^\text{th}$ predictor.
 
 Discriminative approach.
-Since $\hat{\beta}$ is a linear transformation of $T$ and $\hat{\beta} = \beta + \brac{X'X}^{-1}X'\epsilon$,
+Since $\hat{\beta}$ is a linear transformation of $T$ and $\hat{\beta} = \beta + (X'X)^{-1}X'\epsilon$,
 \textbf{provided the model is specified correctly}, it is therefore true that
-\[\hat{\beta}\sim\Ncal\brac{\beta,\brac{X'X}^{-1} \sigma^2}\]
+\[\hat{\beta}\sim\Ncal\Bigl(\beta,(X'X)^{-1} \sigma^2\Bigr)\]
 
 In fact if $\epsilon\sim \Ncal\brac{0,\Sigma}$ -- i.e the noise has some other
 covariance structure, then $\Var(\hat{\beta}) = \brac{X'X}^{-1}X'\Sigma X\brac{X'X}^{-1}$
 -- this is useful in GLS, mentioned above, especially if $\Sigma$ is decomposed
 into $C'C$ with $C$ -- non-singular lower triangular matrix (Cholesky).
 
-Indeed, if we transform (weigh) the observations according to matrix $W$ with $W'W = \Sigma^{-1}$, then the LS model becomes $WT=WX\beta + W\epsilon$, whence
+Indeed, if we transform (weigh) the observations according to matrix $W$ with
+$W'W = \Sigma^{-1}$, then the LS model becomes $WT=WX\beta + W\epsilon$, whence
 \[\hat{\beta} = \brac{X'W'WX}^{-1}X'W'WT = \brac{X'\Sigma^{-1}X}^{-1}X'\Sigma^{-1}T\]
 whence $\hat{\beta}\sim\Ncal\brac{\beta, \brac{X'\Sigma^{-1}X}^{-1}}$.
 
@@ -360,7 +366,7 @@ of $\brac{X'X}^{-1}$, whence $\Var\hat{\beta}_j\defn \sigma^2 V_j$.
 
 To test $H_0:\beta_j=0$ versus $H_1:\beta_j\neq 0$, one should use the following
 statistic, which under the null is distributed as follows:
-\[\frac{\sfrac{\hat{\beta}_j}{\sqrt{\sigma^2 V_j}}}{\sqrt{ \frac{\sfrac{n-p-1}{\sigma^2} \hat{\sigma}^2 }{ n-p-1 } }} \sim \frac{\Ncal(0, 1)}{\sqrt{\chi^2_{n-p-1}}} = t_{n-p-1}\]
+\[\frac{\frac{\hat{\beta}_j}{\sqrt{\sigma^2 V_j}}}{\sqrt{ \frac{\frac{n-p-1}{\sigma^2} \hat{\sigma}^2 }{ n-p-1 } }} \sim \frac{\Ncal(0, 1)}{\sqrt{\chi^2_{n-p-1}}} = t_{n-p-1}\]
 
 The $\alpha$-level confidence interval for $\beta_j$ is defined as
 \[\clo{ \hat{\beta}_j - \hat{\sigma} \sqrt{ V_j },  \hat{\beta}_j + \hat{\sigma} \sqrt{ V_j } }\]
@@ -371,7 +377,7 @@ statistically significant results would be false positives.
 To test for simultaneous insignificance of $\brac{\beta_j}_{j=1}^p = 0$ one should
 use the F-test (more generally an F-test for linear restriction). The following
 takes place under the null hypothesis that the simpler model is correct :
-\[F = \frac{\sfrac{\RSS_0-\RSS_1}{p_1-p_0}}{\sfrac{\RSS_1}{n-p_1-1}}\sim F(p_1-p_0, n-p_1-1)\]
+\[F = \frac{\frac{\RSS_0-\RSS_1}{p_1-p_0}}{\frac{\RSS_1}{n-p_1-1}}\sim F(p_1-p_0, n-p_1-1)\]
 
 To gauge the model accuracy one can use both the RSS as a measure of lack of fit
 and the $R^2$ as a measure of goodness-of-fit.
@@ -438,7 +444,7 @@ of each predictor $\brac{x_j}_{j=1}^p\in \Real^n$ matters! Thus the first step i
 to standardize the variables before fitting the Ridge regression.
 
 Next observation: the intercept $\beta_0$ is indeed excluded from the shrinkage
-term so as no to penalize for the \emph{base} level of the target.
+term so as not to penalize for the \emph{base} level of the target.
 
 Suppose the $t$ and $X$ are standardized (mean and centre), which means that $\beta_0 \equiv 0$
 Then in the matrix form the problem is equivalent to minimizing the following:
@@ -1363,8 +1369,8 @@ $N$ must be of full rank $n$, which means that it it invertible. Therefore
 = \Bigl( {N'}^{-1} ( N'N + \lambda \Omega) N^{-1} \Bigr)^{-1} t 
 = \Bigl( I_n + \lambda G'\Omega G \Bigr)^{-1} t
 \]
-Therefore $\hat{t} = S_\lambda t$ and $S_\lambda$ is in Reinsch form $(I_n + \lambda H)$
-for $H = G'\Omega G$ with $G = N^{-1}$.
+where $G = N^{-1}$. Therefore $\hat{t} = S_\lambda t$ and $S_\lambda$ is in Reinsch
+form $(I_n + \lambda H)$ for $H = G'\Omega G$.
 
 % subsubsection tutorial_3_problem_3 (end)
 
@@ -1738,83 +1744,260 @@ penalty in $C^[a,b]$). The solution in the weighted case is
 \subsection{Model selection} % (fold)
 \label{sub:model_selection}
 
-%% See the handwritten notes
+In this lecture we are going to consider four adjustments to the likelihood of
+the model and data, which also incorporate the complexity of the model.
 
-Four adjustments to the likelihood, which incorporate the complexity of the model.
+\subsubsection{Elements of information theory} % (fold)
+\label{ssub:elements_of_information_theory}
 
-Elements of information theory
-
-Suppose $x$ is a discrete random variable.
-The main question is how much information one gets when one observes a realisation of $X$.
-
-The amount of information is quantified by the amount of ``'surprise'':\begin{itemize}
-	\item very likely -- not surprising;
-	\item very unlikely -- very surprising.
-\end{itemize}
-
-$H$ the measure of information has the following properties: \begin{description}
-	\item[Monotonicity] $H$ is a monotonic functional of the probability measure function;
-	\item[Independence] If events are independent or unrelated, then the information gained from both must be poled together: in the case of densities this means that
-\[H(X,Y) = H(X)+H(Y)\]
-when $p_{X,Y}(x,y) = p_X(x) p_Y(y)$;
+Suppose $x$ is a discrete random variable. How much information does one get when
+a realisation of $X$ is observed? This could be quantified by the amount of ``surprise'':
+very likely event is not surprising, an unlikely occurrence -- very surprising.
+Thus the measure of the amount of information $H$ should have the following properties:
+\begin{description}
+	\item[Monotonicity] $H$ is a monotonic functional of the probability measure
+	function;
+	\item[Independence] If events are independent or unrelated, then the information
+	gained from both must be pooled together: in the case of densities this means that
+	\[H(X,Y) = H(X)+H(Y)\]
+	when $p_{X,Y}(x,y) = p_X(x) p_Y(y)$;
 	\item[MISSING]
 \end{description}
-
-Average amount of information for a discrete random variable
+These ideas lead us to the notion of entropy -- the average amount of information.
+For a discrete random variable
 \[H(X) = \ex\brac{H(X)} = - \sum_x p(x) \log_2 p(x)\]
 for a continuous:
 \[H(X) = \int \log_2\frac{1}{p(x)} p(x) dx\]
+in fact the base of the logarithm in not important, since it just determined the
+units of measurement of entropy. In the context of entropy the logarithms are with
+respect to to base $2$.
 
-Suppose the $f$ is unknown distribution modelled using $\hat{f}$.
-
-The Kullback-Leibler \textbf{divergence} between $f$ and $\hat{f}$: the additional information need to describe the random variable with $f$ using $\hat{f}$: \[\int f(x) \log_2\frac{1}{\hat{f}(x)} dx - \int f(x) \log_2\frac{1}{f(x)} dx \leq 0 \]
-
-Use Jensen's inequality $\ex g(X) \geq g\brac{\ex X}$ for any convex $g$.
+Suppose the unknown density $f$ is approximated (modelled) by $\hat{f}$.
+The \textbf{Kullback-Leibler divergence} between $f$ and $\hat{f}$ is the additional
+information needed to describe the random variable with density $f$ using $\hat{f}$:
+\[
+\text{KL}(f\|\hat{f})
+= \int \frac{f}{\hat{f}} \log \frac{f}{\hat{f}} \hat{f} dx
+= \int f \log \frac{1}{\hat{f}} dx - \int f \log \frac{1}{f} dx
+\]
+The divergence is a non-negative function of the densities. To show that, recall
+the Jensen's inequality, which states that $\ex g(X) \geq g(\ex X)$ for any convex
+function $g$. Since $x\to -\log x$ is convex, one has the following:
 \begin{align*}
-	-\int f(x) \log_2\frac{\hat{f}(x)}{f(x)} dx & \geq -\log_2\int f(x) \frac{\hat{f}(x)}{f(x)}  dx = 
+	\text{KL}(f\|\hat{f})
+	&= \int f \log \frac{f}{\hat{f}} dx = \ex_f -\log \frac{\hat{f}}{f} \\
+	&\geq -\log \ex_f \frac{\hat{f}}{f} = -\log \int f \frac{\hat{f}}{f} dx \\
+	&= -\log 1 = 0
 \end{align*}
 
-First criterion of model selection (Akaike; 1973).
+% subsubsection elements_of_information_theory (end)
 
-Suppose $\brac{Y_i}_{i=1}^n$ is some data generate according to some unknown density $g\brac{\induc{y}\theta_0}$. Let there be a parametric family of models
-\[M_K \defn \obj{\induc{f\brac{\induc{y}\theta_k}}\,\theta_k\in \Theta}\]
-where $\Theta\subseteq \Real^K$ -- the $K$-dimensional parametric family.
+\subsubsection{Akaike (1973)} % (fold)
+\label{ssub:akaike_1973}
 
-Let $\hat{\theta}_k$ be the MLE estimator of the parameter in $\Theta$, and $\hat{f}_k = f\brac{\induc{y}\theta_k}$.
+\noindent First criterion of model selection -- the \textbf{A}kaike \textbf{I}nformation
+\textbf{C}riterion.
 
-Assume that the models are nested, and are distinguished by their dimension $K$.
+Suppose $(Y_i)_{i=1}^n\sim Y$ is some sample of independent and identically
+distributed random variables generated according a law with an unknown density
+$g(y|\theta_0)$. Let there be a collection of parametric families of models
+\[ M_k = \bigl\{\bigr. f(y|\theta) \bigl.\bigr\rvert \theta\in \Theta_k \bigl.\bigr\} \]
+where $\Theta_k\subseteq \Real^k$ -- the $k$-dimensional parametric family.
 
-How far the $\hat{f}_k$ is from $g$.
 
-The idea is to look a t the Kullback-Leibler divergence between $g$ and $f_k$, and get the $f_k$ with the smallest distance:
-\[\text{KL}(g||f_k) = \int g(y) \log g(y) dy - \int g(y) \log f_k(y) dy\]
-is the sum of the inherent entropy of $Y$ and the cross entropy.
+% subsubsection akaike_1973 (end)
 
-The problem is to minimize this function, and it is equivalent to minimizing the Kullback-Leibler \textbf{discrepancy}:
-\[d(\theta_k) = -2\int g(y) \log f_k(y) dy = - 2 \ex_g\brac{\log f_k(Y)}\]
+Let $\hat{\theta}_k$ be the MLE estimator of the parameter in $\theta\in \Theta_k$
+and $\hat{f}_k = f(Y|\theta_k)$. Assume that the models are nested, and distinguished
+by their dimension $k$.
+Is $\Theta_k\subseteq \Theta_{k+1}$?
 
-Instead	let's look at
-\[d(\hat{\theta}_k) = - 2\induc{\ex_g\brac{\log f(\induc{y}\theta)}}_{\theta=\theta_k(y)} \]
+How far is $\hat{f}_k$ from $g$? The idea is to look at the Kullback-Leibler divergence
+between $g$ and $f_k$, and choose the $f_k$ with the smallest distance:
+\[\text{KL}(g\|f_k) = \int g \log g dY - \int g \log f_k dY\]
+is the sum of the entropy inherent in $Y$ and the \textbf{cross entropy}.
 
-Since in practice $g$ is unknown, Akaike suggested to use the log likelihood as a proxy for $d(\hat{\theta}_k)$, which is a biased estimator of it.
+Minimizing this function with respect to $f_k$ is equivalent to minimizing the
+Kullback-Leibler \textbf{discrepancy}:
+\[
+d( \theta_k )
+= - 2 \int g \log f_k dY
+= - 2 \ex_g \log f_k
+\]
+But instead let's look at
+\[
+d( \hat{\theta}_k )
+= - 2 \Bigl.\bigl(\ex_g \log f(Y|\theta) \bigr)\Bigr\rvert_{\theta = \hat{\theta}_k(Y)}
+\]
 
-In fact, using the law of large numbers
-\[\frac{1}{N} \sum_{i=1}^n \log f(Y_i|\hat{\theta}_k) \overset{a.s}{\to} \ex_g\brac{\log f(\induc{Y}\hat{\theta}_k)}\]
-
+The main insight suggested by Akaike, was to overcome the fact that $g$ is unknown
+by studying the log likelihood as a biased estimator (proxy) for $d(\hat{\theta}_k)$.
+The law of large numbers gives:
+\[
+% \frac{1}{n} \sum_{i=1}^n \log f(Y_i|\hat{\theta}_k)
+\frac{1}{n} \sum_{i=1}^n \log f(Y_i|\theta)\Big\rvert_{\theta = \hat{\theta}_k(Y)}
+\overset{a.s}{\to}
+% \ex_g \log f(Y|\theta)
+\ex_g \log f(Y|\theta)\Big\rvert_{\theta = \hat{\theta}_k(Y)}
+\]
 Therefore
-\[-\frac{2}{N} \sum_{i=1}^n \log f(Y_i|\hat{\theta}_k) \approx d(\hat{\theta}_k)\] and Akaike has something great in mind.
+\[ - 2 L\bigl(Y|\hat{\theta}_k\bigr) \approx d(\hat{\theta}_k) \]
+-- a clear indication that Akaike has something great in mind.
 
-In order to compute the bias, it is necessary look an the average Kullback-Leibler distance with respect to the distribution of the MLE estimate $\hat{\theta}_k$
-\[\ex_{\hat{\theta}_k} d(\hat{\theta}_k) - \ex_g\brac{- \log f\brac{\induc{Y}\hat{\theta}_k(Y)}}\]
+In order to compute the bias, it is necessary to study the average Kullback-Leibler
+distance with respect to the distribution of the MLE estimate $\hat{\theta}_k$
+\[
+\ex_{\hat{\theta}_k} d(\hat{\theta}_k)
+- \ex_g\bigl(- \log f(Y|\theta = \hat{\theta}_k(Y)) \bigr)
+\]
 
-The AIC is given by (up to the terms of the first order):
-\[-2\log \hat{f}\brac{\induc{y}\,\hat{\theta}_k(y)} + 2k\]
+The AIC is up to the terms of the first order given by:
+\[\text{AIC} = - 2 \log \hat{f}(Y|\hat{\theta}_k(Y)) + 2k \]
 
+% When selecting the optimal $\hat{\theta}_k$ 
 \textbf{ See the handwritten notes! }
 
+\begin{align*}
+	\ex d(\hat{\theta}_k)
+	&= \ex\bigl( -2\log f(Y|\hat{\theta}_k(Y)) \bigr)\\
+	&+ \Bigl\{ \ex\bigl( -2\log f(Y|\theta_0) \bigr)
+		- \ex\bigl( -2\log f(Y|\hat{\theta}_k(Y)) \bigr) \Bigr\}\\
+	&+ \Bigl\{ \ex d(\hat{\theta}_k)
+		- \ex\bigl( -2\log f(Y|\theta_0) \bigr) \Bigr\}
+	&\approx \ex\bigl( -2\log f(Y|\hat{\theta}_k(Y)) \bigr) + k + k
+\end{align*}
 
+\noindent \textbf{The first term}\hfill\\
+Let $\phi(\theta) = \log f(Y|\theta)$. Since the models are nested and the true
+model is included within the MLE estimator $\theta_k \to \theta_0$ as the sample
+size grows ($n\to \infty$). The multivariate Taylor expansion of $\phi$ around
+the MLE estimate $\hat{\theta}_k$ yields
+\[
+  \phi(\theta_0)
+= \phi(\theta_k)
++ \nabla \phi' \rvert_{\hat{\theta}_k} (\theta_0 - \hat{\theta}_k)
++ \frac{1}{2} (\theta_0 - \hat{\theta}_k)' \nabla^2\phi \rvert_{\hat{\theta}_k} (\theta_0 - \hat{\theta}_k)
++ o(1)
+\]
+where $\nabla \phi(\theta) = \Bigl( \frac{\partial}{\partial \theta_j} \phi \Bigr)_{j=1}^k\rvert_\theta$
+is a $k\times 1$ gradient vector of $\phi$, and $\nabla^2\phi$ is the Hessian matrix
+of second partial derivatives of $\phi$. Since $\phi$ is log-likelihood at a given
+parameter $\theta$, the Hessian at $\hat{\theta}_k$ coincides with the \textbf{observed
+Fisher information matrix}:
+\[
+I(\hat{\theta}_k;Y)
+= - \Bigl( \frac{\partial^2 f(Y|\hat{\theta}_k) }{\partial \theta_{ki}\partial \theta_{kj}} \Bigr)_{ij}
+= - \nabla^2\phi \rvert_{\hat{\theta}_k}
+\]
+Furthermore, since $\hat{\theta}_k$ is the MLE the gradient of $\phi$ at this point
+must be zero: $\nabla \phi' \rvert_{\hat{\theta}_k} = 0$. Therefore
+\[
+\phi(\theta_0) - \phi(\theta_k)
+=
+- \frac{1}{2} (\theta_0 - \hat{\theta}_k)' I( \hat{\theta}_k; Y ) (\theta_0 - \hat{\theta}_k)
++ o(1)
+\]
+and
+\[
+-2 \ex \bigl( \phi(\theta_0) - \phi(\theta_k) \bigr)
+\approx
+\ex (\theta_0 - \hat{\theta}_k)' I( \hat{\theta}_k; Y ) (\theta_0 - \hat{\theta}_k)
+\]
+
+\noindent \textbf{The second term}\hfill\\
+For this analysis put $\phi(\theta) = \bigl( \ex f(Y|\theta) \bigr)_{\theta}$.
+Then the Fisher information matrix is given by 
+\[I(\theta_0) = \ex - \nabla^2 f(Y|\theta_0)\]
+Another application of the Taylor expansion yields
+\[
+  \phi(\theta_0)
+= \phi(\theta_k)
++ \nabla \phi' \rvert_{\hat{\theta}_k} (\theta_0 - \hat{\theta}_k)
++ \frac{1}{2} (\theta_0 - \hat{\theta}_k)' \nabla^2\phi \rvert_{\hat{\theta}_k} (\theta_0 - \hat{\theta}_k)
++ o(1)
+\]
+
+From scratch. Consider $Y^n = (Y_i)_{i=1}^n \sim g$ a sample of independent and
+identically distributed random variables, where $g = f(\cdot|\theta_0)$. Consider
+a parametric family of densities
+\[\Mcal_k = \Bigl\{ f(\cdot|\theta)\Bigr.\Bigl\rvert \theta\in \Theta\subseteq \Real^k \Bigr\}\]
+with $g\in \Mcal_k$ (i.e. $\theta_0\in\Theta$). The overall goal is to consider
+a collection of nested families of models $\Mcal_k$ for various $k$ and select
+the most 
+
+Define the log-likelihood of the observed sample under parameter $\theta$
+\[
+l(Y^n;\theta)
+= \log \Lcal(Y^n;\theta)
+= \log \prod_{i=1}^n f(Y_i;\theta)
+= \sum_{i=1}^n \log f(Y_i; \theta)
+\]
+The MLE of $\theta$ is given by
+\[\hat{\theta}_n = \argmax_{\theta\in \Theta} \Lcal(Y^n;\theta)\]
+
+Note that the likelihood is in fact a multivariate density of the sample $Y^n$.
+This observation suggests one to study the Kullback-Leibler divergence of the MLE
+of the product-density from the true theoretical likelihood (at $\theta_0$):
+\[
+\text{KL}( \Lcal(Y^n;\theta_0) \| \Lcal(Y^n;\hat{\theta}_n) )
+= \ex_0 l(Y^n;\theta_0) - \ex_0 l(Y^n;\hat{\theta}_n)
+\]
+Since the first term does not depend on $\hat{\theta}_n$
 
 % subsection model_selection (end)
+
+
+Let $Y^n = (Y_i)_{i=1}^n\sim g = f(y|\theta_0)$ is an iid sample, and 
+\[
+M_k = \bigl\{f(\cdot|\theta)\rvert \theta\in \Theta_k\bigr\}
+\]
+with $\Theta_k \subseteq \Theta_{k+1}$.
+
+Consider the likelihoood 
+\[\Lcal(Y^n;\theta) = \prod_{k=1}^n f(Y_k\rvert \theta) \]
+
+
+Consider another independent sample $Z^n$ independent from $Y^n$ but otherwise
+identical to $Y^n$. Then
+\[
+d_n(\theta)
+= - 2 \ex_g \log \Lcal(Z^n\rvert \theta)
+= - 2 \sum_{k=1}^n \ex_g \log f(Z_k\rvert \theta)
+\]
+with the expectation taken over $Z^n\sim g$. Similarly
+\[ d_n(\hat{\theta}_k(Y^n)) = \ex_{Z^n} \bigl( - 2 \log f(Z^n\rvert \hat{\theta}_k(Y^n))\bigr) \]
+whence
+\begin{align*}
+	d_n(\hat{\theta}_k(Y^n))
+	&= \ex_{Y^n}\bigl(-2\log \Lcal(Y^n\rvert \hat{\theta}_k(Y^n))\bigr) \\
+	&+ \ex_{Y^n}\bigl(-2\log \Lcal(Y^n\rvert \theta_0)\bigr) - \ex_{Y^n}\bigl(-2\log\Lcal(Y^n\rvert \hat{\theta}_k(Y^n))\bigr) \\
+	&+ \ex_{Z^n}\bigl(-2\log \Lcal(Z^n\rvert \hat{\theta}_k(Y^n)) \bigr) - \ex_{Y^n}\bigl(-2\log \Lcal(Y^n\rvert \theta_0)\bigr)
+\end{align*}
+Taking expectation with respect to $Y^n\sim g$
+\begin{align*}
+	\ex_{Y^n} d_n(\hat{\theta}_k(Y^n))
+	&= \ex_{Y^n}\bigl(-2\log \Lcal(Y^n\rvert \hat{\theta}_k(Y^n))\bigr) \\
+	&+ \ex_{Y^n}\bigl(-2\log \Lcal(Y^n\rvert \theta_0)\bigr) - \ex_{Y^n}\bigl(-2\log\Lcal(Y^n\rvert \hat{\theta}_k(Y^n))\bigr) \\
+	&+ \ex_{Y^n} \ex_{Z^n}\bigl(-2\log \Lcal(Z^n\rvert \hat{\theta}_k(Y^n)) \bigr) - \ex_{Y^n}\bigl(-2\log \Lcal(Y^n\rvert \theta_0)\bigr)
+\end{align*}
+
+Consider the log-likelihood evaluated at the MLE $\hat{\theta}_k(Y^n)$.
+\[
+\frac{1}{n} \log \Lcal(Y^n\rvert \hat{\theta}_k(Y^n))\bigr)
+= \frac{1}{n} \sum_{k=1}^n \log f(Y_k\rvert \hat{\theta}_k(Y^n) )
+\]
+
+Since the models are nested and the true model is contained within each $\Theta_k$,
+the MLE $\hat{\theta}_k(Y^n)$ converges in probability to $\theta_0$ as the sample
+size grows. Therefore if $\phi$ is twice differentiable around $\theta_0$, then 
+\[
+\phi(\hat{\theta}_k)
+= \phi(\theta_0)
++ \nabla \phi (\hat{\theta}_k - \theta_0)
++ \frac{1}{2} (\hat{\theta}_k - \theta_0)' \nabla^2 \phi (\hat{\theta}_k - \theta_0)
++ o_P(1)
+\]
+
 
 % section lecture_5 (end)
 
@@ -2351,7 +2534,7 @@ There is a problem with higher number of classes when using discriminant functio
 		Consider the classes in pairs $C_i$ and $C_j$, neglecting the others. This results in $i-j$ boundaries,
 		but requires $\frac{k(k-1)}{2}$ classifiers to fit. Still this can produce undefined regions;
 	\item[]
-	Consider a single $K$-class discrimiminant given by $K$ linear functions $\brac{y_k(\cdot)}_{i=1}^K$.
+	Consider a single $K$-class discriminant given by $K$ linear functions $\brac{y_k(\cdot)}_{i=1}^K$.
 	In the $\Real^d$ case these function look like 
 	\[y_k(x) = \beta_{0k} + \beta_k'x\]
 	Classify $x$ to class $C_k$ if $y_k(x) > y_j(x)$ for all $j\neq k$.
@@ -2523,7 +2706,7 @@ Now $\Pr\big(\beta'x+\epsilon > 0\big) = \Pr\big(\epsilon > -\beta'x\big) = 1-\P
 \section{Lecture \# 9} % (fold)
 \label{sec:lecture_9}
 
-Two approaaches discrimimnative and generative.
+Two approaches discriminative and generative.
 
 Discriminative: modelling the posterior (conditional) distribution of the class given the variable; do not necessarily have probabilistic interpretation.
 Generative: modelling the joint distribution of the class and the variable;
@@ -2716,8 +2899,8 @@ If the density family of the classes is exponential, then it is easy to maximize
 
 Show that $\theta^{(t)}$ converges and $l(\theta^{(t)})$ does not decrease.
 Look at the values of $l(\theta)$:
-\[l(\theta^{(t)}) = \sum_{i=1}^n \sum_z p(z_i\vert x_i, \theta^{(t)}) \log \frac{p(z_i, x_i\vert \theta^{(t)})}{p(x_i\vert z_i, \theta^{(t)})}\]
-where we used the chosen good $q$ 
+\[l(\theta^{(t)}) = \sum_{i=1}^n \sum_z p(z_i\vert x_i, \theta^{(t)}) \log \frac{p(z_i, x_i\vert \theta^{(t)})}{p(z_i\vert x_i, \theta^{(t)})}\]
+where we used the chosen good $q$
 \[\geq \sum_{i=1}^n \sum_z q(z_i\vert x_i, \theta^{(t+1)}) \log \frac{p(z_i, x_i\vert \theta^{(t)})}{p(x_i\vert z_i, \theta)}\]
 thus
 \[\geq \sum_{i=1}^n \sum_z p(z_i\vert x_i, \theta^{(t+1)}) \log \frac{p(z_i, x_i\vert \theta^{(t)})}{p(x_i\vert z_i, \theta^{(t+1)})}\]
@@ -3818,4 +4001,1703 @@ properties of a random estimate, we are going to focus on its limit.
 % subsection bagging_and_boosting (end)
 
 % section lecture_12 (end)
+
+\section{Lecture \# 13} % (fold)
+\label{sec:lecture_13}
+
+\subsection{Bagging (cntd.)} % (fold)
+\label{sub:bagging_cntd}
+
+In the regression setting:
+\[ \hat{f}_{\text{bag}}(x) = \frac{1}{B} \sum_{b=1}^B \hat{f}^*_b(x) \]
+In the classification setting:
+\[ \hat{f}_{\text{bag}}(x) = \argmax_{k}\frac{1}{B} \sum_{b=1}^B 1\{\hat{f}^*_b(x)=k\} \]
+
+When should bagging is to be used:
+nonlinear;
+work with already better-than-random classifiers.
+
+Consider the dataset $z=(x_i,t_i)_{i=1}^n$ and we need to choose the function $\hat{f}$.
+Consider the $1$-dimensional case, and we are going to fit the cubic spline.
+The cubic spline has $K+4$ parameters
+\[\mu(x) =\sum_{j=1}^{K+4} \beta_j h_j(x) = h'(x) \beta \]
+Let $H = (h_j(x_i)) \in \Real^{n\times (K+4)}$.
+
+The LS estimate of $\beta$ is $\hat{\beta} = (H'H)^{-1}H't$, and the fit is
+\[ \hat{\mu}(x) = \sum_{j=1}^{K+4} \beta_j h_j(x) = h'(x) \hat{\beta} \]
+Let's study the variance of the fitted model. IN order to do that we need to 
+impose q mode on $t$
+\[t = \mu(x) + \epsilon\]
+where $\epsilon\sim D(0,\sigma^2)$. Consider the biased estimate of $\sigma^2$:
+\[\hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^n (t_i-\hat{\mu}(x_i))^2\]
+
+Now, for $X = (x_i)$
+\[\ex t = \mu(X) = H\beta\]
+and 
+\[
+\Sigma_{\hat{\beta}}
+= \ex(\hat{\beta}-\beta)(\hat{\beta}-\beta)'
+= \sigma^2 (H'H)^{-1}
+\]
+and finally
+\[
+\text{sd}\hat{\mu(x)}
+= \bigl( h'(x) \Sigma_{\hat{\beta}} h(x) \bigr)^\frac{1}{2}
+= \sigma \bigl( h'(x) (H'H)^{-1} h(x) \bigr)^\frac{1}{2}
+\]
+
+Now consider the parametric bootstrapping. Once we've got estimate of $\mu(x)$ and $\sigma^2$, we can generate a new target vector
+\[t^*_i = \hat{\mu}(x_i) + \epsilon^*_i\]
+where $\epsilon^*_i\sim \Ncal(0, \hat{\sigma}^2)$
+
+THe bootstrap dataset is given by the following $Z^* = (x_i, t^*_i)_{i=1}^n$ (discriminative approach).
+Let 
+\[
+\hat{\mu}^*(x)
+= h'(x)\hat{\beta}^*
+= h'(x)(H'H)^{-1}H't^*
+\]
+The implications of this for one bootstrap estimate are that $\hat{\mu}^*(x)$ is
+normally distributed (linear combination of normally distributed rv) (for each $x$);
+The mean of $\hat{\mu}^*(x)$ is 
+	\[
+	\ex\hat{\mu}^*(x)
+	= h'(x) (H'H)^{-1}H'\ex t^*
+	= h'(x) (H'H)^{-1}H'H\hat{\beta}
+	= h'(x) \hat{\beta}
+	= \hat{\mu}(x)
+	\]
+The variance of $\hat{\mu}^*(x)$ is
+	\[
+	\var\hat{\mu}^*(x)
+	= h'(x) (H'H)^{-1}H' \Sigma_{t^*} H(H'H)^{-1} h(x)
+	= h'(x) (H'H)^{-1}H' \hat{\sigma}^2 I_n H(H'H)^{-1} h(x)
+	= \hat{\sigma}^2 h'(x) (H'H)^{-1} h(x)
+	= \hat{\sigma}^2 h'(x) (H'H)^{-1} h(x)
+	\]
+Therefore
+\[\hat{\mu}^*(x) \sim \Ncal\bigl(\hat{\mu}(x), \hat{\sigma}^2 h'(x) (H'H)^{-1} h(x)\bigr)\]
+
+Now performing $B$ bootstrap replications of the estimator we get:
+\[
+\hat{\mu}^*_{\text{bag}}(x)
+= \frac{1}{B} \sum_{b=1}^B \hat{\mu}^*_b(x)
+\]
+whence using the LLN on gets as $B\to \infty$
+\[
+\hat{\mu}^*_{\text{bag}}(x) \to \ex\hat{\mu}^*_{\text{bag}}(x) = \hat(x)
+\]
+there is no gain in using bagging for linear regression. To get benefits for bagging
+one should use non-linear models (trees, neural networks, ridge regressions et c.)
+The same conclusion applies to the case of non-parametric bootstrap. cf. ``On bagging
+and non-linear estimation'' (Friedman, Hall; 1999)
+
+The bagging estimate $\hat{f}_{\text{bag}}^*(x)$ is a Monte-Carlo approximation of $\ex_{\hat{\rho}}\hat{f}_{\text{bag}}$. Consider the ideal aggregate estimator $f_{\text{agg}}(x)$ for $\ex_\rho\hat{f}^*(x)$, where 
+$\hat{f}^*(x)$ is computed from bootstrap sample $z^* = (x^*, t^*)\sim \rho$
+using distribution $\rho$.
+
+Consider a square loss function
+\[
+\ex_\rho \bigl( T-\hat{f}_{\text{bag}}(x)\bigr)^2
+= 
+\ex_\rho \bigl( T-f_{\text{agg}}(x)+f_{\text{agg}}(x)-\hat{f}_{\text{bag}}(x)\bigr)^2
+\]
+and
+\[
+\ex_\rho \bigl( T-f_{\text{agg}}(x)\bigr)\bigl( f_{\text{agg}}(x) - \hat{f}_{\text{bag}}(x)\bigr)
+= 0
+\]
+whence
+\[
+\ex_\rho \bigl( T-\hat{f}_{\text{bag}}(x)\bigr)^2
+= \ex_\rho \bigl( T-f_{\text{agg}}(x)\bigr)^2 + 
+\ex_\rho \bigl( f_{\text{agg}}(x) - \hat{f}_{\text{bag}}(x)\bigr)^2
+\geq \ex_\rho \bigl( T-f_{\text{agg}}(x)\bigr)^2
+\]
+
+Thus the ideal aggregate estimator will never increase the MSE (it suggests that).
+Hence the bagging estimator should be doing well as well.
+
+The \textbf{o}ut-\textbf{o}f-\textbf{b}ag estimate of the test error. Let $I(b)$
+be the set of indices of observations, not included in the $b$-th bootstrap sample.
+thus the $i$-th output
+\[
+t^*_{iB} = \frac{1}{\#\{b \rvert i\in I(b)\}} \sum_{b \rvert i\in I(b)} \hat{f}^*_b(x_i)
+\]
+for classification 
+\[
+t^*_{iB} = \argmax_k \sum_{b \rvert i\in I(b)} 1\{\hat{f}^*_b(x_i) = k\}
+\]
+Thus the oob-error for regression is given by
+\[
+\text{oob}\bigl(\hat{f}_{\text{bag}}\bigr)
+= \frac{1}{n} \sum_{i=1}^n (t_i - \hat{t}^*_{iB})^2
+\]
+and for classification
+\[
+\text{oob}\bigl(\hat{f}_{\text{bag}}\bigr)
+= \frac{1}{n} \sum_{i=1}^n 1\{t_i \neq \hat{t}^*_{iB}\}
+\]
+
+When bagging should be used? The motivation is by example in a simple setup
+with $K=2$ classes. For a given input $x$ one gets $B$ independent classifiers
+$\hat{f}^*_b(x)$. Assume the classifiers have a misclassification error $0.4$.
+If the true class of $x$ is $1$ then $\pr(\hat{f}^*_b(x) = 2) = 0.4$. The bagging
+is 
+\[
+\hat{f}_\text{bag}(x)
+= \argmax_k \sum_{b=1}^B 1\{\hat{f}^*_b(x) = k\}
+\]
+If $B_k = \sum_{b=1}^B 1\{\hat{f}^*_b(x) = k\}$, then $B_k\sim\text{Bin}(B, 0.4)$. Thus
+the misclassification error of the bagging estimate is 
+\[\pr\bigl(\hat{f}_\text{bag}(x) = 2\bigr) = \pr\bigl(B_2\geq \frac{B}{2}\bigr)\]
+using the LLN $\frac{1}{B} B_2 \to \ex B_2$, whence
+\[\pr\bigl(\hat{f}_\text{bag}(x) = 2\bigr) \overset{b\to \infty}{\to} 0\]
+Bagged classifier has perfect prediction accuracy. But if the misclassification error is
+$0.6$ then the bagging classifier is universally bad (perfectly inaccurate):
+\[\pr\bigl(\hat{f}_\text{bag}(x) = 2\bigr) \overset{b\to \infty}{\to} 1\]
+
+Bagging a good estimator can improve the accuracy, whereas bagging a bad classifier
+deteriorates the prediction accuracy.
+
+Why bagging does not reduce the variance in non-parametric bootstrap case.
+
+Consider a sample $X^n = (X_i)_{i=1}^n$-iid $(\mu, \sigma^2)$. and estimate the mean using
+the sample mean $\bar{X} = \frac{1}{n}\sum_{i=1}^n X_i$. Now bootstrap non-parametrically
+to get
+\[\bar{X}^*_b = \frac{1}{n} \sum_{i=1}^n X^*_{bi} \]
+where $X^*_b\sim \hat{F}_n$ the empirical CDF of $X^n$. Bag the estimator
+\[
+\bar{X}_{\text{bag}} = \frac{1}{B}\sum_{b=1}^B \bar{X}^*_b
+\]
+we expect that this will produce no reduction in variance either.
+
+% subsection bagging_cntd (end)
+
+\subsection{Random forests} % (fold)
+\label{sub:random_forests}
+
+This is a modification of bagging is the sense that it tries to decorrelate the
+bootstrapped trees.
+We want to decorrelate the trees: we have bootstrap sample of size $B$ with variance
+$\sigma^2$ with pairwise correlation given by $\rho$, then
+\[
+\var \bar{X} = \rho \sigma^2 + \frac{1-\rho}{B}\sigma^2
+\]
+the correlation makes variance persistent.
+
+How can one reduce correlation between bootstrapped trees. The idea:
+when one grows a tree, take a random selection of $m$ ($\sqrt{p}$) predictors as
+potential candidates of CART (permitted to split only along this subset of features).
+
+Then grow a total of $B$ trees
+\[\hat{f}^B_{\text{rf}}(x) = \frac{1}{B} \sum_{b=1}^B T(x, \theta_b)\]
+where $\theta_b$ contains the splitting variables, splitting thresholds and prediction
+values. The growth continues until a minimum of $n_\text{min}$ points at the leaves.
+One can use the OOB error estimate when (?)
+
+For regression $m\approx \lfloor \frac{p}{3}\rfloor$ and $n_\text{min}=5$;
+For classification $m\approx \sqrt{p}$ and $n_\text{min}=1$.
+But in general these parameters are problem dependent.
+
+How large $m$ should be? Consider the random forest predictor
+\[
+\hat{f}^B_{\text{rf}}(x)
+= \frac{1}{B} \sum_{b=1}^B T(x, \theta_b)
+\overset{B\to\infty} \ex_{\theta|Z} T(x, \theta(Z))
+\]
+what is this $\ex_{\theta|Z} T(x, \theta(Z))$? The parameter depends on $Z$, with
+$Z$ -- the original dataset.
+
+The variance of $\hat{f}^B_{\text{rf}}(x)$ converges towards
+\[\var \hat{f}^B_{\text{rf}}(x)\to \rho(x) \sigma^2(x)\]
+
+Now $\rho(x)$ is the correlation between a pair of trees
+\[
+\rho(x) = \text{cor}\bigl( T(x,\theta_1(Z)), T(x,\theta_2(Z)) \bigr)
+\]
+Generate some sample $Z$ and then consider two bootstrapped trees...
+
+AS for the variance of a single tree, it is given by
+\[\sigma^2(x) = \var T(x,\theta(Z))\]
+which is a variance of a single grown tree.
+
+Suppose the right-hand side of the limit depends on $m$. As $m$ grows, the bootstrapped
+trees are going to look alike, which means that correlation increases.
+
+Now
+\[
+\sigma^2(x)
+= \var T(x,\theta(Z))
+= \var_Z \ex_{\theta|Z} T(x,\theta(Z)) + \ex_Z \var_{\theta|Z} T(x,\theta(Z))
+= \var_Z \hat{f}^B_{\text{rf}}(x) + \ex_Z \var_{\theta|Z} T(x,\theta(Z))
+\]
+so as $m$ decreases the choice of splitting variables is going to be more and more random,
+which implies that the grown trees would be more variable.
+
+% subsection random_forests (end)
+
+\subsection{Boosting} % (fold)
+\label{sub:boosting}
+
+\subsubsection{\textbf{Ada}ptive \textbf{Boost}ing} % (fold)
+\label{ssub:adaboost}
+
+It seems similar to bagging and train many predictors and then average them out.
+The procedure is to combine the effort of many ``weak'' classifiers to produce a
+better predictor. A weak classifier is a little better than a random guess.
+
+Construct a bunch of weak classifier. Let $X,T$ be the training sample and grow a
+classifier $G_1(x)$ on it. Then grow another classifier $G_2(x)$ on a weighted sample
+with weights, emphasizing observations classified poorly on the previous iteration.
+Finish with $M$ iteratively grown classifiers and then construct the final classifier
+as a weighted combination of $G_k(x)$. The output of the final classifier is the sign
+of the combination. Adaboost is suitable for binary classification.
+
+\[f_M(x) = \sum_{m=1}^M \beta_m b(x,\gamma_m)\]
+for trees $\gamma_m$ is the splitting variable, splitting point and the estimated value.
+\[f(x) = \sum{m=1}^M \beta_m 1_{R_m}(x)\]
+ 
+Try to minimize the following sum
+\[ \min_{\beta_m, \gamma_m} \sum_{i=1}^n L(t_i, f_M(x_i) ) \]
+this is intractable.
+
+Approximation: the \textbf{f}orward \textbf{s}tagewise \textbf{a}dditive \textbf{m}odelling
+Try to estimate iteratively: make the best possible choice at each step (greedy).
+
+Start by initializing $f_0(x)$ to anything (take the mean class, for instance).
+Then compute the optimal $(\beta_m,\gamma_m)$ such that 
+\[\argmin_{\beta, \gamma} \sum_{i=1}^n L(t_i,f_{m-1}(x_i) + \beta b(x_i, \gamma))\]
+once one has this, update $f_{m-1}(x)$
+\[
+f_m(x) = f_{m-1}(x) + \beta_m b(x, \gamma_m)
+\]
+Differences to bagging: boosting uses the whole sample.
+
+Consider the case of a square loss: minimization yields
+\[ \ex_{X,T} L(T, y(X)) = \ex_{X,T} (T - y(X))^2 \to \min_y \]
+gives $y^*(x) = \ex(T|X)$.
+
+Thus
+\[
+L(t_i,f_{m-1}(x_i) + \beta b(x_i, \gamma))
+= (t_i - f_{m-1}(x_i) + \beta b(x_i, \gamma))^2
+= (r_{im} + \beta b(x_i, \gamma))^2
+\]
+this is tractable, but square loss is not suited well for classification.
+
+Use exponential loss:
+\[L(t,y(x)) = e^{-t y(x)} \]
+where $t\in\{-1,+1\}$. 
+Find the minimizer of expected exp-loss for each $x$
+\[
+\ex_{X,T} L(T, y(X))
+= \ex_{X,T} e^{ - T y(X)}
+= \ex_X \ex_{T|X} e^{ - T y(X)}
+= \ex_X f(x)
+\to \min_y
+\]
+This is a calculus of variations problem.
+\begin{align*}
+	f(x) &= \ex_{T|X} e^{ - T a }
+	f(x) &= e^{ - a } \pr(T=1|X) + e^{ a } \pr(T=-1|X)
+\end{align*}
+for $a=y(X)$ is constant given $X$. The optimal $a$ is given by
+\[
+y^*(X)
+= \frac{1}{2} \log\frac{\pr(T=1|X)}{\pr(T=-1|X)}
+= \frac{1}{2} \text{odds ratio}
+\]
+Thus
+\[
+G(x)
+= \text{sign} \bigl( y^*(X)\bigr)
+= \text{sign} \Bigl( \sum_{m=1}^M \beta_m G_m(X) \Bigr)
+\]
+the weighted majority vote.
+
+Sin the exponential loss was used:
+\[
+(\beta_m, \gamma_m) 
+= \argmin_{\beta, G} \sum_{i=1}^n e^{-t_i\bigl(f_{m-1}(x_i) + \beta G(x_i) \bigr)}
+\]
+so a scaled tree is added.
+\[
+(\beta_m, \gamma_m)
+= \argmin_{\beta, G} \sum_{i=1}^n w^m_i e^{- \beta t_i G(x_i)}
+\]
+where $w^m_i = e^{-t_i f_{m-1}(x_i)}$. Now
+\[
+\sum_{i=1}^n w^m_i e^{- \beta t_i G(x_i)}
+= \sum_{i| t_i = G(x_i)} w^m_i e^{- \beta} 
++ \sum_{i| t_i \neq G(x_i)} w^m_i e^\beta
+\]
+whence
+\[
+\sum_{i=1}^n w^m_i e^{- \beta t_i G(x_i)}
+= e^{- \beta} \sum_{i=1}^n w^m_i
++ \sum_{i| t_i \neq G(x_i)} w^m_i \bigl( e^\beta - e^{- \beta} \bigr)
+\]
+Since the first term is independent of $G$, at step $m$ the optimal $G$ is
+going to minimize the weighted misclassification (error) rate
+\[
+G_m = \argmin_G \sum_{i| t_i \neq G(x_i)} w^m_i \to \min_G
+\]
+Consider a modification of the CART algorithm:
+\[\hat{p}_{mk} = \frac{1}{|R_m|} \sum_{i|x_i\in R_m} 1_{t_i}(k)\]
+a simple modification is
+\[\hat{p}_{mk} = \frac{ \sum_{i|x_i\in R_m} w^m_i 1_{t_i}(k) }{ \sum_{i|x_i\in R_m} w^m_i }\]
+weighted proportion of class $k$ observations in region $m$.
+
+% subsubsection adaboost (end)
+
+% subsection boosting (end)
+
+% section lecture_13 (end)
+
+\section{Lecture \# 14} % (fold)
+\label{sec:lecture_14}
+
+\subsection{Boosting (cntd.)} % (fold)
+\label{sub:boosting_continued}
+
+Adaboost minimizes the 
+\[\ex_{(X,T)} L(T, y(X))\]
+for $T\in \{-1,+1\}$ and the loss function is given by 
+\[L(t, y(x)) = e^{-t y(x)}\]
+where the values of te exponent is called the margin.
+
+The optimal binary classifier is 
+\[y^*(x) = \frac{1}{2} \log\frac{\Pr(T=+1\rvert x)}{\Pr(T=-1\rvert x)}\]
+which is unknown, since the probabilities are unavailable. Thus use an approximation
+\[f_M(x) = \sum_{m=1}^M \beta_m G_m(x)\]
+where $G_m(x)$ is a weak binary classifier. The final classifier is defined through
+the discriminant function:
+\[G_M(x) = \text{sign}\bigl(f_M(x) \bigr)\]
+
+The parameters are given by the best 
+\[
+(\beta_m, G_m)
+= \argmin_{\beta, G} \sum_{i=1}^n e^{-t_i \bigl( f_{m-1}(x) + \beta G(x_i) \bigr) }\]
+
+the optimal $G_m$ is given by the minimizer:
+\[ G_m = \argmin_{G} \sum_{i=1}^n w^m_i 1_{t_i \neq G(x_i) } \]
+where $w^m_i = e^{-t_i f_{m-1}(x_i)}$.
+
+Let's find the minimizer $\beta$ of 
+\[\sum_{i=1}^n w^m_i e^{-t_i \beta G(x_i) }\]
+First split the sum
+\[\ldots 
+= \sum_{i: t_i \neq G(x_i)} w^m_i  e^\beta
++ \sum_{i: t_i = G(x_i)} w^m_i  e^{-\beta} \]
+whence
+\[\ldots 
+= e^{-\beta} \bigl( \sum_{i=1}^n w^m_i 
++ (e^{2\beta}-1) \sum_{i=1}^n w^m_i 1_{t_i \neq G(x_i)}
+\Bigr) \]
+and
+\[\ldots 
+= e^{-\beta} \bigl( \sum_{i=1}^n w^m_i \Bigr) \Bigl\{ 
+1 + (e^{2\beta}-1) \text{err}_m
+\Bigr\} \]
+where
+\[\text{err}_m = \frac{\sum_{i=1}^n w^m_i 1_{t_i \neq G(x_i)}}{\sum_{i=1}^n w^m_i} \]
+This implies that the minimizer is given by
+\[
+\beta_m = \frac{1}{1}\log \frac{1-\text{err}_m}{\text{err}_m}
+\]
+
+Let's update the current calssifier: add the function with the optimal parameters
+that were found.
+\[ f_m(x) \leftarrow f_{m-1}(x) + \beta_m G_m(x) \]
+and then update teh weights
+\[
+w^{m+1}_i \leftarrow e^{-t_i f_m(x_i)} = w^m_i e^{-t_i \beta_m G_m(x_i)}
+\]
+and then renormalise. This expression could be simplified. First note a neat trick
+that under the current binary encoding one gets
+\[ -t_i G_m(x_i) = 2 1_{t_i \neq G_m(x_i)} - 1 \]
+Therefore the updating rule for the weihgts becomes 
+\[
+w^{m+1}_i
+\leftarrow w^m_i e^{\beta_m ( 2 1_{t_i \neq G_m(x_i)} - 1 )}
+= w^m_i e^{\alpha_m 1_{t_i \neq G_m(x_i)}} e^{-\beta_m}
+\]
+with $\alpha_m = 2\beta_m$. For proper functioning $\alpha_m$ needs to be larger than
+zero, since otherwise the weights would be updated in the opposite direction.
+
+To summarize, the AdaBoost is given by
+\begin{enumerate}
+	\item Initialize the weights to $w^1_i = \frac{1}{n}$;
+	\item For $m=1,\ldots, M$ do: \begin{enumerate}
+		\item Fit a binary classifier $G_m(x)$ to the training data using the current
+		weights $w^m_i$;
+		\item Compute the current classification error:
+		\[ \text{err}_m = \frac{\sum_{i=1}^n w^m_i 1_{t_i \neq G(x_i)}}{\sum_{i=1}^n w^m_i} \]
+		\item Get $\alpha_m = \log\frac{1-\text{err}_m}{\text{err}_m}$ and
+			$\beta_m = \frac{\alpha_m}{2}$;
+		\item Finally update the wieghts
+		\[ w^{m+1}_i \propto w^m_i e^{\alpha_m 1_{t_i \neq G_m(x_i)}} e^{-\beta_m} \]
+	\end{enumerate}
+	\item Output the final classifier 
+		\[G(x) = \text{sign} \Bigl( \sum_{m=1}^M \alpha_m G_m(x) \Bigr)\]
+\end{enumerate}
+
+% subsection boosting_continued (end)
+
+\subsection{Remarks} % (fold)
+\label{sub:remarks}
+
+There are many other loss functions, what are their merits and which are appropriate?
+\begin{itemize}
+	\item The binomial deviance. Find the minimizer of
+	\[\ex_{T|X} -l( T, y(X))\]
+	where $l$ is the log-likelihood. Let $p(x) = \pr(T=1|x)$ and it is equal to
+	\[l(t, p(x)) = \log\Bigl( p^{t'}(x) (1-p(x))^{1-t'} \Bigr)\]
+	where $t' = \frac{t+1}{2}\in \{ 0,1\}$.
+	Since $y(x) = \frac{1}{2}\log\frac{p(x)}{1-p(x)}$, whence
+	\[
+	l(t, y(x))
+	= \log\Bigl( \frac{1}{1+e^{-2y(x)}}\Bigr)^{t'} \Bigl( \frac{e^{-2y(x)}}{1+e^{-2y(x)}}\Bigr)^{1-t'}
+	= \log\Bigl\{ \frac{e^{-2(1-t')y(x)}}{1+e^{-2y(x)}}\Bigr\}
+	\]
+	whence
+	\[
+	-l(t,y(x))
+	= \log\bigl( 1+e^{-2y(x)}\bigr) e^{2(1-t')y(x)}
+	= \log\bigl( 1+e^{-2y(x)}\bigr) e^{(1-t)y(x)}
+	= \log 1+e^{-2 t y(x)}
+	\]
+	which is the binomial deviance criterion:
+	\[
+	\ex_{T|X} -l( T, y(X))
+	= \ex_{T|X} \log 1+e^{-2 T y(X)}
+	\]
+	The $y(\cdot)$ that minimizes this deviance is given by the minimizer of 
+	\[\ex_{T|X} e^{-2 T y(X)}\]
+	\item The square error loss (bad function), given by
+	\[(t-y(x))^2 = (1-\frac{y(x)}{t})^2  = (1 - t y(x))^2 \]
+	since $|t|=1$.
+\end{itemize}
+
+The robustness can be achieved with a loss function, which does not assign large
+weights to outliers.
+
+Deviance generalizes quite well in the case of multiclass classification.
+
+\[
+p_k(x)
+= \pr(T\in C_k|x)
+= \frac{ e^{f_k(x)} }{\sum_{j=1}^K e^{f_j(x)} }
+\]
+Since $f_j$'s are unique up to a constant shift, the identifiability can be achieved
+by restricting them to sum to one. Anyway the negative log-likelihood is given by
+\[-l(t, p(x)) = -\sum_{k=1}^K 1_{t\in C_k} f_k(x) + \log \sum_{k=1}^K e^{f_k(x)}\]
+
+\subsubsection{Loss function for regression problems} % (fold)
+\label{ssub:loss_function_for_regression_problems}
+
+The square loss: $l(t, y(x)) = \frac{1}{2}(t-y(x))^2$;
+The absolute loss: $l(t, y(x)) = |t-y(x)|$;
+Huber loss: $l(t, y(x)) = \epsilon^2 1_{|\epsilon|\leq \delta} + (2\delta |\epsilon| - \delta^2) 1_{|\epsilon| > \delta}$
+for $\delta = \pm 1$;
+
+% subsubsection loss_function_for_regression_problems (end)
+
+% subsection remarks (end)
+
+\subsection{Gradient boosting} % (fold)
+\label{sub:gradient_boosting}
+
+This is a generalization of boosting/ Boosted tree model
+\[f_M(x) = \sum_{m=1}^M T(x, \theta_m)\]
+the parameter is given by 
+\[\hat{\theta}_m = \argmin_\theta \sum_{m=1}^M \Lcal( t_i, f_{m-1}(x_i) + T(x_i, \theta) )\]
+where the $\theta$'s summarize the parameters of the constructed tree:
+\[\theta_m = \bigl(R_{jm}, \gamma_{jm}\bigr)_{j=1}^{J_m}\]
+Binary classification: exponential loss, -- Regression -- square loss.
+How to adapt the AdaBoost to the Huber loss function.
+
+Current model is $f_{m-1}$. Find such an adjustment $h$ that
+\[f_{m-1}(x_i) + h(x_i) = t_i\]
+which can be generalized to out-of-sample observations. Such``good'' regression
+tree (or function) might not exist.
+
+Approximately fit a regression (tree) function to the data :
+\[\Bigl(x_i, t_i - f_{m-1}(x_i)\Bigr)_{i=1}^n\]
+Consider a loss function given by
+\[L(t, y(x)) = \frac{1}{2}(t-y(x))^2\]
+the derivative of the empirical loss is
+\[
+\frac{\partial}{\partial f_{m-1}(x_i) } \sum_{i=1}^n L(t_i, f_{m-1}(x_i))
+= -( t_i - f_{m-1}(x_i) )
+= - r_{im}
+\]
+Fit an $h$ to this dataset
+\[\Bigl((x_i, -r_{im})\Bigr)_{i=1}^n\]
+
+\subsubsection{Algorithm \# 1} % (fold)
+\label{ssub:algorithm_1}
+\begin{enumerate}
+	\item Initialize $f_0(x) = \bar{t}$;
+	\item For $m=1,\ldots, M$ compute: \begin{enumerate}
+		\item $r_{im} = - \frac{\partial}{\partial f_{m-1}(x_i) } L\Bigl(t_i, f_{m-1}(x_i)\Bigr)$;
+		\item Fit $h_m$ to $\Bigl((x_i, r_{im})\Bigr)_{i=1}^n$;
+		\item Choose \[
+		\gamma_m  = \argmin_{\gamma} \sum_{i=1}^n \Lcal( t_i, f_{m-1}(x_i) + \gamma h_m(x_i) )\]
+		\item Update $f_m(x) = f_{m-1}(x) + \gamma_m h_m(x)$.
+	\end{enumerate}
+	\item Output $\hat{f}(x) = f_M(x)$.
+\end{enumerate}
+This looks like a gradient search in some functional space. The multiplier was added to
+mimic the gradient search.
+
+Find $f$ such that $\sum_{i=1}^n \Lcal(t_i, f(x_i))$. If $f_i = f(x_i)$ then minimize
+\[ J(f) = \sum_{i=1}^n \Lcal(t_i, f_i) \]
+Using the gradient descent method gives:
+\[f^+ = f^- - \rho \nabla J(f) \approx f^- + h(x)\]
+but this does not generalise to $h$ outside of the given $x_i$'s.
+
+% subsubsection algorithm_1 (end)
+
+\subsubsection{Algorithm \# 2} % (fold)
+\label{ssub:algorithm_2}
+
+Friedman: Tree boost, for $h_m$ being in the class of regression trees. Then the
+algorithm is modified as
+\begin{itemize}
+	\item Fit $h_m(x) = \sum_{j=1}^{J_m} b_{jm} 1_{x\in R_{jm}}$;
+	\item multiply each $b_{jm}$ by a single $\gamma_m$ to get
+	\[ \gamma_m h_m(x) = \sum_{j=1}^{J_m} \gamma_m b_{jm} 1_{x\in R_{jm}} \]
+\end{itemize}
+
+\begin{enumerate}
+	\item Initialize $f_0(x) = \bar{t}$;
+	\item For $m=1,\ldots, M$ compute: \begin{enumerate}
+		\item $r_{im} = - \frac{\partial}{\partial f_{m-1}(x_i) } L\Bigl(t_i, f_{m-1}(x_i)\Bigr)$;
+		\item Fit a regression tree $h_m$ to $\Bigl((x_i, r_{im})\Bigr)_{i=1}^n$ producing just
+		the regions $R_{jm}$;
+		\item Choose \[
+			\gamma_{jm}  = \argmin_{\gamma} \sum_{i: x_i\in R_{jm}} \Lcal( t_i, f_{m-1}(x_i) + \gamma )\]
+		\item Update $f_m(x) = f_{m-1}(x) + \sum_{j=1}^{J_m} \gamma_{jm} b_{jm} 1_{x\in R_{jm}} $.
+	\end{enumerate}
+	\item Output $\hat{f}(x) = f_M(x)$.
+\end{enumerate}
+This looks like a gradient search in some functional space. The multiplier was added to
+mimic the gradient search.
+
+% subsubsection algorithm_2 (end)
+
+\subsection{Generalisations} % (fold)
+\label{sub:generalisations}
+
+Instead of using exponential or deviance loss function, one could plug any other
+differentiable loss function instead of $\Lcal$. 
+
+% subsection generalisations (end)
+% subsection gradient_boosting (end)
+
+% section lecture_14 (end)
+
+\section{Lecture \# 15} % (fold)
+\label{sec:lecture_15}
+
+\subsection{Elements of convex optimization} % (fold)
+\label{sub:elements_of_convex_optimization}
+
+\subsubsection{Convexity} % (fold)
+\label{ssub:convexity}
+
+A convex set $M$ is sich that for all $x,y\in M$ and $\theta \in [0,1]$ then
+\[ \theta x + (1 - \theta) y \in M \]
+A polyhedron is a convex set and is a solution of finitely many linear inequalities
+in $\Real^n$ : $A_i'x \leq b_i$ for $i=1,\ldots,m$, $A_i\in \Real^{n\times 1}$ and
+$A\in \Real^{n\times m}$. Hyperplanes, lines, halfspaces are polyhedra.
+
+A conic conbination of $x_1,x_2\in \Real^n$ is 
+\[\theta_1 x_1 + \theta_2 x_2\]
+for all $\theta_1,\theta_2 \geq 0$. The set of all conic combination of $x_1$
+and $x_2$ is called a ``cone'' an is gicen by
+\[ \text{cone}(x_1,x_2) = \Bigl\{ \theta_1 x_1 + \theta_2 x_2 \Bigr\rvert \Bigl. \theta_1,\theta_2\geq0 \Bigr\} \]
+An important exmaple of a cone set is the set of symmetric (and positive semidefinite
+matrices).
+
+Start with a simple object that is convex and then search for transformations
+that preserves convexty.
+\begin{itemize}
+	\item intersection of convex sets is convex;
+	\item the image of a convex set under an affine transformation $f(x) = Ax + b$ is convex;
+	\item the linear fractional function also preserves convexity
+	\[x\to \frac{Ax + b}{Cx + d}\]
+	with domain $\{Cx\neq d\}$.
+\end{itemize}
+
+A function $f:\Real^n \to\Real$ is convex if its domain is convex and 
+\[f\bigl(\theta x+(1-\theta)y\bigr) \leq \theta f(x) + (1-\theta)f(y)\]
+for all $\theta\in[0,1]$.
+
+Examples: exponential, affine functions, power $x^\alpha$ on $(0,+\infty)$,
+the $l^p$ norm for $p\geq 1$: for any $x\in \Real^n$
+\[\|x\|_p = \Bigl(\sum_{k=1}^n |x_k|^p\Bigr)^\frac{1}{p}\]
+
+If $f$ is differentiable, then the first order conditions for convexity are
+\[f(y)\geq f(x) + \nabla f(x)'(y-x)\]
+for all $x,y\in \text{dom} f$.
+
+The second order condition for strict convexity if and only if
+\[0 \preceq \nabla^2 f\]
+All quadratic functions are convex:
+\[ f(x) = x'Px + qx + c\]
+with $\nabla f(x) = Px + q$ and $\nabla^2 f(x) = P\preceq 0$.
+
+The log-sum-exp is convex:
+\[f(x) = \log \sum_{i=1}^n e^{x_i}\]
+indeed, the second derivatinve of $f$ is
+\[ \frac{\partial f}{\partial x_k} = \frac{e^{x_k}}{\sum_{i=1}^n e^{x_i}} \]
+and for $j\neq k$
+\[ \frac{\partial^2 f}{\partial x_k\partial x_j} = -\frac{e^{x_k}e^{x_j}}{(\sum_{i=1}^n e^{x_i})^2} \]
+and 
+\[ \frac{\partial^2 f}{\partial x_j^2} = -\frac{e^{2x_k}}{(\sum_{i=1}^n e^{x_i})^2} + \frac{e^{x_k}}{\sum_{i=1}^n e^{x_i}} \]
+It is easy to see (?) that $u'\nabla^2f(x) u \geq 0$ for all $u\in \Real^n$.
+
+Further convexity preserving function are 
+\begin{itemize}
+	\item non-negative weighted sums;
+	\item convex function of affine transformation; 
+	\item point-wise maximum (supremum): $f(x) = \max_{j=1,\ldots,m}f_j(x)$;
+	\item the sum of $r<n$ largest components of a vector $x$:
+	\[f(x) = \sum_{k=1}^r x_{(n-k+1)}\]
+	since it is reexpressible as a maximum of $C^r_n$ sums of the form $x_{i_1} + \ldots + x_{i_r}$;
+	\item If $f(x,y)$ is convex in $y$ for all $x\in A$, then $g(y) = \sup_{x\in A} f(x,y)$ is convex;
+	\item Concavity is just minus the convexity!
+\end{itemize}
+
+% subsubsection convexity (end)
+
+\subsubsection{An optimization problem} % (fold)
+\label{ssub:an_optimization_problem}
+
+Consider a minimization of $f_0$ subject to a bunch of constraints:
+\begin{itemize}
+	\item Minimize $f_0(x)$ with respec to $x\in \Real^n$ subject to:
+	\item inequality constraints $f_i(x) \leq 0$ for $i=1,\ldots,m$;
+	\item equlaity constraints $h_i(x) = 0$ for $i=1,\ldots,p$.
+\end{itemize}
+this is the ``standard form'' of an optimization problem.
+The function $f_0:\Real^n \to \Real$ is the objective function, the functions
+$f_i:\Real^n\to\Real$ are inequality constraint functions and $h_i:\Real^n\to\Real$
+are the equlaity constraint functions.
+
+The optimal value, if one exists, is denoted by $p^*$:
+\[p^* = \inf\{ f_0(x) \rvert f_i(x) \leq 0, h_j(x) = 0 \}\]
+if the problem is infeasible, i.e. there are no $x$ Schwartz that all the constraints
+are satisfied, then $p^*=+\infty$. In contrast, if $f_0$ is unbounded below, on the
+feasible set then we assume $p^* = -\infty$.
+
+A point $x$ is feasible if $x\in \text{dom}f_0$ and satisfies all constraints. The
+feasible set of an optimization problem is the set of all feasible points. A point
+$x$ is optimal if $f_0(x) = p^*$, i.e. the optimal value is atatined at $x$.
+
+% subsubsection an_optimization_problem (end)
+
+\subsubsection{Convex optimization problems} % (fold)
+\label{ssub:convex_optimization_problems}
+
+By adding certain restrictions on the objective and the constraint functions, one gains
+many wonderful properties of the optimal solution.
+\[ f_0(x) \to \min_x \]
+subject to
+\begin{align*}
+	f_i(x) &\leq 0 \\
+	a_j'x + b = 0
+\end{align*}
+for all $i=1,\ldots, m$ and $j=1,\ldots,p$.
+
+Linear programming is when $f_0$ and $f_i$ are all affine functions. This subset of
+optimization problems is widely studied. The feasible set is a polyhedron on which
+an affine $f_0(x) =c'x + d$ is minimized. The minimization is performed by looking
+at level sets of $f_0$ and then checking the vertices of the the feasible polyhedron.
+A well known theorem from LP states that if one solution exists the it at a vertex,
+and if two solutions exist, then there are infinitely many solution.
+
+Quadratic programming is when $f_0$ is quadratic and the feasible set is still a
+polyhedron: $f_0(x) = x'Px + q'x + r$ subject to $g_i'x\leq b_i$ and $a_j'x=c$.
+
+% subsubsection convex_optimization_problems (end)
+
+\subsubsection{Duality} % (fold)
+\label{ssub:duality}
+
+Consider a general optimization problem:
+\[ f_0(x) \to \min_x\]
+subject to
+\[ f_i(x) \leq 0\,\text{and}\, h_j(x) = 0\]
+For $x\in D$ where 
+\[D = (\bigcap_{i=0}^m \text{dom} f_i) \cap (\bigcap_{j=1}^p \text{dom} h_j)\]
+consider the Lagrangian $\Lcal: \Real^n\times \Real^m\times\Real^p\to\Real$ defined as:
+\[\Lcal(x,\lambda, \nu) = f_0(x) + \sum_{i=1}^m \lambda_i f_i(x) + \sum_{j=1}^p \nu_j h_j(x)\]
+for $\lambda_i\geq 0$. This is a weighted sum of the objective and constraints and
+it quite looks like regularization.
+
+The Lagrange dual function $g:\Real^m\times \Real^p\to\Real$ is given by
+\[g(\lambda,\nu) = \inf_x \Lcal(x,\lambda,\nu)\]
+The Lagrangian $\Lcal$ is affine in $\lambda$ and $\nu$, and since infimum preserves
+concavity. And so $g$ is concave whatever $f_i$ and $h_i$ are. Furthermore $g(\lambda,\nu)$
+is a lower bound for the optimal value $p^*$.
+
+Indeed, suppose $\tilde{x}$ is a \textbf{feasible} point then
+\[ f_0(\tilde{x}) \geq \Lcal(\tilde{x},\lambda,\nu) \]
+for all $\lambda\geq0$ and $\nu$. Therefore
+\[ f_0(\tilde{x}) \geq \inf_x \Lcal(x,\lambda,\nu) = g(\lambda,\nu)\]
+minimizing over all feasible $x$ (denoted by$F$) yields
+\[ p^* = \inf_{x\in F} f_0(x) \geq g(\lambda,\nu)\]
+
+The dual problem is finding the ``best'' lower bound: maximize $g(\lambda,\nu)$
+subject to $\lambda \geq 0$ to ensure that $g$ provides a lower bound. But there
+is absolutely no guarantee that this lower bound is good, even if its the best.
+
+Let $d^*$ be the optimal value of the dual problem and the dual is feasible if
+$\lambda\geq 0$ and $(\lambda,\nu)\in\text{dom}g$.
+
+\textbf{Weak duality}: $d^*<p^*$, -- always holds and can be used to find non-trivial
+lower bounds.
+\textbf{Strong duality}: $d^*=p^*$, -- quite ofetn holds for convex problems.
+The duality gap is $p^*-d^*\geq 0$.
+
+What are the sufficient conditions for strong duality? Slater's conditions.
+In fact any conditions for strong duality are called ``constraint qualifications''.
+
+The problem 
+\[ f_0(x) \to \min_x\,\text{st} f_i(x) \leq 0\,\text{and}\, h_j(x) = 0\]
+is strongly dual, if there exists at least one feasible $x\in \text{int}D$
+such that $f_i(x) < 0$ and $a_j'x = b_j$ for all $i=1,\ldots,m$. (?) For affine
+constraints $f_i(x) = g_i'x - b_i$ and convex problem, the strict inequality is
+not necessary.
+
+If $p^*>-\infty$ then $d^*>-\infty$ (dual is feasible) and there exist $\lambda^*$
+and $\nu^*$ such that $g(\lambda^*, \nu^*) = p^*$.
+
+Optimality conditions. Suppose that stong duality holds. Denote by $x^*$ the optimal
+point of the primal problem, and $(\lambda^*, \nu^*)$ the optimal of the dual problem.
+Then the duality gap is zero, whence
+\[
+f_0(x^*)
+= g(\lambda^*,\nu^*)
+= \inf_x f_0(x) + \sum_{i=1}^m\lambda_i^* f_i(x) + \sum_{j=1}^p\nu_j^* h_i(x)
+\]
+Obviously
+\[
+f_0(x^*)
+= g(\lambda^*,\nu^*)
+\leq f_0(x^*) + \sum_{i=1}^m\lambda_i^* f_i(x^*) + \sum_{j=1}^p\nu_j^* h_i(x^*)
+\]
+Since $x^*$ is feasible one has $f_i(x^*)\leq 0$ and $h_i(x^*) = 0$ whence for
+$\lambda^*$ and $\nu^*$
+\[
+f_0(x^*) + \sum_{i=1}^m\lambda_i^* f_i(x^*) + \sum_{j=1}^p\nu_j^* h_i(x^*)
+\leq f_0(x^*)
+\]
+Thus equalities hold and $x^*$ minimizes $\Lcal(x,\lambda^*, \nu^*)$ and
+\[
+\sum_{i=1}^m\lambda_i^* f_i(x^*) + \sum_{j=1}^p\nu_j^* h_i(x^*) = 0
+\]
+however since $ \sum_{j=1}^p\nu_j^* h_i(x^*) = 0 $ one arrives at the complementary
+slackness conditions:
+\[ \sum_{i=1}^m \lambda_i^* f_i(x^*) = 0 \]
+which implies that $\lambda_i^* f_i(x^*) = 0$ for all $i=1,\ldots,m$.
+
+\textbf{K}arush-\textbf{K}uhn-\textbf{T}ucker conditions:
+\begin{itemize}
+	\item primal constraints: $f_i(x)\leq 0$ for $i=1,\ldots,m$ and $h_j(x) = 0$ for $j=1,\ldots,p$;
+	\item dual constraints: $\lambda_i \geq 0$ to ensure that $g\leq p^*$;
+	\item Complementary slackness: $\lambda_i f)i(x) = 0$ for $i=1,\ldots,m$;
+	\item Gradient of $\Lcal$ vanishes: $\nabla_x \Lcal(x) = 0$.
+	\[\nabla_x \Lcal = \nabla f_0(x) + \sum_{i=1}^m \lambda_i \nabla f_i(x) + \sum_{j=1}^p \nu_j \nabla h_j(x)\]
+\end{itemize}
+Summary, for any optimization problem if $x^*$ and $(\lambda^*,\nu^*)$ are such that
+$f_0(x^*) = g(\lambda^*,\nu^*)$ then $(x^*,\lambda^*,\nu^*)$ satisfy the \textbf{KKT}
+conditions (necessary conditions). For a convex optimization problem the KKT are also
+sufficient.
+
+Proof for the convex case. Sufficiency.
+Suppose $(x^*,\lambda^*,\nu^*)$ satisfy the KKT. Then $x^*$ is feasible.
+For any feasible
+\[
+\Lcal(x,\lambda^*,\nu^*)
+= f_0(x) + \sum_{i=1}^m\lambda_i^* f_i(x) + \sum_{j=1}^p\nu_j^* h_i(x)
+= f_0(x) + \sum_{i=1}^m\lambda_i^* f_i(x)
+\]
+which is a non-negative weighted $(\lambda_i^*)_{i=1}^m$ sum of convex functions
+$f_i$. Therefore $\Lcal(x,\lambda^*,\nu^*)$ is convex. Whence the last KKT condition implies
+that $x^*$ is the minimizer and $g(\lambda^*,\nu^*) = \Lcal(x^*,\lambda^*,\nu^*)$, and
+\[
+d^*
+= g(\lambda^*,\nu^*)
+= f_0(x^*) + \sum_{i=1}^m\lambda_i^* f_i(x^*) + \sum_{j=1}^p\nu_j^* h_i(x^*)
+= f_0(x^*)
+= p^*
+\]
+due to complementary slackness conditions.
+
+In the case of linear programming if either primal of dual are feasible, then strong duality
+holds.
+
+% subsubsection duality (end)
+
+% subsection elements_of_convex_optimization (end)
+
+% section lecture_15 (end)
+
+\section{Lecture \# 16} % (fold)
+\label{sec:lecture_16}
+
+Talking first about the SVM before introducing the concept of Kernels.
+
+\subsection{SVM (contd.)} % (fold)
+\label{sub:svm_contd}
+
+Consdier a standard two-class classification problem on the training data
+$(x_i,t_i)_{i=1}^n$ with $\pm1$ notation of class labels: $t_i\in\{-1,+1\}$.
+We are looking at hyperplane discriminant function given by:
+\[y(x) = x'\beta + \beta_0\]
+in the hope that the classes would be at least well separated.
+The perceptron is an example of such a separation classifier, provided the 
+training data is linearly separable.
+
+The problem with a separating hyperplane is that there are infinitely many
+solutions, which is where the \textbf{S}upport \textbf{V}ector \textbf{M}achine
+come into picture.
+
+\subsubsection{Linearly separable case} % (fold)
+\label{ssub:linearly_separable_case}
+
+For starter consider a linearly separating case. We want to find the best hyperplane
+in the sense that the margin of the hyperplane is the largest. This would enable a
+certain degree of robustness to the classifier with respect to the variance of
+the data.
+
+So the goal is to maximize the margin $M$ the distance to the closes data point
+with respect to $\beta,\beta_0$ and subject to $\|\beta\|=1$ (Euclidean norm).
+The margin, or the signed distance to some datapoint $x$ is given by
+\[ \frac{y(x)}{\|\beta\|} \]
+which under the given restrictions reduces to
+\[ t_i(x_i'\beta + \beta_0) \geq M \]
+for all $i=1,\ldots,n$.
+
+Therefore the problem becomes $ M \to \max_{\beta, \beta_0}$ subject to
+$\sum_{j=1}^p \beta_j^2 = 1$ and $t_i( x_i'\beta+\beta_0 )\geq M$.
+The restrictions transform into
+\[ t_i( x_i'\frac{\beta}{M}+\frac{\beta_0}{M} )\geq 1 \]
+Denoting $\gamma = \frac{\beta}{M}$ and $\gamma_0 = \frac{\beta_0}{M}$,
+note that $M = \|\gamma\|^{-1}$, whence the final SVM problem becomes
+\[
+\frac{1}{2}\|\beta\|^2 \to \min_{\beta_0,\beta}
+\text{ s.t. }
+t_i(\beta_0+x_i'\beta)\geq 0\,\forall i=1,\ldots,n
+\]
+
+Now $x'\beta = p\|\beta\|$, for a projection $p$ of $x$ onto $\beta$. If $\beta_0=0$
+then the restrictions reduce to $t_i p_i\|\beta\|\geq 1$. This means that if projections
+are large, then the SVM could have more room to decrease the norm of $\beta$.
+
+Employ the convex optimization. The primal problem's Lagrangian id given by
+\[
+\Lcal(\beta_0, \beta, \lambda)
+= \frac{1}{2} \|\beta\|^2 + \sum_{i=1}^n \lambda_i \bigl(1 - t_i(x_i'\beta+\beta_0) \bigr)
+\]
+The Lagrange dual is given by
+\[
+g(\lambda) = \inf_{\beta_0,\beta} L(\beta_0, \beta, \lambda)
+\]
+by weak duality $g(\lambda)\leq \frac{1}{2}\|\beta^*\|^2$, where $\beta^*$ is the
+optimal parameter.
+
+Linear separability implies that it is feasible, and the objective function is
+convex and thee restrictions are linear, -- use Slater's constraint requirements.
+Thus by strong duality $\sup_\lambda g(\lambda) = \frac{1}{2} \|\beta^*\|$.
+Thus the triple $(\beta_0^*,\beta^*,\lambda^*)$ satisfies the KKT conditions:\begin{itemize}
+	\item Primal constraints: $t_i(x_i'\beta^*+\beta_0)\geq1$;
+	\item Dual constraints: $\lambda^*_i\geq 0$;
+	\item Complementary slackness: $\lambda^*_i \bigl( 1 - t_i(x_i'\beta^*+\beta_0) \bigr) = 0$;
+	\item The gradient vanishes:
+	\[ \frac{\partial \Lcal}{\partial \beta_0} = - \sum_{i=1}^n \lambda_i t_i = 0 \]
+	and
+	\[ \frac{\partial \Lcal}{\partial \beta} = \beta - \sum_{i=1}^n \lambda_i t_i x_i = 0 \]
+\end{itemize}
+the optimal parameter $\beta$, given $\lambda$, is $\beta^*(\lambda) = \sum_{i=1}^n \lambda_i t_i x_i$.
+The Lagrange dual is given by
+\[
+g(\lambda)
+= \frac{1}{2}\|\beta(\lambda)\|^2
++ \sum_{i=1}^n \lambda_i
+- \sum_{i=1}^n \lambda_i t_i x_i'\beta^*(\lambda)
+- \sum_{i=1}^n \lambda_i t_i \beta_0
+\]
+whenever by the first part of the gradient vanishing requirement
+\[
+g(\lambda)
+= \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n \lambda_j \lambda_i t_j t_i x_i'x_j
+- \sum_{i=1}^n \sum_{j=1}^n \lambda_j \lambda_i t_j t_i x_i' x_j
++ \sum_{i=1}^n \lambda_i
+\]
+Note that the expression $t_j t_i x_i' x_j$ is nothing but the inner product
+in the Euclidean $\Real^p$ space: $\langle t_i x_i, t_j x_j\rangle$.
+
+Let $H_{ij}$ be the inner product of the $i$-th and $j$-th data point. In the
+matrix form the Lagrangian dual is represented by
+\[
+g(\lambda) = \one' \lambda - \frac{1}{2} \lambda'H\lambda
+\]
+Thus the final dual problem becomes
+\[ \one' \lambda - \frac{1}{2} \lambda'H\lambda \to \max_{\lambda}\]
+subject to 
+\[ \lambda\geq 0 \text{ and } \lambda't = 0 \]
+where the last constraint is implicit, and comes from the $4$-th KKT condition.
+This problem is still convex and linear, and returns the optimal $\lambda^*$,
+which permits the computation of the $\beta^* = \beta^*(\lambda^*)$.
+
+The complementary slackness conditions allow one to get insight into the nature
+of the optimal solution. The product
+\[\lambda_i \bigl(1-t_i(x_i'\beta^*+\beta^*_0)\bigr) = 0\]
+If $\lambda^*_i >0$ then $t_i ( x_i'\beta^*+\beta^*_0) = 1$. Such datapoints $i$
+with $\lambda^*_i>0$ necessarily lie on the margin and are known as the \textbf{support}
+\textbf{vectors}. The points that are far away from the margin, i.e. $t_i y(x_i)>0$
+must have $\lambda^*_i=0$. The fact that only a few of datapoints have $\lambda^*_i>0$
+gives the so called sparse solution.
+
+To compute the $\beta^*_0$ use the support vectors. Indeed for all $i$ with
+$\lambda^*_i>0$ one has $t_i x_i'\beta^* + t_i\beta^*_0 = 1$, whence
+\[ 
+x_i'\beta^* + t_i\beta^*_0 - t_i 
+= \sum_{j=1}^n \lambda^*_j t_j x_i'x_j + \beta^*_0 - t_i
+\]
+since $t_i = \pm 1$. Thus 
+\[
+\beta^*_0 = t_i - \sum_{j:\lambda^*_i>0} \lambda^*_j t_j x_i'x_j
+\]
+In practice, for numerical stability one uses the average of this expression
+over all support vectors:
+
+\[
+\beta^*_0
+= \frac{1}{|\text{SV}|}\sum_{i\in \text{SV}}\Bigl(
+	t_i - \sum_{j\in \text{SV}} \lambda^*_j t_j x_i'x_j
+\Bigr)
+\]
+where $\text{SV} = \{i=1,\ldots,n| \lambda^*_i>0\}$ is the set of support vectors.
+
+What is the optimal margin? recall the complementary slackness conditions
+\[
+t_i \beta^*_0 + \Bigl(\sum_{j=1}^n \lambda^*_j t_jx_j\Bigr)' t_i x_i =1
+\]
+which yields
+\[
+\sum_{j=1}^n \lambda^*_j t_i t_j x_j'x_i = 1 - t_i\beta^*_0
+\]
+The margin is given by
+\begin{align*}
+	\|\beta^*\|^2
+	&= \sum_{i=1}^n \sum_{j=1}^n \lambda_j^* \lambda_i^* t_j t_i x_i'x_j \\
+	&= \sum_{i=1}^n \lambda_i^* \sum_{j=1}^n \lambda_j^* t_j t_i x_i'x_j \\
+	&= \sum_{i=1}^n \lambda_i^* ( 1 - t_i\beta^*_0 ) \\
+	&= \sum_{i=1}^n \lambda_i^*
+\end{align*}
+
+% subsubsection linearly_separable_case (end)
+
+\subsubsection{Linearly non-separable case} % (fold)
+\label{ssub:linearly_non_separable_case}
+
+In the non-separable case the problem collapses, since there might not even be
+a solution. In order to tackle this case, allow a certain slackness in the classification,
+for extra flexibility. Let $\xi_i\geq0$ be the slack variable for a data point $i$.
+Each $\xi_i$ can be seen as a penalty for misclassification.
+
+In the linearly separable case $t_i y(x_i) > 0$ for some separating hyperplane $y(\cdot)$.
+Thus instead of the constraint $t_i y(x_i)\geq 1$ consider
+\[ t_i y(x_i)\geq 1-\xi_i \]
+The idea is that for correctly classified point there is no need for ``help'' from
+the newly introduced slack variables. Therefore \begin{itemize}
+	\item $\xi_i = 0$ for points on the correct side of the margin;
+	\item $\xi_i\in(0,1]$ for correctly classified points on the wrong side of the margin;
+	\item $\xi_i = 1$ for the points on the separating hyperplane;
+	\item $\xi_k > 1$ for datapoints that are misclassified.
+\end{itemize}
+
+Thus the goal is to maximize the margin as before while ``soft-penalizing'' the points
+on the wrong side of the plane. The objective is to make the margin as large as possible
+by minimizing
+\[ \frac{1}{2} \|\beta\|^2 + C \sum_{i=1}^n \xi_i \]
+with respect to the original classification constraints.
+
+If $C\to\infty$ then the margin is smaller and the problem converges to a linearly
+separable case. For a large $C$ the margin is narrow, and for a small $C$ the margin
+is wide. 
+
+The primal problem thus becomes
+\[ \frac{1}{2} \|\beta\|^2 + C \sum_{i=1}^n \xi_i \to \min_{\beta, \beta_0,(\xi_i)}\]
+subject to 
+\[ t_i y(x_i) \geq 1-\xi_i \text{ and } \xi_i\geq 0 \]
+for all $i=1,\ldots,n$.
+
+The Lagrangian is given by
+\[
+\Lcal(\beta_0,\beta,\xi,\lambda,\mu)
+= \frac{1}{2} \|\beta\|^2 + C \sum_{i=1}^n \xi_i \to \min_{\beta, \beta_0,(\xi_i)}
++ \sum_{i=1}^n \lambda_i \Bigl( 1 - \xi_i - t_i ( x_i'\beta + \beta_0 ) \Bigr)
++ \sum_{i=1}^n \mu_i ( - \xi_i )
+\]
+the KKT condition are \begin{itemize}
+	\item $t_i y(x_i) \geq 1-\xi_i$ and $\xi_i\geq 0$;
+	\item $\lambda_i,\mu_i \geq 0$;
+	\item $\lambda_i \Bigl( 1 - \xi_i - t_i ( x_i'\beta + \beta_0 ) \Bigr) = 0$ and $\mu_i ( - \xi_i ) = 0$;
+	\item the first-order conditions are \begin{description}
+		\item[$\beta_0$] $ -\sum_{i=1}^n \lambda_i t_i = 0$;
+		\item[$\beta$] $ \beta - \sum_{i=1}^n \lambda_i t_i x_i = 0$;
+		\item[$\xi$] $ C - \lambda_i - \mu_i = 0$.
+	\end{description}
+\end{itemize}
+The Lagrange dual is thus
+\[
+g(\lambda,\mu)
+= \frac{1}{2} \sum_{i=1}^n\sum_{j=1}^n \lambda_i\lambda_j t_i t_j x_i'x_j
++ C \sum_{i=1}^n \xi_i
+- \sum_{i=1}^n\sum_{j=1}^n \lambda_i\lambda_j t_i t_j x_i'x_j
+- \sum_{i=1}^n \lambda_i t_i \beta_0
++ \sum_{i=1}^n \lambda_i
+- \sum_{i=1}^n \lambda_i \xi_i
+- \sum_{i=1}^n \mu_i \xi_i
+\]
+whence the FOC imply
+\[
+g(\lambda,\mu) =
+- \frac{1}{2} \sum_{i=1}^n\sum_{j=1}^n \lambda_i\lambda_j t_i t_j x_i'x_j
++ \sum_{i=1}^n \lambda_i
+\]
+Furthermore since $\mu_i \geq 0$, one has $\lambda_i\leq C$. Thus the dual problem
+becomes: maximize
+\[ \one'\lambda - \frac{1}{2}\lambda'H\lambda \to \max_\lambda \]
+subject to $0\leq \lambda\leq C$ -- the box constraint and $\lambda't = 0$.
+
+The solution is characterized as follows
+\begin{description}
+	\item[$\lambda^*_i = 0$] Then $\mu^*_i = C$, $\xi^*_i = 0$ and $t_i y(x_i) > 1-0$;
+	\item[$\lambda^*_i > 0$] Then $t_i y(x_i) = 1 - \xi^*_i$ and $\xi^*_i \geq 0$.
+	If $\lambda^*_i < C$ then $\mu^*_i > 0$, whence $\xi^*_i = 0$ and $t_i y(x_i) = 1$ -- a
+	support vector.
+	\item[$\lambda^*_i = C$] Then $t_i y(x_i) = 1 - \xi^*_i$, $\mu^*_i=0$ and the
+	point is either inside the margin and correctly classified $\xi^*_i \in (0,1]$, or
+	the point is misclassified and $\xi^*_i>1$.
+\end{description}
+
+To get $\beta_0$ one once again, may pick a point $i$ lying on the margin
+and compute 
+\[ \beta^*_0 = t_i - \sum_{j\in\text{SVE}} \lambda^*_j t_j x_i'x_j \]
+where $\text{SVE} = \{i:\lambda^*_i > 0 \text{ and } \xi^*_i = 0\}$.
+Is there a guarantee that there necessarily exists $i$ with $\xi^* = 0$ and
+$\lambda^*_i>0$.
+
+% subsubsection linearly_non_separable_case (end)
+
+\subsubsection{Relation between the SVM and the Logistic regression} % (fold)
+\label{ssub:relation_between_the_svm_and_the_logistic_regression}
+
+Let's rewrite the SVM problem in a penalized regression form.
+
+Points that are on the correct side of the margin have $t_i (x_i) \geq 1$ and $\xi_i = 0$.
+Remaining points have $\xi_i = 1-t_i y(x_i)$. Thus the objective function looks
+like
+\[ \sum_{j=1}^n \bigl(1-t_j y(x_j)\bigr)_+ + \lambda \|\beta\|^2 \]
+which is a penalized risk minimization problem. The $(\cdot)_+$ is the ``Hinge error''.
+
+Hard margin problem
+\[ \sum_{i=1}^n E_\infty(t_i y(x_i) - 1 ) + \lambda \|\beta\|^2\]
+where $E_\infty(x) = \infty 1_{x\geq 0}$.
+
+% subsubsection relation_between_the_svm_and_the_logistic_regression (end)
+
+% subsection svm_contd (end)
+
+% section lecture_16 (end)
+
+\section{Lecture \# 17} % (fold)
+\label{sec:lecture_17}
+
+\subsection{Reproducing Kernel Hilbert Spaces} % (fold)
+\label{sub:reproducing_kernel_hilbert_spaces}
+
+Suppose we have a binary classification problem. THe data is $(x_i, t_i)_{i=1}^n$
+with $t_i\in \{0,1\}$. Now, for some new $x'$ one is interested in inferring its label $t'$.
+Basically this is determined by how similar a new $x'$ is to the $x$ from the training
+sample.
+
+A similarity kernel is defined as map $K:X\times X\to \Real$. The similarity kernel
+must be symmetric and have other conditions.
+
+In the Euclidean space similarity kernel might be defined as the inner product
+(the dot product). Introducing an inner product to a linear space automatically
+creates notions of angles, norms and distances.
+
+The idea is to enlarge the feature space to include more features.
+
+We are going to start with some abstract space $X$ and then consider some transform of
+the input data $\Phi:X\to \Hcal$, where $\Hcal$ is the new feature space with more
+dimensions than $X$. For example $\Phi$ maps some finite-dimensional space $X$ into
+an infinite dimensional space $\Hcal$. Also recall the cubic splines and the NCS.
+
+We are going to look for functions that have really nice features, but still the
+solutions would be finite dimensional.
+
+The goal is to see how $\Phi$ is related to $K$ and $\Hcal$ to $X$.
+
+% subsection reproducing_kernel_hilbert_spaces (end)
+
+\subsection{Kernels} % (fold)
+\label{sub:kernels}
+
+A Hilbert space is a complete vector space of the field $\Real$. Completeness is
+with respect to the metric induced by the inner product's norm (norm topology).
+
+A function $K:X\times X\to\Real$ is called a kernel if there exists a Hilbert space
+$\Hcal$ and a mapping $\Phi:X\to\Hcal$ such that
+\[ K(x,y) = \bigl\langle \Phi(x), \Phi(y) \bigr\rangle_\Hcal \]
+i.e. to the inner product in $\Hcal$.
+
+Thus this allows efficient evaluation of inner products in $\Hcal$ through the kernel.
+
+% subsection kernels (end)
+
+\subsection{Properties of kernels} % (fold)
+\label{sub:properties_of_kernels}
+
+Given kernels $K_1(x,y)$ and $K_2(x,y)$, the following bivariate function are kernels\begin{itemize}
+	\item $K(x,y) = c K_1(x,y)$;
+	\item $K(x,y) = f(x) K_1(x,y) f(y)$ where $f$ is any function;
+	\item $K(x,y) = q( K_1(x,y) )$, provided $q$ is polynomial with positive coefficients;
+	\item $K(x,y) = \text{exp}\{ K_1(x,y) \}$;
+	\item $K(x,y) = K_1(x,y) + K_2(x,y)$;
+	\item $K(x,y) = K_1(x,y) \cdot K_2(x,y)$;
+\end{itemize}
+The first one is simple, since the exists a Hilbert space $\Hcal$ and a mapping
+$\Phi:X\to \Hcal$ such that
+\[ K(x,y) = \bigl\langle \Phi(x), \Phi(y) \bigr\rangle_\Hcal \]
+whence $\Psi(x) = \sqrt{c} \Phi(x)$ does the trick for the same Hilbert space.
+
+% subsection properties_of_kernels (end)
+
+\subsubsection{Examples} % (fold)
+\label{ssub:examples}
+
+Polynomial kernels. Let $X=\Real^n$ equipped with Euclidean inner product. Put
+\[ K(x,y) = \bigl(1+\langle x, y \rangle \bigr)^m \]
+it is not clear as to why this is a kernel.
+
+Step 1. Consider a simpler problem: $K(x,y) = \langle x, y \rangle^m$. The dot product
+can be expanded into
+\[
+\langle x, y \rangle^m
+= \Bigl(\sum_{i=1}^n x_i y_i\Bigr)^m
+= \sum_{j_1+\ldots+j_m = m} \frac{m!}{j_1!\cdots j_m!} (x_1 y_1)^{j_1}\cdots (x_n y_n)^{j_n}
+\]
+This expands to
+\[
+\ldots 
+= \sum_{j_1+\ldots+j_m = m} \sqrt{\frac{m!}{j_1!\cdots j_m!}} x_1^{j_1}\cdots x_n^{j_n} \sqrt{\frac{m!}{j_1!\cdots j_m!}} y_1^{j_1}\cdots y_n^{j_n}
+= \sum_{j_1+\ldots+j_m = m} \phi_j(x) \phi_j(x)
+\]
+Stacking all $\phi_j(\cdot)$ atop one another for $j=\in J = \{(j_l)_{l=1}^m \in \mathbb{N}:\sum_{l=1}^m j_l = m\}$
+one gets a vector $\Phi(x) = (\phi_j(x))_{j\in J}$ in space $\Real^J$ which is
+complete and endowed with an inner product.
+
+Now, for $n=m=2$ one has:
+\begin{align*}
+	K(x,y)
+	&= (1 + \langle x, y \rangle)^2 \\
+	&= (1 + x_1 y_1 + x_2 y_2 )^2 \\
+	&= 1 + x_1^2 y_1^2 + x_2^2 y_2^2 + 2 x_1 y_1 + 2 x_2 y_2 + 2 x_1 y_1 x_2 y_2\\
+	&= ( 1\, x_1\, x_2\, \sqrt{x_1}\, \sqrt{x_1}\, 2x_1x_2\, )' (\ldots y \ldots)
+\end{align*}
+Thus in this case the Hilbert space is of all monomials of order $\leq 2$. This gives
+us intuition that in the general case of $K(x,y)$ one gets all monomials of order $\leq m$.
+
+Gaussian kernel is defined as
+\[ K(x,y) = \text{exp}\bigl\{ \frac{1}{\eta} \|x-y\|^2\bigr\} \]
+for $x,y\in \Real^n$. Using the bilinearity of the inner product one obtains
+\[  K(x,y) = e^{-\frac{1}{2}\|x\|^2} e^{-\frac{1}{2}\|y\|^2} e^{ \frac{2}{\eta}\langle x, y \rangle } \]
+Expanding the exponential as infinite series:
+\[  K(x,y) = e^{-\frac{1}{2}\|x\|^2} e^{-\frac{1}{2}\|y\|^2} \sum_{k\geq0} \frac{2^k}{k! \eta^k} \langle x, y \rangle^k \]
+whence
+\[
+K(x,y) = e^{-\frac{1}{2}\|x\|^2} e^{-\frac{1}{2}\|y\|^2}
+\sum_{k\geq0} \sum_{j_1+\ldots+j_n = k} \frac{2^k}{k! \eta^k} x_1^{j_1}\cdots x_n^{j_n} y_1^{j_1}\cdots y_n^{j_n}
+\]
+and
+\[
+K(x,y)
+= e^{-\frac{1}{2}\|x\|^2} e^{-\frac{1}{2}\|y\|^2}
+\sum_{j_1+\ldots+j_n \geq 0} \frac{2^{j_1+\ldots+j_n}}{(j_1+\ldots+j_n)! \eta^{j_1+\ldots+j_n}}
+x_1^{j_1}\cdots x_n^{j_n} y_1^{j_1}\cdots y_n^{j_n}
+\]
+Putting 
+\[
+\phi_j(x) = \sqrt{ \frac{2^{j_1+\ldots+j_n}}{(j_1+\ldots+j_n)! \eta^{j_1+\ldots+j_n}} } x_1^{j_1}\cdots x_n^{j_n}
+\]
+where $j = (j_l)_{l=1}^n$ -- a multiindex.
+
+% subsubsection examples (end)
+
+\subsection{Theorem} % (fold)
+\label{sub:theorem}
+
+A function $K:X\times X \to \Real$ is a kernel if and only if it is symmetric and
+positive-definite. By positive-definiteness one means: for all $n\geq1$
+\[ \sum_{i=1}^n \sum_{j=1}^n \lambda_i \lambda_j K(x_i, x_j) \geq 0 \]
+for all $x \in X$ and $\lambda$ in the ... (?).
+
+$\Rightarrow$ If $K$ is a kernel, then there exists a Hilbert space $\Hcal$ and
+a mapping $\Phi:X\to \Hcal$ such that $K(\cdot, \cdot) = \langle \Phi(\cdot), \Phi(\cdot)\rangle_\Hcal$.
+
+Consider some $n\geq1$ and some $(x_i)_{i=1}^n \in X$:
+\[
+\sum_{i=1}^n \sum_{j=1}^n \lambda_i \lambda_j K(x_i, x_j) 
+= \sum_{i=1}^n \sum_{j=1}^n \lambda_i \lambda_j \langle \Phi(x_i), \Phi(x_j)\rangle_\Hcal 
+= \sum_{i=1}^n \sum_{j=1}^n \langle \lambda_i \Phi(x_i), \lambda_j \Phi(x_j)\rangle_\Hcal
+= \langle \sum_{i=1}^n \lambda_i \Phi(x_i), \sum_{j=1}^n \lambda_j \Phi(x_j)\rangle_\Hcal
+= \| \sum_{i=1}^n \lambda_i \Phi(x_i)\|_\Hcal
+\geq 0
+\]
+
+$\Leftarrow$ Consider a symmetric and positive-definite function $K:X\times X\to \Real$.
+We want to find a Hilbert space and a mapping that meet the required criteria.
+
+Consider the space of all functions that are finite linear combinations
+\[
+\Hcal_0 = \bigl\{ f : X \to \Real :
+f = \sum_{i=1}^n \alpha_i K(\cdot, x_i), n\geq1,
+(x_i)_{i=1}^n\in X, (\alpha_i)_{i=1}^n\in \Real \bigr\}
+\]
+This is not yet a Hilbert space, since it should be equipped with an inner product,
+and proven to be complete.
+
+Let $f,g\in \Hcal_0$
+\[
+\langle f, g \rangle_{\Hcal_0} = \sum_{i,j} \alpha_i \gamma_j K(x_i, y_j)
+\]
+for $f = \sum_{i=1}^n \alpha_i K(\cdot, x_i)$ and $g = \sum_{j=1}^m \alpha_j K(\cdot, y_i)$
+
+Is this well defined? Yes! Indeed,
+\[
+\sum_{i,j} \alpha_i \gamma_j K(x_i, y_j)
+= \sum_j \gamma_j \sum_i \alpha_i K(x_i, y_j)
+= \sum_j \gamma_j f(y_j)
+= \sum_i \alpha_i g(x_i)
+\]
+This ``inner product'' is symmetric by definition and is bilinear, using the
+same argument as above. Furthermore, $\langle f, g \rangle_{\Hcal_0}$ is a
+positive definite kernel on $\Hcal_0$.
+
+Necessarily for any $h\in \Hcal_0$ one has by assumption on $K$
+\[
+\langle h, h \rangle_{\Hcal_0}
+= \sum_{i,j} \lambda_i \lambda_j K(x_i,x_j)
+\geq 0
+\]
+For any $(h_j)_{j=1}^m\in \Hcal_0$ and $(\gamma_j)_{j=1}^m\in \Real$ by bilinearity one has
+\[
+\sum_{i,j} \gamma_i \gamma_j \langle h_i, h_j \rangle_{\Hcal_0}
+= \langle \sum_i \gamma_i h_i, \sum_j \gamma_j h_j \rangle \geq 0
+\]
+
+Now any kernel satisfies Cauchy-Schwartz-Bunyakovsky inequality:
+\[ |K(x,y)|^2 \leq K(x,x) K(y,y) \]
+Consider a Gram matrix
+\[
+\begin{pmatrix}
+	K(x_1,x_1) & K(x_1,x_2) \\
+	K(x_2,x_1) & K(x_2,x_2) 
+\end{pmatrix}
+\]
+which implies that $K_{22}K_{11} - K^2_{12}\geq 0$, proving the inequality (?).
+
+Now if $\langle h, h \rangle_{\Hcal_0} = 0$ for some $h\in \Hcal_0$, then $h=0$.
+Indeed, if $h(x) = \sum_{i=1}^n \lambda_i K(x,x_i)$, then
+\[ f(x) = \langle f, K(\cdot,x) \rangle_{\Hcal_0} \]
+by definition (?).
+
+In the $L^2$ one has
+\[ f(x) = \int \delta_x(y) f(y) dy = \langle \delta_x(\cdot), f(\cdot)\rangle\]
+which reproduces $f$, even though $\delta_x \notin L^2$.
+
+Suppose $f(\cdot) = K(\cdot,y)$ for some $y\in X$, then
+\[
+K(x,y) = f(x)
+= \langle f, K(\cdot, x) \rangle_{\Hcal_0}
+= \langle K(\cdot, y), K(\cdot, x) \rangle_{\Hcal_0}
+= \langle K(\cdot, x), K(\cdot, y) \rangle_{\Hcal_0}
+\]
+this is the so-called reproducibility property of $K$. In fact this gives us a mapping
+$X\to \Hcal_0$.
+
+Now for all $x\in X$:
+\[
+|f(x)| = |\langle f, K(\cdot, x) \rangle_{\Hcal_0}|^2
+\leq |\langle K(\cdot, x), K(\cdot, y) \rangle_{\Hcal_0}| |\langle f, f \rangle_{\Hcal_0}|
+\leq K(x,x) |\langle f, f \rangle_{\Hcal_0}|
+\]
+whence $f(x) = 0$.
+
+Thus currently $\Hcal_0$ is pre-Hilbert space (just an inner product space) with inner
+product $\langle\cdot, \cdot\rangle_{\Hcal_0}$ with
+\[ f(x) = \langle f, K(\cdot, x)\rangle_{\Hcal_0}\]
+and 
+\[ K(x,y) = \langle K(\cdot, x),K(\cdot, y)\rangle_{\Hcal_0}\]
+
+Completing the $\Hcal_0$ is done by adding all the limiting points of Cauchy sequences
+(pointwise) and extending the inner product.
+
+For any $f,g\in \Hcal$ define
+\[ \langle f,g \rangle = \lim_{n\to \infty} \langle f_n, g_n\rangle_{\Hcal_0} \]
+where $(f_n)_{n\geq1}$ and $(f_n)_{n\geq1}$ are Cauchy sequences in $\Hcal_0$ converging
+to $f$ and $g$. The following question arise: \begin{itemize}
+	\item Does the limit exist? 
+	\item Does $\langle f,g \rangle$ depend on the sequences chosen?
+	\item Is $\langle \cdot, \cdot \rangle$ an inner product?
+	\item Is $\Hcal_0$ dense in $\Hcal$?
+	\item Is $\Hcal$ is a Hilbert space?
+	\item Does $K$ defined in $\Hcal_0$ have the reproducible property in$\Hcal$?
+\end{itemize}
+
+The first lemma: for any $f,g\in \Hcal$ and $x\in X$
+\[ |f(x) - g(x)| \leq C \|f-g\|_{\Hcal_0} \]
+Now $\delta_x f = f(x)$ the evaluation functional which is linear. It is continuous therefore bounded over the space $\Hcal_0$. 
+\[ |f(x) - g(x)| = |\delta_x(f-g)| \leq C\|f-g\|_{\Hcal_0} \]
+How one has to show that $\delta_x$ is indeed linear and continuous (bounded). (?)
+
+The second lemma:
+let $(f_n)_{n\ge1}$ be a Cauchy sequence in $\Hcal_0$ that converges to $0$. Then
+\[\|f_n\|_{\Hcal_0} \to 0\]
+
+Because $f_n$ is Cauchy, it must be bounded. Let $A>0$ then $\|f_n\|_{\Hcal_0} < A$ for all $n\geq1$.
+
+Let $\epsilon>0$. Then there exists $N_1\geq 1$ such that
+\[ \|f_n - f_m\|_{\Hcal_0} < \frac{\epsilon}{2A}\] 
+for all $n,m\geq N_1$. Put $f_{N_1} = \sum_{i=1}^k \alpha_i K(\cdot, x_i)$.
+Since $(f_n)$ converges pointwise to $0$ then there is $N_2\geq 1$ such that
+\[ |f_n(x_i)| |< \frac{\epsilon}{2k|\alpha_i|} \]
+
+Thus for $n\geq N_1\wedge N_2$ on gets
+\[
+\|f_n\|^2_{\Hcal_0} \leq | \langle f_n -f_{N_1}, f_n\rangle_{\Hcal_0}|
++ | \langle f_{N_1}, f_n\rangle_{\Hcal_0}|
+\leq \|f_n\|_{\Hcal_0} \|f_n-f_{N_1}\|_{\Hcal_0} + \sum_{i=1}^k |\alpha_i| |f_n(x)|
+\]
+whence the convergence in norms follows.
+
+If $f_n\to f$ and $g_n\to g$ pointwise, then $\alpha_n = \langle f_n, g_n\rangle_{\Hcal_0}$.
+Consider
+\[
+|\alpha_n - \alpha_m | 
+= |\langle f_n, g_n\rangle_{\Hcal_0}
+- \langle f_m, g_m\rangle_{\Hcal_0} |
+\]
+whence
+\[
+| \alpha_n - \alpha_m | 
+= |\langle f_n-f_m, g_n\rangle_{\Hcal_0}
+- \langle f_m, g_n-g_m\rangle_{\Hcal_0} |
+\leq |\langle f_n-f_m, g_n\rangle_{\Hcal_0}|
++ |\langle f_m, g_n-g_m\rangle_{\Hcal_0} |
+\leq \|f_n-f_m\|_{\Hcal_0} \|g_n\|_{\Hcal_0}
++ \|f_m\|_{\Hcal_0} \|g_n-g_m\|_{\Hcal_0}
+\]
+since $\|f_m\|_{\Hcal_0}$ and $\|g_m\|_{\Hcal_0}$ are bounded and $f_n$ and $g_n$ are Cauchy,
+one definitely has that $\alpha_n$ is Cauchy.
+
+Lemma: The limit $\alpha = \lim_{n\to \infty} \alpha_n$ is independent of the Cauchy sequences chosen.
+
+Let $f'_n\to f$ and $g'_n\to g$ with $\alpha'_n = \langle f'_n, g'_n\rangle_{\Hcal_0}$, whence
+\[
+|\alpha_n - \alpha'_n| \leq \|f_n-f'_n\|_{\Hcal_0} \|g_n\|_{\Hcal_0}
++ \|f'_n\|_{\Hcal_0} \|g_n-g'_n\|_{\Hcal_0}
+\]
+which converges to $0$. Thus the object
+\[
+\langle \cdot, \cdot \rangle = \lim_{n\to \infty}\langle \cdot,\cdot \rangle_{\Hcal_0}
+\]
+is well defined.
+
+Reproducibility property of $K$ on $\Hcal$:
+\[
+\langle f, K(\cdot,x) \rangle
+= \lim_{n\to \infty} \langle f_n,K(\cdot, x) \rangle_{\Hcal_0}
+= \lim_{n\to \infty} f_n(x)
+= f(x)
+\]
+by pointwise convergence of $f_n$ (?).
+
+% subsection theorem (end)
+
+\subsection{RKHS} % (fold)
+\label{sub:rkhs}
+
+Let $X$ be some non-empty set and $\Hcal$ be a HIlbert space of functions $f:X\to\Real$.
+
+The space $\Hcal$ is \textbf{R}eproducible \textbf{K}ernel \textbf{H}ilbert \textbf{S}pace
+with the inner product $\langle\cdot, \cdot\rangle_\Hcal$ if there exists $K:X\times X\to \Real$
+such that \begin{itemize}
+	\item $K$ has the reproducibility property: $f(x) = \langle f, K(\cdot, x)\rangle_\Hcal$;
+	\item $K$ spans the whole $\Hcal$ : $\Hcal = [ \{ K(x,\cdot) : x\in X\}]$;
+\end{itemize}
+An the $K$ is unique (by reproducibility).
+
+An equivalent and more abstract definition.
+An RKHS is a Hilbert space of functions $X\to \Real$, such that all evaluation functionals
+$\delta_x:\Hcal\to\Real$ with $f\to \delta_x(f) = f(x)$ are continuous.
+
+If $L$ is a linear and continuous functional on $\Hcal$, then by Riesz Representation theorem
+there exists $g\in \Hcal$ such that $L(f) = \langle f,g\rangle_\Hcal$ for any $f\in \Hcal$.
+
+Thus for any $x\in X$ there is $g_x\in \Hcal$ such that the evaluation functional is equal
+\[ \delta_x(f) = \langle f, g_x\rangle_\Hcal \]
+Just put $K(\cdot,x) = g_x(\cdot)$.
+
+% subsection rkhs (end)
+
+\subsection{Riesz representation theorem} % (fold)
+\label{sub:riesz_representation_theorem}
+
+Let $\Hcal$ be a Hilbert space over filed $K = \Cplx$ or $\Real$:
+\begin{itemize}
+	\item $\Hcal$ is a linear space over $K$;
+	\item $\Hcal$ is equipped with an inner product $\langle\rangle$;
+	\item $\Hcal$ is a complete space with respect to the natural metric:
+	a norm-metric induced by the inner product.
+\end{itemize}
+
+
+
+\subsubsection{Projection: closed convex sets} % (fold)
+\label{ssub:closed_convex_projection}
+
+%% Statement:
+for any convex set $C\subseteq \Hcal$ and any $x_0\in \Hcal$, there exists a unique
+$x^*\in C$ such that 
+\[ \|x^*-x_0\| = \inf\{\|x-x_0\|\,:\, x\in C\}\,. \]
+
+%% Proof:
+Let $C$ be a convex subset of $\Hcal$, i.e. for any $x,y\in C$ and all $t\in[0,1]$
+one has $t x + (1-t) y \in C$. Let $x_0\in \Hcal$ be arbitrary.
+
+Consider $\delta = \inf\{\|x-x_0\|\,:\,x\in C\}$. Then there exists a sequence
+$(x_n)_{n\geq1}\in C$ such that $\|x_n-x_0\|\downarrow \delta$. Note that since
+the map $x\mapsto x^2$ is continuous, $\|x_n-x_0\|^2\downarrow \delta^2$.
+
+Pick any $n,m\geq1$. Then by the parallelogram equality
+\[ \|x-y\|^2 + \|x+y\|^2 = 2\|x\|^2 + 2\|y\|^2\,, \]
+one has
+\begin{align*}
+	\|x_n-x_m\|^2
+	&= 2\|x_n-x_0\|^2 + 2\|x_m-x_0\|^2
+	- \|x_n+x_m - 2 x_0\|^2\\
+	&= 2\|x_n-x_0\|^2 + 2\|x_m-x_0\|^2
+	- 4 \bigl\|(\tfrac{1}{2}x_n+\tfrac{1}{2}x_m) - x_0\bigr\|^2\,.
+\end{align*}
+Since $C$ is convex it is true that $\tfrac{1}{2}(x_n+x_m)\in C$, whence
+\[ \|x_n-x_m\|^2 \leq 2\|x_n-x_0\|^2 + 2\|x_m-x_0\|^2 - 4\delta\,, \]
+by definition of $\delta$.
+
+Now for any $\epsilon>0$ there is $N\geq1$ such that for all $n\geq N$
+\[ \|x_n-x_0\|^2-\delta^2 < \frac{1}{4} \epsilon\,, \]
+which implies that for all $n,m\geq N$
+\[
+\|x_n-x_m\|^2 < 2 \frac{1}{4} \epsilon + 2 \frac{1}{4} \epsilon = \epsilon \,.
+\]
+
+Since the sequence $(x_n)_{n\geq1}$ is Cauchy in $\Hcal$ with respect to natural
+metric of this space, there exists $x^*\in \Hcal$ such that $x_n\overset{\Hcal}{\to} x^*$.
+As the set $C$ is closed in $\Hcal$ (with respect to the norm topology of $\Hcal$)
+the element $x^*\in C$.
+
+Let's check if $\|x^*-x_0\| = \delta$. Since $x^*\in C$ one has $\delta \leq \|x^*-x_0\|$.
+Note that the triangle inequality implies for all $x,y\in\Hcal$
+\[ \bigl\lvert \|x\| - \|y\| \bigr\rvert \leq \| x-y \|\,, \]
+whence
+\[
+\bigl\lvert \|x^*-x_0\| - \|x_n-x_0\| \bigr\rvert \leq \|x_n-x^*\| \,,
+\]
+(the first line also proves continuity of the norm $x\mapsto \|\cdot\|$ in $\Hcal$).
+Since the limit of a convergent sequence in $K$ is unique (it is Hausdorff) one has
+\[  \|x^*-x_0\| = \lim_{n\to \infty} \|\|x_n-x_0\|\| = \delta \,. \]
+
+Finally if there existed another $y^*\in C$ such that $\|y^*-x_0\| = \delta$
+the parallelogram equality would imply uniqueness:
+\[
+\|x^*-y^*\|^2
+= 2\|x^*-x_0\|^2 +2\|y^*-x_0\|^2
+- 4\|\tfrac{1}{2}x^*+\tfrac{1}{2}y^* - x_0\|^2
+\leq 2\delta^2 + 2\delta^2 - 4 \delta^2 = 0\,.
+\]
+
+Recall that a subspace orthogonal to a given set $C$ in an inner product space $\Hcal$ is
+defined as
+\[ C^\perp = \Bigl\{ x\in \Hcal\,:\, \forall y\in C\, \langle x,y\rangle = 0 \Bigr\} \,. \]
+It is indeed a subspace, even if $C$ is not, because, if $x,y\in C^\perp$ and $\alpha\in K$,
+then for all $z\in C$
+\begin{align*}
+	\langle x+y,z\rangle &= \langle x,z\rangle + \langle y,z\rangle = 0\\
+	\langle \alpha x,z\rangle &= \alpha \langle x,z\rangle + \langle y,z\rangle = 0\,.
+\end{align*}
+Furthermore, if $x\in C^\perp \cap C$ implies that
+\[ \langle x,z\rangle = 0 \,, \]
+for all $z\in C$, and in particular for $z=x$, which implies that $\|x\|^2 = 0$
+and $x = \mathbf{0}$.
+
+% subsubsection closed_convex_projection (end)
+
+\subsubsection{Projection: linear subspace} % (fold)
+\label{ssub:projection_linear_subspace}
+
+%% Statement:
+If $C$ is a closed linear subspace of $\Hcal$ then for any $x_0\in \Hcal$ there
+exist unique $x^*\in C$ and $x^\perp\in C^\perp$ such that $x_0 = x^* + x^\perp$.
+
+%% Proof :
+Indeed, any linear subspace is convex and thus using the previous lemma one has
+that there is $x^*\in C$ with
+\[ \| x_0-x^* \| = \inf\{\|x-x_0\|\,:\, x\in C\} \,. \]
+Let $x^\perp = x_0 - x^*$ and note that since $x^*\in C$ and $C$ is a linear space
+one has $x^*+\alpha y$ for any $y\in C$ and $\alpha\in \Real$. Therefore 
+\[
+\| x^\perp \|^2 \leq \| x^* + \alpha y - x_0 \|^2 = \| x^\perp - \alpha y \|^2\,.
+\]
+Expanding the squared norm on the right hand side as inner products gives \begin{align*}
+	\| x^\perp - \alpha y \|^2
+	&= \| x^\perp \|^2 + |\alpha|^2 \| y \|^2
+	- \alpha \langle y, x^\perp \rangle
+	- \overline{\alpha \langle y, x^\perp \rangle} \,.
+\end{align*}
+Hence
+\[
+0 \leq |\alpha|^2 \| y \|^2
+	- \alpha \langle y, x^\perp \rangle
+	- \overline{\alpha \langle y, x^\perp \rangle} \,.
+\]
+Now since $\alpha$ is arbitrary, one may set it to
+\[ \alpha = \frac{\overline{\langle y, x^\perp \rangle}}{\|y\|^2}\,, \]
+so that the products with complex $\langle y, x^\perp \rangle$ would reduce to squares
+of complex moduli. Indeed, for such carefully chosen $\alpha$ :
+\[
+0 \leq \frac{\bigl\lvert \langle y, x^\perp \rangle \bigr\rvert^2 }{\|y\|^2 \|y\|^2} \| y \|^2
+	- 2 \frac{\bigl\lvert \langle y, x^\perp \rangle \bigr\rvert^2 }{\|y\|^2}\,,
+\]
+whence the following result follows:
+\[
+\bigl\lvert \langle y, x^\perp \rangle \bigr\rvert^2 \leq 0 \,.
+\]
+Therefore for any $y\in C$ it is true that $\langle y, x^\perp \rangle = 0$, which
+implies that $x^\perp \in C^\perp$.
+
+If there is another pair $y^*\in C$ and $y^\perp\in C^\perp$ with $y^*+y^\perp = x_0$
+then $y^\perp-x^\perp = x^* - y^*$, whence by linearity of both $C$ and $C^\perp$
+\[ y^\perp-x^\perp \in C^\perp\,\text{ and }\, y^*-x^*\in C^*\,, \]
+implying that $y^\perp-x^\perp = \mathbf{0}$ and $y^*=x^*$.
+
+% subsubsection projection_linear_subspace (end)
+
+\subsubsection{Linear functionals} % (fold)
+\label{ssub:linear_functionals}
+
+%% Statement:
+A linear functional is continuous if and only if it is bounded.
+
+%% Proof:
+If $\lambda$ is a continuous linear functional at $x_0\in\Hcal$, then for any $x\in\Hcal$
+and $\epsilon>0$ there is $\delta>0$ such that for all $\|x-y\|<\delta$, setting
+$h = x_0 + (x-y)$ gives such a vector that $\|x_0-h\|<\delta$. By linearity of $\lambda$
+\[
+\lambda(x) - \lambda(y) = \lambda(x_0 + x - y - x_0) = \lambda(x_0) - \lambda(h)\,,
+\]
+whence
+\[
+\bigl\lvert \lambda(x) - \lambda(y) \bigr\rvert < \epsilon \,.
+\]
+Therefore $\lambda$ is continuous everywhere on $\Hcal$.
+
+Now, by continuity at $x-0$ there exists $\eta > 0$ such that for all $x\in \Hcal$
+with $\|x_0-x\| \geq \eta$ :
+\[ \bigl\lvert \lambda(x) - \lambda(x_0) \bigr\rvert \leq 1 \,, \]
+whence by linearity of $\lambda$ for such $x$
+\[ \bigl\lvert \lambda(x-x_0) \bigr\rvert \leq 1 \,. \]
+Since the space $\Hcal$ is linear, for any $x\in \Hcal$ with $\|x\|\leq \eta$ the
+above implies
+\[ \bigl\lvert \lambda(x) \bigr\rvert \leq 1 \,. \]
+Now consider any $x\in \Hcal$ such that $x\neq \mathbf{0}$. Then the vector
+\[ z = \frac{\eta}{\|x\|} \in \Hcal\,, \]
+is such that $\|z\|\leq \eta$ and thus
+\[ \bigl\lvert \lambda(z) \bigr\rvert \leq 1 \,. \]
+Therefore by linearity of $\lambda$ for all $x\in\Hcal$, $x\neq 0$:
+\[ | \lambda(x) | \leq \frac{1}{\eta} \|x\| \,, \]
+and $\lambda(\mathbf{0}) = 0$ by linearity. Thus a linear functional continuous at
+some $x_0\in\Hcal$ is continuous everywhere and is bounded.
+
+Suppose a linear functional is bounded: there exists $M\geq 0$ such that for all
+$x\in\Hcal$ :
+\[ \bigl\lvert \lambda(x) \bigr\rvert \leq M \|x\| \,. \]
+Then for any $x,y\in\Hcal$ the linearity of $\lambda$ implies that
+\[
+\bigl\lvert \lambda(x) - \lambda(y) \bigr\rvert
+= \bigl\lvert \lambda(x - y) \bigr\rvert 
+\leq M \|x-y\|\,,
+\]
+whence continuity of $\lambda$ in $\Hcal$ follows.
+
+% subsubsection linear_functionals (end)
+
+\subsubsection{Riesz theorem} % (fold)
+\label{ssub:riesz_theorem}
+%% Statement:
+For any non-trivial bounded (continuous) linear functional $\lambda:\Hcal\to K$,
+there exists a unique $q\in \Hcal$ such that for all $x\in \Hcal$
+\[ \lambda(x) = \langle x, q \rangle \,. \]
+
+%% Proof:
+Now, consider a continuous linear functional $\lambda:\Hcal \to K$ such that for
+some $x\in \Hcal$, $\lambda(x)\neq 0$. The kernel of $\lambda$ is defined as a subset
+of $\Hcal$ that is mapped to $0\in K$ :
+\[ \text{ker}\lambda = \lambda^{-1}(\{0\}) \,. \]
+Since $\lambda$ is continuous $\Hcal\to K$ and $\{0\}$ is closed in $K$, its kernel
+must be a closed set in $\Hcal$. Next, linearity of $\lambda$ implies that $\text{ker} \lambda$
+is a linear space. Put $C = \text{ker}\lambda $.
+
+Now, since $\lambda(x)\neq 0$ for some $x_0\in \Hcal$, $x_0\notin C$. Thus there
+exist unique $x^*\in C$ and $x^\perp \in C^\perp$ with $x_0 = x^*+x^\perp$, and
+for $z = \frac{1}{\|x^\perp\|} x^\perp$, $z\in C^\perp$.
+
+For any $\alpha \neq 0$ the multi-linearity of the inner product implies that for
+all $x\in \Hcal$ :
+\[ \lambda(x) = \frac{\lambda(x)}{\bar{\alpha}} \langle z, \alpha z \rangle \,. \]
+But note that for any vector $x\in \Hcal$, the vector
+\[ v = x - \frac{\lambda(x)}{\bar{\alpha}} z\,, \]
+for a universal constant $\alpha = \overline{\lambda(z)}$ is well defined, since
+$z\notin C$, and is such that $\lambda(v) = 0$. Furthermore, since $z\in C^\perp$
+and $v\in C$, one has $\langle v, \alpha z \rangle = 0$, whence
+\begin{align*}
+	\langle x, \alpha z \rangle
+	&= \biggl \langle \frac{\lambda(x)}{\bar{\alpha}} z, \alpha z \biggr\rangle
+	+ \langle v, \alpha z \rangle \\
+	&= \frac{\lambda(x)}{\bar{\alpha}} \langle z, \alpha z \rangle \,.
+\end{align*}
+Therefore there exists a universal $q\in \Hcal$ given by $ \overline{\lambda(z)} z$, such
+that for any $x\in\Hcal$ :
+\[ \lambda(x) = \langle x, q \rangle \,. \]
+If were is another $h\in \Hcal$ with such property, then for $x=q-h$
+\[ \langle q-h, q \rangle =  \langle q-h, h \rangle \,, \]
+would imply that $q-h = \mathbf{0}$.
+
+% subsubsection riesz_theorem (end)
+
+% subsection riesz_representation_theorem (end)
+
+% section lecture_17 (end)
+
 \end{document}
