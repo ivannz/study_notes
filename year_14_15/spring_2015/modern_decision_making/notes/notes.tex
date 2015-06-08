@@ -3353,11 +3353,11 @@ For all $\theta$ it is true that
 Let $q$ be some distribution of the latent variables $Z$, then
 \[ \ex_q\log p(X\;\theta) = \ex_q\log p(X,Z;\theta) - \ex_q \log q + \ex_q\log {q}{p(Z\lvert X;\theta)} \]
 whence 
-\[
+\begin{align*}
 \ex_q\log p(X,Z;\theta)
-= \log p(X\;\theta) + \ex_q \log q - \ex_q\log {q}{p(Z\lvert X;\theta)}
-= - KL\bigl(q\lvert\rvert p(Z\lvert X;\theta)\bigr) + \ex_q \log q + \log p(X\;\theta)
-\]
+	&= \log p(X\;\theta) + \ex_q \log q - \ex_q\log {q}{p(Z\lvert X;\theta)} \\
+	&= - KL\bigl(q\lvert\rvert p(Z\lvert X;\theta)\bigr) + \ex_q \log q + \log p(X\;\theta) \,.
+\end{align*}
 
 % subsection em_algorithm (end)
 
@@ -3485,13 +3485,14 @@ The contribution of the bias can hereafter be extracted from the product
 \[\tilde{X}\tilde{B} = \one\beta_0' + \tilde{X}B\]
 
 The LS estimate (the first step):
-\[
-\text{error} = \frac{1}{2} \tr\bigl\{
-\beta_0\one'\one\beta_0' + \beta_0\one'\tilde{X}B - \beta_0\one'T
-+ B\tilde{X}'\one\beta_0' + B\tilde{X}'\tilde{X}B - B\tilde{X}'T
-- T'\one\beta_0' - T'\tilde{X}B + T'T
-\bigr\}
-\]
+\begin{align*}
+\text{error}
+	&= \frac{1}{2} \tr\bigl\{
+		\beta_0\one'\one\beta_0' + \beta_0\one'\tilde{X}B - \beta_0\one'T \\
+	&+ B\tilde{X}'\one\beta_0' + B\tilde{X}'\tilde{X}B - B\tilde{X}'T
+		- T'\one\beta_0' - T'\tilde{X}B + T'T
+	\bigr\} \,,
+\end{align*}
 differentiating with respect to $\beta_0$ and equating to zero yields
 \[
 \frac{\partial}{\partial \beta_0} \text{error} 
@@ -3609,12 +3610,13 @@ By definition
 = \beta'S_B\beta
 \]
 where $S_B$ -- the between class variance matrix (scatter). As for the denominator
-\[
-S_2+S_1
-= \sum_{x\in C_1} (\beta'x-\beta'\bar{m}_1)^2 + \sum_{x\in C_2} (\beta'x-\beta'\bar{m}_2)^2
-= \beta'\Bigl(\sum_{x\in C_1} (x-\bar{m}_1)(x-\bar{m}_1)' + \sum_{x\in C_2} (x-\bar{m}_2)(x-\bar{m}_2)'\Bigr) \beta
-= \beta'S_W\beta
-\]
+\begin{align*}
+	S_2+S_1
+	&= \sum_{x\in C_1} (\beta'x-\beta'\bar{m}_1)^2 + \sum_{x\in C_2} (\beta'x-\beta'\bar{m}_2)^2 \\
+	&= \beta'\Bigl(\sum_{x\in C_1} (x-\bar{m}_1)(x-\bar{m}_1)'\\
+		+ \sum_{x\in C_2} (x-\bar{m}_2)(x-\bar{m}_2)'\Bigr) \beta
+	&= \beta'S_W\beta
+\end{align*}
 Thus the quotient we are trying to minimize is the Rayleigh quotient
 \[J(\beta) = \mathcal{R} = \frac{\beta'S_B\beta}{\beta'S_W\beta}\]
 Reexpress this as an optimization problem with respect to $\beta^* = \beta c$
@@ -3750,13 +3752,13 @@ Hence
 b^\text{new} - b_\text{sep} = b_\text{old} - b_\text{sep} + \eta_i t_i z_i
 \]
 and the point $i$ is misclassified. The squared norm of the updated parameters is
-\[
-\|b^\text{new} - b_\text{sep}\|^2
-= \|b_\text{old} - b_\text{sep}\|^2 + \eta_i^2 \|t_i z_i\|^2
-+ 2 t_i (b_\text{old} - b_\text{sep})'z_i
-= \|b_\text{old} - b_\text{sep}\|^2 + |t_i|^2 \|z_i\|^2
-+ 2 \eta_i t_i (b_\text{old} - b_\text{sep})'z_i
-\]
+\begin{align*}
+	\|b^\text{new} - b_\text{sep}\|^2
+	&= \|b_\text{old} - b_\text{sep}\|^2 + \eta_i^2 \|t_i z_i\|^2
+		+ 2 t_i (b_\text{old} - b_\text{sep})'z_i \\
+	&= \|b_\text{old} - b_\text{sep}\|^2 + |t_i|^2 \|z_i\|^2
+		+ 2 \eta_i t_i (b_\text{old} - b_\text{sep})'z_i \,.
+\end{align*}
 Since $i$ is misclassified we have $t_i b_\text{old}' z_i < 0$ whereas by construction $t_i b_\text{sep}' z_i \geq 1$. In other words:
 \[2 t_i b_\text{old}'z_i - 2 t_i b_\text{sep}'z_i \leq 2 t_i b_\text{old}'z_i - 2\leq -2\]
 whence
@@ -4068,13 +4070,13 @@ The mean of $\hat{\mu}^*(x)$ is
 	= \hat{\mu}(x)
 	\]
 The variance of $\hat{\mu}^*(x)$ is
-	\[
+\begin{align*}
 	\var\hat{\mu}^*(x)
-	= h'(x) (H'H)^{-1}H' \Sigma_{t^*} H(H'H)^{-1} h(x)
-	= h'(x) (H'H)^{-1}H' \hat{\sigma}^2 I_n H(H'H)^{-1} h(x)
-	= \hat{\sigma}^2 h'(x) (H'H)^{-1} h(x)
-	= \hat{\sigma}^2 h'(x) (H'H)^{-1} h(x)
-	\]
+	&= h'(x) (H'H)^{-1}H' \Sigma_{t^*} H(H'H)^{-1} h(x)\\
+	&= h'(x) (H'H)^{-1}H' \hat{\sigma}^2 I_n H(H'H)^{-1} h(x)\\
+	&= \hat{\sigma}^2 h'(x) (H'H)^{-1} h(x)
+		= \hat{\sigma}^2 h'(x) (H'H)^{-1} h(x)
+\end{align*}
 Therefore
 \[\hat{\mu}^*(x) \sim \Ncal\bigl(\hat{\mu}(x), \hat{\sigma}^2 h'(x) (H'H)^{-1} h(x)\bigr)\]
 
@@ -4226,12 +4228,12 @@ Suppose the right-hand side of the limit depends on $m$. As $m$ grows, the boots
 trees are going to look alike, which means that correlation increases.
 
 Now
-\[
-\sigma^2(x)
-= \var T(x,\theta(Z))
-= \var_Z \ex_{\theta|Z} T(x,\theta(Z)) + \ex_Z \var_{\theta|Z} T(x,\theta(Z))
-= \var_Z \hat{f}^B_{\text{rf}}(x) + \ex_Z \var_{\theta|Z} T(x,\theta(Z))
-\]
+\begin{align*}
+	\sigma^2(x)
+	&= \var T(x,\theta(Z))
+	= \var_Z \ex_{\theta|Z} T(x,\theta(Z)) + \ex_Z \var_{\theta|Z} T(x,\theta(Z)) \\
+	&= \var_Z \hat{f}^B_{\text{rf}}(x) + \ex_Z \var_{\theta|Z} T(x,\theta(Z))
+\end{align*}
 so as $m$ decreases the choice of splitting variables is going to be more and more random,
 which implies that the grown trees would be more variable.
 
