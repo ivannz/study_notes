@@ -5041,13 +5041,13 @@ subject to
 for all $i=1,\ldots,n$.
 
 The Lagrangian is given by
-\[
-\Lcal(\beta_0,\beta,\xi,\lambda,\mu)
-= \frac{1}{2} \|\beta\|^2 + C \sum_{i=1}^n \xi_i \to \min_{\beta, \beta_0,(\xi_i)}
-+ \sum_{i=1}^n \lambda_i \Bigl( 1 - \xi_i - t_i ( x_i'\beta + \beta_0 ) \Bigr)
-+ \sum_{i=1}^n \mu_i ( - \xi_i )
-\]
-the KKT condition are \begin{itemize}
+\begin{align*}
+	\Lcal(\beta_0,\beta,\xi,\lambda,\mu)
+	&= \frac{1}{2} \|\beta\|^2 + C \sum_{i=1}^n \xi_i \\
+	&+ \sum_{i=1}^n \lambda_i \Bigl( 1 - \xi_i - t_i ( x_i'\beta + \beta_0 ) \Bigr)
+	+ \sum_{i=1}^n \mu_i ( - \xi_i )\,.
+\end{align*}
+The KKT condition are \begin{itemize}
 	\item $t_i y(x_i) \geq 1-\xi_i$ and $\xi_i\geq 0$;
 	\item $\lambda_i,\mu_i \geq 0$;
 	\item $\lambda_i \Bigl( 1 - \xi_i - t_i ( x_i'\beta + \beta_0 ) \Bigr) = 0$ and $\mu_i ( - \xi_i ) = 0$;
@@ -5058,16 +5058,16 @@ the KKT condition are \begin{itemize}
 	\end{description}
 \end{itemize}
 The Lagrange dual is thus
-\[
-g(\lambda,\mu)
-= \frac{1}{2} \sum_{i=1}^n\sum_{j=1}^n \lambda_i\lambda_j t_i t_j x_i'x_j
-+ C \sum_{i=1}^n \xi_i
-- \sum_{i=1}^n\sum_{j=1}^n \lambda_i\lambda_j t_i t_j x_i'x_j
-- \sum_{i=1}^n \lambda_i t_i \beta_0
-+ \sum_{i=1}^n \lambda_i
-- \sum_{i=1}^n \lambda_i \xi_i
-- \sum_{i=1}^n \mu_i \xi_i
-\]
+\begin{align*}
+	g(\lambda,\mu)
+	&= \frac{1}{2} \sum_{i=1}^n\sum_{j=1}^n \lambda_i\lambda_j t_i t_j x_i'x_j
+		+ C \sum_{i=1}^n \xi_i
+		- \sum_{i=1}^n\sum_{j=1}^n \lambda_i\lambda_j t_i t_j x_i'x_j \\
+	&- \sum_{i=1}^n \lambda_i t_i \beta_0
+		+ \sum_{i=1}^n \lambda_i
+		- \sum_{i=1}^n \lambda_i \xi_i
+		- \sum_{i=1}^n \mu_i \xi_i
+\end{align*}
 whence the FOC imply
 \[
 g(\lambda,\mu) =
@@ -5258,14 +5258,14 @@ $\Rightarrow$ If $K$ is a kernel, then there exists a Hilbert space $\Hcal$ and
 a mapping $\Phi:X\to \Hcal$ such that $K(\cdot, \cdot) = \langle \Phi(\cdot), \Phi(\cdot)\rangle_\Hcal$.
 
 Consider some $n\geq1$ and some $(x_i)_{i=1}^n \in X$:
-\[
-\sum_{i=1}^n \sum_{j=1}^n \lambda_i \lambda_j K(x_i, x_j) 
-= \sum_{i=1}^n \sum_{j=1}^n \lambda_i \lambda_j \langle \Phi(x_i), \Phi(x_j)\rangle_\Hcal 
-= \sum_{i=1}^n \sum_{j=1}^n \langle \lambda_i \Phi(x_i), \lambda_j \Phi(x_j)\rangle_\Hcal
-= \langle \sum_{i=1}^n \lambda_i \Phi(x_i), \sum_{j=1}^n \lambda_j \Phi(x_j)\rangle_\Hcal
-= \| \sum_{i=1}^n \lambda_i \Phi(x_i)\|_\Hcal
-\geq 0
-\]
+\begin{align*}
+	\sum_{i=1}^n \sum_{j=1}^n \lambda_i \lambda_j K(x_i, x_j) 
+	&= \sum_{i=1}^n \sum_{j=1}^n \lambda_i \lambda_j \langle \Phi(x_i), \Phi(x_j)\rangle_\Hcal 
+	= \sum_{i=1}^n \sum_{j=1}^n \langle \lambda_i \Phi(x_i), \lambda_j \Phi(x_j)\rangle_\Hcal \\
+	&= \Bigl\langle \sum_{i=1}^n \lambda_i \Phi(x_i), \sum_{j=1}^n \lambda_j \Phi(x_j)\Bigr\rangle_\Hcal
+	= \| \sum_{i=1}^n \lambda_i \Phi(x_i)\|_\Hcal
+	\geq 0
+\end{align*}
 
 $\Leftarrow$ Consider a symmetric and positive-definite function $K:X\times X\to \Real$.
 We want to find a Hilbert space and a mapping that meet the required criteria.
@@ -5401,15 +5401,15 @@ Consider
 - \langle f_m, g_m\rangle_{\Hcal_0} |
 \]
 whence
-\[
-| \alpha_n - \alpha_m | 
-= |\langle f_n-f_m, g_n\rangle_{\Hcal_0}
-- \langle f_m, g_n-g_m\rangle_{\Hcal_0} |
-\leq |\langle f_n-f_m, g_n\rangle_{\Hcal_0}|
-+ |\langle f_m, g_n-g_m\rangle_{\Hcal_0} |
-\leq \|f_n-f_m\|_{\Hcal_0} \|g_n\|_{\Hcal_0}
-+ \|f_m\|_{\Hcal_0} \|g_n-g_m\|_{\Hcal_0}
-\]
+\begin{align*}
+	| \alpha_n - \alpha_m | 
+	&= |\langle f_n-f_m, g_n\rangle_{\Hcal_0}
+	- \langle f_m, g_n-g_m\rangle_{\Hcal_0} | \\
+	&\leq |\langle f_n-f_m, g_n\rangle_{\Hcal_0}|
+	+ |\langle f_m, g_n-g_m\rangle_{\Hcal_0} | \\
+	&\leq \|f_n-f_m\|_{\Hcal_0} \|g_n\|_{\Hcal_0}
+	+ \|f_m\|_{\Hcal_0} \|g_n-g_m\|_{\Hcal_0}\,,
+\end{align*}
 since $\|f_m\|_{\Hcal_0}$ and $\|g_m\|_{\Hcal_0}$ are bounded and $f_n$ and $g_n$ are Cauchy,
 one definitely has that $\alpha_n$ is Cauchy.
 
@@ -5485,8 +5485,9 @@ $x^*\in C$ such that
 \[ \|x^*-x_0\| = \inf\{\|x-x_0\|\,:\, x\in C\}\,. \]
 
 %% Proof:
-Let $C$ be a convex subset of $\Hcal$, i.e. for any $x,y\in C$ and all $t\in[0,1]$
-one has $t x + (1-t) y \in C$. Let $x_0\in \Hcal$ be arbitrary.
+Let $C$ be a closed convex subset of $\Hcal$, i.e. convexity -- for any $x,y\in C$
+and all $t\in[0,1]$ one has $t x + (1-t) y \in C$, closedness -- the complement of 
+$C$ is open. Let $x_0\in \Hcal$ be arbitrary.
 
 Consider $\delta = \inf\{\|x-x_0\|\,:\,x\in C\}$. Then there exists a sequence
 $(x_n)_{n\geq1}\in C$ such that $\|x_n-x_0\|\downarrow \delta$. Note that since
@@ -5527,7 +5528,7 @@ whence
 \]
 (the first line also proves continuity of the norm $x\mapsto \|\cdot\|$ in $\Hcal$).
 Since the limit of a convergent sequence in $K$ is unique (it is Hausdorff) one has
-\[  \|x^*-x_0\| = \lim_{n\to \infty} \|\|x_n-x_0\|\| = \delta \,. \]
+\[  \|x^*-x_0\| = \lim_{n\to \infty} \|x_n-x_0\| = \delta \,. \]
 
 Finally if there existed another $y^*\in C$ such that $\|y^*-x_0\| = \delta$
 the parallelogram equality would imply uniqueness:
@@ -5623,8 +5624,8 @@ whence
 \]
 Therefore $\lambda$ is continuous everywhere on $\Hcal$.
 
-Now, by continuity at $x-0$ there exists $\eta > 0$ such that for all $x\in \Hcal$
-with $\|x_0-x\| \geq \eta$ :
+Now, by continuity at $x_0$ there exists $\eta > 0$ such that for all $x\in \Hcal$
+with $\|x_0-x\| \leq \eta$:
 \[ \bigl\lvert \lambda(x) - \lambda(x_0) \bigr\rvert \leq 1 \,, \]
 whence by linearity of $\lambda$ for such $x$
 \[ \bigl\lvert \lambda(x-x_0) \bigr\rvert \leq 1 \,. \]
@@ -5632,7 +5633,7 @@ Since the space $\Hcal$ is linear, for any $x\in \Hcal$ with $\|x\|\leq \eta$ th
 above implies
 \[ \bigl\lvert \lambda(x) \bigr\rvert \leq 1 \,. \]
 Now consider any $x\in \Hcal$ such that $x\neq \mathbf{0}$. Then the vector
-\[ z = \frac{\eta}{\|x\|} \in \Hcal\,, \]
+\[ z = \frac{\eta}{\|x\|} x \in \Hcal\,, \]
 is such that $\|z\|\leq \eta$ and thus
 \[ \bigl\lvert \lambda(z) \bigr\rvert \leq 1 \,. \]
 Therefore by linearity of $\lambda$ for all $x\in\Hcal$, $x\neq 0$:
