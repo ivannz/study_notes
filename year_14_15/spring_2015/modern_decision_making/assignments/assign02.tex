@@ -1,0 +1,600 @@
+\documentclass[a4paper]{article}
+\usepackage{geometry}
+
+\usepackage[utf8]{inputenc}
+\usepackage[russian, english]{babel}
+
+% \usepackage{fullpage}
+% \linespread{1.5}
+
+\usepackage{graphicx, url}
+\usepackage{amsmath, amsfonts}
+\usepackage{mathtools}
+
+\usepackage{multirow}
+
+% \usepackage{natbib}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+
+\newcommand{\pr}{\mathbb{P}}
+\newcommand{\ex}{\mathbb{E}}
+\newcommand{\var}{\text{var}}
+\newcommand{\Pcal}{\mathcal{P}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Lcal}{\mathcal{L}}
+\newcommand{\argmin}{\mathop{\text{argmin}}}
+\newcommand{\argmax}{\mathop{\text{argmax}}}
+
+\newcommand{\one}{\mathbf{1}}
+
+\newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
+\newcommand{\lpto}{\mathop{\overset{L^p}{\to}}\nolimits}
+
+\newcommand{\re}{\operatorname{Re}\nolimits}
+\newcommand{\im}{\operatorname{Im}\nolimits}
+
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+% \selectlanguage{english}
+
+\title{Assignment \# 2}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+
+\begin{document}
+\selectlanguage{english}
+\maketitle
+
+\tableofcontents
+\clearpage
+
+\section{Problem \# 1: part 1} % (fold)
+\label{sec:problem_1}
+
+\subsection{subproblem i} % (fold)
+\label{sub:subproblem_i}
+
+No solution.
+% subsection subproblem_i (end)
+
+\subsection{subproblem ii} % (fold)
+\label{sub:subproblem_ii}
+
+Consider the following problem:
+\[ \ex_{T|X} \Lcal\bigl( T, f(X)\bigr) \to \min_{f(\cdot)}\,, \]
+subject to the constraint $\one'f(X) = 0$.
+
+Let $l^k = (l^k_i)_{i=1}^K$ be the code vector of the $k$-th class, given by
+\[ l^k_i = \begin{cases}
+	1, &\text{ if } i = k\\
+	- \frac{1}{K-1}, &\text{ otherwise}
+\end{cases}\,.\]
+
+Note that the by definition of the target variable 
+\[
+\pr\bigl( T = l^k\big\vert X \bigr)
+= \pr\bigl( C = C_k \big\vert X \bigr) \,,
+\]
+since there is one-to-one correspondence between random variables $T$ and $C$.
+
+Without the loss of generality one may consider $X$ fixed at some values, and denote
+\[ \pi_k = \pr\bigl( C = C_k \big\vert X \bigr)\,, \]
+and
+\[ f_k = f_k(X)\,. \]
+
+Expand the expectation into a sum ( $T$ may take $K$ different values ) :
+\begin{align*}
+	\ex_{T|X} \Lcal\bigl( T, f(X)\bigr)
+	&= \sum_{k=1}^K \pr\bigl( T = l^k \big\vert X \bigr) \Lcal\bigl( l^k, f(X) \bigr)\\
+	& = \ldots\,,
+\end{align*}
+and the coding permits further simplification
+\[
+\ldots = \sum_{k=1}^K \pi_k \text{exp}\bigl\{ (K-1)^{-1}K^{-1} \sum_{j=1,j\neq k}^K f_j - K^{-1} f_k \bigr\} \,.
+\]
+
+Now take a moment to simplify the expression in the exponent:
+\begin{align*}
+	&\text{exp}\bigl\{ (K-1)^{-1}K^{-1} \sum_{j=1,j\neq k}^K f_j - K^{-1} f_k \bigr\}\\
+	&= \text{exp}\Bigl\{ (K-1)^{-1}K^{-1} \sum_{j=1}^K f_j - K^{-1} (K-1)^{-1} f_k - K^{-1} f_k \Bigr\}\\
+	&= \text{exp}\Bigl\{ - K^{-1}\bigl( (K-1)^{-1} + 1 \bigr) f_k \Bigr\}\\
+	&= \text{exp}\bigl\{ - (K-1)^{-1} f_k \bigr\}\,,
+\end{align*}
+where the requirement that $\sum_{j=1}^K f_j$ be $0$ was used.
+
+Thus the goal simplifies to finding the minimum
+\[ \sum_{k=1}^K \pi_k \text{exp}\bigl\{ -(K-1)^{-1} f_k \bigr\} \to \min_{(f_k)_{k=1}^K} \,, \]
+subject to $\sum_{j=1}^K f_j = 0$. In fact this is an ordinary constrained minimization problem.
+
+The Lagrangian is:
+\[
+L((f_k)_{k=1}^K, \lambda)
+= \sum_{k=1}^K \pi_k \text{exp}\bigl\{ -(K-1)^{-1} f_k \bigr\} + \lambda \sum_{j=1}^K f_j\,.
+\]
+
+The KKT conditions for this problems are \begin{itemize}
+	\item Primal feasibility: $\sum_{j=1}^K f_j = 0$;
+	\item Dual feasibility: none;
+	\item Complementary slackness: none;
+	\item
+	\[
+	\frac{\partial L}{\partial f_k}
+		= -(K-1)^{-1} \pi_k \text{exp}\bigl\{ -(K-1)^{-1} f_k \bigr\} + \lambda \,.
+	\]
+\end{itemize}
+Now, for any $k,m=1,\ldots,K$ one has the following:
+\[
+(K-1)^{-1} \pi_k \text{exp}\bigl\{ -(K-1)^{-1} f_k \bigr\}
+= \lambda
+= (K-1)^{-1} \pi_m \text{exp}\bigl\{ -(K-1)^{-1} f_m \bigr\}\,,
+\]
+whence this relation for the optimal $f_k$'s follows
+\[ f_k - f_m = (K-1)\log\frac{\pi_k}{\pi_m} \,, \]
+of course still subject to $\sum_{j=1}^K f_j = 0$.
+
+This relation enables two things: \begin{enumerate}
+	\item express the minimizer $f^* = (f^*_k){k=1}_K$ through $(\pi_k)_{k=1}^K$;
+	\item express the posterior probabilities of classes through the minimizer.
+\end{enumerate}
+Indeed, summing the relation across all $m=1,\ldots,K$ 
+\[ \sum_{m=1}^K f^*_k - \sum_{m=1}^K f^*_m = (K-1)\sum_{m=1}^K \log \pi_k - \log \pi_m\,, \]
+and using the constraint yields
+\[ K f^*_k = (K-1) \Bigl( K \log \pi_k - \sum_{m=1}^K \log \pi_m \Bigr)\,, \]
+whence
+\[ f^*_k = (K-1) \Bigl( \log \pi_k - \frac{1}{K}\sum_{m=1}^K \log \pi_m \Bigr)\,. \]
+
+In the original notation this looks like:
+\[
+f^*_k(x)
+= (K-1) \Bigl( \log \pr\bigl( C = C_k \big\vert X \bigr)
+	- \frac{1}{K}\sum_{m=1}^K \log \pr\bigl( C = C_m \big\vert X \bigr) \Bigr)
+\,.\]
+% subsection subproblem_ii (end)
+
+\subsection{subproblem iii} % (fold)
+\label{sub:subproblem_iii}
+
+Now, the very same relation allows a symmetric expression of the probabilities
+with respect to the optimal $f^*$. Indeed, it implies that 
+\[ \text{exp}\Bigl\{ (K-1)^{-1}(f_k - f_m) \Bigr\}\pi_m = \pi_k \,, \]
+which simplifies to
+\[ \text{exp}\Bigl\{ -(K-1)^{-1}f_m \Bigr\} \pi_m \text{exp}\Bigl\{ (K-1)^{-1}f_k \Bigr\} = \pi_k \,, \]
+whence using the fact that $\sum_{k=1}^K \pi_k = 1$ one gets:
+\[
+\text{exp}\Bigl\{ -(K-1)^{-1}f_m \Bigr\} \pi_m
+	\sum_{k=1}^K  \text{exp}\Bigl\{ (K-1)^{-1}f_k \Bigr\} = \sum_{k=1}^K \pi_k \,.
+\]
+
+Thus one gets this neat expression:
+\[
+\pi_m = \frac{\text{exp}\Bigl\{ (K-1)^{-1}f_m \Bigr\} }{
+	\sum_{k=1}^K \text{exp}\Bigl\{ (K-1)^{-1}f_k \Bigr\}} \,.
+\]
+
+% subsection subproblem_iii (end)
+
+\subsection{subproblem iv} % (fold)
+\label{sub:subproblem_iv}
+
+First recall that in the binary classification case the idea was to sequentially
+apply weak binary classifiers $G^{(m)}(x)$ to modified versions of the training
+data to produce a final (better) classifier
+\[ G(x) = \text{sign} \sum_{m=1}^M \beta_m G^{(m)}(x) \,, \]
+where $(\beta_m)_{m=1}^M$ are the weights of each weak classifier.
+Each classifier individually could assign classes via taking the ``sign'' of some
+internal discriminant function $f^{(m)}$ :
+\[ G^{(m)}(x) = \text{sign} f^{(m)}(x) \,. \]
+
+In fact it is possible to redefine this binary classification in a way to facilitate
+intuition for the multiclass case. Indeed, put
+\[
+\hat{G}^{(m)}(x) = \biggl(\begin{smallmatrix} +1\\-1 \end{smallmatrix}\biggr)
+\text{sign} f^{(m)}(x)\,,
+\]
+and let
+\[ G(x) = \argmax_{j=1,2} \sum_{m=1}^M \beta_m \hat{G}^{(m)}(x) \,. \]
+The sum produces
+\[
+\biggl(\begin{smallmatrix} +1\\-1 \end{smallmatrix}\biggr)
+= \begin{pmatrix} \sum_{m=1}^M \beta_m G^{(m)}(x)\\-\sum_{m=1}^M \beta_m G^{(m)}(x) \end{pmatrix}\,,
+\]
+and thus the $\argmax$ produces a label equivalent to the ``sign'' case.
+
+In the case of a multiclass classification let each weak classifier return a vector
+$l_k$ as result of its classification, i.e. if $f(x)$ classified $x$ as $C_k$,
+then let
+\[
+\bigl[f(x)\bigr]_j = l_{kj} = \begin{cases}
+	1, &\text{ if } j = k\\
+	- \frac{1}{K-1}, &\text{ otherwise}
+\end{cases}\,.
+\]
+
+The combined classifier $G(x)$ based on $f^{(M)}(x) = \sum_{m=1}^M \beta_m f_m(x)$
+would classify according to the ``hard-max'' rule (1-vs-all):
+\begin{align*}
+	G(x)
+	&= \argmax_{j=1,\ldots, K} \bigl[f^{(M)}(x)\bigr]_j \\
+	= \argmax_{j=1,\ldots, K} \sum_{m=1}^M \beta_m \bigl[f_m(x)\bigr]_j \,.
+\end{align*}
+
+\textbf{No algorithm}.
+
+% subsection subproblem_iv (end)
+
+% section problem_1 (end)
+
+\section{Problem \# 1: part 2} % (fold)
+\label{sec:problem_1_part_2}
+
+\subsection{subproblem v} % (fold)
+\label{sub:subproblem_v}
+
+In the notation and class coding given in the problem the multinomial log-likelihood
+is given by
+\[
+L\bigl((x_i,t_i)_{i=1}^n\bigr) = \sum_{i=1}^n \log \prod_{k=1}^K p_k(x_i)^{t_{ik}} \,,
+\]
+which given the expression for the class probabilities educes to
+\[
+\ldots
+= \sum_{i=1}^n \sum_{k=1}^K t_{ik} f_k(x_i)
+- \sum_{i=1}^n \sum_{k=1}^K t_{ik} \log \sum_{j=1}^K e^{f_j(x_i)} \,,
+\]
+which simplifies to
+\[
+\ldots = \sum_{i=1}^n \sum_{k=1}^K t_{ik} f_k(x_i) - \log \sum_{j=1}^K e^{f_j(x_i)} \,,
+\]
+since $\sum_{k=1}^K t_{ik} = 1$ for any observation $i$ by definition.
+
+% subsection subproblem_v (end)
+
+\subsection{subproblem vi} % (fold)
+\label{sub:subproblem_vi}
+
+Let's compute the gradient and the Hessian with respect to $(f_k)_{k=1}^K$ of the
+log-likelihood computed over the observations in region $R$:
+\[ L = \sum_{i:x_i\in R} \sum_{k=1}^K t_{ik} f_k(x_i) - \log \sum_{j=1}^K e^{f_j(x_i)} \,. \]
+However instead of functional variation of $f_k(\cdot)$ by an arbitrary function
+of $x$, lets consider only ``uniform'' variation $\delta f_k(\cdot) = \gamma_k$ for
+some constant $\gamma_k$, $k=1,\ldots, K-1$. The log-likelihood with this adjustment
+looks like
+\[
+L = \sum_{i:x_i\in R} \sum_{k=1}^K t_{ik} f_k(x_i) + \gamma_k - \log \sum_{j=1}^K e^{f_j(x_i)}  e^{\gamma_j}\,.
+\]
+
+The derivative of the log-likelihood with respect to the adjustments is
+\[
+\frac{\partial L}{\partial \gamma_j}
+= \sum_{i:x_i\in R} t_{ij} - \frac{e^{f_j(x_i)+\gamma_j}}{\sum_{m=1}^K e^{f_m(x_i)+\gamma_m}}\,,
+\]
+for $j=1,\ldots, K-1$, which simplifies at $\gamma_k = 0$ to 
+\[ \frac{\partial L}{\partial \gamma_j} = \sum_{i:x_i\in R} t_{ij} - p_j(x_i)\,. \]
+The second partial derivative of the log-likelihood for $j=l$, $j,l=1,\ldots, K-1$, is
+\[
+\frac{\partial^2 L}{\partial \gamma_j^2}
+= - \sum_{i:x_i\in R} \frac{e^{f_j(x_i) + \gamma_j }\sum_{m=1}^K e^{f_m(x_i) + \gamma_m }
+	- e^{2(f_j(x_i) + \gamma_j)} }{\bigl(\sum_{m=1}^K e^{f_m(x_i) - \gamma_j}\bigr)^2}\,,
+\]
+whence at $\gamma_k=0$
+\[
+\frac{\partial^2 L}{\partial f_j^2}
+= - \sum_{i:x_i\in R} p_j(x_i) - p_j^2(x_i)
+= - \sum_{i:x_i\in R} p_j(x_i) \bigl(1 - p_j(x_i)\bigr)\,.
+\]
+The second cross partial derivative for $j\neq l$, $j,l=1,\ldots, K-1$, is given by
+\[
+\frac{\partial^2 L}{\partial f_j \partial f_l}
+= \sum_{i:x_i\in R} \frac{e^{f_j(x_i)+\gamma_j}e^{f_l(x_i)+\gamma_l}}{\bigl(\sum_{m=1}^K e^{f_m(x_i)+\gamma_m}\bigr)^2}\,,
+\]
+which at $\gamma_k=0$ reduces to
+\[
+\frac{\partial^2 L}{\partial f_j \partial f_l}
+= \sum_{i:x_i\in R} p_j(x_i) p_l(x_i)\,.
+\]
+
+Recall the Newton-Raphson method. Suppose a function $f:\Real^d\to\Real$ is twice
+differentiable and we want to find a root of its derivative. Given some point $a$
+-- an estimate of the root of $\nabla f$, lets' approximate $f$ by a quadratic form
+based on the $2$-nd order Taylor expansion of $f$ around $a$ : $f(x) \approx q(x)$
+near $a$ and
+\[
+q(x) = f(a) + \nabla f(a)'(x-a) + \frac{1}{2}(x-a)'\nabla^2 f(a) (x-a)\,,
+\]
+where $\nabla f(a)$ is the gradient of $f$ evaluated at $a$ and $\nabla^2 f(a)$ is
+the matrix partial second derivatives of $f$ at $a$ (the Hessian):
+\[
+H_{ij} = \biggl. \frac{\partial^2}{\partial x_i \partial x_j} f\biggr\rvert_{x=a}\,.
+\]
+The quadratic form is 
+\[
+q(x) = f(a) - \nabla f(a)'a + \frac{1}{2}x'\nabla^2 f(a) a
++ \bigl( \nabla f(a)' - a'\nabla^2 f(a) \bigr)x + \frac{1}{2}x'\nabla^2 f(a) x\,,
+\]
+and it is convex, since the Hessian matrix of $f$ at $a$ is positive definite (?).
+Thus its minimum is given by
+\[ \nabla^2 f(a) x + \nabla f(a) - \nabla^2 f(a) a = 0\,,\]
+whence
+\[ x^* = (\nabla^2 f(a))^{-1} \bigl( \nabla^2 f(a) a - \nabla f(a)\bigl)\,.\]
+Thus
+\[
+x^* = a - (\nabla^2 f(a))^{-1}\nabla f(a)\,.
+\]
+This $x^*$ is guaranteed to yield a value of $f$ closer to an extremum $x_0$ up to a
+second order approximation, where $\nabla f(x_0)=0$.
+
+Therefore, we may use Newton-Raphson updating to iteratively approximate the root of
+the first derivative of $L$ with respect to $(\gamma_k)_{k=1}^K$, which in the case of
+convex log-likelihood would yield a minimum. However instead of computing the inverse
+of the Hessian it is possible to use the reciprocal of its main diagonal of to the diagonal
+of its inverse, provided, of course, the off-diagonal elements of the Hessian are
+dominated by its diagonal. Indeed, $p_i p_j$ is usually an order of magnitude smaller
+than $p_i (1-p_i)$.
+
+Thus the update of $\gamma_k$ from $0$ for each $k=1,\ldots, K-1$ is
+\[
+\gamma_k^+ = - \frac{ \sum_{i:x_i\in R} t_{ij} - p_j(x_i) }{- \sum_{i:x_i\in R} p_j(x_i) \bigl(1 - p_j(x_i)\bigr)}\,,
+\]
+and for the sake of simplicity of notation put $\gamma_K^+ = 0$.
+
+% subsection subproblem_vi (end)
+
+\subsection{subproblem vii} % (fold)
+\label{sub:subproblem_vii}
+
+Now consider the proposed normalisation of the update. The intuition behind it is
+that by subtracting the average it is possible to make any set of values sum to
+zero. Indeed, consider the problem of regressing a set of values $(a_i)_{i=1}^q$
+onto a subspace spanned by $\one$. The estimate of the coefficient using the OLS
+is given by $\bar{a} = (\one'\one)^{-1} \one'a$ -- a scalar. The orthogonal component
+to the subspace is given by $\hat{a} = a - \one \bar{a}$, and its values necessarily
+sum to zero: $\one'\hat{a} = \one' a - \one'\one (\one'\one)^{-1} \one'a = 0$.
+Thus in order to make $\gamma_k^+$ sum to zero, one just has to subtract their
+average value.
+
+Therefore the proposed update
+\[
+\hat{\gamma}_k = \frac{K-1}{K}\biggl\{ \gamma_k^+ - K^{-1} \sum_{l=1}^K \gamma_l^+ \biggr\} \,,
+\]
+sums to zero, since summing both sides by $k=1,\ldots, K$ yields
+\[
+\sum_{k=1}^K = \frac{K-1}{K} \biggl\{ \sum_{k=1}^K \gamma_k^+ - \sum_{l=1}^K \gamma_l^+ \biggr\} = 0\,.
+\]
+
+% subsection subproblem_vii (end)
+
+\subsection{subproblem viii} % (fold)
+\label{sub:subproblem_viii}
+
+\subsubsection{item a} % (fold)
+\label{ssub:item_a}
+
+Consider the algorithm 1 on page~3 of the assignment. It implements the forward
+stagewise adaptive modelling which attempts to minimize the loss function of the
+model given by the following regression tree basis expansion:
+\[
+G_k(x) = \sum_{m=1}^M \beta_m \sum_{j=1}^{J_m} \gamma_{jk} 1_{x\in R_{jkm}}\,, \text{--}
+\]
+with respect the parameters of each regression tree $(\gamma_{jk}, R_{jkm})$ and
+the weights $\beta_m$. The approximation is performed by sequentially adding new
+basis functions to the expansion, while keeping the parameters and weights of those
+bases that were already fit at a prior step.
+
+The loss function in question if the negative of the log-likelihood given by
+\[
+\Lcal(t, f(x)) = - \sum_{k=1}^K t_k \bigl( f_k(x) - \log \sum_{l=1}^K e^{f_l(x)} \bigr)\,.
+\]
+
+% subsubsection item_a (end)
+
+\subsubsection{item b} % (fold)
+\label{ssub:item_b}
+
+Consider the loss of an individual observation $i$ at step $m$ of the algorithm
+with class probabilities $p_{km}(x)\propto f_{km}(x)$. It is given by:
+\[
+L_i = \Lcal(t_i, f_m(x_i)) 
+= - \sum_{k=1}^K t_{ik} f_{km}(x_i)
++ \log \sum_{l=1}^K e^{f_{lm}(x_i)}\,,
+\]
+since $\sum_{k=1}^K t_{ik}=1$. Thus the step 2-b-i of algorithm~1 on page~3 can be
+simplified to
+\[
+r_{ikm} = - \frac{\partial }{\partial f_{km}(x_i)} L_i = -( p_{km}(x_i) - t_{ik} )\,,
+\]
+using the derivative 
+\[
+\frac{\partial }{\partial f_{km}(x_i)} \Lcal(t_i, f_m(x_i))
+= - t_{ik} + \frac{e^{f_{km}(x_i)}}{\sum_{l=1}^K e^{f_{lm}(x_i)}}\,,
+\]
+and the definition of $p_{km}(x)$.
+
+% subsubsection item_b (end)
+
+\subsubsection{item c} % (fold)
+\label{ssub:item_c}
+
+\textbf{No solution}.
+
+% subsubsection item_c (end)
+
+% subsection subproblem_viii (end)
+
+% section problem_1_part_2 (end)
+
+\section{Problem \# 2} % (fold)
+\label{sec:problem_2}
+
+The original \textbf{B}oolean \textbf{L}inear \textbf{P}rogram is : for some $c\neq 0$
+minimize $c'x$ subject to $Ax \preceq b$ and $x_i\in\{0,1\}$. Denote its feasible set by
+\[ \text{Feas}_{\text{BLP}} = \Bigl\{ x \in \{0,1\}^n \,\big|\, Ax \preceq b \Bigr\} \,. \]
+The constraint matrix $A \in \Real^{m\times n}$ and $b \in \Real^{m\times 1}$.
+
+The \textbf{r}elaxed BLP problem is the same except for the feasible set: the components
+of $x$ are allowed to take any value between $0$ and $1$. Thus
+\[ \text{Feas}_{\text{rBLP}} = \Bigl\{ x \in [0,1]^n \,\big|\, Ax \preceq b \Bigr\} \,. \]
+
+Firstly, note that 
+\[ \text{Feas}_{\text{BLP}} \subseteq \text{Feas}_{\text{rBLP}} \, \]
+which means that if $x^*$ is the optimal solution to the BLP then it is necessarily
+a solution to the rBLP. Therefore if $\hat{x}\neq x^*$ is a solution to the rBLP, then
+\[ c'\hat{x} \leq c'x^* \,, \]
+for otherwise a feasible $x^*$ should have been the solution of rBLP instead of $\hat{x}$.
+
+Secondly, this set inclusion entails that if the rBLP is infeasible, then necessarily
+the BLP must be infeasible as well, because infeasibility of rBLP means that there is
+no $x\in \text{Feas}_{\text{rBLP}}$, and thus no $x$ in $\text{Feas}_{\text{BLP}}$.
+
+Let's reformulate the BLP as:
+\[ c'x \to \min_{x\in \Real^n}\,, \]
+subject to 
+\[ Ax \preceq b\,\text{ and }\, x_i(1-x_i) = 0\,,\, i=1\ldots, n \,. \]
+
+The Lagrangian of the BLP thus becomes
+\[
+\Lcal( x, \lambda )
+= c'x + \lambda' (A x - b) + \sum_{i=1}^n \mu_i x_i (1-x_i) \,,
+\]
+where $\lambda \in \Real^{m\times 1}$ and $\mu=(\mu_i)_{i=1}^n \in \Real^n$.
+
+The KKT conditions for a candidate optimal triple $(x,\lambda,\mu)$ are
+\begin{description}
+	\item[Primal] $Ax \preceq b$ and $x_i(1-x_i) = 0$;
+	\item[Dual] $\lambda_j\geq 0$, $j=1,\ldots, m$;
+	\item[Complementary slackness] $\lambda_j (A_j' x - b)=0$, where $A_j$ is the $j$-th 
+	row of $A$ ($A_i\in \Real^{n\times 1}$);
+	\item[First-order] the gradient of the Lagrangian vanishes at $x$.
+\end{description}
+The gradient is given by $\nabla_x \Lcal = ( \tfrac{\partial\Lcal}{\partial x_i} )_{i=1}^n$:
+\[
+\frac{\partial\Lcal}{\partial x_i}
+	= c_i + \sum_{j=1}^m \lambda_j A_{ji} + \mu_i ( 1 - 2 x_i ) \,.
+\]
+Denote by $a_i$ the $i$-th column of $A$: $a_i = (A_{ji})_{j=1}^m \in \Real^{m\times 1}$. 
+Then the optimal $x_i$ solves
+\[ c_i + \lambda' a_i + \mu_i ( 1-2 x_i)  = 0 \,, \]
+whence
+\[ x_i = \frac{1}{2} + \frac{1}{2\mu_i}\bigl( c_i + \lambda' a_i \bigr) \,. \]
+If $x_i>0$, then the feasibility condition $x_i(1-x_i) = 0$ implies that $x_i$ must
+be $1$, whence
+\[ \frac{1}{2} = \frac{1}{2\mu_i}\bigl( c_i + \lambda' a_i \bigr)\,, \]
+and
+\[ \mu_i = c_i + \lambda' a_i \,. \]
+Otherwise for $x_i=0$
+\[ \mu_i = -\bigl( c_i + \lambda' a_i\bigr) \,. \]
+Note that these conditions on $\mu_i$ cannot be satisfied simultaneously in the general
+case. This means that the conditions on $x_i$ are equivalent to these conditions
+on $\mu_i$.
+
+Let's rewrite the Lagrangian
+\begin{align*}
+\Lcal( x, \lambda )
+	&= - \lambda'b + \sum_{i=1}^n ( c_i + \lambda' a_i ) x_i + \sum_{i=1}^n \mu_i x_i (1 - x_i)\\
+	&= - \lambda'b + \sum_{i=1}^n \bigl( c_i + \lambda' a_i + \mu_i( 1 - x_i ) \bigr) x_i \,.
+\end{align*}
+Note that the first-order conditions imply
+\[ c_i + \lambda' a_i + \mu_i ( 1 - x_i ) = \mu_i x_i\,, \]
+whence the Lagrangian reduces to
+\begin{align*}
+\Lcal( x, \lambda )
+	&= - \lambda'b + \sum_{i=1}^n \bigl( c_i + \lambda' a_i + \mu_i( 1 - x_i ) \bigr) x_i \\
+	&= - \lambda'b + \sum_{i=1}^n \mu_i x_i^2 \,.
+\end{align*}
+Now the feasibility condition $x_i(1-x_i) = 0$ implies that $x_i = x_i^2$, whence
+\[
+\Lcal( x, \lambda ) = - \lambda'b + \sum_{i=1}^n \mu_i x_i \,,
+\]
+and from the first-order conditions one gets
+\[  
+\sum_{i=1}^n \mu_i x_i
+= \sum_{i=1}^n \frac{\mu_i}{2} + \frac{1}{2} \bigl( c_i + \lambda' a_i \bigr) \,.
+\]
+Consider a general $i=1,\ldots,n$. Then for some $s_i\in\{-1,+1\}$ the $\mu_i$ could
+be re-expressed as 
+\[ \mu_i = s_i \bigl(c_i + \lambda'a_i\bigr)\,, \]
+whence the Lagrangian becomes
+\[
+\sum_{i=1}^n \mu_i x_i
+= \sum_{i=1}^n \biggl(\frac{1}{2} s_i + \frac{1}{2}\biggr) \bigl( c_i + \lambda' a_i \bigr) \,.
+\]
+It turns out that it simplifies down to
+\[
+\Lcal( x, \lambda ) = - \lambda'b + \sum_{i=1}^n \min \bigl\{0, c_i + \lambda' a_i \bigr\} \,.
+\]
+The Lagrange dual is
+\begin{align*}
+	g(\lambda,\mu)
+	&= \inf_x \Lcal(x,\lambda,\mu)\\
+	&= - \lambda'b + \sum_{i=1}^n \min \bigl\{0, c_i + \lambda' a_i \bigr\}\,,
+\end{align*}
+and is actually independent of $\mu$.
+
+Therefore the dual problem to the reformulated BLP becomes:
+\[ - \lambda'b + \sum_{i=1}^n \min \bigl\{0, c_i + \lambda' a_i \bigr\} \to \max_{\lambda}\,, \]
+subject to $\lambda_j \geq 0$ for all $j=1,\ldots,m$, where $a_i$ is the $i$-th
+column of $A$. It is called the \emph{Lagrangian relaxation} of BLP.
+
+By weak duality the optimal solution of this problem provides a lower bound to the
+optimal solution of the original BLP. Let's derive the dual problem of the rBLP.
+Its Lagrangian is given by:
+\begin{align*}
+	\Lcal( x, \lambda, \mu, \gamma )
+	&= c'x - \lambda'(Ax-b) - \mu'x + \gamma'(x-\one) \\
+	&= ( c - A'\lambda - \mu + \gamma )' x - \lambda'b + \gamma'\one \,.
+\end{align*}
+
+The KKT conditions are \begin{itemize}
+	\item $Ax\preceq b$, $x\in [0,1]^n$;
+	\item $\lambda_j\geq0$, $\mu_i,\gamma_i\geq0$ for $i=1,\ldots,n$ and $j=1,\ldots,m$;
+	\item $\mu_i x_i = 0$, $\gamma_i (1 - x_i)= 0$ and $\lambda_j (A_jx - b_j) = 0$
+	for $i=1,\ldots,n$ and $j=1,\ldots,m$;
+	\item $c - A'\lambda - \mu + \gamma = \mathbf{0}$.
+\end{itemize}
+Using the first-order conditions, the Lagrangian simplifies to
+\[ \Lcal( x, \lambda, \mu, \gamma ) = - \lambda'b + \gamma'\one \,. \]
+Expressing $\gamma$ from the FOC yields this :
+\[
+\Lcal( x, \lambda, \mu, \gamma )
+	= - \lambda'b + \sum_{i=1}^n \mu_i - (c_i + \lambda'a_i) \,.
+\]
+
+Consider some $i=1,\ldots, n$. If $c_i + \lambda'a_i > 0$, then the FOC implies
+that $\mu_i > \gamma_i\geq 0$. The complementary slackness thus imply that $x_i = 0$.
+In turn this means that $\gamma_i=0$, whence 
+\[ \mu_i = c_i + \lambda'a_i \,. \]
+Now if $c_i + \lambda'a_i < 0$ then, similarly, 
+\[ \gamma_i = \mu_i - (c_i + \lambda'a_i) > \mu_i \geq 0\,, \]
+whence the condition $\gamma_i (1-x_i)= 0$ gives $x_i = 1$, and $\mu_i = 0$.
+Thus 
+\[ \mu_i = \max\{0,c_i + \lambda'a_i\} \,, \]
+and the sum in the Lagrangian becomes
+\[
+\sum_{i=1}^n \mu_i - (c_i + \lambda'a_i)
+= \sum_{i=1}^n \min\{0,c_i + \lambda'a_i\}\,,
+\]
+since $y = \max\{y,0\} + \min\{y,0\}$ for any $y\in \Real$.
+
+The Lagrangian thus becomes
+\[
+\Lcal( x, \lambda, \mu, \gamma )
+	= - \lambda'b + \sum_{i=1}^n \min\{0,c_i + \lambda'a_i\} \,,
+\]
+and it is the Lagrangian dual function.
+
+The dual problem of the rBLP is 
+\[
+- \lambda'b + \sum_{i=1}^n \min\{0,c_i + \lambda'a_i\} \to \max_{(\lambda_j)_{j=1}^m}\,,
+\]
+subject to $\lambda_j\geq 0$ for all $j=1,\ldots,m$.
+
+It turns out that the dual problem of the rBLP coincides with the Lagrangian
+relaxation problem, and therefore both have the exactly the same solution, provided
+they are feasible. However they are simultaneously feasible or simultaneously
+infeasible.
+
+% section problem_2 (end)
+
+\end{document}

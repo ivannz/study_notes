@@ -2666,10 +2666,10 @@ Thus we approximate $f$ by
 \[q(x) = \frac{1}{2}x'\nabla^2 f(a) x + \alpha' x + \beta\]
 where $\alpha = \nabla f(a) - \nabla^2 f(a)a$ and $\beta = \ldots$.
 
-The main ides is to approximate a function near its minimum by a quadratic.
+The main idea is to approximate a function near its minimum by a quadratic.
 
 The minimum of $q$ is
-\[\nabla q(x) = \nabla^2 f(a) + \alpha = 0\]
+\[\nabla q(x) = \nabla^2 f(a) x + \alpha = 0\]
 whence 
 \[ x = -\big(\nabla^2 f(a)\big)^{-1} \alpha \]
 and 
@@ -5702,5 +5702,276 @@ would imply that $q-h = \mathbf{0}$.
 % subsection riesz_representation_theorem (end)
 
 % section lecture_17 (end)
+
+\section{Lecture \# 18} % (fold)
+\label{sec:lecture_18}
+
+\subsection{RKHS (contd.)} % (fold)
+\label{sub:rkhs_contd}
+Last week we started with a kernel and constructed a Hilbert space. Another approach
+was that RKHS is Hilbert space with all linear functions being continuous.
+
+% subsection rkhs_contd (end)
+
+\subsection{Merser's theorem} % (fold)
+\label{sub:merser_s_theorem}
+Under some regularity conditions a kernel can be expressed as
+\[ K(x,y) = \sum_{j\geq1} \lambda_j \psi_j(x) \psi_j(y)\,, \]
+for all $x,y\in X$, and $X$ is compact.
+
+The feature map is given by
+\[ \Phi(x) = (\sqrt{\lambda_j} \psi_j(x))_{j\geq 1}\,. \]
+
+Though the kernel is unique, the feature map might be not. What is the Hilbert space
+here? $\Hcal$ is the space of all square integrable sequences:
+\[
+\sum_{j\geq1} \bigr(\sqrt{\lambda_j} \psi_j(x)\bigr)^2 = K(x,x) < \infty\,.
+\]
+
+Symmetric matrices there is the spectral decomposition, which ensures that
+for any symmetric $S$ the eigenvectors constitute an orthogonal basis and
+\[ S = \sum_{j=1}^n \lambda_j e_je_j' \,. \]
+The Merser's theorem exposes a similar representation.
+
+Let's introduce an operator $T_k : L_2(X) \to L_2(X) $ defined as 
+\[ T_K f = \int K(x,y) f(y) dy \,. \]
+then for this operator there is an eigenvalue-eigenfunction decomposition:
+\[  T_K \phi_j = \lambda_j \psi_j\,, \]
+and 
+\[ \int \psi_j(x)\psi_i(x) dx = \delta_{ij}\,. \]
+This can be generalized to an arbitrary measure space.
+
+Consider the space $\Hcal$ such that
+\[ \Hcal = \{ f \big| f(x) = \sum_{j\geq1} c_j \psi_j(x) \}\,. \]
+This is the same RKHS as before, provided that the norm $\|f\|_K<\infty$.
+The inner product is defined as
+\[
+\langle f,g\rangle
+= \bigl\langle \sum_{j\geq1}c_j \psi_j, \sum_{j\geq1} d_j \psi_j \bigr\rangle
+= \sum_{j\geq1} \frac{c_j d_j}{\lambda_j}\,.
+\]
+We must ensure that the norm is finite
+\[ \sum_{j\geq1} \frac{c_j^2}{\lambda_j} < +\infty\,, \]
+It is possible to show that the eigenvalues in the Merser's theorem decrease to $0$,
+which means that at least $c_j = o(\sqrt{\lambda_j})$ as $j\to \infty$.
+
+For this space and this inner product $K$ has the reproducibility property:
+\begin{align*}
+	\langle f, K(\cdot,x)\rangl
+	&= \bigl\langle \sum_{j\geq1}c_j \psi_j(\cdot), \sum_{j\geq1} \lambda_j \psi_j(x) \psi_j(\cdot) \bigr\rangle\\
+	&= \sum_{j\geq1} \frac{c_j \lambda_j \psi_j(x) }{\lambda_j}\,.
+\end{align*}
+Hence the scaling by $\lambda_j$.
+
+Show that $K(\cdot, x)\in \Hcal$ :
+\[
+K(\cdot, x)
+= \sum_{j\geq1} \lambda_j \psi_j(x) \psi_j(\cdot)
+= \sum_{j\geq1} c_j \psi_j(\cdot)\,,
+\]
+for $c_j = \lambda_j \psi_j(x)$ for all $j\geq1$. Thus we need to make sure that the norm is finite.
+Indeed
+\[ \|K(\cdot,x)\| = \sum_{j\geq1} \frac{\lambda_j^2}{\lambda_j} \psi_j(x) \psi_j(x) = K(x,x) \,, \]
+and $K(x,x)$ is finite.
+
+Let's show that this recently defined inner product coincides with the one introduced earlier:
+\[
+\langle f,g\rangle_0 = \sum_{i,j} \alpha_i \gamma_j K(x_i, y_j) \,,
+\]
+for $f = \sum_{i=1}^n \alpha_i K(\cdot, x_i)$ and $g = \sum_{j=1}^m \alpha_j K(\cdot, y_i)$
+
+First, since $K(\cdot, x)\in \Hcal$, $f,g\in \Hcal$ and thus the newer inner product is defined.
+Hence
+\begin{align*}
+	f(\cdot) &= \sum_{i=1}^n \alpha_i K(\cdot, x_i)\\
+	&= \sum_{i=1}^n \alpha_i \sum_{k\geq1} \lambda_k \psi_k(\cdot) \psi_k(x_i)\\
+	&= \sum_{k\geq1} \lambda_k \bigl(\sum_{i=1}^n \alpha_i \psi_k(x_i)\bigr) \psi_k(\cdot)\,,
+\end{align*}
+and similarly with $g$ :
+\[
+g = \sum_{k\geq1} \lambda_k \bigl(\sum_{j=1}^m \gamma_j \psi_k(x_j)\bigr) \psi_k(\cdot)\,.
+\]
+Now, for the recent inner product:
+\[
+\langle f,g\rangle
+= \sum_{k\geq1} \lambda_k \bigl(\sum_{j=1}^m \gamma_j \psi_k(x_j)\bigr) \bigl(\sum_{i=1}^n \alpha_i \psi_k(x_i)\bigr)\,,
+\]
+whence rearranging the internal sums:
+\begin{align*}
+	\langle f,g\rangle
+	&= \sum_{k\geq1} \sum_{j=1}^m \sum_{i=1}^n \alpha_i \gamma_j \lambda_k \psi_k(x_j) \psi_k(x_i) \\
+	&= \sum_{j=1}^m \sum_{i=1}^n \alpha_i \gamma_j \sum_{k\geq1} \lambda_k \psi_k(x_j) \psi_k(x_i) \\
+	&= \sum_{j=1}^m \sum_{i=1}^n \alpha_i \gamma_j K(x_i,x_j) \\
+	&= \langle f,g\rangle_0 \,,
+\end{align*}
+since the limit of a sum is the sum of limits.
+
+% subsection merser_s_theorem (end)
+
+\subsection{Applications} % (fold)
+\label{sub:applications}
+
+Consider some training data: $(x_i, t_i)_{i=1}^n \in X\times \Real$ and let
+\[L : \Real \times \Real \to [0,+\infty)\,,\]
+be some cost function.
+The goal is to find a function $y(\cdot)$ that provides an estimate of $t$ for
+each $x$.
+
+Suppose $\Omega:\Real_+\to\Real$ is a strictly increasing function. Let $\Hcal$
+be an RKHS with reproducible kernel $K$ on $X$. The goal thus becomes:
+\[ y^* = \argmin_y \frac{1}{n} \sum_{i=1}^n L(t_i,y(x_i)) + \Omega \bigl( \|y\|_{\Hcal} \bigr)\,. \]
+The representer theorem states that necessarily
+\[ y^* = \sum_{i=1}^n \alpha_i K(x,x_i)\,. \]
+Though the space $\Hcal$ is infinite dimensional, the solution to the cost optimization
+is finite dimensional, even though the RKHS is very rich.
+
+What does the norm of $y$ have to do with smoothing? For an $f\in \Hcal$, it can
+be expressed as a linear combination 
+\[f = \sum_{j\geq1} \alpha_j \sqrt{\lambda_j}\psi_j\,,\]
+whence the norm
+\[ \|f\|^2 = \sum_{j\geq1} \alpha_j^2 < +\infty\,,\]
+and thus $\alpha_j = o(j^{\tfrac{1}{2}})$ as $j\to \infty$ (fast enough).
+
+For a Gaussian kernel: 
+\[K(x,y) = \text{exp}\bigl( -\frac{1}{2} \frac{(x-y)^2}{\sigma^2}\bigr) \,. \]
+Then \begin{align*}
+	\lambda_j &= \sqrt{\frac{2a}{A}} B^j\\
+	\psi_j &= e^{-(c-a) x^2} H_i\bigl(x\sqrt{2c}\bigr)\,,
+\end{align*}
+for $a^{-1} = 4\sigma^2$, $b^{-1} = 2\sigma^2$, $c = \sqrt{ a^2 + 2ab }$,
+$A = a+ b+c$ and $B = \tfrac{b}{A} < 1$. 
+
+At least for the Gaussian kernel, as $j$ increases, the eigenfunction $\psi_j$ oscillates
+more. Since $f$ is expressed as
+\[ f = \sum_{j\geq1} \alpha_j \sqrt{\lambda_j} \psi_j\,, \]
+and $\alpha_j \sqrt{\lambda_j} \to 0$. Thus the functions in the RKHS are quite
+smooth and do not oscillate too much. Hence this penalty will favour smoother functions.
+
+\subsubsection{Proof of the representer theorem} % (fold)
+\label{ssub:proof_of_the_representer_theorem}
+
+Consider some $y\in \Hcal$ and let's project it onto the subspace 
+\[ \Hcal_* = \{\sum_{i=1}^n \gamma_i K(\cdot, x_i ) \,\:\,(\gamma_j)_{j=1}^n\}\,, \]
+spanned by $(K(\cdot, x_i ))_{i=1}^n$.
+By the projection theorem on Hilbert space there exists a unique pair 
+$y_\perp(x)\in\Hcal_*^\perp$ and $y_* \in \Hcal_*$ such that
+\[ y = y_\perp + y_* \,. \]
+
+Let's use the reproducibility property of the kernel:
+\[
+y(x_i) = \langle y, K(\cdot,x_i) \rangle = \langle y_*, K(\cdot,x_i) \rangle\,,
+\]
+since $K(\cdot,x_i)\in \Hcal_0$. Thus
+\[
+\langle y, K(\cdot,x_i) \rangle
+= \sum_{i=1}^n \gamma_j \langle K(\cdot, x_j ), K(\cdot,x_i) \rangle
+= \sum_{i=1}^n \gamma_j K(x_i, x_j ) \,.
+\]
+thus each $y(x_i)$ and, hence, the whole cost function is independent of the orthogonal
+component. The norm of $y$ is thus
+\[
+\Omega(\|y\|_\Hcal)
+= \Omega\Bigl( \sqrt{\|y_*\|_\Hcal + \|y_\perp\|_\Hcal} \Bigr) 
+\geq \Omega(\|y_*\|_\Hcal)\,,
+\]
+with equality if and only if $\|y_\perp\|_\Hcal = 0$. Considering independence of the
+cost on $y_\perp$, the solution to the problem must necessarily by of the form
+\[ y = \sum_{i=1}^n \alpha_i K(x, x_i) \,. \]
+We may disregard the orthogonal component of any $y$!
+
+% subsubsection proof_of_the_representer_theorem (end)
+
+\subsubsection{Kernel ridge regression} % (fold)
+\label{ssub:kernel_ridge_regression}
+
+Consider penalized problem
+\[ C(y) = \sum_{i=1} (t_i - y(x_i))^2 + \lambda \|y\|^_\Hcal\,,\]
+where $y\in \Hcal$ for some RKHS $\Hcal$ with kernel $K$.
+
+Using representer theorem necessarily the solution to this problem:
+$C(y) \to \min_{y\in\Hcal}$, -- is
+\[y(x) = \sum_{i=1}^n \alpha_i K(x,x_i)\,, \]
+or $y(x) = K_x' \alpha$ in the matrix notation with $K_x = (K(x,x_i))_{i=1}^n$ and 
+$\alpha = (\alpha_i)_{i=1}^n \in \Real^{n\times 1}$.
+
+Thus $y = K \alpha$, where $K$ is the Gram matrix given by
+\[ K = \begin{pmatrix} K_{x_1}'\\ \vdots\\ K_{x_n}'\\ \end{pmatrix}\,. \]
+Hence
+\[
+\sum_{i=1}^n (t_i - y(x_i))^2 = (t-K\alpha)'(t-K\alpha)\,,
+\]
+and
+\begin{align*}
+\|y\|_{\Hcal}^2
+	&= \sum_{i,j} \alpha_i \alpha_j \langle K(\cdot,x_i), K(\cdot,x_j)\rangle\\
+	= \sum_{i,j} \alpha_i \alpha_j K(x_i,x_j)
+	= \alpha' K \alpha\,.
+\end{align*}
+The problem of $y^* \argmin_y C(y)$ is equivalent to 
+\[
+\alpha^* = \argmin_\alpha (t-K\alpha)'(t-K\alpha) + \lambda \alpha' K \alpha\,,
+\]
+which gives the optimal $\alpha$ as
+\[ \alpha^* = (K+\lambda I)^{-1} t\,. \]
+The prediction of $t$ at a new $x$ is given by
+\[ \hat{t}(x) = K_x'\alpha^* = K_x' (K+\lambda I)^{-1} t \,. \]
+
+% subsubsection kernel_ridge_regression (end)
+
+\subsubsection{Kernel SVM} % (fold)
+\label{ssub:kernel_svm}
+
+The training data is $(x_i,t_i)_{i=1}^n \in X\times \{-1,+1\}$. The problem of the
+SVM was to fit a hyperplane $y(x) = \beta_0 + \langle\beta, x\rangle$.
+The primal problem was
+\[ \frac{1}{2}\|\beta\|^2 \tom \min_\beta\,, \]
+subject to $t_i (\beta_0 + \beta'x_i )\geq 1$.
+The dual problem was
+\[ \one'\lambda - \frac{1}{2} \lambda'H \lambda \to \max_\lambda\,, \]
+subject to $\lambda_i \geq 0$ and $\lambda't = 0$, where $H$ is given by
+\[ H_{ij} = t_i t_j \langle x_i,x_j\rangle\,. \]
+The whole idea of RKHS in SVM is to find some larger dimensional feature space,
+where there is linear separability (at least approximately). In that enlarged
+feature space we find a fat boundary, even though the original space $X$ was not
+linearly separable. The main property of RKHS is that
+\[ \langle \Phi(x_i),\Phi(x_j) \rangle = K(x_i,x_j)\,, \]
+The only thing we care about is the kernel: we do not even need to know the feature
+maps $\Phi(\cdot)$ -- only the inner product and thus the kernel matters.
+
+Classifying a new point:
+\[ G(x) = \text{sign} \bigl( \beta_0^* + \sum_{i\in \text{SV}} \lambda^*_i t_i K(x,x_i) \bigr)\,. \]
+
+% subsubsection kernel_svm (end)
+
+% subsection applications (end)
+
+% section lecture_18 (end)
+
+\section{Exam topics} % (fold)
+\label{sec:exam_topics}
+
+Next Tuesday $16$-th of June.
+\begin{itemize}
+	\item 5 questions for 3 hours;
+	\item Multiple choice questions $\times 15$. Total mark $30$;
+	\item $2,3$ total to 45 points: \begin{itemize}
+		\item derivation of the lasso;
+		\item general fitting with OLS;
+		\item the smoothing spline;
+		\item Laplace approximation;
+		\item reweighted least squares for binary classification;
+		\item explain an understand the CART;
+		\item Understand the strong duality;
+		\item derive AdaBoost;
+		\item derive the maximum margin classifier;
+		\item Proof of the representer theorem;
+		\item RKHS;
+	\end{itemize}
+	\begin{itemize}
+		\item any topic during the lectures.
+	\end{itemize}
+\end{itemize}
+
+% section exam_topics (end)
 
 \end{document}
