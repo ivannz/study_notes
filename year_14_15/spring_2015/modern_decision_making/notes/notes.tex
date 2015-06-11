@@ -3368,8 +3368,8 @@ whence
 
 An overview of module 4:
 \begin{itemize}
-	\item linear classifiers (Fisher approach, and perceptron);
-	\item Decision trees, (bagginng, boosting, adaboost at c.);
+	\item Linear classifiers (Fisher approach, and perceptron);
+	\item Decision trees, (bagginng, boosting: AdaBoost et c.);
 	\item Support Vector Machine (convex optimization);
 	\item Reproducing Kernel Hilbert Spaces (classification and regression);
 	\item Neural Networks;
@@ -3378,31 +3378,51 @@ An overview of module 4:
 
 \subsection{Classifiers} % (fold)
 \label{sub:classifiers}
-Probabilistic and discriminative approaches.
 
-One-to-one or one-to-all may result in undefined regions in multi-class problems.
+There are at least tow approaches to multi-class problems: one-versus-one or one-
+versus-all. Both, however, may yield undefined regions.
 
 \subsubsection{A reminder on hyperplanes} % (fold)
 \label{ssub:a_reminder_on_hyperplanes}
-Consider a linear space $V$ with $\dim(V)=p$ and an inner product $\langle\rangle$.
-Then a hyperplane is a flat affine subspace $H$ of $V$ of dimension $p-1$. The equation
-of a hyperplane $H$ is given by the equation for $x\in V$
+Consider a linear space $V$ with $\dim(V)=p$ and an inner product $\langle\cdot,\cdot\rangle$.
+A hyperplane is a flat affine subspace $H$ of $V$ of dimension $p-1$, defined as
 \[
-\beta_0 + \sum_{k=1}^p \beta_k x_k
-= \beta_0 + \langle x, \beta\rangle
-= 0
+H = \bigl\{x\in V\,:\, \langle x - p_0, \beta\rangle = 0 \bigr\}\,,
 \]
-for some $\beta\in V$ -- a normal vector. Let $\beta^* = \frac{\beta}{\|\beta\|}$.
+for some anchor point $p_0$ and normal vector $\beta\in V$. note that by setting
+$\beta_0$ to $-\langle p_0,\beta \rangle$ one recovers a simpler equation:
+\[ \beta_0 + \langle x, \beta\rangle\,, \]
+and in the Euclidean space : $\beta_0 + \beta'x = 0$.
 
-The signed distance of $y\in V$ to the hyperplane $H$ is given by
-\[\]
-Indeed, for $x_1, x_2\in H$
-\begin{align*}
-	\langle x_1, \beta\rangle &= -\beta_0\\
-	\langle x_2, \beta\rangle &= -\beta_0
-\end{align*}
-whence
-\[\langle x_2-x_1, \beta\rangle = 0\]
+Let $\beta_* = \frac{\beta}{\|\beta\|}$. The signed distance of an element $x\in V$
+to the hyperplane $H$ is given by
+\[ d(x, H) = \frac{y(x)}{\|\beta\|}\,, \]
+where $y(x) = \beta_0 + \langle x, \beta\rangle$.
+
+Indeed, for any $x_1, x_2\in H$ bilinearity of the inner product implies that
+\[ y(x_1) - y(x_2) = \langle x_2-x_1, \beta\rangle = 0\,. \]
+Now, for any $x\in V$ by the subspace projection there necessarily exist unique
+elements $x_\perp\in [\beta_*]^\perp$ and $x_* \in [\beta_*]$ such that $x = x_\perp + x_*$.
+Note, that $x_* = r\beta_*$ for some $r$, and $\|x_\perp\| = \inf_{y\in[\beta_*]}\{\|x-y\|\}$.
+Therefore
+\[
+y(x)
+= \langle \beta, x \rangle
+= \langle \beta, x_\perp \rangle + \langle \beta, r \beta_* \rangle
+= r \frac{\|\beta\|^2}{ \|\beta\| }\,,
+\]
+
+
+Now, fix any $x_1\in H$ and note that for $x_2 = x_1 + x_\perp$, $x_2\in H$. Therefore
+\[
+y(x)
+= \beta_0 + \langle \beta, x_2-x_1 \rangle + r \frac{\|\beta\|^2}{ \|\beta\| }
+= \beta_0 + r \frac{\|\beta\|^2}{ \|\beta\| } \,,
+\]
+Now, since $H$ is an affine space, not a subspace per se as it has no $\mathbf{0}$,
+
+Thus $\inf_{x\in H}\|y-x\| = r\|\beta\|$ (?).
+
 
 Next, for any $y\in V$ there exist a decomposition
 \[ y = x^\perp + x^*\]
