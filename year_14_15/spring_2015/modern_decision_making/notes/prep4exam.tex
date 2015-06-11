@@ -1,0 +1,421 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{mathptmx}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\ex}{\mathbb{E}}
+\newcommand{\argmin}{\mathop{\text{argmin}}}
+\newcommand{\argmax}{\mathop{\text{argmax}}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\RSS}{{\text{RSS}}}
+\newcommand{\Lcal}{\mathcal{L}}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Document title}
+\author{Nazarov Ivan, \rus{101мНОД(ИССА)}\\the DataScience Collective}
+\begin{document}
+\selectlanguage{english}
+\maketitle
+\tableofcontents
+\clearpage
+
+\section{Question \# 1} % (fold)
+\label{sec:question_1}
+\textbf{\large \textbf{Q}} : Show that the least square solution to the general
+linear fitting problem corresponds to the orthogonal projection of the response
+variable onto the plane spanned by the columns of X.
+
+\noindent{\large \textbf{A}} : 
+
+\clearpage
+% section question_1 (end)
+
+\section{Question \# 2} % (fold)
+\label{sec:question_2}
+\textbf{\large \textbf{Q}} : Derive the solutions to the lasso and ridge regression
+when the columns of $X$ are orthogonal.
+
+\noindent{\large \textbf{A}} :
+The problem of penalized (ridge, LASSO) regression in the matrix form, where $X$
+is the $n\times k$ matrix of centred standardized input variables with \textbf{no}
+intercept, and $T$ -- the response, is to minimize with respect to $\beta$ :
+\[ \RSS^{\text{ridge}} = (t-X\beta)'(t-X\beta) + \lambda \beta'\beta \,, \]
+whence the solution is
+\[ \hat{\beta}^{\text{ridge}} = \bigl(X'X + \lambda I'bigr)^{-1} X'T \,. \]
+
+Suppose $X$ are orthogonal : $X'X = I_p$. The OLS solution is
+\[ \hat{\beta}^{\text{OLS}} = (X'X)^{-1} X'T = X'T \,, \]
+and the ridge solution (after simplification) is 
+\[
+\hat{\beta}^{\text{ridge}} = \frac{1}{1+\lambda} \hat{\beta}^{\text{OLS}}\,,
+\]
+which shows that the larger the penalty $\lambda$, the smaller the coefficient estimates.
+
+The LASSO problem is the same as ridge regression, but with $L^1$ constraints, to
+facilitate automatic feature selection. The solution is
+\[
+\hat{\beta}^{\text{LASSO}}
+= \argmin_\beta (t-X\beta)'(t-X\beta) + \lambda \sum_{j=1}^k \lvert \beta_j\rvert \,.
+\]
+In the orthogonal $X$ case the LASSO minimization solution is equivalent to (just
+expand the brackets and drop constant terms)
+\[
+\hat{\beta}^{\text{LASSO}}
+= \sum_{j=1}^k \beta_j^2 - 2 \beta_j \hat{\beta}^{\text{OLS}}_j + \lambda |\beta_j|\,.
+\]
+Due to additive separability this in turn is equivalent to $n$ problems:
+\[
+\hat{\beta}^{\text{LASSO}}_j
+= \argmin_{\theta} \theta^2 - 2 \theta \hat{\beta}^{\text{OLS}}_j + \lambda |\theta|\,.
+\]
+The optimal estimate for the $j$-coefficient is
+\[
+\hat{\theta}
+= \max\bigl\{ \hat{\beta}^{\text{OLS}}_j - \frac{\lambda}{2}, 0 \bigr\}
++ \min\bigl\{ \hat{\beta}^{\text{OLS}}_j + \frac{\lambda}{2}, 0 \bigr\}\,.
+\]
+Feature selection is due to the zero-value region around $\hat{\beta}^{\text{OLS}}_j$
+of width $\lambda$.
+
+\noindent\textbf{FYI} : Actually the derivation of the solution itself is done
+by expressing $\beta$ as $\beta_+-\beta_-$ and then solving the constrained convex
+minimization problem (with \textbf{KKT})
+\[ (\beta_+ - \beta_- - a )^2 + \lambda (\beta_+ + \beta_-) \to \min_{\beta_+,\beta_-}\]
+subject to $\beta_+, \beta_-\geq 0$ and $\beta_+ \cdot \beta_-=0$.
+
+\clearpage
+% section question_2 (end)
+
+\section{Question \# 3} % (fold)
+\label{sec:question_3}
+\textbf{\large \textbf{Q}} : Show that the natural cubic spline has the minimum
+value of $\int_a^b |f''(x)|^2 dx$ among all smooth curves that interpolate the
+data, and explain why the solution to the smoothing spline problem is a natural
+cubic spline.
+
+\noindent{\large \textbf{A}} :
+
+\clearpage
+% section question_3 (end)
+
+\section{Question \# 4} % (fold)
+\label{sec:question_4}
+\textbf{\large \textbf{Q}} : Derive the solution to the smoothing spline problem,
+and show that it can be expressed as
+\[ \hat{g} = S_\lambda \mathbf{t} = \sum_{j=1}^n \frac{1}{1+\lambda \eta_{n-j+1}} \langle u_j, \mathbf{t} \rangle u_j \,. \]
+
+\noindent{\large \textbf{A}} :
+
+\clearpage
+% section question_4 (end)
+
+\section{Question \# 5} % (fold)
+\label{sec:question_5}
+\textbf{\large \textbf{Q}} : Understand Laplace approximation.
+
+\noindent{\large \textbf{A}} :
+The general idea (in the univariate case) is to use Gaussian distribution to approximate
+some unnormalized, but \textbf{unimodal}, probability density
+\[ p(x) \propto f(x) \,, \]
+with some normalising constant $N = \int f(x) dx$.
+
+Consider the Taylor series expansion of $\log f(x)$ around its mode $x_0$, $f'(x_0) = 0$:
+\[
+\log f(x)
+= \log f(x_0) + \frac{f'(x_0)}{f(x_0)} (x-x_0)
++ \frac{1}{2} \frac{f''(x_0)f(x_0) - \bigl(f'(x_0)\bigr)^2}{\bigl(f(x_0)\bigr)^2} (x-x_0)^2 + o\bigl((x-x_0)^2\bigr)\,,
+\]
+as $x\to x_0$, whence is some very small neighbourhood of $x_0$
+\[
+\log f(x) \approx \log f(x_0) + \frac{1}{2} \frac{f''(x_0)}{f(x_0)} (x-x_0)^2\,.
+\]
+Therefore for 
+\[ C = - \frac{f''(x_0)}{f(x_0)}\,, \]
+one has 
+\[ f(x) \approx f(x_0) \text{exp}\bigl\{ - \frac{1}{2} C (x-x_0)^2 \bigr\} \,. \]
+The right hand side is an improperly normalised Gaussian. Thus
+\[ f(x) \approx f(x_0) \sqrt{\frac{2\pi}{C}} q(x) \,, \]
+for the Gaussian density with mean $x_0$ and variance $C^{-1}$ (precision $C$)
+\[
+q(x) = \frac{1}{\sqrt{2\pi C^{-1}}} \text{exp}\bigl\{ - \frac{1}{2} C (x-x_0)^2 \bigr\}\,.
+\]
+Hence $N \approx f(x_0) \sqrt{\frac{2\pi}{C}}$.
+
+In the $d$-dimensional case the Taylor expansion for $x\to x_0$ is
+\begin{align*}
+\log f(x) &= \log f(x_0) + \nabla f(x_0)' (x-x_0) \\
+	&+ \frac{1}{2} \frac{1}{\bigl(f(x_0)\bigr)^2} (x-x_0)'
+		\bigl( f(x_0) \nabla^2 f(x_0) - \nabla f(x_0) \nabla f(x_0)' \bigr) (x-x_0) \\
+	&+ o(\|x-x_0\|^2) \,,
+\end{align*}
+for $\nabla f(x_0)\in \Real^{d\times1}$ -- gradient and $\nabla^2 f(x_0)$ -- Hessian
+at $x_0$, whence 
+\[
+f(x) \approx f(x_0) \text{exp}\biggl\{ - \frac{1}{2} (x-x_0)' \Lambda (x-x_0) \biggr\}\,,
+\]
+for $\Lambda = - f(x_0)^{-1} \nabla^2 f(x_0)$. Therefore
+\[
+N \approx f(x_0) (2\pi)^{\frac{d}{2}} |\Lambda|^{-\frac{1}{2}} \,.
+\]
+
+\clearpage
+% section question_5 (end)
+
+\section{Question \# 6} % (fold)
+\label{sec:question_6}
+\textbf{\large \textbf{Q}} : Derive the iterative reweighed least square algorithm for
+binary logistic regression.
+
+\noindent{\large \textbf{A}} :
+
+\clearpage
+% section question_6 (end)
+
+\section{Question \# 7} % (fold)
+\label{sec:question_7}
+\textbf{\large \textbf{Q}} : Derive the EM algorithm.
+
+\noindent{\large \textbf{A}} :
+The EM algorithm seeks to maximize the likelihood by means of successive application
+of two steps: the \textbf{E}-step and the \textbf{M}-step. Consider a probability
+density $p(X|\Theta)$ of observations $X$ given some parameter $\Theta$. For any
+probability density $q$ on the space of latent variables $Z$ the following holds:  
+\begin{align*}
+\log p(X|\Theta)
+    &= \int q(Z) \log p(X|\Theta) dZ
+     = \mathbb{E}_q \log p(X|\Theta) \\
+   %% &= \Bigl[p(X,Z|\Theta) = p(Z|X,\Theta) p(X|\Theta) \Bigr] \\
+    &= \mathbb{E}_{Z\sim q} \log \frac{p(X,Z|\Theta)}{p(Z|X\Theta)}
+     = \mathbb{E}_{Z\sim q} \log \frac{q(Z)}{p(Z|X,\Theta)}
+     + \mathbb{E}_{Z\sim q} \log \frac{p(X,Z|\Theta)}{q(Z)} \\ 
+    &= KL\bigl(q\|p(\cdot|X,\Theta)\bigr) + \mathcal{L}\bigl(q, \Theta\bigr)\,,
+\end{align*}
+since the Bayes theorem posits that $p(X,Z|\Theta) = p(Z|X,\Theta) p(X|\Theta)$.
+This equation is the ``\textbf{master identity}''. As the Kullback-Leibler divergence
+is \textbf{always} non-negative :
+\[ \log p(X|\Theta) \geq \mathcal{L}\bigl(q, \Theta\bigr) \,. \]
+By changing $\Theta$ and varying $q$ we can make the lower bound as large as possible.
+
+For some fixed and given $\Theta$, the \textbf{master identity} implies that with
+respect to $q$ maximization of $\mathcal{L}$is equivalent to minimization of
+$KL\bigl(q\|p(\cdot|X,\Theta)\bigr)$. Since there are no restrictions to $q$, the
+optimal minimizer $q^*_\Theta$ is $q^*(Z|\Theta) = p(Z|X,\Theta)$ for all $Z$.
+
+At the optimal distribution $q^*_\Theta$ the \textbf{master identity} becomes
+\begin{align*}
+\log p(X|\Theta)
+&= \mathcal{L}\bigl(q^*_\Theta, \Theta\bigr)
+= \mathbb{E}_{Z\sim q^*_\Theta} \log \frac{p(X,Z|\Theta)}{q^*(Z|\Theta)} \\
+&= \mathbb{E}_{Z\sim q^*_\Theta} \log p(X,Z|\Theta) - \mathbb{E}_{Z\sim q^*_\Theta} \log q^*(Z|\Theta) \,,
+\end{align*}
+for any $\Theta$. Thus the problem of log-likelihood maximization reduces to that
+of maximizing the sum of expectations on the right-hand side. However this new problem
+does not seem to be tractable in general since the optimization parameters $\Theta$
+affect both the expected log-likelihood $\log p(X,Z|\Theta)$ under $Z\sim q^*_\Theta$
+and the entropy of the optimal distribution of the latent variables $Z$.
+
+Hopefully using an iterative procedure which switches between the computation of $q^*_\Theta$
+and the maximization of $\Theta$ might be effective : \begin{description}
+	\item[\textbf{E}-step] considering $\Theta_i$ as fixed and given, find
+	\[ q^*_{\Theta_i} = \argmin_q \,\, KL\bigl(q\|p(\cdot|X,\Theta_i)\bigr)\,,\]
+	and set $q_{i+1} = q^*_{\Theta_i}$ ;
+	\item[\textbf{M}-step] considering $q_{i+1}$ as fixed and given, find
+	\[ \Theta^*_{i+1} = \argmax_\Theta \,\, \mathbb{E}_{Z\sim q_{i+1}} \log p(X,Z|\Theta)\,,\]
+	and put $\Theta_{i+1} = \Theta^*_{i+1}$.
+\end{description}
+
+Recall that the \textbf{master identity} is an identity: for all densities $q$ on
+$Z$ and for all admissible parameters $\Theta$
+\[ \log p(X|\Theta) = KL\bigl(q\|p(\cdot|X,\Theta)\bigr) + \mathcal{L}\bigl(q, \Theta\bigr) \,. \]
+
+The \textbf{EM} algorithm is correct in that its iterations do not decrease the
+log-likelihood. Indeed, just after the \textbf{E}-step one has $q_{i+1} = p(Z|X,\Theta_i)$,
+whence $KL\bigl(q_{i+1}\|p(\cdot|X,\Theta_i)\bigr) = 0$. Via the \textbf{master identity}
+this implies
+\[ \log p(X|\Theta_i) = \mathcal{L}(q_{i+1},\Theta_i) \,. \]
+After the \textbf{M}-step, since $\Theta_{i+1}$ \emph{improves} $\mathcal{L}(q_{i+1},\Theta)$
+compared to its value at $(q_i,\Theta_i)$, one has
+\[ \mathcal{L}(q_{i+1},\Theta_i) \leq \mathcal{L}(q_{i+1},\Theta_{i+1}) \,. \]
+Therefore the effect of a single complete round of \textbf{EM} on the log-likelihood
+itself is:
+\[
+\log p(X|\Theta_i)
+= \mathcal{L}(q_{i+1},\Theta_i)
+\leq \mathcal{L}(q_{i+1},\Theta_{i+1})
+\leq \mathcal{L}(q_{i+2},\Theta_{i+1})
+= \log p(X|\Theta_{i+1}) \,,
+\]
+where the equality is achieved between the \textbf{E} and the \textbf{M} step within one round.
+This implies that \textbf{EM} indeed iteratively improves the log-likelihood.
+
+\clearpage
+% section question_7 (end)
+
+\section{Question \# 8} % (fold)
+\label{sec:question_8}
+\textbf{\large \textbf{Q}} : Express Fisher's linear discriminant criterion (Rayleigh
+quotient), and find the optimal separating hyperplane according to this criterion.
+
+\noindent{\large \textbf{A}} :
+
+\clearpage
+% section question_8 (end)
+
+\section{Question \# 9} % (fold)
+\label{sec:question_9}
+\textbf{\large \textbf{Q}} : Explain and understand the CART procedure.
+
+\noindent{\large \textbf{A}} :
+
+\clearpage
+% section question_9 (end)
+
+\section{Question \# 10} % (fold)
+\label{sec:question_10}
+\textbf{\large \textbf{Q}} : Derive the AdaBoost algorithm.
+
+\noindent{\large \textbf{A}} :
+
+\clearpage
+% section question_10 (end)
+
+\section{Question \# 11} % (fold)
+\label{sec:question_11}
+\textbf{\large \textbf{Q}} : Show that if strong duality holds, then the optimal
+solutions to the primal and dual problem must satisfy the KKT conditions (necessary
+condition). Show that the KKT conditions are also sufficient when the problem is
+convex.
+
+\noindent{\large \textbf{A}} :
+
+Consider a constrained optimization problem in its normal form :
+\[ f_0(x) \to \min_x \,, \]
+subject to
+\[ f_i(x) \leq 0\,\text{ and }\, h_j(x) = 0 \,. \]
+The Lagrangian function $\Lcal: D \times \Real_+^m \times \Real^p \to \Real$ is :
+\[
+\Lcal(x, \lambda, \nu) = f_0(x) + \sum_{i=1}^m \lambda_i f_i(x) + \sum_{j=1}^p \nu_j h_j(x) \,,
+\]
+where $D \subseteq \Real^n$ is
+\[
+D = \bigl( \bigcap_{i=0}^m \text{dom} f_i \bigr) \cap \bigl( \bigcap_{j=1}^p \text{dom} h_j \bigr) \,.
+\]
+The Lagrange dual function $g : \Real_+^m \times \Real^p \to \Real$ is given by
+\[
+g(\lambda,\nu) = \inf_x \Lcal(x,\lambda,\nu)\,,
+\]
+and it is concave in $\lambda$ and $\mu$ ($\inf$ plus affinity of $\Lcal$). It provides
+a lower bound on the optimal value $f_0(x^*)$ of the original problem (\textbf{weak duality}):
+if $x$ is \textbf{feasible} then
+\[ 
+g(\lambda,\nu) = \inf_z \Lcal(z,\lambda,\nu)\leq \Lcal(x, \lambda,\nu) \leq f_0(x) \,.
+\]
+for all $\lambda\geq0$ and $\nu$ (feasibility is important to ensure the right-most
+inequality).
+
+The dual problem is finding the ``best'' lower bound $d^* = g(\lambda,\nu)$ for
+admissible $\lambda\geq 0$ but there is no guarantee that this lower bound is any
+good.
+
+\textbf{Strong duality} takes place when the duality gap $f_0(x^*) - d^*\geq 0$ is
+strictly $0$, and Slater's Constraint Qualifications for convex optimization ensure
+this. The convex problem :
+\[ f_0(x) \to \min_x\,\text{st} f_i(x) \leq 0\,\text{and}\, h_j(x) = 0\]
+if there exists at least one feasible $x\in \text{int} D$ such that $f_i(x) < 0$ and $h(x) = 0$.
+
+If $p^*>-\infty$ then $d^*>-\infty$ (dual is feasible) and there exist $\lambda^*$
+and $\nu^*$ such that $g(\lambda^*, \nu^*) = p^*$.
+
+Suppose that strong duality holds, let $x^*$ be optimal in the primal problem, and
+let $(\lambda^*, \nu^*)$ be optimal in the dual. The duality gap is zero, whence
+\[
+f_0(x^*)
+= \inf_z f_0(z) + \sum_{i=1}^m\lambda_i^* f_i(z) + \sum_{j=1}^p\nu_j^* h_i(z)\,.
+\]
+Since $x^*$ is feasible
+\[
+f_0(x^*) + \sum_{i=1}^m\lambda_i^* f_i(x^*) + \sum_{j=1}^p\nu_j^* h_i(x^*)
+\leq f_0(x^*)\,,
+\]
+whence for $x^*$, $\lambda^*$ and $\nu^*$
+\[
+\sum_{i=1}^m \lambda_i^* f_i(x^*) + \sum_{j=1}^p\nu_j^* h_i(x^*) = 0 \,.
+\]
+Since $ \sum_{j=1}^p\nu_j^* h_i(x^*) = 0$ one has
+\[ \sum_{i=1}^m \lambda_i^* f_i(x^*) = 0 \,,\]
+which imply the complementary slackness conditions : $\lambda_i^* f_i(x^*) = 0$
+for all $i=1,\ldots,m$.
+
+Summary, for any optimization problem if $x^*$ and $(\lambda^*,\nu^*)$ are such that
+$f_0(x^*) = g(\lambda^*,\nu^*)$ then $(x^*,\lambda^*,\nu^*)$ satisfy the necessary
+\textbf{KKT} conditions.
+\textbf{K}arush-\textbf{K}uhn-\textbf{T}ucker conditions:
+\begin{itemize}
+	\item primal constraints: $f_i(x)\leq 0$ for $i=1,\ldots,m$ and $h_j(x) = 0$ for $j=1,\ldots,p$;
+	\item dual constraints: $\lambda_i \geq 0$ to ensure that $g\leq p^*$;
+	\item Complementary slackness: $\lambda_i f)i(x) = 0$ for $i=1,\ldots,m$;
+	\item Gradient of $\Lcal$ vanishes: $\nabla_x \Lcal(x) = 0$.
+	\[\nabla_x \Lcal = \nabla f_0(x) + \sum_{i=1}^m \lambda_i \nabla f_i(x) + \sum_{j=1}^p \nu_j \nabla h_j(x)\]
+\end{itemize}
+
+For a convex optimization problem KKT conditions are also sufficient. Indeed, if
+a triple $(x^*,\lambda^*,\nu^*)$ satisfies the KKT, then $x^*$ is feasible and
+for any feasible $x$
+\[
+\Lcal(x,\lambda^*,\nu^*)
+= f_0(x) + \sum_{i=1}^m\lambda_i^* f_i(x) + \sum_{j=1}^p\nu_j^* h_i(x)
+= f_0(x) + \sum_{i=1}^m\lambda_i^* f_i(x)
+\]
+which is a non-negative weighted $(\lambda_i^*)_{i=1}^m$ sum of convex functions
+$f_i$. Thus by the last KKT condition, $x^*$ is the minimizer $\Lcal(x,\lambda^*,\nu^*)$
+and $\Lcal(x^*,\lambda^*,\nu^*) \leq g(\lambda^*, \nu^*)$, whence
+\[
+g(\lambda^*,\nu^*)
+= f_0(x^*) + \sum_{i=1}^m \lambda_i^* f_i(x^*) + \sum_{j=1}^p\nu_j^* h_i(x^*)
+= f_0(x^*)\,,
+\]
+due to feasibility and complementary slackness conditions.
+
+\clearpage
+% section question_11 (end)
+
+\section{Question \# 12} % (fold)
+\label{sec:question_12}
+\textbf{\large \textbf{Q}} : Derive the maximum margin classifier in the linearly
+separable and non-separable case (dual problem, KKT conditions, etc).
+
+\noindent{\large \textbf{A}} :
+
+\clearpage
+% section question_12 (end)
+
+\section{Question \# 13} % (fold)
+\label{sec:question_13}
+\textbf{\large \textbf{Q}} : Show that the function K is a kernel if and only if
+it is a symmetric positive definite function.
+
+\noindent{\large \textbf{A}} :
+
+\clearpage
+% section question_13 (end)
+
+\section{Question \# 14} % (fold)
+\label{sec:question_14}
+\textbf{\large \textbf{Q}} : Prove the representer theorem. Application to kernel
+ridge regression.
+
+\noindent{\large \textbf{A}} :
+
+% section question_14 (end)
+
+\end{document}
+
