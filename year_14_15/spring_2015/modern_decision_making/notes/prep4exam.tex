@@ -9,6 +9,7 @@
 \newcommand{\Real}{\mathbb{R}}
 \newcommand{\Cplx}{\mathbb{C}}
 \newcommand{\ex}{\mathbb{E}}
+\newcommand{\pr}{\mathbb{P}}
 \newcommand{\argmin}{\mathop{\text{argmin}}}
 \newcommand{\argmax}{\mathop{\text{argmax}}}
 \newcommand{\tr}{\text{tr}}
@@ -306,6 +307,97 @@ N \approx f(x_0) (2\pi)^{\frac{d}{2}} |\Lambda|^{-\frac{1}{2}} \,.
 binary logistic regression.
 
 \noindent{\large \textbf{A}} .\hfill\\
+
+Let $(x_i,t_i)_{i=1}^n \in \Real^{p+1}\times \{0,1\}$ be the training sample for binary
+classification. In the two-class case the logistic regression posits that the posterior
+class probability is given by
+\[ \pr(T=k|X=x) = \sigma(\beta'x) = \sigma( \beta_0 + \beta_1'x ) \,, \]
+where $\sigma(t) = \frac{e^t}{1+e^t}$ and $\beta=(\beta_0, \beta_1)'\in \Real^{(p+1)\times 1}$.
+Before proceeding, note the useful property of sigmoid function derivative:
+\[
+\frac{d}{dt} \sigma(t)
+= \frac{e^t(1+e^t) - e^{2t} }{(1+e^t)^2}
+= \sigma(t)(1-\sigma(t)) \,.
+\]
+
+Due to $0$-$1$ coding scheme the log-likelihood of a particular observation $(x,t)$
+is
+\begin{align*}
+l(x,t,\beta)
+&= \log p(T=t|X=x)
+= \log \sigma(\beta'x)^t (1-\sigma(\beta'x))^{1-t}\\
+&= t \log \sigma(\beta'x) + (1-t)\log (1-\sigma(\beta'x))\,,
+\end{align*}
+whence
+\begin{align*}
+	\frac{d}{d\beta} l
+	&= t \frac{(1-\sigma(\beta'x))\sigma(\beta'x)}{\sigma(\beta'x)} x
+		- (1-t) \frac{ (1-\sigma(\beta'x))\sigma(\beta'x) }{(1-\sigma(\beta'x))} x\\
+	&= ( t - \sigma(\beta'x) ) x\,.
+\end{align*}
+The full sample log-likelihood is 
+\[ L( \beta ) = \sum_{i=1}^n l(x_i,t_i,\beta) \,, \]
+and its gradient (first vector derivative) is
+\[
+\nabla L
+= \sum_{i=1}^n ( t_i - \sigma(\beta'x_i) ) x_i
+= X' ( t - \sigma(\beta'X) )
+\,, \]
+where $X$ is the $n\times (p+1)$ matrix of observations, $t$ is the target vector, and
+$\sigma(\beta'X)$ is the $n\times 1$ vector $(\sigma(\beta'x_i))_{i=1}^n$. It appears
+to be non-linear in $\beta$. As for the second derivative it is given by
+\[
+\frac{\partial^2 }{\partial \beta_k \partial \beta_j} L
+= \frac{\partial }{\partial \beta_j} \sum_{i=1}^n ( t_i - \sigma(\beta'x_i) ) x_{ik}
+= - \sum_{i=1}^n (1-\sigma(\beta'x_i))\sigma(\beta'x_i) x_{ik} x_{ij}\,,
+\]
+whence
+\[ \nabla^2 L = - X'B X\,, \]
+for $B = \text{diag}\bigl( (1-\sigma(\beta'x_i))\sigma(\beta'x_i) \bigr)_{i=1}^n$.
+The Hessian of $L$ is obviously negative semi-definite, which means that the optimal
+$\beta$ maximizes the log-likelihood.
+
+The first order conditions contain $\beta$ inside a non-linear term which makes
+analytical expression of the optimal coefficient troublesome if not intractable.
+Instead let's employ Newton-Raphson iterative procedure to obtain a sequence of
+gradually more accurate estimates of $\beta$.
+
+Recall that the Newton-Raphson method of finding stationary points (roots of its
+first derivative) of a twice differentiable function. The log-likelihood $L$ is
+a twice differentiable $\Real^{p+1}\to\Real$ function, whence it is legitimate
+to approximate it by a second order Taylor quadratic form. Given some point $a$,
+$L(\beta) = Q(\beta) + o(\|\beta-a\|^2)$ where
+\[ Q(x) = L(a) + \nabla L(a)'(x-a) + \frac{1}{2}(x-a)'\nabla^2 L(a) (x-a)\,. \]
+Expanding the brackets yields
+\[
+Q(x) = L(a) - \nabla L(a)'a + \frac{1}{2}x'\nabla^2 L(a) a
++ \bigl( \nabla L(a)' - a'\nabla^2 L(a) \bigr)x + \frac{1}{2}x'\nabla^2 L(a) x\,,
+\]
+and $Q$ is concave, since the Hessian matrix of $L$ at $a$ is negative semi-definite.
+The maximum of $Q$ is thus given by
+\begin{align*}
+	x^*
+	&= (\nabla^2 L(a))^{-1} \bigl( \nabla^2 L(a) a - \nabla L(a)\bigl) \\
+	&= a - (\nabla^2 L(a))^{-1}\nabla L(a) \,.
+\end{align*}
+This $x^*$ is guaranteed to yield a value of $L$ closer to maximum.
+
+Therefore the following iterative procedure seems logical: \begin{enumerate}
+	\item start with some initial $\beta = \beta^{(0)}$;
+	\item update $\beta \to \beta_{\text{new}}$ by a Newton-Raphson step:
+	\begin{align*}
+		\beta_{\text{new}}
+		&= \beta + (X'BX)^{-1} X'( t - \sigma(\beta'X) ) \\
+		&= (X'BX)^{-1} X'B \bigl( X \beta - B^{-1}( \sigma(\beta'X) - t ) \bigr) \,,
+	\end{align*}
+	where the term in brackets is the adjusted response;
+	\item repeat step 2 until a convergence criteria is met.
+\end{enumerate}
+If $Z = X \beta - B^{-1}( \sigma(\beta'X) - t )$, then $\beta_{\text{new}}$ is the
+solution produced by weighted least squares with weighing matrix $B$ :
+\[ ( Z - X\gamma )'B (Z - X\gamma ) \to \min_\gamma \,, \]
+where $B$ must be positive definite. The first order conditions are
+\[ - 2 X'BZ + 2 X'BX \gamma = 0 \,. \]
 
 \clearpage
 % section question_6 (end)
