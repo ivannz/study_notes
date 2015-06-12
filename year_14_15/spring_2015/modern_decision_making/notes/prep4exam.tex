@@ -13,8 +13,10 @@
 \newcommand{\argmax}{\mathop{\text{argmax}}}
 \newcommand{\tr}{\text{tr}}
 \newcommand{\one}{\mathbf{1}}
+\newcommand{\nil}{\mathbf{0}}
 \newcommand{\RSS}{{\text{RSS}}}
 \newcommand{\Lcal}{\mathcal{L}}
+\newcommand{\Hcal}{\mathcal{H}}
 
 \usepackage[english, russian]{babel}
 \newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
@@ -32,9 +34,9 @@
 \label{sec:question_1}
 \textbf{\large \textbf{Q}} : Show that the least square solution to the general
 linear fitting problem corresponds to the orthogonal projection of the response
-variable onto the plane spanned by the columns of X.
+variable onto the plane spanned by the columns of $X$.
 
-\noindent{\large \textbf{A}} : 
+\noindent{\large \textbf{A}} .\hfill\\ 
 
 \clearpage
 % section question_1 (end)
@@ -44,7 +46,7 @@ variable onto the plane spanned by the columns of X.
 \textbf{\large \textbf{Q}} : Derive the solutions to the lasso and ridge regression
 when the columns of $X$ are orthogonal.
 
-\noindent{\large \textbf{A}} :
+\noindent{\large \textbf{A}} .\hfill\\
 The problem of penalized (ridge, LASSO) regression in the matrix form, where $X$
 is the $n\times k$ matrix of centred standardized input variables with \textbf{no}
 intercept, and $T$ -- the response, is to minimize with respect to $\beta$ :
@@ -102,7 +104,63 @@ value of $\int_a^b |f''(x)|^2 dx$ among all smooth curves that interpolate the
 data, and explain why the solution to the smoothing spline problem is a natural
 cubic spline.
 
-\noindent{\large \textbf{A}} :
+\noindent{\large \textbf{A}} .\hfill\\
+The goal of fitting a smoothing spline is to find a function $g(x)$ among all
+functions with continuous second derivative, that minimizes the following penalized
+sum of squares
+\[ \sum_{i=1}^n (t_i - g(x_i))^2 + \lambda \int |g''(s)|^2 ds \,, \]
+where $(x_i,t_i)_{i=1}^n$ is the data with $x_1<\ldots<x_i<\ldots<x_n$.
+This functional basically rewards fitting the data as close as possible with $g$
+while penalizing $g$ for irregular behaviour. The \textbf{NCS} is a $C^2[a,b]$-smooth
+curve interpolating the data $(\xi_k, g_k)_{k=1}^K$ with a piecewise linear second
+derivative, which is zero outside $[\xi_1,\Xi_K]$.
+
+The NCS $g$ has the minimum value of the smoothness integral $\int_a^b |g''(s)|^2 ds$
+among all $C^2[a,b]$-smooth curves interpolating the data. Indeed, let $f\in C^2[a,b]$
+interpolate the data $(\xi_k, g_k)_{k=1}^K$. Then the function $h = g - f$ has roots
+at knots $(\xi_k)_{k=1}^K$. Integrating by parts
+\[
+\int_a^b h'' g'' ds
+= \Bigl. h'(s) g''(s)\Bigr\rvert_a^b - \int_a^b h'(s) g'''(s) ds \,,
+\]
+and since $g'''$ is zero outside $[\xi_1, \xi_K]$, and piecewise inside, and
+$g''$ is zero at the endpoints of $[a,b]$
+\[
+\ldots
+= - \int_{\xi_1}^{\xi_K} h'(s) g'''(s) ds \\
+= - \sum_{k=1}^{K-1} \int_{\xi_k}^{\xi_{k+1}} h'(s) g'''(s) ds \,.
+\]
+Furthermore, since $g'''(x) = \alpha_k$ over each $[\xi_k,\xi_{k+1}]$ and $h(\xi_k)=0$
+for all $k$
+\[
+\ldots
+= - \sum_{k=1}^{K-1} \int_{\xi_k}^{\xi_{k+1}} h'(s) \alpha_k ds
+= - \sum_{k=1}^{K-1} \alpha_k (h(\xi_{k+1})-h(\xi_k)) = 0\,.
+\]
+The total variation of the $2$-nd derivative of $f$ is therefore
+\begin{align*}
+	\int_a^b |f''|^2 ds
+	&= \int_a^b \bigl|g'' + h''\bigr|^2 ds
+	= \int_a^b |g''|^2 + |h''|^2 ds + 2 \int_a^b h'' g'' ds\\
+	&= \int_a^b |g''|^2 + |h''|^2 ds \geq \int_a^b |g''|^2 ds
+\end{align*}
+
+Any map $f\in C^2[a,b]$ by a smooth adjustment can be forced to be an interpolating
+function of data $(\xi_k, g_k)_{k=1}^K$. Thus it is always possible to reduce the
+first part of the objective function. But as has been shown the NCS yields the lowest
+penalty integral term, which means that such functions would necessarily produce
+lower objective function values.
+
+Formally the NCS is defined as follows :
+\[
+g(x)
+= A_k(x - \xi_k) + B_k + \frac{1}{6}
+	\frac{\gamma_{k+1}(x-\xi_k)^3+\gamma_k(\xi_{k+1}-x)^3}{\xi_{k+1}-\xi_k}\,,
+\]
+for all $x\in (\xi_k,\xi_{k+1}]$ and $k=1, K-1$. The regions beyond the boundaries
+by definition must be linear, therefore $g(x) = A_0 (\xi_1-x) + B_0$ for $x\leq \xi_1$
+and $g(x) = A_K (x-\xi_1) + B_K$ for $x > \xi_K$.
+
 
 \clearpage
 % section question_3 (end)
@@ -113,7 +171,79 @@ cubic spline.
 and show that it can be expressed as
 \[ \hat{g} = S_\lambda \mathbf{t} = \sum_{j=1}^n \frac{1}{1+\lambda \eta_{n-j+1}} \langle u_j, \mathbf{t} \rangle u_j \,. \]
 
-\noindent{\large \textbf{A}} :
+\noindent{\large \textbf{A}} .\hfill\\
+The smoothing spline problem is to find a smooth function that interpolates the
+training data $(x_i,t_i)_{i=1}^n$, with $x_i\neq x_j$, and that minimizes the following
+objective :
+\[
+\sum_{i=1}^n (t_i - g(x_i))^2 + \lambda \int |g''(s)|^2 ds \to \min_{y\in C^2[a,b]}\,.
+\]
+The optimal solution to this kind of problem turns out to be the NCS. If a vector
+of values $g_i$ at $x_i$ is given, then the optimal NCS could be recovered via the
+relationship with $2$-nd derivatives $\gamma$ at those points: $Q'g = R'\gamma$,
+where $R$ is $(K-2)\times(K-2)$ symmetric and positive-definite matrix, and $Q$
+is $K\times(K-2)$. THese matrices depend on the unique $x_i$ points.
+
+Therefore the smoothing spline problem reduces to :
+\[ (t - g)'(t - g) + \lambda g'K g \to \min_g \,,\]
+where $K = Q R^{-1} Q'$. The solution turns out to be given by :
+\[ \hat{g} = (I_n + \lambda K)^{-1} \mathbf{t} \,. \]
+This vector uniquely identifies the NCS, thereby giving a closed form solution 
+the original. Though the solution resembles the linear regression case, the \textbf{
+smoother matrix} $S_\lambda = (I_n + \lambda K)^{-1}$, is not a projector.
+
+The matrices $K$ and $S_\lambda$ have the same eigenvectors : if $S_\lambda u = \mu u$,
+for some $(\mu, u)$, $u\neq 0$, then
+\[
+u
+= \mu S_\lambda^{-1} u
+= \mu (I+\lambda K) u
+= \mu u + \mu \lambda K u\,,
+\]
+whence $u$ is an eigenvector of $K$ corresponding to an eigenvalue $\frac{1-\mu}{\lambda \mu}$.
+The converse implication is similar: $K u = \eta u$ implies
+\[ ( \lambda K + I ) u = ( \lambda \eta + 1 ) u \,, \]
+whence $S_\lambda u = \mu u$ with $\mu = \frac{1}{\lambda \eta + 1}$.
+
+Finally, the matrix $K = Q R^{-1} Q'$ depends on the spacing between the interpolation
+knots only, whence its eigenvalues and eigenvectors are determined exclusively by the
+data to be interpolated.
+
+In conclusion, if $(\mu_k)_{k=1}^n$ are eigenvalues of $S_\lambda$ in non-increasing
+order, then the corresponding eigenvectors $(u_k)_{k=1}^n$ are the eigenvectors
+of $K$ with eigenvalues $(\eta_j)_{j=1}^n$, given by 
+\[ \eta_{n-j+1} = \frac{1}{1 + \lambda \mu_j} \,. \]
+
+Consider the \textbf{SVD} of $S_\lambda$, which is symmetric and positive semi-definite.
+Thus the SVD coincides with the eigenvalue decomposition, where $U = V$: 
+\[ S_\lambda = U M U' \,, \]
+with $M = \text{diag}(\mu_i)_{i=1}^n$ -- the eigenvalues. The spectral decomposition
+of $S_\lambda$ yields :
+\[
+\hat{g}
+= S_\lambda \mathbf{t}
+= \sum_{j=1}^n \mu_j u_j u_j' \mathbf{t}
+= \sum_{j=1}^n \mu_j u_j \langle u_j, \mathbf{t} \rangle\,.
+\]
+Since each eigenvector $u_j$ of $S_\lambda$ is independent of the actual value
+of $\lambda$, the projection is made onto a fixed subspace, determined by the data
+only.
+Expressing the eigenvalues of $S_\lambda$ through eigenvalues of $K$ results in :
+\[
+\hat{g}
+= \sum_{j=1}^n \frac{1}{1 + \lambda \eta_{n-j+1}} \langle u_j, \mathbf{t} \rangle u_j \,.
+\]
+The higher the index of the eigenvector $j$, the smaller the respective eigenvalue
+of $S_\lambda$ is, and the more smoothing takes place. Higher $u_j$ correspond to
+more and more oscillating functions of $x$ and the smoothing spline penalty ignores
+the linear components: $\int_a^b | (p s + q)'' |^2 ds = 0$. Therefore two least
+eigenvalues of $K$ ($\eta_n$ and $\eta_{n-1}$) are zero and the matrix $K$ makes
+the first $\mu_1$ and $\mu_2$ equal to $1$ :
+\[
+\hat{g} =
+\langle u_1, t \rangle u_1 + \langle u_2, t \rangle u_2 +
++ \sum_{j=3}^n \mu_j \langle u_j, t \rangle u_j\,.
+\]
 
 \clearpage
 % section question_4 (end)
@@ -122,7 +252,7 @@ and show that it can be expressed as
 \label{sec:question_5}
 \textbf{\large \textbf{Q}} : Understand Laplace approximation.
 
-\noindent{\large \textbf{A}} :
+\noindent{\large \textbf{A}} .\hfill\\
 The general idea (in the univariate case) is to use Gaussian distribution to approximate
 some unnormalized, but \textbf{unimodal}, probability density
 \[ p(x) \propto f(x) \,, \]
@@ -175,7 +305,7 @@ N \approx f(x_0) (2\pi)^{\frac{d}{2}} |\Lambda|^{-\frac{1}{2}} \,.
 \textbf{\large \textbf{Q}} : Derive the iterative reweighed least square algorithm for
 binary logistic regression.
 
-\noindent{\large \textbf{A}} :
+\noindent{\large \textbf{A}} .\hfill\\
 
 \clearpage
 % section question_6 (end)
@@ -184,7 +314,7 @@ binary logistic regression.
 \label{sec:question_7}
 \textbf{\large \textbf{Q}} : Derive the EM algorithm.
 
-\noindent{\large \textbf{A}} :
+\noindent{\large \textbf{A}} .\hfill\\
 The EM algorithm seeks to maximize the likelihood by means of successive application
 of two steps: the \textbf{E}-step and the \textbf{M}-step. Consider a probability
 density $p(X|\Theta)$ of observations $X$ given some parameter $\Theta$. For any
@@ -265,7 +395,63 @@ This implies that \textbf{EM} indeed iteratively improves the log-likelihood.
 \textbf{\large \textbf{Q}} : Express Fisher's linear discriminant criterion (Rayleigh
 quotient), and find the optimal separating hyperplane according to this criterion.
 
-\noindent{\large \textbf{A}} :
+\noindent{\large \textbf{A}} .\hfill\\
+Suppose the training sample is $(x_i, t_i)_{i=1}^n \in \Real^p \times\{-1,+1\}$ --
+a two-class classification problem. The idea of Fisher's linear discriminant
+criterion is to reduce the dimensionality of the data by projecting it onto a line,
+chosen in such a way as to facilitate easier binary separation. For $k\in\{-1,+1\}$
+let
+\[ \bar{m}_k = \frac{1}{|C_k|} \sum_{i\in C_k} x_i \,, \]
+where $C_k = \{ i : t_i = k \}$. Further define
+\[
+\Sigma_k = \frac{1}{|C_k|} \sum_{i\in C_k} ( x_i - \bar{m}_k )( x_i - \bar{m}_k )'\,,
+\]
+which is the within-class variance matrix. Further any $\beta$ let
+\[ m_k(\beta) = \beta'\bar{m}_k\,, \] 
+and
+\[ S_k(\beta) = \frac{1}{|C_k|} \sum_{i\in C_k} ( \beta'x_i - m_k )^2 \,. \]
+
+Fisher's linear discriminant is such a hyperplane, given by the normal vector $\beta$,
+that maximizes the Fisher's separation criterion given by
+\[ C(\beta) = \frac{\bigl(m_+(\beta)-m_-(\beta)\bigr)^2}{ S_-(\beta) + S_+(\beta) }\,. \]
+In fact the separation criterion may be simplified to
+\begin{align*}
+	C(\beta)
+	&= \frac{\bigl(\beta'(\bar{m}_+ - \bar{m}_-)\bigr)^2}{ \beta'( \Sigma_+ + \Sigma_- )\beta }\\
+	&= \frac{\beta'(\bar{m}_+ - \bar{m}_-)(\bar{m}_+ - \bar{m}_-)'\beta}{ \beta'( \Sigma_+ + \Sigma_- )\beta }\\
+	&= \frac{\beta'S_B\beta}{ \beta'S_W\beta }\,,
+\end{align*}
+where $S_W = \Sigma_+ + \Sigma_-$ is the within-class variance, and $S_B$ --
+the between class variance (scatter) matrix given by
+\[ S_B = (\bar{m}_+ - \bar{m}_-)(\bar{m}_+ - \bar{m}_-)'\,. \]
+
+Thus the separation criterion we are trying to maximize is the Rayleigh quotient
+\[ \mathcal{R}(\beta) = \frac{\beta'S_B\beta}{\beta'S_W\beta}\,. \]
+Since $\mathcal{R}(\beta)$ is homogeneous of degree $0$ in $\beta$ it is possible
+to fix the denominator and then maximize the numerator only:
+\[ \beta'S_B\beta \to \max_\beta \,,\]
+subject to $\beta'S_W\beta = 1$. The optimal solution is given by the first order
+conditions (KKT) $S_B\beta - \lambda S_W \beta = 0$ and $\beta'S_W\beta = 1$.
+Note that these conditions imply that $\beta'S_B\beta = \lambda$. Thus the problem
+further simplifies to finding the largest eigenvalue and the corresponding eigenvector
+in the generalized eigenvalue-eigenvector problem $S_B\beta = \lambda S_W\beta$ with
+normalisation $\beta'S_W\beta = 1$.
+
+Notice that
+\[
+S_B \beta_* = (\bar{m}_+ - \bar{m}_-) \bigl( (\bar{m}_+ - \bar{m}_-)'\beta_* \bigr)
+\propto \bar{m}_+ - \bar{m}_-\,,
+\]
+whence the normal to the hyperplane with the best separation criterion is given by
+\[ \beta_* \propto S_W^{-1} (\bar{m}_+ - \bar{m}_-) \,. \]
+The optimal threshold for the discriminant hyperplane is found by projecting the 
+training data into the space spanned by $\beta^*$ and then threshold that best
+separates the data is chosen from analysis of the one-dimensional distribution.
+With the ``best'' threshold $\beta_0$ the classification rule becomes
+\[\text{class}(x) = \begin{cases}
+	\text{class}_1, &\text{ if } \beta_*' x + \beta_0 \geq 0\\
+	\text{class}_2, &\text{ otherwise }
+\end{cases}\,.\]
 
 \clearpage
 % section question_8 (end)
@@ -274,7 +460,7 @@ quotient), and find the optimal separating hyperplane according to this criterio
 \label{sec:question_9}
 \textbf{\large \textbf{Q}} : Explain and understand the CART procedure.
 
-\noindent{\large \textbf{A}} :
+\noindent{\large \textbf{A}} .\hfill\\
 
 \clearpage
 % section question_9 (end)
@@ -283,7 +469,7 @@ quotient), and find the optimal separating hyperplane according to this criterio
 \label{sec:question_10}
 \textbf{\large \textbf{Q}} : Derive the AdaBoost algorithm.
 
-\noindent{\large \textbf{A}} :
+\noindent{\large \textbf{A}} .\hfill\\
 
 \clearpage
 % section question_10 (end)
@@ -295,8 +481,7 @@ solutions to the primal and dual problem must satisfy the KKT conditions (necess
 condition). Show that the KKT conditions are also sufficient when the problem is
 convex.
 
-\noindent{\large \textbf{A}} :
-
+\noindent{\large \textbf{A}} .\hfill\\
 Consider a constrained optimization problem in its normal form :
 \[ f_0(x) \to \min_x \,, \]
 subject to
@@ -323,8 +508,11 @@ for all $\lambda\geq0$ and $\nu$ (feasibility is important to ensure the right-m
 inequality).
 
 The dual problem is finding the ``best'' lower bound $d^* = g(\lambda,\nu)$ for
-admissible $\lambda\geq 0$ but there is no guarantee that this lower bound is any
-good.
+admissible $\lambda\geq 0$
+\[
+g(\lambda,\nu) \to \max_{\lambda,\nu}\,,
+\]
+but there is no guarantee that this lower bound is any good.
 
 \textbf{Strong duality} takes place when the duality gap $f_0(x^*) - d^*\geq 0$ is
 strictly $0$, and Slater's Constraint Qualifications for convex optimization ensure
@@ -393,7 +581,155 @@ due to feasibility and complementary slackness conditions.
 \textbf{\large \textbf{Q}} : Derive the maximum margin classifier in the linearly
 separable and non-separable case (dual problem, KKT conditions, etc).
 
-\noindent{\large \textbf{A}} :
+\noindent{\large \textbf{A}} .\hfill\\
+Consider a standard two-class classification problem on the training data
+$(x_i,t_i)_{i=1}^n$ with $t_i\in\{-1,+1\}$. We want to find the best hyperplane
+in the sense that the distance to it from the closet data point (\textbf{the margin})
+is the largest. Under the $\pm1$ coding the \textbf{SVM} problem is
+\[ M \to \max_{\beta, \beta_0}\,, \]
+subject to $\|\beta\| = 1$ and
+\[t_i(x_i'\beta + \beta_0) \geq M\,,\]
+for all $i=1,\ldots,n$. Converting maximization into minimization by $a\mapsto a^{-1}$
+and dividing by $M$ the problem equivalently transforms into
+\[
+\frac{1}{2}\|\beta\|^2 \to \min_{\beta_0,\beta}
+\text{ s.t. }
+t_i(\beta_0+x_i'\beta)\geq 1\,\forall i=1,\ldots,n\,.
+\]
+The primal problem's Lagrangian is given by
+\[
+\Lcal(\beta_0, \beta, \lambda)
+= \frac{1}{2} \|\beta\|^2 + \sum_{i=1}^n \lambda_i \bigl( 1 - t_i(x_i'\beta+\beta_0) \bigr)\,,
+\]
+and the Lagrange dual
+\[
+g(\lambda) = \inf_{\beta_0,\beta} L(\beta_0, \beta, \lambda)\,.
+\]
+
+The objective function is convex and the restrictions are linear, and linear separability
+of the data implies that the primal problem is feasible. By Slater's constraint
+qualifications \textbf{strong duality} holds. Thus optimal $\beta_0^*$, $\beta^*$
+and $\lambda^*$ satisfy the KKT conditions: \begin{itemize}
+	\item Primal constraints: $t_i( x_i'\beta^* + \beta^*_0 )\geq1$;
+	\item Dual constraints: $\lambda^*_i\geq 0$;
+	\item Complementary slackness: $\lambda^*_i \bigl( 1 - t_i(x_i'\beta^*+\beta^*_0) \bigr) = 0$;
+	\item The gradient vanishes:
+	\[ \frac{\partial \Lcal}{\partial \beta_0} = - \sum_{i=1}^n \lambda_i t_i = 0\,, \]
+	and
+	\[ \frac{\partial \Lcal}{\partial \beta} = \beta - \sum_{i=1}^n \lambda_i t_i x_i = 0\,. \]
+\end{itemize}
+Therefore $\beta^*(\lambda) = \sum_{i=1}^n \lambda_i t_i x_i$ and by plugging
+$\beta^*(\lambda)$ into $\Lcal(\beta_0, \beta, \lambda)$ the Lagrange dual becomes:
+\begin{align*}
+	g(\lambda)
+	&= \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n \lambda_j \lambda_i t_j t_i x_i'x_j
+		- \sum_{i=1}^n \sum_{j=1}^n \lambda_j \lambda_i t_j t_i x_i' x_j
+		+ \sum_{i=1}^n \lambda_i\,,
+\end{align*}
+Let $H_{ij} = t_j t_i x_i' x_j$, which is the inner product in $\Real^p$ space of
+the $i$-th and $j$-th data points. In the matrix form the Lagrangian dual is
+\[ g(\lambda) = \one' \lambda - \frac{1}{2} \lambda'H\lambda \,. \]
+The final dual problem thus becomes
+\[ \one' \lambda - \frac{1}{2} \lambda' H \lambda \to \max_\lambda\,,\]
+subject to
+\[ \lambda \geq 0 \text{ and } \lambda' t = 0\,. \]
+
+For some $i=1,\ldots, n$ consider the complementary slackness condition
+\[ \lambda_i \bigl( 1 - t_i ( x_i'\beta^* + \beta^*_0 ) \bigr) = 0 \,. \]
+If $\lambda^*_i > 0 $ then $t_i ( x_i'\beta^* + \beta^*_0) = 1$, and such points
+necessarily lie on the margin. These are the \textbf{support vectors}. The points
+that are far away from the margin, i.e. $t_i ( x_i'\beta^* + \beta^*_0) > 0$ must
+have $\lambda^*_i = 0$. The fact that only for a few $i$, $\lambda^*_i>0$ gives
+the so called sparse solution.
+
+The support vectors give the optimal value of $\beta^*_0$. Let the set of all support
+vectors be
+\[ \text{SV} = \{i=1,\ldots,n| \lambda^*_i>0\} \,. \]
+\textbf{hopefully it is non-empty}. For all $i\in \text{SV}$, one has
+$x_i'\beta^* + \beta^*_0 = t_i $, as $t_i = \pm 1$, whence
+\[ 
+x_i'\beta^* + \beta^*_0 - t_i 
+= \sum_{j=1}^n \lambda^*_j t_j x_i'x_j + \beta^*_0 - t_i \,.
+\]
+Therefore
+\[ \beta^*_0 = t_i - \sum_{j:\lambda^*_i>0} \lambda^*_j t_j x_i'x_j \,. \]
+For numerical stability average this expression across all vectors in $\text{SV}$.
+
+\subsection*{non-separable case} % (fold)
+\label{sub:non_separable_case}
+
+In order to tackle the non-separable case, permit certain slackness in the classification
+for extra flexibility. Let $\xi_i \geq 0$ be the classification slack variable for a data
+point $i$. The idea is that each $\xi_i$ can be seen as a penalty for misclassification:
+one expects \begin{itemize}
+	\item $\xi_i = 0$ for correctly classified points outside of the margin;
+	\item $\xi_i\in(0,1]$ for correctly classified points within the margin;
+	\item $\xi_i = 1$ for the points on exactly on the separating hyperplane;
+	\item $\xi_k > 1$ for data points that are misclassified.
+\end{itemize}
+
+As in the separable case, this ``relaxed'' problem of maximizing the margin becomes
+\[ \frac{1}{2} \|\beta\|^2 + C \sum_{i=1}^n \xi_i \to \min_{\beta_0,\beta, \xi}\,, \]
+subject to classification constraints with some slack :
+\[ t_i( \beta_0 + x_i'\beta ) \geq 1 - \xi_i \,, \]
+and $\xi_i\geq 0$ for $i=1,\ldots,n$. The larger the $C>0$, the narrower is the optimal
+margin. The Lagrangian of this primal problem is given by
+\begin{align*}
+	\Lcal(\beta_0,\beta,\xi, \lambda,\mu)
+	&= \frac{1}{2} \|\beta\|^2 + C \sum_{i=1}^n \xi_i \\
+	&+ \sum_{i=1}^n \lambda_i \Bigl( 1 - \xi_i - t_i ( x_i'\beta + \beta_0 ) \Bigr)
+	+ \sum_{i=1}^n \mu_i ( - \xi_i )\,.
+\end{align*}
+The KKT conditions are \begin{itemize}
+	\item $t_i \bigl( \beta_0 + x_i'\beta \bigr) \geq 1 - \xi_i$ and $\xi_i \geq 0$;
+	\item $\lambda_i,\mu_i \geq 0$;
+	\item $\lambda_i \Bigl( 1 - \xi_i - t_i ( x_i'\beta + \beta_0 ) \Bigr) = 0$
+		and $\mu_i ( - \xi_i ) = 0$;
+	\item \begin{description}
+		\item[$\beta_0$ :] $ -\sum_{i=1}^n \lambda_i t_i = 0$;
+		\item[$\beta$ :] $ \beta - \sum_{i=1}^n \lambda_i t_i x_i = 0$;
+		\item[$\xi$ :] $ C - \lambda_i - \mu_i = 0$.
+	\end{description}
+\end{itemize}
+For $\beta_0$, $\beta$, $\xi$, $\lambda$ and $\mu$ satisfying the KKT,
+\[ \beta = \sum_{i=1}^n \lambda_i t_i x_i\,, \]
+and the Lagrange dual function (after minor rearrangement) is
+\begin{align*}
+	g(\lambda,\mu)
+	& = \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n \lambda_i \lambda_j t_i t_j x_i'x_j
+		+ \sum_{i=1}^n \xi_i ( C - \lambda_i - \mu_i ) \\
+	&- \sum_{i=1}^n \sum_{j=1}^n \lambda_i \lambda_j t_i t_j x_i'x_j \\
+		- \beta_0 \sum_{i=1}^n \lambda_i t_i
+		+ \sum_{i=1}^n \lambda_i \,.
+\end{align*}
+Exploiting the vanishing of the gradient and the dual feasibility conditions, the
+function reduces to
+\[
+g(\lambda,\mu) =
+- \frac{1}{2} \sum_{i=1}^n\sum_{j=1}^n \lambda_i\lambda_j t_i t_j x_i'x_j
++ \sum_{i=1}^n \lambda_i \,.
+\]
+Therefore the dual problem is
+\[ \one' \lambda - \frac{1}{2}\lambda'H\lambda \to \max_\lambda \]
+subject to $\lambda't = 0$ and $0\leq \lambda\leq C$ -- the box constraint.
+
+Characterization of a solution:
+\begin{description}
+	\item[$\lambda^*_i = 0$] Then $\mu^*_i = C$, $\xi^*_i = 0$ and $t_i ( \beta^*_0 + x_i'\beta^* ) \geq 1 - 0$;
+	\item[$\lambda^*_i > 0$] Then $t_i ( \beta^*_0 + x_i'\beta^* ) = 1 - \xi^*_i$ and $\xi^*_i \geq 0$.
+		When $\lambda^*_i < C$, then $\mu^*_i > 0$, whence $\xi^*_i = 0$ and $t_i ( \beta^*_0 + x_i'\beta^* ) = 1$;
+	\item[$\lambda^*_i = C$] Then $t_i ( \beta^*_0 + x_i'\beta^* ) = 1 - \xi^*_i$,
+	$\mu^*_i=0$ and the point is either inside the margin and correctly classified
+	$\xi^*_i \in [0,1]$, or the point is misclassified and $\xi^*_i > 1$.
+\end{description}
+To get $\beta_0$ compute 
+\[ \beta^*_0 = t_i - \sum_{j\in\text{SVE}} \lambda^*_j t_j x_i'x_j \]
+where $\text{SVE} = \{i: \lambda^*_i > 0 \text{ and } \xi^*_i = 0 \}$.
+
+Is there a guarantee that there necessarily exists $i$ with $\xi^* = 0$ and
+$\lambda^*_i>0$? \textbf{Who knows}.
+
+% subsection* non_separable_case (end)
 
 \clearpage
 % section question_12 (end)
@@ -403,7 +739,278 @@ separable and non-separable case (dual problem, KKT conditions, etc).
 \textbf{\large \textbf{Q}} : Show that the function K is a kernel if and only if
 it is a symmetric positive definite function.
 
-\noindent{\large \textbf{A}} :
+\noindent{\large \textbf{A}} .\hfill\\
+A pair $(\Hcal, \langle\cdot,\cdot\rangle)$ is a Hilbert space, if  $\Hcal$ is a
+vector space over the field $\Real$, $\langle\cdot,\cdot\rangle$ is an inner product
+on $\Hcal$, and $\Hcal$ is complete with respect to the inner product's norm $\|\cdot\|$.
+
+Let $X$ be some set, the nature of which is irrelevant. A function $K:X\times X\to \Real$
+is called a \textbf{kernel} if there exists a Hilbert space $\Hcal$ and a mapping
+$\Phi : X \to \Hcal$ such that for all $x,y\in X$
+\[ K(x,y) = \bigl\langle \Phi(x), \Phi(y) \bigr\rangle \,. \]
+The space $\Hcal$ is a new feature space and the map $\Phi$ embeds the original
+feature set $X$ in $\Hcal$.
+
+A function $K : X\times X \to \Real$ is symmetric and positive-definite if \begin{itemize}
+	\item $K(x,y) = K(y,x)$ for all $x,y\in X$;
+	\item for any $n\geq1$ and $(x_i)_{i=1}^n\in X$ the matrix
+	\[ K_{xx} = \begin{pmatrix}
+			K(x_1,x_1) & K(x_1,x_2) & \cdots & K(x_1,x_1) \\
+			K(x_2,x_1) & K(x_2,x_2) & \cdots & K(x_2,x_2) \\
+			\vdots & \vdots & \ddots & \vdots \\
+			K(x_n,x_1) & K(x_n,x_2) & \cdots & K(x_n,x_n)
+		\end{pmatrix} \]
+	is positive-definite. In other words
+	\[ \sum_{i=1}^n \sum_{j=1}^n \lambda_i K(x_i,x_j)\lambda_j \geq 0\,, \]
+	for any $\lambda = (\lambda_i)_{i=1}^n \in \Real$.
+\end{itemize}
+If $K : X\times X \to \Real$ is symmetric and positive-definite, then
+\[ K_{xy} = \begin{pmatrix}
+	K(x,x) & K(x,y)\\
+	K(y,x) & K(y,y)
+\end{pmatrix} \]
+must be positive definite. This means that $|K_{xy}|\geq 0$, whence follows an
+analogue of Cauchy-Schwartz-Bunyakovsky inequality :
+\[ K(x,y)^2 \leq K(x,x) K(y,y)\,. \]
+
+\noindent\textbf{Theorem}\hfill\\
+A function $K : X\times X \to \Real$ is a kernel if and only if it is symmetric and
+positive-definite.
+
+\noindent\textbf{$\Rightarrow$} If $K$ is a kernel, then there exists a Hilbert space $(\Hcal, \langle\cdot,\cdot\rangle)$
+and a map $\Phi:X\to \Hcal$ such that
+\[ K(x,y) = \langle \Phi(x), \Phi(y)\rangle\,. \]
+First, symmetry of the inner product implies symmetry of kernel $K$. Next, let 
+$n\geq1$, $(x_i)_{i=1}^n\in X$ and $(\lambda_i)_{i=1}^n \in \Real$. Then by bilinearity
+of the inner product
+\begin{align*}
+	\sum_{i=1}^n \sum_{j=1}^n \lambda_i K(x_i,x_j)\lambda_j
+	&= \sum_{i=1}^n \sum_{j=1}^n \lambda_i \langle \Phi(x_i), \Phi(x_j)\rangle \lambda_j
+	= \langle \sum_{i=1}^n \lambda_i \Phi(x_i), \sum_{j=1}^n \Phi(x_j) \lambda_j\rangle\\
+	&= \| \sum_{i=1}^n \lambda_i \Phi(x_i) \lambda_j \|^2
+	\geq 0\,,
+\end{align*}
+and $K$ is positive-definite.
+
+\noindent \textbf{ $\Leftarrow$ : building the space}\hfill\\
+Consider a symmetric and positive-definite function $K : X \times X \to \Real$.
+Define
+\[
+\Hcal_0 = \bigl\{ \sum_{i=1}^n \alpha_i K(\cdot, x_i)\,\big|\,
+n\geq 1,\, (x_i)_{i=1}^n\in X\, \text{ and }\, (\alpha_i)_{i=1}^n\in \Real \bigr\}\,.
+\]
+Being a set of linear combinations this set is a linear space over $\Real$.
+
+Let $f,g\in \Hcal_0$, with representations $f = \sum_{i=1}^n \alpha_i K(\cdot, x_i)$ and
+$g = \sum_{j=1}^m \beta_j K(\cdot, y_j)$. Define
+\[ \langle f, g \rangle_0 = \sum_{i=1}^n \sum_{j=1}^m \alpha_i \beta_j K(x_i, y_j)\,. \]
+For another representation of $f$, given by $f = \sum_{l=1}^q \xi_l K(\cdot, z_l)$:
+\begin{align*}
+	\sum_{l=1}^q \sum_{j=1}^m \xi_i \beta_j K(z_l, y_j)
+	&= \sum_{j=1}^m \beta_j \sum_{l=1}^q \xi_i K(y_j, z_l) 
+	 = \sum_{j=1}^m \beta_j f(y_j) \\
+	&= \sum_{j=1}^m \beta_j \sum_{i=1}^n \alpha_i K(y_j, x_i) 
+	 = \sum_{i=1}^n \sum_{j=1}^m \alpha_i \beta_j K(x_i, y_j) \,,
+\end{align*}
+which means the inner product $\langle \cdot,\cdot \rangle_0$ is well-defined.
+Let $\|f\|_0 = \sqrt{\langle f, f\rangle_0}$ for any $f\in \Hcal_0$.
+
+For any $x,y\in X$ the functions $K(\cdot,x), K(\cdot,y)$ are in $\Hcal_0$, whence
+by construction of $\langle\cdot,\cdot\rangle_0$
+\[ \langle K(\cdot,x), K(\cdot,y) \rangle_0 = K(x,y) \,.\]
+This means that with respect to this ``inner product'', ``kernel'' $K$ reproduces itself.
+As a corollary 
+\[ \| K(\cdot,x) \|_0 = \sqrt{ K(x,x) } \,.\]
+
+The symmetry of $K$ implies symmetry of $\langle \cdot,\cdot \rangle_0$, and
+bilinearity follows by construction. For any $f\in \Hcal_0$
+\[ \langle f, f \rangle_0 = \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j K(x_i, x_j) \geq 0\,, \]
+since $K$ being positive-definite. Furthermore for any function $f\in \Hcal_0$
+and $x\in X$ one has
+\begin{align*}
+	f(x) &= \sum_{i=1}^n \alpha_i K(x, y_i)
+	 = \sum_{i=1}^n \alpha_i \langle K(\cdot,x), K(\cdot,y_i) \rangle_0 \\
+	&= \bigl\langle \sum_{i=1}^n \alpha_i K(\cdot,y_i), K(\cdot,x) \bigr\rangle_0 
+	 = \langle f, K(\cdot,x) \rangle_0 \,,
+\end{align*}
+which is the so-called \textbf{reproducing} property of $K$ with respect to $\langle \cdot,\cdot \rangle_0$.
+A particularly interesting corollary is that for any $f\in \Hcal_0$
+\[
+\langle f, f \rangle_0
+= \bigl\langle f, \sum_{i=1}^p \alpha_i K(\cdot, x_i) \bigr\rangle_0
+= \sum_{i=1}^p \alpha_i \langle f, K(\cdot, x_i) \rangle_0
+= \sum_{i=1}^p \alpha_i f(x_i)\,,
+\]
+which actually follows from the construction of the inner product. Furthermore,
+if $f\in \Hcal_0$ is such that $\langle f, f\rangle_0 = 0$, then for any $x\in X$
+\[
+|f(x)|
+= \bigl| \langle f, K(\cdot,x) \rangle_0 \bigr|
+\leq \sqrt{ \langle f,f\rangle_0 } \|K(\cdot,x)\|_0
+= 0 \,,
+\]
+whence $f(\cdot) = \nil$, where $\nil\in \Hcal_0$ is the zero function. The converse
+implication, that for $f=\nil$ $\langle f,f\rangle_0 = 0$ is trivial.
+
+By this point the space $(\Hcal_0,\langle\cdot,\cdot\rangle_0)$ is just an inner
+product space, but with a very important and fruitful property of reproducibility
+of the ``kernel'' $K$.
+
+\noindent\textbf{Lemma \# 1 : } \hfill \\
+Reproducibility implies that for any $f,g\in\Hcal_0$ and $x\in X$
+\[
+| f(x) - g(x) |
+\leq |\langle f-g,K(\cdot,x)\rangle_0|
+\leq \|f-g\|_0 \sqrt{ K(x,x) }\,,
+\]
+which means that the evaluation functional $\delta_x:\Hcal_0\to\Real$ given by
+\[ \delta_x f = f(x) \,,\]
+is bounded. Since it is linear by definition, it must be also continuous in an inner
+product space $(\Hcal_0,\langle\cdot,\cdot\rangle_0)$.
+
+\noindent \textbf{ $\Leftarrow$ : Cauchy sequences in $\Hcal_0$}\hfill\\
+A sequence $(f_n)_{n\geq1} \in \Hcal_0$ is Cauchy if for all $\epsilon>0$ there
+is $N\geq1$ such that
+\[ \|f_n - f_m\|_0 < \epsilon \,, \]
+for all $n,m\geq N$. Main properties include: \begin{itemize}
+	\item If $(f_n)_{n\geq1}\in \Hcal_0$ is Cauchy, then it is bounded in $\Hcal_0$.
+		Indeed, by definition there is $N\geq 1$ such that $ \|f_n - f_N\|_0 < 1 $ for
+		all $n\geq N$, whence $\|f_n\|_0 \leq \|f_N\|_0 + 1$ by the triangle inequality.
+		Letting $M_N = \max_{i=1\ldots,N-1}\|f_i\|$ and setting $M = \max\{M_N, \|F_N\|+1\}$
+		yields an upper bound on $\|f_n\|_0$ for all $n\geq1$.
+	\item Two Cauchy sequences $(f_n)_{n\geq1},(g_n)_{n\geq1}\in \Hcal_0$ are ``equivalent'',
+		$f_n \sim g_n$ if for any $\epsilon>0$ there is $N\geq 1$ such that
+		\[ \| f_n - g_n \|_0 < \epsilon\,, \]
+		for all $n\geq N$. This relation, is symmetric, reflexive and transitive,
+		which can be shown via a standard $2\epsilon$ argument.
+	\item Any stationary sequence $(g)_{n\geq1}\in \Hcal_0$ is Cauchy. Any Cauchy
+		sequence $(g_n)_{n\geq1}\in \Hcal_0$ with $g_n\sim g$, must converge
+		pointwise to $g$.
+\end{itemize}
+
+\noindent\textbf{Lemma \# 2} : if $(f_n)_{n\geq1}\in \Hcal_0$ is a Cauchy sequence,
+then $\|f_n\|_0 \to 0$ if and only if $f_n\to\nil$ pointwise.
+
+\noindent\textbf{Proof: $\Rightarrow$} \hfill\\
+Indeed, if $\|f_n\|_0 \to 0$, then for any $x\in X$
+\[ |f_n(x)| \leq \|f_n\|_0 \sqrt{ K(x,x) }\,, \]
+whence $f_n$ converges pointwise to $\nil$ in $\Real$.
+
+\noindent\textbf{Proof: $\Leftarrow$} \hfill\\
+Conversely, let $(f_n)_{n\geq1}\in \Hcal_0$ be Cauchy. Then \begin{itemize}
+	\item there is $M>0$ such that $\|f_n\|_0\leq M$ for all $n\geq 1$;
+	\item for any $\epsilon>0$ there exists $N_0\geq1$ with
+		\[ \|f_n - f_{N_0} \|_0 < \frac{\epsilon}{2M}\,, \]
+		for all $n\geq N_0$.
+\end{itemize}
+Now $f_{N_0} = \sum_{j=1}^p \beta_j K(\cdot,y_j)$ and by construction
+\[ \langle f_{N_0}, f_n \rangle_0 = \sum_{j=1}^p \beta_j f_n(y_j)\,. \]
+Since $f_n \to \nil$ pointwise for all $j=1,\ldots,p$ there exists $N_j\geq 1$
+such that and $n\geq N_j$
+\[ |f_n(y_j) \leq \frac{\epsilon}{2 p ( |\beta_j| + 1 ) }\,. \]
+Therefore for all $n \geq N = \max_{j=0,1,\ldots,p}N_j$
+\begin{align*}
+	\|f_n\|_0^2
+	& \leq |\langle f_n-f_{N_0},f_n \rangle_0| + |\langle f_{N_0}, f_n \rangle_0| \\
+	& \leq \|f_n-f_{N_0}\|_0 \|f_n\|_0 + \sum_{j=1}^p |\beta_j| |f_n(y_j)| \\
+	& < \frac{\epsilon}{2M} M + \sum_{j=1}^p |\beta_j| \frac{\epsilon}{2 p ( |\beta_j| + 1 ) }\\
+	& < \frac{\epsilon}{2} + p\frac{\epsilon}{2p}\,.
+\end{align*}
+
+\noindent \textbf{ $\Leftarrow$ : Completing $\Hcal_0$}\hfill\\
+Let $(f_n)_{n\geq1}\in \Hcal_0$ be a Cauchy sequence. For every $x\in X$ lemma \#1
+implies that $(f_n(x))_{n\geq1}\in\Real$ is Cauchy, whence there exists $f(x)\in \Real$
+by completeness of $\Real$ such that $f_n\to f$ pointwise.
+
+Completing the $\Hcal_0$ is performed by populating $\Hcal$ with limiting points
+of all Cauchy sequences in $\Hcal_0$. Since stationary sequences are Cauchy, this
+means that $\Hcal_0\subseteq \Hcal$. Furthermore, this $\Hcal$ a linear space due to
+linearity of pointwise convergence.
+
+Next, extend the inner product $\langle\cdot,\cdot\rangle_0$ to $\Hcal$ in the following
+way: any $f,g\in \Hcal$ are limits of some Cauchy sequences $(f_n)_{n\geq1}$ and
+$(g_n)_{n\geq1}$ in $\Hcal_0$, thus put
+\[
+\langle f, g \rangle = \lim_{n\to \infty} \langle f_n, g_n \rangle_0\,.
+\]
+This is indeed an extension, since any $f, g \in \Hcal_0$ are pointwise limits of
+stationary sequences of themselves : $f_n=f$ and $g_n=g$ in $\Hcal_0$, -- whence
+\[
+\langle f, g\rangle
+= \lim_{n\to \infty} \langle f_n, g_n \rangle_0
+= \langle f, g \rangle_0\,.
+\]
+For any $f\in \Hcal$ put $\|f\| = \sqrt{ \langle f,f\rangle}$.
+
+\noindent\textbf{Lemma \# 3} : This extension is well defined.
+
+\noindent\textbf{Proof: existence} \hfill\\
+Let $(f_n)_{n\geq1},(g_n)_{n\geq1}\in \Hcal_0$ be Cauchy. Since every Cauchy sequence
+is bounded there necessarily exists $M\geq 0$ such that $\|f_n\|_0,\|g_n\|_0 \leq M$
+for all $n\geq1$. Now, by the triangle and kernel Cauchy-Schwartz-Bunyakovsky inequalities
+\begin{align*}
+\bigl| \langle f_n, g_n\rangle_0 - \langle f_m, g_m\rangle_0 \bigr|
+&\leq \|f_n\|_0\|f_n-f_m\|_0+\|g_m\|_0\|g_n-g_m\|_0\\
+&\leq M ( \|f_n-f_m\|_0+\|g_n-g_m\|_0)\,.
+\end{align*}
+The fact that both sequences are Cauchy, implies that there is $N\geq1$ such that
+for all $n, m\geq N$ one has
+\[ \|f_n-f_m\|_0,\|g_n-g_m\|_0 < \frac{\epsilon}{2(M+1)}\,. \]
+Hence $(\langle f_n, g_n\rangle_0)_{n\geq1}$ is Cauchy in $\Real$, and thus indeed
+converges.
+
+\noindent\textbf{Proof: independence} \hfill \\
+Let $f,h\in \Hcal$. Then there exist $(f_n)_{n\geq1},(g_n)_{n\geq1}\in \Hcal_0$
+such that $f_n\to f$ and $g_n \to g$ pointwise. If $(f_n')_{n\geq1}$ and $(g_n')_{n\geq1}$
+are another Cauchy sequences in $\Hcal_0$ with $f_n' \to f$ and $g_n' \to g$ pointwise,
+then by lemma \#2 $\|f_n-f_n'\|_0\to 0$ and $\|g_n-g_n'\|_0\to 0$. Since Cauchy sequences
+in $\Hcal_0$ are bounded, there is $M\geq0$ such that $\|f_n'\|_0,\|g_n\|_0\leq M$
+for all $n\geq1$. Therefore
+\begin{align*}
+\bigl| \langle f_n, g_n\rangle_0 - \langle f_n', g_n'\rangle_0 \bigr|
+&\leq \|f_n\|_0\|f_n-f_n'\|_0+\|g_n'\|_0\|g_n-g_n'\|_0\\
+&\leq M ( \|f_n-f_n'\|_0+\|g_n-g_n'\|_0)\,,
+\end{align*}
+whence
+\[
+\lim_{n\to \infty} \langle f_n, g_n \rangle_0
+= \lim_{n\to \infty} \langle f_n', g_n' \rangle_0\,.
+\]
+
+\noindent\textbf{Lemma \# 4} : This extension is an inner product.
+
+\noindent\textbf{Proof} \hfill \\
+It is symmetric and non-negative by being constructed from $\langle\cdot,\cdot\rangle_0$.
+If $f\in\Hcal$ then there is $(f_n)_{n\geq1}\in \Hcal_0$ with $f_n\to f$ pointwise.
+If $\langle f,f\rangle = 0$, then $\|f_n\|_0\to 0$ and $f_n \to \nil$ pointwise by lemma \# 2,
+whence $f = \nil$. Conversely, $\nil\in\Hcal_0$ implies that
+\[ \langle \nil,\nil \rangle = \langle \nil,\nil \rangle_0 = 0 \,. \]
+This extension is bilinear due to the fact that any linear combination of Cauchy sequences is
+a Cauchy sequence and the pointwise limit of a linear combination is a linear
+combination of limits. Thus
+\begin{align*}
+	\langle \alpha f + g, h \rangle
+	&= \lim_{n\to\infty}\langle \alpha f_n + g_n, h_n \rangle_0\\
+	&= \alpha \lim_{n\to\infty}\langle f_n, h_n \rangle_0
+		+ \lim_{n\to\infty}\langle g_n, h_n \rangle_0\\
+	&= \alpha \langle f, h \rangle + \langle g, h \rangle\,.
+\end{align*}
+
+\noindent\textbf{Lemma \# 5} : This extension preserves reproducibility of $K$.
+
+\noindent\textbf{Proof} \hfill \\
+If $f\in \Hcal$, then it is a pointwise limit of some Cauchy sequence $(f_n)_{n\geq1}$
+in $\Hcal_0$. Then for any $x\in X$, $K(\cdot, x)\in \Hcal_0 \subseteq \Hcal$ and
+\[
+\langle f, K(\cdot, x)\rangle
+= \lim_{n\to\infty} \langle f_n, K(\cdot, x)\rangle_0
+= \lim_{n\to\infty} f_n(x)
+= f(x)\,.
+\]
+
+% \noindent\textbf{Lemma \# 6} : The space $\Hcal$ is complete.
+% \noindent\textbf{Proof} \hfill \\
+% Let $(f_n)_{n\geq1}$ be a Cauchy sequence in $\Hcal$ with respect to the norm $\|\cdot\|$.
 
 \clearpage
 % section question_13 (end)
@@ -413,7 +1020,99 @@ it is a symmetric positive definite function.
 \textbf{\large \textbf{Q}} : Prove the representer theorem. Application to kernel
 ridge regression.
 
-\noindent{\large \textbf{A}} :
+\noindent{\large \textbf{A}} .\hfill\\
+Let $X$ be some non-empty set and $\Hcal$ be a Hilbert space of maps $f:X\to\Real$.
+Then $\Hcal$ is \textbf{R}eproducing \textbf{K}ernel \textbf{H}ilbert \textbf{S}pace
+with the inner product $\langle\cdot, \cdot\rangle$ and a reproducing kernel $K: X\times X\to \Real$
+if \begin{itemize}
+	\item for all $x\in X$, $K(\cdot,x) \in \Hcal$ ;
+	\item for all $x\in X$ and $f\in \Hcal$, $f(x) = \langle f, K(\cdot, x) \rangle$;
+\end{itemize}
+Then $K$ is a kernel with feature maps $K(\cdot,x)$ and the associated Hilbert space
+$\Hcal$. By the reproducing property the $K$ is unique.
+
+\noindent\textbf{Theorem} : \hfill\\
+Let $X$ be a non empty set, $K$ be a kernel on $X\times X$ with the corresponding
+RKHS $\Hcal$. Given a training sample $(x_i, t_i)_{i=1}^n \in X \times \Real$, a
+strictly increasing function $\Omega:\Real_+\to\Real$ and an arbitrary loss function
+$L:( X\times \Real^2)^n \to \Real$, the solution $f^*$ to the problem
+\[
+L\Bigl( \bigl(x_i,t_i,f(x_i)\bigr)_{n=1}^n \Bigr) + \Omega(\|f\|) \to \min_{f\in \Hcal}\,,
+\]
+admits the following representation :
+\[ f^* = \sum_{i=1}^n \alpha_i K( \cdot, x_i ) \,. \]
+
+\noindent\textbf{Proof} \hfill \\
+Consider the subspace of $\Hcal$ spanned by $(K(\cdot, x_i ))_{i=1}^n$ :
+\[
+\Hcal_* = \bigl\{ \sum_{i=1}^n \gamma_i K(\cdot, x_i ) \,\:\,(\gamma_j)_{j=1}^n \bigr\}\,.
+\]
+For any $f\in \Hcal$ the projection theorem in Hilbert spaces establishes that there
+exists a unique pair $f_\perp \in\Hcal_*^\perp$ and $f_* \in \Hcal_*$ such that
+\[ f = f_\perp + f_* \,. \]
+For any $i=1,\ldots,n$ reproducing property of the kernel $K$ implies that
+\[
+f(x_i)
+= \langle f_\perp + f_*, K(\cdot, x_i)\rangle
+= \langle f_*, K(\cdot, x_i)\rangle\,,
+\]
+because $K(\cdot, x_i)\in \Hcal_*$. Therefore
+\[
+f(x_i)
+= \bigl\langle \sum_{j=1}^n \gamma_j K(\cdot, x_j ), K(\cdot, x_i)\bigr\rangle 
+= \sum_{j=1}^n \gamma_j \langle K(\cdot, x_j ), K(\cdot, x_i)\rangle 
+= \sum_{j=1}^n \gamma_j K(x_i, x_j)\,.
+\]
+Hence, the whole cost function is independent of the orthogonal component of $f$.
+Next, by orthogonality and strict monotonicity
+\[
+\Omega\bigl( \|f\| \bigr)
+= \Omega\bigl( \sqrt{\|f_*\|^2 + \|f_\perp\|^2} \bigr)
+\geq \Omega\bigl( \|f_*\| \bigr)\,,
+\]
+which means that ignoring the orthogonal component of $f$ reduces the second term.
+Therefore for any $f\in \Hcal$ its projection $f_*$ onto $\Hcal_*$ is such that
+\[
+L\Bigl( \bigl(x_i,t_i,f(x_i)\bigr)_{n=1}^n \Bigr) + \Omega(\|f\|)
+\geq L\Bigl( \bigl(x_i,t_i,f_*(x_i)\bigr)_{n=1}^n \Bigr) + \Omega(\|f_*\|)\,,
+\]
+whence the solution to the optimization problem cannot have any other form but
+\[ f^* = \sum_{i=1}^n \gamma_i K(\cdot, x_i)\,. \]
+
+\noindent\textbf{Kernel ridge regression} : \hfill\\
+Consider the problem
+\[ \sum_{i=1} (t_i - y(x_i))^2 + \lambda \|y\|^2 \to \min_{y\in \Hcal}\,,\]
+for some RKHS $\Hcal$ with kernel $K$. The representer theorem implies that the
+solution must have representation
+\[ y(x) = \sum_{i=1}^n \alpha_i K(x, x_i)\,. \]
+In the matrix notation $y(x) = K_x' \alpha$ for $K_x = (K(x,x_i))_{i=1}^n \in \Real^{n\times 1}$
+and $\alpha = (\alpha_i)_{i=1}^n \in \Real^{n\times 1}$. The cost function
+becomes	
+\[
+\sum_{i=1}^n (t_i - y(x_i))^2 = (t-K\alpha)'(t-K\alpha)\,,
+\]
+for the Gramm matrix
+\[
+K = \begin{pmatrix} K_{x_1}'\\ K_{x_2}'\\ \vdots\\ K_{x_n}'\\ \end{pmatrix}
+ = \begin{pmatrix}
+		K(x_1,x_1) & K(x_1,x_2) & \cdots & K(x_1,x_1) \\
+		K(x_2,x_1) & K(x_2,x_2) & \cdots & K(x_2,x_2) \\
+		\vdots & \vdots & \ddots & \vdots \\
+		K(x_n,x_1) & K(x_n,x_2) & \cdots & K(x_n,x_n)
+	\end{pmatrix}\,.
+\]
+Due to reproducibility the penalty term reduces to
+\begin{align*}
+	\lambda \|y\|^2
+	&= \lambda \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j \langle K(\cdot,x_i), K(\cdot,x_j)\rangle\\
+	&= \lambda \sum_{i=1}^n \sum_{j=1}^n \alpha_i K(x_i,x_j) \alpha_j
+	= \lambda \alpha' K \alpha\,.
+\end{align*}
+And therefore the problem is equivalent to
+\[ (t-K\alpha)'(t-K\alpha) + \lambda \alpha' K \alpha \to \min_\alpha\,,\]
+which gives the optimal $\alpha^* = (K+\lambda I)^{-1} t$. The prediction of $t$
+at a new $x$ is given by
+\[ \hat{t}(x) = K_x'\alpha^* = K_x' (K+\lambda I)^{-1} t \,. \]
 
 % section question_14 (end)
 
