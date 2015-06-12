@@ -4878,7 +4878,7 @@ Talking first about the SVM before introducing the concept of Kernels.
 \subsection{SVM (contd.)} % (fold)
 \label{sub:svm_contd}
 
-Consdier a standard two-class classification problem on the training data
+Consider a standard two-class classification problem on the training data
 $(x_i,t_i)_{i=1}^n$ with $\pm1$ notation of class labels: $t_i\in\{-1,+1\}$.
 We are looking at hyperplane discriminant function given by:
 \[y(x) = x'\beta + \beta_0\]
@@ -4915,7 +4915,7 @@ note that $M = \|\gamma\|^{-1}$, whence the final SVM problem becomes
 \[
 \frac{1}{2}\|\beta\|^2 \to \min_{\beta_0,\beta}
 \text{ s.t. }
-t_i(\beta_0+x_i'\beta)\geq 0\,\forall i=1,\ldots,n
+t_i(\beta_0+x_i'\beta)\geq 1\,\forall i=1,\ldots,n
 \]
 
 Now $x'\beta = p\|\beta\|$, for a projection $p$ of $x$ onto $\beta$. If $\beta_0=0$
