@@ -260,11 +260,11 @@ some unnormalized, but \textbf{unimodal}, probability density
 with some normalising constant $N = \int f(x) dx$.
 
 Consider the Taylor series expansion of $\log f(x)$ around its mode $x_0$, $f'(x_0) = 0$:
-\[
+\begin{align*}
 \log f(x)
-= \log f(x_0) + \frac{f'(x_0)}{f(x_0)} (x-x_0)
-+ \frac{1}{2} \frac{f''(x_0)f(x_0) - \bigl(f'(x_0)\bigr)^2}{\bigl(f(x_0)\bigr)^2} (x-x_0)^2 + o\bigl((x-x_0)^2\bigr)\,,
-\]
+&= \log f(x_0) + \frac{f'(x_0)}{f(x_0)} (x-x_0)\\
+&+ \frac{1}{2} \frac{f''(x_0)f(x_0) - \bigl(f'(x_0)\bigr)^2}{\bigl(f(x_0)\bigr)^2} (x-x_0)^2 + o\bigl((x-x_0)^2\bigr)\,,
+\end{align*}
 as $x\to x_0$, whence is some very small neighbourhood of $x_0$
 \[
 \log f(x) \approx \log f(x_0) + \frac{1}{2} \frac{f''(x_0)}{f(x_0)} (x-x_0)^2\,.
@@ -562,6 +562,156 @@ With the ``best'' threshold $\beta_0$ the classification rule becomes
 \textbf{\large \textbf{Q}} : Derive the AdaBoost algorithm.
 
 \noindent{\large \textbf{A}} .\hfill\\
+Consider a two-class classification problem: the training data is $(x_i, y_i)_{i=1}^n
+\in \Real^p \times \{-1,+1\}$. Boosting is an algorithm to assemble many weak classifiers
+into a powerful committee. Computationally it is based on the \textbf{F}orward
+\textbf{S}tagewise \textbf{A}daptive \textbf{M}odelling, a general procedure which
+constructs an approximation to the global solution of
+\[
+\sum_{i=1}^n L\bigl( y_i, \sum_{m=1}^M \beta_m b(x_i,\gamma_m) \bigr)
+	\to \min_{(\beta_m,\gamma_m)_{m=1}^M}\,,
+\]
+where $ L:\Real\times \Real\to \Real$ is a loss function, $b(\cdot,\gamma)$ are
+\emph{base} functions (classifiers) in the additive expansion with coefficients
+$(\beta_m)_{m=1}^M$. FSAM does this approximation via a greedy algorithm that adds
+$b(\cdot,\gamma)$ to the expansion one-by-one: \begin{enumerate}
+	\item Begin with $f_0(x) = 0$;
+	\item for $m=1,\ldots, M$ do: \begin{enumerate}
+		\item Given $f_{m-1}$ compute 
+		\[
+			( \hat{\beta}_m, \gamma_m)
+			= \argmin_{\beta,\gamma} \sum_{i=1}^n
+				L\bigl( y_i, f_{m-1}(x_i) + \beta b(x_i,\gamma) \bigr)\,;
+		\]
+		\item Set
+		\[ f_m = f_{m-1} + \hat{\beta}_m b(\cdot,\gamma_m)\,, \]
+		with previously added terms left \textbf{intact};
+	\end{enumerate}
+\end{enumerate}
+For instance, if base functions are classification trees, then the parameter $\gamma$
+stands for the splitting axes, splitting thresholds and class assignments at the
+terminal nodes (leaves).
+
+Essentially, AdaBoost is FSAM with exponential loss
+\[ L(y,f(x)) = \text{exp}\bigl\{ -y f(x) \bigr\}\,, \]
+that seeks an approximation to the population minimizer
+\begin{align*}
+	f^*(X) &= \argmin_f \ex_{T|X} e^{ - T f(X) } \\
+	&= e^{-f(X)} \pr(T=1|X) + e^{f(X)} \pr(T=-1|X)\\
+	&= \frac{1}{2} \log\frac{ \pr(T=1|X=x) }{ \pr(T=-1|X=x) } \,.
+\end{align*}
+The approximation of the global solution to
+\[
+\sum_{i=1}^n \text{exp}\bigl\{ - y_i \sum_{m=1}^M \beta_m G_m(x_i) \bigr\}
+\to \mathop{\text{minimum}}_{ (\beta_m, G_m(\cdot))_{m=1}^M }\,,
+\]
+where $G_m(x)$ is a weak binary classifier, is given by the additive expansion
+\[ f_M(x) = \sum_{m=1}^M \beta_m G_m(x) \,. \]
+The final classifier is defined through the discriminant function:
+\[
+G_M(x)
+= \text{sign} \Bigl( \sum_{m=1}^M \beta_m G_m(X) \Bigr) \,,
+\]
+-- the weighted majority vote, justified by the fact that under the exponential 
+loss the population optimal $f(x)$ is the scaled log-odd ratio of class posteriors.\hfill\\
+
+\noindent\textbf{Derivation:}\hfill\\
+Consider the FSAM with exponential loss. Thus at each iteration AdaBoost solves
+the following problem 
+\[
+\sum_{i=1}^n w_i^{(m)} \text{exp}\bigl\{ -\beta y_i G(x_i) \bigr\}
+\to \min_{\beta,G(\cdot)}\,,
+\]
+where 
+\[ w_i^{(m)} = \text{exp}\bigl\{ -y_i f_{m-1}(x_i) \bigr\}\,. \]
+Since $\pm1$ coding scheme is employed one can transform the sum into:
+\begin{align*}
+	\sum_{i=1}^n w_i^{(m)} \text{exp}\bigl\{ -\beta y_i G(x_i) \bigr\}
+	&= \sum_{i=1}^n w_i^{(m)} e^\beta 1_{G(x_i) \neq y_i}
+		+ \sum_{i=1}^n w_i^{(m)} e^{-\beta} 1_{G(x_i) = y_i} \\
+	&= (e^\beta-e^{-\beta}) \sum_{i=1}^n w_i^{(m)} 1_{G(x_i) \neq y_i}
+		+ e^{-\beta} \sum_{i=1}^n w_i^{(m)} \,.
+\end{align*}
+Since $\beta \geq 0$, the problem of finding the best $G(\cdot)$ reduces to
+\[ \sum_{i=1}^n w_i^{(m)} 1_{G(x_i) \neq y_i} \to \min_G\,, \]
+i.e. training a weak classifier $G$ on the data weighted by $(w_i^{(m)})_{i=1}^n$.
+For instance, for two-class classification trees, the CART algorithm is modified
+easily: the Gini impurity index uses
+\[
+\hat{p}_{mk}
+ = \frac{ \sum_{i\,:,x_i\in R_m} w^m_i 1_{t_i=k} }
+ 	{ \sum_{i\,:,x_i\in R_m} w^m_i } \,.
+\]
+For a given $\hat{G}_m$, which minimizes the weighted misclassification error
+\[
+\text{err}_m(G)
+= \bigl(\sum_{i=1}^n w_i^{(m)}\bigr)^{-1}
+	\sum_{i=1}^n w_i^{(m)} 1_{G(x_i) \neq y_i} \,,
+\]
+the problem of finding the optimal $\beta$ becomes
+\[
+\hat{\beta}_m = \argmin_\beta
+	\bigl( (e^\beta-e^{-\beta}) \text{err}_m(\hat{G}_m) + e^{-\beta} \bigr)
+		\sum_{i=1}^n w_i^{(m)} \,.
+\]
+Therefore 
+\[ (e^\beta+e^{-\beta}) \text{err}_m(\hat{G}) - e^{-\beta} = 0\,, \]
+whence
+\[ e^{2\beta} \text{err}_m(\hat{G}) = 1 - \text{err}_m(\hat{G}) \,, \]
+and
+\[
+\hat{\beta}_m = \frac{1}{2} \log \frac{1-\text{err}_m(\hat{G})}{\text{err}_m(\hat{G})}\,.
+\]
+
+Given a more or less closed solution to the FSAM step it is interesting to see
+how weights $(w_i^{(m)})_{i=1}^n$ change between iterations. After each iteration
+\[ f_m = f_{m-1} + \hat{\beta}_m \hat{G}_m(\cdot)\,, \]
+whence
+\begin{align*}
+	w_i^{(m+1)}
+	&= \text{exp}\bigl\{ -y_i f_m(x_i) \bigr\} \\
+	&= \text{exp}\bigl\{ -y_i f_{m-1}(x_i) \bigr\}
+	   \text{exp}\bigl\{ -y_i \hat{\beta}_m \hat{G}_m(x_i) \bigr\}\\
+	&= w_i^{(m)}
+	   \text{exp}\bigl\{ -y_i \hat{\beta}_m \hat{G}_m(x_i) \bigr\}\,.
+\end{align*}
+Now, $\pm1$ coding implies that
+\[
+- y_i \hat{G}_m(x_i)
+= 1_{G(x_i) \neq y_i} - 1_{G(x_i) = y_i}
+= 2 1_{G(x_i) \neq y_i} - 1\,,
+\]
+whence
+\[ w_i^{(m+1)} = w_i^{(m)} e^{-\hat{\beta}_m} e^{ 2 \hat{\beta}_m 1_{G(x_i) \neq y_i}} \,. \]
+
+To summarize the AdaBoost version of FSAM is
+\begin{enumerate}
+	\item Initialize the weights to $w_i^{(1)} = \frac{1}{n}$;
+	\item For $m=1,\ldots, M$ do: \begin{enumerate}
+		\item Fit a binary classifier $\hat{G}_m(x)$ to the weighted training data using
+		the weights $w_i^{(m)}$;
+		\item Compute the current misclassification error:
+		\[
+		\text{err}_m
+			=\frac{ \sum_{i=1}^n w_i^{(m)} 1_{\hat{G}_m(x_i) \neq y_i}}{\sum_{i=1}^n w_i^{(m)}} \,;
+		\]
+		\item Calculate 
+		\[ \hat{\beta}_m = \frac{1}{2} \log \frac{1-\text{err}_m}{\text{err}_m}\,, \]
+		and put $\alpha_m = 2 \hat{\beta}_m$;
+		\item Finally update the weights
+		\[ w_i^{(m+1)} \propto w_i^{(m)} e^{ \alpha_m 1_{G_m(x_i)\neq y_i }} \,; \]
+	\end{enumerate}
+	\item Return the final binary classifier 
+		\[ G(x) = \text{sign}\Bigl( \sum_{m=1}^M \beta_m G_m(x) \Bigr) \,. \]
+\end{enumerate}
+
+With each iteration, observations difficult to classify correctly receive more
+influence, and thus each successive base classifier focuses on observations, which
+were handled poorly by previous classifiers in the sequence.
+
+An advantage of the exponential loss is that its sequential minimization leads to
+the simple AdaBoost scheme. One drawback, however, is that it penalizes large negative
+values much more strongly than cross-entropy.
 
 \clearpage
 % section question_10 (end)
