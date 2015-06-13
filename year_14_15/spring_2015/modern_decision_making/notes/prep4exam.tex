@@ -38,6 +38,46 @@ linear fitting problem corresponds to the orthogonal projection of the response
 variable onto the plane spanned by the columns of $X$.
 
 \noindent{\large \textbf{A}} .\hfill\\ 
+Let $T\in \Real^{n\times 1}$, $\beta\in \Real^{(p+1)\times 1}$ and
+$X\in \Real^{n\times (p+1)}$, given by $X = \begin{smallmatrix} \one & \mathcal{X} \end{smallmatrix}$
+where $\one$ is a vector of ones $\Real^n$ and is optional. The linear regression
+problem attempts find the best linear approximation to $\ex(T|X)$: $y(X) = X\beta$.
+LS minimizes the \textbf{R}esidual \textbf{S}um of \textbf{S}squares
+\[ \RSS = (T-X\beta)'(T-X\beta) \to \min_\beta \,. \]
+The first order conditions of the minimizer in the matrix form are:
+\begin{align*}
+	\frac{\partial}{\partial \beta}\RSS
+	&= \frac{\partial}{\partial \beta} (T'T-\beta'X'T - T'X\beta + \beta'X'X\beta)\\
+	&= - 2 T'X + 2 \beta'X'X = 0 \,.
+\end{align*}
+THe matrix $X'X$ is positive-semidefinite and invertible, provided $X$ is full rank.
+Therefore $\frac{\partial^2}{\partial \beta\partial \beta}\RSS = 2 X'X \geq 0$,
+whence the Least Squares solution $\hat{\beta} = (X'X)^{-1} X'T$ is indeed
+the minimizer of the RSS.
+
+The fitted response vector is 
+\[ \hat{T} = X\hat{\beta} = X(X'X)^{-1}X' T = \hat{H} T\,, \]
+where $\hat{H} = X(X'X)^{-1}X'$ is a projection matrix onto the linear subspace
+spanned by the column vectors of $X$. The best linear approximation to $\ex(T\rvert X)$
+is thus the projection of $T$ onto the linear manifold $[X]$ spanned by $X$.
+
+Every projector matrix has the following property: if $v$ is in the spanned linear
+subspace, then $\hat{H}v = v$. Indeed, since $v$ is in the span of$X$, there must
+exist $\alpha \in \Real^{(p+1)\times 1}$ such that $v = X\alpha$. Therefore
+\[ \hat{H} v = X(X'X)^{-1} X'v = X(X'X)^{-1} X'X\alpha = X\alpha = v\,. \]
+
+The LS solution $\hat{T} = \hat{H}T$ with $\hat{e} = T - \hat{T}$ is such that 
+$\hat{T}\in [X]$ and $\hat{e} \in [X]^\perp$. Indeed, for any $v\in [X]$, 
+\[ \hat{e}'v = (T - \hat{T})'v = T'(I_n - \hat{H})'v = T'( v - \hat{H}v) = 0\,, \]
+and $\hat{T} = X \hat{\beta} \in [X]$.
+
+Now the projection theorem in $\Real^n$ states that for any $T\in \Real^n$ there
+exist \textbf{unique} $T_*\in [X]$ and $T_\perp \in [X]^\perp$ such that
+\[ T = T_* + T_\perp \,. \]
+Since our LS solution $(\hat{T}, \hat{e})$satisfies the decomposition and subspace
+inclusion requirements, it must coincide with the orthogonal projection. Therefore
+the LS solution is the orthogonal projection of the response variable onto the plane
+spanned by the columns of $X$.
 
 \clearpage
 % section question_1 (end)
