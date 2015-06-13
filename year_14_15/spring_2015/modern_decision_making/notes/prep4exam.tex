@@ -1470,7 +1470,7 @@ RKHS $\Hcal$. Given a training sample $(x_i, t_i)_{i=1}^n \in X \times \Real$, a
 strictly increasing function $\Omega:\Real_+\to\Real$ and an arbitrary loss function
 $L:( X\times \Real^2)^n \to \Real$, the solution $f^*$ to the problem
 \[
-L\Bigl( \bigl(x_i,t_i,f(x_i)\bigr)_{n=1}^n \Bigr) + \Omega(\|f\|) \to \min_{f\in \Hcal}\,,
+L\Bigl( \bigl(x_i,t_i,f(x_i)\bigr)_{i=1}^n \Bigr) + \Omega(\|f\|) \to \min_{f\in \Hcal}\,,
 \]
 admits the following representation :
 \[ f^* = \sum_{i=1}^n \alpha_i K( \cdot, x_i ) \,. \]
@@ -1506,8 +1506,8 @@ Next, by orthogonality and strict monotonicity
 which means that ignoring the orthogonal component of $f$ reduces the second term.
 Therefore for any $f\in \Hcal$ its projection $f_*$ onto $\Hcal_*$ is such that
 \[
-L\Bigl( \bigl(x_i,t_i,f(x_i)\bigr)_{n=1}^n \Bigr) + \Omega(\|f\|)
-\geq L\Bigl( \bigl(x_i,t_i,f_*(x_i)\bigr)_{n=1}^n \Bigr) + \Omega(\|f_*\|)\,,
+L\Bigl( \bigl(x_i,t_i,f(x_i)\bigr)_{i=1}^n \Bigr) + \Omega(\|f\|)
+\geq L\Bigl( \bigl(x_i,t_i,f_*(x_i)\bigr)_{i=1}^n \Bigr) + \Omega(\|f_*\|)\,,
 \]
 whence the solution to the optimization problem cannot have any other form but
 \[ f^* = \sum_{i=1}^n \gamma_i K(\cdot, x_i)\,. \]
