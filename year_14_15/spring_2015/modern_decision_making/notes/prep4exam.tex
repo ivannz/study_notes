@@ -31,7 +31,7 @@
 \tableofcontents
 \clearpage
 
-\section{Question \# 1} % (fold)
+\section[OLS]{Question \# 1} % (fold)
 \label{sec:question_1}
 \textbf{\large \textbf{Q}} : Show that the least square solution to the general
 linear fitting problem corresponds to the orthogonal projection of the response
@@ -42,7 +42,7 @@ variable onto the plane spanned by the columns of $X$.
 \clearpage
 % section question_1 (end)
 
-\section{Question \# 2} % (fold)
+\section[LASSO and Ridge]{Question \# 2} % (fold)
 \label{sec:question_2}
 \textbf{\large \textbf{Q}} : Derive the solutions to the lasso and ridge regression
 when the columns of $X$ are orthogonal.
@@ -53,7 +53,7 @@ is the $n\times k$ matrix of centred standardized input variables with \textbf{n
 intercept, and $T$ -- the response, is to minimize with respect to $\beta$ :
 \[ \RSS^{\text{ridge}} = (t-X\beta)'(t-X\beta) + \lambda \beta'\beta \,, \]
 whence the solution is
-\[ \hat{\beta}^{\text{ridge}} = \bigl(X'X + \lambda I'bigr)^{-1} X'T \,. \]
+\[ \hat{\beta}^{\text{ridge}} = \bigl(X'X + \lambda I\bigr)^{-1} X'T \,. \]
 
 Suppose $X$ are orthogonal : $X'X = I_p$. The OLS solution is
 \[ \hat{\beta}^{\text{OLS}} = (X'X)^{-1} X'T = X'T \,, \]
@@ -98,7 +98,7 @@ subject to $\beta_+, \beta_-\geq 0$ and $\beta_+ \cdot \beta_-=0$.
 \clearpage
 % section question_2 (end)
 
-\section{Question \# 3} % (fold)
+\section[NCS]{Question \# 3} % (fold)
 \label{sec:question_3}
 \textbf{\large \textbf{Q}} : Show that the natural cubic spline has the minimum
 value of $\int_a^b |f''(x)|^2 dx$ among all smooth curves that interpolate the
@@ -166,7 +166,7 @@ and $g(x) = A_K (x-\xi_1) + B_K$ for $x > \xi_K$.
 \clearpage
 % section question_3 (end)
 
-\section{Question \# 4} % (fold)
+\section[Smoothing spline]{Question \# 4} % (fold)
 \label{sec:question_4}
 \textbf{\large \textbf{Q}} : Derive the solution to the smoothing spline problem,
 and show that it can be expressed as
@@ -249,13 +249,13 @@ the first $\mu_1$ and $\mu_2$ equal to $1$ :
 \clearpage
 % section question_4 (end)
 
-\section{Question \# 5} % (fold)
+\section[Laplace]{Question \# 5} % (fold)
 \label{sec:question_5}
-\textbf{\large \textbf{Q}} : Understand Laplace approximation.
+\textbf{\large \textbf{Q}} : Understand the Laplace approximation.
 
 \noindent{\large \textbf{A}} .\hfill\\
 The general idea (in the univariate case) is to use Gaussian distribution to approximate
-some unnormalized, but \textbf{unimodal}, probability density
+some un-normalized, but \textbf{unimodal}, probability density
 \[ p(x) \propto f(x) \,, \]
 with some normalising constant $N = \int f(x) dx$.
 
@@ -301,7 +301,7 @@ N \approx f(x_0) (2\pi)^{\frac{d}{2}} |\Lambda|^{-\frac{1}{2}} \,.
 \clearpage
 % section question_5 (end)
 
-\section{Question \# 6} % (fold)
+\section[Binary Logit]{Question \# 6} % (fold)
 \label{sec:question_6}
 \textbf{\large \textbf{Q}} : Derive the iterative reweighed least square algorithm for
 binary logistic regression.
@@ -402,7 +402,7 @@ where $B$ must be positive definite. The first order conditions are
 \clearpage
 % section question_6 (end)
 
-\section{Question \# 7} % (fold)
+\section[EM]{Question \# 7} % (fold)
 \label{sec:question_7}
 \textbf{\large \textbf{Q}} : Derive the EM algorithm.
 
@@ -482,7 +482,7 @@ This implies that \textbf{EM} indeed iteratively improves the log-likelihood.
 \clearpage
 % section question_7 (end)
 
-\section{Question \# 8} % (fold)
+\section[Fisher's LDA]{Question \# 8} % (fold)
 \label{sec:question_8}
 \textbf{\large \textbf{Q}} : Express Fisher's linear discriminant criterion (Rayleigh
 quotient), and find the optimal separating hyperplane according to this criterion.
@@ -548,16 +548,111 @@ With the ``best'' threshold $\beta_0$ the classification rule becomes
 \clearpage
 % section question_8 (end)
 
-\section{Question \# 9} % (fold)
+\section[CART]{Question \# 9} % (fold)
 \label{sec:question_9}
 \textbf{\large \textbf{Q}} : Explain and understand the CART procedure.
 
 \noindent{\large \textbf{A}} .\hfill\\
+\textbf{C}lassification \textbf{a}nd \textbf{R}egression \textbf{T}rees procedure
+is a method for constructing decision trees based on the training data. This method
+attempts to find the best approximation to the optimal decision tree, which is hard
+to compute efficiently in practice.
+
+Tree based methods permit non-linear regression and classification. Consider a training
+data $(x_i,t_i)_{i=1}^n\in \Real^p \times \Real$. A \emph{regression} tree $T$ models
+the response as a piecewise function $f:\Real^p \to \Real$ :
+\[ f(x) = \sum_{m=1}^M f_m(x) 1_{R_m}(x)\,, \]
+where $(R_m)_{m=1}^M$ is a collection of non-overlapping regions covering $\Real^p$, 
+and $(f_m(\cdot))_{m=1}^M$ are the regression models fit within each region. Simplest
+and most parsimonious regression trees use $f_m(x) = c_m$ and thus model a piecewise
+constant regression. If the partition $R_m)_{m=1}^M$ is known, the $c_m$'s are the
+local averages of the response variable within each region $R_m$.
+
+It is very hard to construct a partition that minimizes the training error, that is
+why regions are constructed with the help of a greedy procedure, that approximates
+the optimal solution via successive binary splits along the most optimal feature
+axis. The greedy algorithm approximates the solution to
+\[
+\sum_{i=1}^n \bigl( t_i - \sum_{m=1}^M c_m 1_{R_m}(x) \bigr)^2
+\to \mathop{\text{minimum}}_{(c_m)_{m=1}^M, (R_m)_{m=1}^M}\,.
+\]
+For a splitting axis (feature) $j=1,\ldots,p$ and a splitting threshold $s$, define
+regions
+\[ R_1(j,s) = \bigr\{ z \in \Real^p\,\big|\, z_j \leq s \bigr\} \,, \]
+and
+\[ R_2(j,s) = \bigr\{ z \in \Real^p\,\big|\, z_j > s \bigr\} \,. \]
+For observations $D$ (by default $D = \{(x_i,t_i)_{i=1}^n\}$) choose the split
+$(j,s)$ that minimizes
+\[ 
+  \min_{c_1} \sum_{i\,:,x_i\in R_1(i,s)\cap D} \bigl( t_i - c_1 \bigr)^2
++ \min_{c_2} \sum_{i\,:,x_i\in R_2(i,s)\cap D} \bigl( t_i - c_2 \bigr)^2
+\to \min_{j,s}\,.
+\]
+This problem is feasible since for each $j$ there are at most $n$ points to consider
+for $s$: it is given by the unique values of $x_{ij}$. The optimal $c_m$ are defined
+as the local averages of $D$ within each region $R_m$ :
+\[ \hat{c}_m = \frac{1}{\#\{i\,:,x_i\in R_m \cap D\}} \sum_{i\,:,x_i\in R_m \cap D} t_i \,. \]
+
+Once the best split $(j,s)$ has been found, partition the training data into
+\[ D_1 = D \cap R_1(j,s)\,\text{ and }\, D_2 = D \cap R_2(j,s)\,, \]
+and recursively split on both $D_1$ and $Q_2$. Record the best splits as a binary
+tree.
+
+The common approach to constructing decision regression trees is to apply cost-complexity
+pruning. The idea is to construct a large tree $T_0$, using the greedy procedure,
+and then to prune $T_0$ by merging its terminal nodes (or collapsing the internal
+nodes). The pruning is governed by the cost-complexity trade off
+\[ C_\alpha(T) = \sum_{m=1}^{M_T} \hat{c}^{(T)}_m \#\{i\,:,x_i\in R^{(T)}_m\} Q_m(T) + \alpha |T|\,, \]
+where $\alpha$ is the trade-off parameter, $|T|$ is the complexity of the tree (the
+number of regions in the partition) and $Q_m(T)$ is the \textbf{impurity measure}
+of region $m$ of the \textbf{regression} tree $T$:
+\[
+Q_m(T) = \min_c \frac{1}{\#\{i\,:,x_i\in R^{(T)}_m\}} \sum_{i\,:,x_i\in R^{(T)}_m} ( t_i - c )^2 \,.
+\]
+The pruning is done by elimination of \textbf{the weakest links}: successively collapse
+the node that produces the smallest per-node increase in $C_\alpha(T)$, until left with
+a root. The minimizer sub-tree $T_\alpha\subseteq T_0$ of $C_\alpha(T)$ necessarily lies
+on the path of one-node collapses.
+
+\emph{Classification} trees $T$ for a $K$-class classification problem are defined
+by the regions $(R_m)_{m=1}^M$ and classes $(k_m)_{m=1}^M$ assigned to each region :
+\[ f(x) = \sum_{m=1}^M k_m 1_{R_m}(x) \,. \]
+Define the proportion of class $k$ observations at node $m$ (falling within region
+$R_m$ that is) as
+\[ \hat{p}_{mk} = \frac{1}{\#\{i\,:,x_i\in R_m\}} \sum_{i\,:,x_i\in R_m} 1_{t_i = k} \,, \]
+and assign the dominating (majority) class to each region $R_m$ 
+\[ k(m) = \argmax_{k=1,\ldots,K} \hat{p}_{mk} \,. \]
+The misclassification error within each region is thus
+\[ \text{mis}_m = 1 - \hat{p}_{m k(m)}\,. \]
+
+In general, the quality of region $m$ of a tree $T$ is measured by an \textbf{impurity
+index}, which reflects how poorly:
+\begin{itemize}
+	\item the regression tree predicts the value of $t$ within $R_m$;
+	\item the classification tree distinguishes the classes within $R_m$.
+\end{itemize}
+For a regression tree $T$ and a region $m$ \textbf{CART} employs the following
+the square-loss impurity measure. As for classification tree $T$ there are many
+possibilities for impurity indices, among which the most well studied are:
+\begin{itemize}
+	\item The \textbf{Gini impurity} index, used in \textbf{CART}:
+	\[ Q_m(T) = \sum_{k=1}^K \hat{p}_{mk} (1-\hat{p}_{mk}) \,; \]
+	\item The \textbf{entropy impurity}, used in \textbf{ID$4.5$}:
+	\[ Q_m(T) = - \sum_{k=1}^K \hat{p}_{mk} \log \hat{p}_{mk} \,; \]
+	\item Simple misclassification error (not recommended for use):
+	\[ Q_m(T) = \sum_{k=1}^K 1-\hat{p}_{mk} \,.\]
+\end{itemize}
+All these measure can be used for pruning trees, but only the Gini and entropy
+impurity indices are recommended for use in growing classification trees.
+
+Due to hierarchical structure trees have high variance, errors at top nodes propagate
+to lower ones and small changes in training data can manifest in very different binary
+splits.
 
 \clearpage
 % section question_9 (end)
 
-\section{Question \# 10} % (fold)
+\section[AdaBoost]{Question \# 10} % (fold)
 \label{sec:question_10}
 \textbf{\large \textbf{Q}} : Derive the AdaBoost algorithm.
 
@@ -642,6 +737,7 @@ easily: the Gini impurity index uses
  = \frac{ \sum_{i\,:,x_i\in R_m} w^m_i 1_{t_i=k} }
  	{ \sum_{i\,:,x_i\in R_m} w^m_i } \,.
 \]
+
 For a given $\hat{G}_m$, which minimizes the weighted misclassification error
 \[
 \text{err}_m(G)
@@ -716,7 +812,7 @@ values much more strongly than cross-entropy.
 \clearpage
 % section question_10 (end)
 
-\section{Question \# 11} % (fold)
+\section[Convex optimization]{Question \# 11} % (fold)
 \label{sec:question_11}
 \textbf{\large \textbf{Q}} : Show that if strong duality holds, then the optimal
 solutions to the primal and dual problem must satisfy the KKT conditions (necessary
@@ -818,7 +914,7 @@ due to feasibility and complementary slackness conditions.
 \clearpage
 % section question_11 (end)
 
-\section{Question \# 12} % (fold)
+\section[SVM]{Question \# 12} % (fold)
 \label{sec:question_12}
 \textbf{\large \textbf{Q}} : Derive the maximum margin classifier in the linearly
 separable and non-separable case (dual problem, KKT conditions, etc).
@@ -968,15 +1064,15 @@ To get $\beta_0$ compute
 \[ \beta^*_0 = t_i - \sum_{j\in\text{SVE}} \lambda^*_j t_j x_i'x_j \]
 where $\text{SVE} = \{i: \lambda^*_i > 0 \text{ and } \xi^*_i = 0 \}$.
 
-Is there a guarantee that there necessarily exists $i$ with $\xi^* = 0$ and
-$\lambda^*_i>0$? \textbf{Who knows}.
+% Is there a guarantee that there necessarily exists $i$ with $\xi^* = 0$ and
+% $\lambda^*_i>0$? \textbf{Who knows}.
 
 % subsection* non_separable_case (end)
 
 \clearpage
 % section question_12 (end)
 
-\section{Question \# 13} % (fold)
+\section[RKHS]{Question \# 13} % (fold)
 \label{sec:question_13}
 \textbf{\large \textbf{Q}} : Show that the function K is a kernel if and only if
 it is a symmetric positive definite function.
@@ -1075,8 +1171,9 @@ and $x\in X$ one has
 	&= \bigl\langle \sum_{i=1}^n \alpha_i K(\cdot,y_i), K(\cdot,x) \bigr\rangle_0 
 	 = \langle f, K(\cdot,x) \rangle_0 \,,
 \end{align*}
-which is the so-called \textbf{reproducing} property of $K$ with respect to $\langle \cdot,\cdot \rangle_0$.
-A particularly interesting corollary is that for any $f\in \Hcal_0$
+which is the so-called \textbf{reproducing} property of $K$ with respect to
+$\langle \cdot,\cdot \rangle_0$. A particularly interesting corollary is that
+for any $f\in \Hcal_0$
 \[
 \langle f, f \rangle_0
 = \bigl\langle f, \sum_{i=1}^p \alpha_i K(\cdot, x_i) \bigr\rangle_0
@@ -1257,7 +1354,7 @@ in $\Hcal_0$. Then for any $x\in X$, $K(\cdot, x)\in \Hcal_0 \subseteq \Hcal$ an
 \clearpage
 % section question_13 (end)
 
-\section{Question \# 14} % (fold)
+\section[Representer]{Question \# 14} % (fold)
 \label{sec:question_14}
 \textbf{\large \textbf{Q}} : Prove the representer theorem. Application to kernel
 ridge regression.
@@ -1333,7 +1430,7 @@ becomes
 \[
 \sum_{i=1}^n (t_i - y(x_i))^2 = (t-K\alpha)'(t-K\alpha)\,,
 \]
-for the Gramm matrix
+for the Gram matrix
 \[
 K = \begin{pmatrix} K_{x_1}'\\ K_{x_2}'\\ \vdots\\ K_{x_n}'\\ \end{pmatrix}
  = \begin{pmatrix}
