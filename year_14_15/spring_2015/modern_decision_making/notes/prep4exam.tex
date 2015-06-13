@@ -223,7 +223,7 @@ The optimal solution to this kind of problem turns out to be the NCS. If a vecto
 of values $g_i$ at $x_i$ is given, then the optimal NCS could be recovered via the
 relationship with $2$-nd derivatives $\gamma$ at those points: $Q'g = R'\gamma$,
 where $R$ is $(K-2)\times(K-2)$ symmetric and positive-definite matrix, and $Q$
-is $K\times(K-2)$. THese matrices depend on the unique $x_i$ points.
+is $K\times(K-2)$. These matrices depend on the unique $x_i$ points.
 
 Therefore the smoothing spline problem reduces to :
 \[ (t - g)'(t - g) + \lambda g'K g \to \min_g \,,\]
@@ -301,9 +301,10 @@ with some normalising constant $N = \int f(x) dx$.
 
 Consider the Taylor series expansion of $\log f(x)$ around its mode $x_0$, $f'(x_0) = 0$:
 \begin{align*}
-\log f(x)
-&= \log f(x_0) + \frac{f'(x_0)}{f(x_0)} (x-x_0)\\
-&+ \frac{1}{2} \frac{f''(x_0)f(x_0) - \bigl(f'(x_0)\bigr)^2}{\bigl(f(x_0)\bigr)^2} (x-x_0)^2 + o\bigl((x-x_0)^2\bigr)\,,
+	\log f(x)
+	&= \log f(x_0) + \frac{f'(x_0)}{f(x_0)} (x-x_0)\\
+	&+ \frac{1}{2} \frac{f''(x_0)f(x_0) - \bigl(f'(x_0)\bigr)^2}{\bigl(f(x_0)\bigr)^2} (x-x_0)^2
+		+ o\bigl((x-x_0)^2\bigr)\,,
 \end{align*}
 as $x\to x_0$, whence is some very small neighbourhood of $x_0$
 \[
@@ -411,7 +412,8 @@ $L(\beta) = Q(\beta) + o(\|\beta-a\|^2)$ where
 Expanding the brackets yields
 \[
 Q(x) = L(a) - \nabla L(a)'a + \frac{1}{2}x'\nabla^2 L(a) a
-+ \bigl( \nabla L(a)' - a'\nabla^2 L(a) \bigr)x + \frac{1}{2}x'\nabla^2 L(a) x\,,
+	+ \bigl( \nabla L(a)' - a'\nabla^2 L(a) \bigr)x
+	+ \frac{1}{2}x'\nabla^2 L(a) x\,,
 \]
 and $Q$ is concave, since the Hessian matrix of $L$ at $a$ is negative semi-definite.
 The maximum of $Q$ is thus given by
@@ -1155,8 +1157,8 @@ analogue of Cauchy-Schwartz-Bunyakovsky inequality :
 A function $K : X\times X \to \Real$ is a kernel if and only if it is symmetric and
 positive-definite.
 
-\noindent\textbf{$\Rightarrow$} If $K$ is a kernel, then there exists a Hilbert space $(\Hcal, \langle\cdot,\cdot\rangle)$
-and a map $\Phi:X\to \Hcal$ such that
+\noindent\textbf{$\Rightarrow$} If $K$ is a kernel, then there exists a Hilbert space
+$(\Hcal, \langle\cdot,\cdot\rangle)$ and a map $\Phi:X\to \Hcal$ such that
 \[ K(x,y) = \langle \Phi(x), \Phi(y)\rangle\,. \]
 First, symmetry of the inner product implies symmetry of kernel $K$. Next, let 
 $n\geq1$, $(x_i)_{i=1}^n\in X$ and $(\lambda_i)_{i=1}^n \in \Real$. Then by bilinearity
@@ -1387,9 +1389,61 @@ in $\Hcal_0$. Then for any $x\in X$, $K(\cdot, x)\in \Hcal_0 \subseteq \Hcal$ an
 = f(x)\,.
 \]
 
-% \noindent\textbf{Lemma \# 6} : The space $\Hcal$ is complete.
-% \noindent\textbf{Proof} \hfill \\
-% Let $(f_n)_{n\geq1}$ be a Cauchy sequence in $\Hcal$ with respect to the norm $\|\cdot\|$.
+\noindent\textbf{Lemma \# 6} : If $(f_n)_{n\geq1}$ is Cauchy in $\Hcal_0$ and $f_n\to f$
+pointwise for some $f:X\to \Real$, then $f_n\to f$ in $\Hcal$, i.e. $\|f_n-f\|\to 0$.
+
+\noindent\textbf{Proof} \hfill \\
+Indeed, let $\epsilon>0$. Since $\|f_n-f_m\|_0 \to \|f_n-f\|$ by construction as
+$m\to \infty$, there is $N_1\geq1$ such that
+\[ \|f_n-f\| < \|f_n-f_m\|_0 + \frac{\epsilon}{2}\,, \]
+for all $n\geq N_1$. Furthermore, since $(f_n)_{n\geq1}$ is Cauchy in $\Hcal_0$,
+there is $N_2\geq1$ with $\|f_n-f_m\|_0 < \frac{\epsilon}{2}$ for all $n,m\geq N_2$.
+Therefore for any $n,m\geq N_1\wedge N_2$
+\[ \|f_n-f\| < \|f_n-f_m\|_0 + \frac{\epsilon}{2} < \epsilon \,, \]
+whence $\|f_n-f\| \to 0$.
+
+\noindent\textbf{Lemma \# 7} : The set $\Hcal_0$ is dense in $(\Hcal,\langle\cdot,\cdot\rangle)$.
+
+\noindent\textbf{Proof} \hfill \\
+If $f\in\Hcal$, then by definition it is a limiting point of some Cauchy sequence
+$(f_n)_{n\geq1}\in\Hcal_0$. Then $\|f_n-f\|\to 0$ in $\Hcal$ by lemma \#6, whence
+for any $\epsilon>0$ there is $N\geq1$ such that $\|f_N-f\|<\epsilon$. Thus $\Hcal_0$
+is dense in $\Hcal$ with respect to the norm $\|\cdot\|$.
+
+\noindent\textbf{Lemma \# 8} : The space $(\Hcal,\langle\cdot,\cdot\rangle)$ is complete.
+
+\noindent\textbf{Proof} \hfill \\
+If $(f_n)_{n\geq1}\in\Hcal$ is Cauchy, then by lemma \#7 there exists $(g_n)_{n\geq1}\in \Hcal_0$
+such that for all $n\geq1$
+\[ \|f_n - g_n\| < \frac{1}{2^n} \,, \]
+which means that $\| f_n-g_n\|\to 0$.
+Now for any $\epsilon>0$ there exists $N\geq1$ such that for all $n,m\geq N$
+\[
+\| g_m - g_n \|
+\leq \| g_m - f_m \| + \| f_m - f_n \| + \| f_n - g_n \|
+< \frac{\epsilon}{3} + \frac{\epsilon}{3} + \frac{\epsilon}{3} \,,
+\]
+whence $(g_n)_{n\geq1}\in \Hcal_0$ is Cauchy. Therefore by lemma \# 1 there exists
+a function $g : X\to \Real$ such that $g_n\to g$ pointwise. Thus $g\in \Hcal$ and
+\[ \|f_n - g\| \leq \|f_n - g_n\| + \|g_n - g\|\,, \]
+implying that $\|f_n - g\| \to 0$. Finally, by the reproducing property of $K$
+in $\Hcal$ (lemma \# 5) for any $x\in X$
+\[ |f_n(x) - g(x) | \leq \sqrt{K(x,x)} \|f_n - g\|\,, \]
+whence $f_n\to g$ pointwise.
+
+Thus the pair $(\Hcal,\langle\cdot,\cdot\rangle)$ is a Hilbert space with \begin{itemize}
+	\item $f(x) = \langle f, K(\cdot, x)\rangle$ for all $x\in X$ and all $f\in\Hcal$;
+	\item $\Hcal$ is a completion of the space of finite linear combinations of
+	partially evaluated kernels $K(\cdot,x)$ for any $x\in X$:
+	\[ \bigl\{ \sum_{i=1}^n \alpha_i K(\cdot,x_i)\,:\,n\geq1,\,(\alpha_i)_{i=1}^n\in \Real,\,(x_i)_{i=1}^n\in X \bigr\} \]
+\end{itemize}
+
+\noindent \textbf{ $\Leftarrow$ : Feature maps}\hfill\\
+The reproducing property of $K$ in $(\Hcal,\langle\cdot,\cdot\rangle)$ hints at
+the possible feature maps $\Phi:X\to \Hcal$ such that for all $x,y\in X$
+\[ K(x,y) = \langle \Phi(y), \Phi(x)\rangle\,. \]
+Indeed, by self-reproducing property of $K$ with respect to the inner product
+$\Phi(x) = K(\cdot,x)$ do the trick. Therefore $K$ is indeed a kernel.
 
 \clearpage
 % section question_13 (end)
