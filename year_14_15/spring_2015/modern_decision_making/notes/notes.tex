@@ -3945,7 +3945,7 @@ But this is not the best measure there is.
 
 Not to confuse with the inequality measure. In ecological applications, where it
 emerged, it measures the biodiversity. Lots of minority (non-dominant) species means
-greater diversity$\sim_{s\in\mathcal{S}} s (1-p_s)$. Literally this translates to a measure
+greater diversity $\sum_{s\in\mathcal{S}} p_s (1-p_s)$. Literally this translates to a measure
 of how many other classes are present at a node $m$:
 \[Q_m(T) = \sum_{k=1}^K\hat{p}_{mk}(1-\hat{p}_{mk})\]
 where $K$ is the number of classes. This measure is employed by CART.
@@ -4269,7 +4269,7 @@ It seems similar to bagging and train many predictors and then average them out.
 The procedure is to combine the effort of many ``weak'' classifiers to produce a
 better predictor. A weak classifier is a little better than a random guess.
 
-Construct a bunch of weak classifier. Let $X,T$ be the training sample and grow a
+Construct a bunch of weak classifiers. Let $X,T$ be the training sample and grow a
 classifier $G_1(x)$ on it. Then grow another classifier $G_2(x)$ on a weighted sample
 with weights, emphasizing observations classified poorly on the previous iteration.
 Finish with $M$ iteratively grown classifiers and then construct the final classifier
@@ -4321,8 +4321,8 @@ Find the minimizer of expected exp-loss for each $x$
 \]
 This is a calculus of variations problem.
 \begin{align*}
-	f(x) &= \ex_{T|X} e^{ - T a }
-	f(x) &= e^{ - a } \pr(T=1|X) + e^{ a } \pr(T=-1|X)
+	f(x) &= \ex_{T|X} e^{ - T a }\\
+	&= e^{ - a } \pr(T=1|X) + e^{ a } \pr(T=-1|X)
 \end{align*}
 for $a=y(X)$ is constant given $X$. The optimal $a$ is given by
 \[
@@ -4338,7 +4338,7 @@ G(x)
 \]
 the weighted majority vote.
 
-Sin the exponential loss was used:
+Since the exponential loss was used:
 \[
 (\beta_m, \gamma_m) 
 = \argmin_{\beta, G} \sum_{i=1}^n e^{-t_i\bigl(f_{m-1}(x_i) + \beta G(x_i) \bigr)}
@@ -4432,7 +4432,7 @@ This implies that the minimizer is given by
 Let's update the current calssifier: add the function with the optimal parameters
 that were found.
 \[ f_m(x) \leftarrow f_{m-1}(x) + \beta_m G_m(x) \]
-and then update teh weights
+and then update the weights
 \[
 w^{m+1}_i \leftarrow e^{-t_i f_m(x_i)} = w^m_i e^{-t_i \beta_m G_m(x_i)}
 \]
