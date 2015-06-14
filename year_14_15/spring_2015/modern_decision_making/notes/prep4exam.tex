@@ -540,7 +540,7 @@ where $C_k = \{ i : t_i = k \}$. Further define
 \[
 \Sigma_k = \frac{1}{|C_k|} \sum_{i\in C_k} ( x_i - \bar{m}_k )( x_i - \bar{m}_k )'\,,
 \]
-which is the within-class variance matrix. Further any $\beta$ let
+which is the within-class variance matrix. For any $\beta$ let
 \[ m_k(\beta) = \beta'\bar{m}_k\,, \] 
 and
 \[ S_k(\beta) = \frac{1}{|C_k|} \sum_{i\in C_k} ( \beta'x_i - m_k )^2 \,. \]
@@ -600,14 +600,14 @@ is a method for constructing decision trees based on the training data. This met
 attempts to find the best approximation to the optimal decision tree, which is hard
 to compute efficiently in practice.
 
-Tree based methods permit non-linear regression and classification. Consider a training
-data $(x_i,t_i)_{i=1}^n\in \Real^p \times \Real$. A \emph{regression} tree $T$ models
-the response as a piecewise function $f:\Real^p \to \Real$ :
+Tree based methods permit non-linear regression and classification. Consider training
+dataset $(x_i,t_i)_{i=1}^n\in \Real^p \times \Real$. A \emph{regression} tree $T$
+models the response as a piecewise function $f:\Real^p \to \Real$ :
 \[ f(x) = \sum_{m=1}^M f_m(x) 1_{R_m}(x)\,, \]
 where $(R_m)_{m=1}^M$ is a collection of non-overlapping regions covering $\Real^p$, 
 and $(f_m(\cdot))_{m=1}^M$ are the regression models fit within each region. Simplest
 and most parsimonious regression trees use $f_m(x) = c_m$ and thus model a piecewise
-constant regression. If the partition $R_m)_{m=1}^M$ is known, the $c_m$'s are the
+constant regression. If the partition $(R_m)_{m=1}^M$ is known, the $c_m$'s are the
 local averages of the response variable within each region $R_m$.
 
 It is very hard to construct a partition that minimizes the training error, that is
@@ -644,7 +644,7 @@ The common approach to constructing decision regression trees is to apply cost-c
 pruning. The idea is to construct a large tree $T_0$, using the greedy procedure,
 and then to prune $T_0$ by merging its terminal nodes (or collapsing the internal
 nodes). The pruning is governed by the cost-complexity trade off
-\[ C_\alpha(T) = \sum_{m=1}^{M_T} \hat{c}^{(T)}_m \#\{i\,:,x_i\in R^{(T)}_m\} Q_m(T) + \alpha |T|\,, \]
+\[ C_\alpha(T) = \sum_{m=1}^{M_T} \#\{i\,:,x_i\in R^{(T)}_m\} Q_m(T) + \alpha |T|\,, \]
 where $\alpha$ is the trade-off parameter, $|T|$ is the complexity of the tree (the
 number of regions in the partition) and $Q_m(T)$ is the \textbf{impurity measure}
 of region $m$ of the \textbf{regression} tree $T$:
@@ -684,7 +684,7 @@ possibilities for impurity indices, among which the most well studied are:
 	\item Simple misclassification error (not recommended for use):
 	\[ Q_m(T) = \sum_{k=1}^K 1-\hat{p}_{mk} \,.\]
 \end{itemize}
-All these measure can be used for pruning trees, but only the Gini and entropy
+All these measures can be used for pruning trees, but only the Gini and entropy
 impurity indices are recommended for use in growing classification trees.
 
 Due to hierarchical structure trees have high variance, errors at top nodes propagate
@@ -750,11 +750,11 @@ G_M(x)
 = \text{sign} \Bigl( \sum_{m=1}^M \beta_m G_m(X) \Bigr) \,,
 \]
 -- the weighted majority vote, justified by the fact that under the exponential 
-loss the population optimal $f(x)$ is the scaled log-odd ratio of class posteriors.\hfill\\
+loss the population optimal $f(x)$ is the scaled log-odds ratio of class posteriors.\hfill\\
 
 \noindent\textbf{Derivation:}\hfill\\
-Consider the FSAM with exponential loss. Thus at each iteration AdaBoost solves
-the following problem 
+Consider the FSAM with exponential loss. At each iteration AdaBoost solves the
+following problem 
 \[
 \sum_{i=1}^n w_i^{(m)} \text{exp}\bigl\{ -\beta y_i G(x_i) \bigr\}
 \to \min_{\beta,G(\cdot)}\,,
@@ -776,8 +776,8 @@ For instance, for two-class classification trees, the CART algorithm is modified
 easily: the Gini impurity index uses
 \[
 \hat{p}_{mk}
- = \frac{ \sum_{i\,:,x_i\in R_m} w^m_i 1_{t_i=k} }
- 	{ \sum_{i\,:,x_i\in R_m} w^m_i } \,.
+ = \frac{ \sum_{i\,:,x_i\in R_m} w^{(m)}_i 1_{t_i=k} }
+ 	{ \sum_{i\,:,x_i\in R_m} w^{(m)}_i } \,.
 \]
 
 For a given $\hat{G}_m$, which minimizes the weighted misclassification error
@@ -792,7 +792,7 @@ the problem of finding the optimal $\beta$ becomes
 	\bigl( (e^\beta-e^{-\beta}) \text{err}_m(\hat{G}_m) + e^{-\beta} \bigr)
 		\sum_{i=1}^n w_i^{(m)} \,.
 \]
-Therefore 
+The first order conditions are
 \[ (e^\beta+e^{-\beta}) \text{err}_m(\hat{G}) - e^{-\beta} = 0\,, \]
 whence
 \[ e^{2\beta} \text{err}_m(\hat{G}) = 1 - \text{err}_m(\hat{G}) \,, \]
@@ -836,7 +836,7 @@ To summarize the AdaBoost version of FSAM is
 		\item Calculate 
 		\[ \hat{\beta}_m = \frac{1}{2} \log \frac{1-\text{err}_m}{\text{err}_m}\,, \]
 		and put $\alpha_m = 2 \hat{\beta}_m$;
-		\item Finally update the weights
+		\item Finally update the weights and ensure that they sum to one
 		\[ w_i^{(m+1)} \propto w_i^{(m)} e^{ \alpha_m 1_{G_m(x_i)\neq y_i }} \,; \]
 	\end{enumerate}
 	\item Return the final binary classifier 
@@ -870,7 +870,7 @@ The Lagrangian function $\Lcal: D \times \Real_+^m \times \Real^p \to \Real$ is 
 \[
 \Lcal(x, \lambda, \nu) = f_0(x) + \sum_{i=1}^m \lambda_i f_i(x) + \sum_{j=1}^p \nu_j h_j(x) \,,
 \]
-where $D \subseteq \Real^n$ is
+where $D \subseteq \Real^n$ is the common domain
 \[
 D = \bigl( \bigcap_{i=0}^m \text{dom} f_i \bigr) \cap \bigl( \bigcap_{j=1}^p \text{dom} h_j \bigr) \,.
 \]
@@ -1007,7 +1007,7 @@ $\beta^*(\lambda)$ into $\Lcal(\beta_0, \beta, \lambda)$ the Lagrange dual becom
 		+ \sum_{i=1}^n \lambda_i\,,
 \end{align*}
 Let $H_{ij} = t_j t_i x_i' x_j$, which is the inner product in $\Real^p$ space of
-the $i$-th and $j$-th data points. In the matrix form the Lagrangian dual is
+the $i$-th and $j$-th data points. In the matrix form the Lagrange dual is
 \[ g(\lambda) = \one' \lambda - \frac{1}{2} \lambda'H\lambda \,. \]
 The final dual problem thus becomes
 \[ \one' \lambda - \frac{1}{2} \lambda' H \lambda \to \max_\lambda\,,\]
@@ -1125,8 +1125,8 @@ vector space over the field $\Real$, $\langle\cdot,\cdot\rangle$ is an inner pro
 on $\Hcal$, and $\Hcal$ is complete with respect to the inner product's norm $\|\cdot\|$.
 
 Let $X$ be some set, the nature of which is irrelevant. A function $K:X\times X\to \Real$
-is called a \textbf{kernel} if there exists a Hilbert space $\Hcal$ and a mapping
-$\Phi : X \to \Hcal$ such that for all $x,y\in X$
+is called a \textbf{kernel} if there exists a Hilbert space $(\Hcal, \langle\cdot,\cdot\rangle)$
+and a mapping $\Phi : X \to \Hcal$ such that for all $x,y\in X$
 \[ K(x,y) = \bigl\langle \Phi(x), \Phi(y) \bigr\rangle \,. \]
 The space $\Hcal$ is a new feature space and the map $\Phi$ embeds the original
 feature set $X$ in $\Hcal$.
@@ -1543,9 +1543,12 @@ Due to reproducibility the penalty term reduces to
 \end{align*}
 And therefore the problem is equivalent to
 \[ (t-K\alpha)'(t-K\alpha) + \lambda \alpha' K \alpha \to \min_\alpha\,,\]
-which gives the optimal $\alpha^* = (K+\lambda I)^{-1} t$. The prediction of $t$
-at a new $x$ is given by
-\[ \hat{t}(x) = K_x'\alpha^* = K_x' (K+\lambda I)^{-1} t \,. \]
+with the first order conditions
+\[ 2K'(t-K\alpha) + \lambda K \alpha = 0\,, \]
+which gives the optimal $\alpha^* = (K+\lambda I)^{-1} t$, since $K$ is invertible.
+The prediction of $t$ at a new $x$ is given by
+\[ \hat{t}(x) = K_x'\alpha^* = K_x' (K + \lambda I)^{-1} t \,, \]
+for $K_x = (K(x,x_i))_{i=1}^n$.
 
 % section question_14 (end)
 
