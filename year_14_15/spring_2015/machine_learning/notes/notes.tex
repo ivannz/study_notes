@@ -823,11 +823,11 @@ p(f|e) = \prod_{j=1}^{|f|} \sum_{a_j=1}^{|e|} p(a_j|e) p(f_j|e_{a_j})
 \label{sec:lecture_15}
 
 Suppose one has a word and wishes to predict words after of before: given $x_n$
-and its context $(y_{ns})_{s=-2}^{+2}$ find the probability that 
+and its context $(y_{ns})_{s=-2}^{+2}$ find the probability that ...
 
 
-Suppose for each wotd one has a mutlidimensional pair of representations:
-$w\to \text{I}(w)$ and $w\to \text{O}(w)$ in $\Real^d$,$d = 300$, and set
+Suppose for each word one has a multidimensional pair of representations:
+$w\to \text{I}(w)$ and $w\to \text{O}(w)$ in $\Real^d$, $d = 300$, and set
 \[
 p(y_{nk} | x_n)
 = \frac{ \text{exp}\{ \text{I}(x_n)'\text{O}(y_{nk}) \} }{\sum_v \text{exp}\{ \text{I}(x_n)'\text{O}(v) \}}
@@ -842,8 +842,8 @@ this model is extremely slow due to the summation in the denominator.
 An idea is to use stochastic gradient descent on a neural network with one hidden
 layer with $d$ linearly activated neurons, which computes the same probabilities.
 
-In order to further reduce the volume of computations one could Huffman coding on
-the words from the frequency vocabulary. This permits one to compute a so called
+In order to further reduce the volume of computations one could use Huffman coding
+on the words from the frequency vocabulary. This permits one to compute a so called
 hierarchical soft-max (sigmoid). Let $\pi_w$ be the path from the leaf to the root
 of the Huffman tree. At each vertex $v$ of the tree there is an $\text{O}(v)$ out
 vector and there is a $\sfrac{\text{L}}{\text{R}}$ direction given by $s(u,w)=\pm1$.
@@ -854,9 +854,6 @@ p(y_{nk} | x_n)
 then using this optimization trick one gets a tremendous speed-up: the rare cases
 with longer paths are computed very infrequently, whereas highly frequent words,
 which have shorter paths are very rapidly calculated.
-
-
-
 
 % section lecture_15 (end)
 
