@@ -5777,7 +5777,7 @@ which means that at least $c_j = o(\sqrt{\lambda_j})$ as $j\to \infty$.
 
 For this space and this inner product $K$ has the reproducibility property:
 \begin{align*}
-	\langle f, K(\cdot,x)\rangl
+	\langle f, K(\cdot,x)\rangle
 	&= \bigl\langle \sum_{j\geq1}c_j \psi_j(\cdot), \sum_{j\geq1} \lambda_j \psi_j(x) \psi_j(\cdot) \bigr\rangle\\
 	&= \sum_{j\geq1} \frac{c_j \lambda_j \psi_j(x) }{\lambda_j}\,.
 \end{align*}
@@ -5905,7 +5905,7 @@ We may disregard the orthogonal component of any $y$!
 \label{ssub:kernel_ridge_regression}
 
 Consider penalized problem
-\[ C(y) = \sum_{i=1} (t_i - y(x_i))^2 + \lambda \|y\|^_\Hcal\,,\]
+\[ C(y) = \sum_{i=1} (t_i - y(x_i))^2 + \lambda \|y\|_\Hcal\,,\]
 where $y\in \Hcal$ for some RKHS $\Hcal$ with kernel $K$.
 
 Using representer theorem necessarily the solution to this problem:
@@ -5944,7 +5944,7 @@ The prediction of $t$ at a new $x$ is given by
 The training data is $(x_i,t_i)_{i=1}^n \in X\times \{-1,+1\}$. The problem of the
 SVM was to fit a hyperplane $y(x) = \beta_0 + \langle\beta, x\rangle$.
 The primal problem was
-\[ \frac{1}{2}\|\beta\|^2 \tom \min_\beta\,, \]
+\[ \frac{1}{2}\|\beta\|^2 \to \min_\beta\,, \]
 subject to $t_i (\beta_0 + \beta'x_i )\geq 1$.
 The dual problem was
 \[ \one'\lambda - \frac{1}{2} \lambda'H \lambda \to \max_\lambda\,, \]

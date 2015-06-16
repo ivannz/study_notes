@@ -2289,7 +2289,7 @@ for some prior distribution $\pi(\theta)$. Thus
 = \int_{\Theta_0} \pi(\theta) \ex_\theta \phi(Y^n) d\theta
 + \int_{\Theta_1} \pi(\theta) \bigl(1-\ex_\theta \phi(Y^n)\bigr) d\theta
 \]
-The Bayesian test is defines as
+The Bayesian test is defined as
 \[\bar{\phi}_\pi = \text{argmin}_{\phi} r_\pi(\phi)\]
 
 Theorem:
@@ -2841,5 +2841,174 @@ T(Y^n,Z^m)
 % subsection discrete_distribution_case (end)
 
 % section lecture_19 (end)
+
+\section{Lecture \# 20} % (fold)
+\label{sec:lecture_20}
+
+% Конференция по современным методам оптимизации, посвящённая 80летию Б. Т. Поляка.
+No lecture on the $14$-th of May. \url{http://sites.google.com/site/polconf}
+
+\subsection{Brownian motion (cntd)} % (fold)
+\label{sub:brownian_motion_cntd}
+
+Brownian motion is one of the two major and tractable processes. THe other one is
+the Poisson random process. With slight modifications, Wiener process can be used to model anything.
+
+Three approaches to studying Brownian motion \begin{itemize}
+	\item Fokker-Plank equation;
+	\item Ito stochastic integral;
+	\item functional integration (Feymnann integral).
+\end{itemize}
+
+% Kingman Poisson processes
+
+\subsubsection{Fokker-Planck equation} % (fold)
+\label{ssub:fokker_planck_equation}
+
+Brownian motion can be constructed as a continuous limit of a discrete random
+walk.
+
+Consdier a symmetric homogeneous random walk on $h \mathbb{Z}$ with time axis $\tau \mathbb{Z}$.
+So let $P(t,x)$ be the probability of being at point $x$ at time $t$ for admissible
+$t$ and $x$: $P(t,x) = P(n\tau, h k)$. This discrete probability can be considered
+as proportional to the ``density'' : $\propto p(t,x)$.
+
+The probability of being at $x$ at $t+\tau$ is 
+\[p(t+\tau, x) - p(t, x) = \frac{1}{2} p(t, x + h) + \frac{1}{2} p(t, x - h) + 0 \sum_{|k|\geq2} 0 p(t,x+kh) - p(t, x)\]
+where the right hand side is the total probability: half is the conditional
+probability of making a transition from $x$ to $x\pm h$.
+
+Suppose there exists a smooth and differentiable limit of $p(t,x)$ when $h,\tau\to 0$.
+We need some restrictions on the limiting behaviour of the space-time spacing.
+
+Consider the approximation
+\[
+\tau \frac{\partial}{\partial t} p(t,x) + o(\tau^2)
+= \frac{1}{2}\Bigl( p(t,x) + h\frac{\partial}{\partial x} p(t,x) + \frac{1}{2}h^2\frac{\partial^2}{\partial x^2} p(t,x) + o(h^3) \Bigr)
++ \frac{1}{2}\Bigl( p(t,x) - h\frac{\partial}{\partial x} p(t,x) + \frac{1}{2}h^2\frac{\partial^2}{\partial x^2} p(t,x) + o(h^3) \Bigr)
+- p(t,x)
+\]
+whence
+\[ \tau \frac{\partial}{\partial t} p(t,x) + o(\tau^2) = \frac{1}{2}h^2\frac{\partial^2}{\partial x^2} p(t,x) + o(h^3) \]
+Dividing by $\tau>0$
+\[ \frac{\partial}{\partial t} p(t,x) = \frac{h^2}{2\tau}\frac{\partial^2}{\partial x^2} p(t,x) + o\Bigl(\frac{h^2}{\tau} h +  \tau\Bigr) \]
+Thus if $h\sim \sqrt{\tau}$, then this gives a non-trivial solution in the
+continuous limit: $o\Bigl(\frac{h^2}{\tau} h +  \tau\Bigr) \to 0$
+\[ \frac{\partial}{\partial t} p(t,x) = \kappa \frac{\partial^2}{\partial x^2} p(t,x)\]
+
+If the random walk is asymmetric but homogeneous (probabilities do not depend on
+the current state), then the 
+\[p(t+\tau, x) - p(t, x) = \frac{1-\alpha}{2} p(t, x + h) + \frac{1+\alpha}{2} p(t, x - h) + 0 \sum_{|k|\geq2} 0 p(t,x+kh) - p(t, x)\]
+Then
+\[
+\tau \frac{\partial}{\partial t} p(t,x) + o(\tau^2)
+= \frac{1-\alpha}{2}\Bigl( p(t,x) + h\frac{\partial}{\partial x} p(t,x) + \frac{1}{2}h^2\frac{\partial^2}{\partial x^2} p(t,x) + o(h^3) \Bigr)
++ \frac{1+\alpha}{2}\Bigl( p(t,x) - h\frac{\partial}{\partial x} p(t,x) + \frac{1}{2}h^2\frac{\partial^2}{\partial x^2} p(t,x) + o(h^3) \Bigr)
+- p(t,x)
+\]
+whence
+\[
+\tau \frac{\partial}{\partial t} p(t,x) + o(\tau^2)
+= \frac{1}{2}h^2\frac{\partial^2}{\partial x^2} p(t,x)
+- \alpha h\frac{\partial}{\partial x} p(t,x) + o(h^3)
+\]
+Now
+\[
+\frac{\partial}{\partial t} p(t,x)
+= \frac{h^2}{2\tau}\frac{\partial^2}{\partial x^2} p(t,x)
+- \alpha \frac{h}{\tau}\frac{\partial}{\partial x} p(t,x) + o(\frac{h^2}{\tau}h + \tau)
+\]
+This requires that $h\sim \tau$, which degenerates into
+\[ \frac{\partial}{\partial t} p(t,x) + \alpha \frac{\partial}{\partial x} p(t,x) = 0 \]
+However if $\alpha = \mu h$, then the limits gives a non-trivial result:
+\[
+\frac{\partial}{\partial t} p(t,x)
+= \kappa \frac{\partial^2}{\partial x^2} p(t,x)
+- \mu \frac{\partial}{\partial x} p(t,x)
+\]
+
+Consider a homogeneous equation without drift. Then make a trasnformation
+\[(x,t)\to(x' = x - \mu t, t)\]
+then the differential operators transform into
+\[
+\frac{\partial}{\partial t}\rvert_x
+= \frac{\partial}{\partial t}\rvert_{x'}
++ \frac{\partial x'}{\partial t}\frac{\partial}{\partial x}\rvert_t
+= \frac{\partial}{\partial t}\rvert_{x'}
++ \mu \frac{\partial}{\partial x}\rvert_t
+\]
+and
+\[
+\frac{\partial}{\partial x}\rvert_t = \frac{\partial}{\partial x'}\rvert_t
+\]
+this reduces the equation with drift to the one without drift.
+
+% subsubsection fokker_planck_equation (end)
+
+\subsubsection{Solution of the equation without drift} % (fold)
+\label{ssub:solution_of_the_equation_without_drift}
+
+The equation is
+\[ \frac{\partial}{\partial t} p = \frac{\kappa^2}{2} \frac{\partial^2}{\partial x^2} p \]
+
+Consdier a one dimensional Fourier transform of the density $p(t,x)$
+\[ p(t,x) = \frac{1}{2\pi} \int e^{-i x \xi} \hat{p}(t,\xi) d\xi \]
+Then using the uniform integrability of $e^{-ix\xi}$ gives
+\begin{align*}
+	\frac{\partial}{\partial t} p &= \frac{1}{2\pi} \int e^{-i x \xi} \frac{\partial}{\partial t} \hat{p}(t,\xi) d\xi\\
+	\frac{\partial}{\partial x} p &= \frac{1}{2\pi} \int (-i \xi) e^{-i x \xi} \hat{p}(t,\xi) d\xi\\
+	\frac{\partial^2}{\partial x^2} p &= \frac{1}{2\pi} \int (- \xi^2) e^{-i x \xi} \hat{p}(t,\xi) d\xi
+\end{align*}
+
+Plugging these derivatives into the original homogeneous equation yields
+\[ \int e^{-i x \xi} \Bigl[ \frac{\partial}{\partial t} \hat{p}(t,\xi) + \frac{\xi^2\kappa^2}{2} \hat{p}(t,\xi) \Bigr] d\xi = 0 \]
+The solution to this equation is given by 
+\[ \frac{\partial}{\partial t} \hat{p}(t,\xi) + \frac{\xi^2\kappa^2}{2} \hat{p}(t,\xi) \]
+due to Parseval's theorem. Thus
+\[ \hat{p}(t,\xi) = e^{-\frac{\xi^2\kappa^2}{2} t} \hat{p}_0(\xi) \]
+whence
+\[ p(t,x) = \frac{1}{2\pi} \int_{-\infty}^\infty e^{-i x \xi} e^{-\frac{\xi^2 \kappa^2}{2} t} \hat{p}_0(\xi) d\xi \]
+
+This integral is solved by extracting a complete square in the exponenet:
+\[
+-i x \frac{\sqrt{2}}{\kappa\sqrt{t}} \xi \frac{\kappa\sqrt{t}}{\sqrt{2}} - \frac{\xi^2 \kappa^2}{2} t
+\]
+%% FINISH THIS!
+
+Whence
+\[
+p(t,x) = \frac{1}{2\pi} \int_{-\infty}^\infty \hat{p}_0(\xi) 
+e^{ -\frac{\kappa^2 t}{2} (\xi^2 + \frac{2ix}{\kappa^2 t}\xi - \frac{x^2}{\kappa^4 t^2}) - \frac{x^2}{2\kappa^2 t}}
+ d\xi
+ \]
+
+
+Consider a fundamental solution with $P(t=0,x) = \delta_x$, then
+\[
+\hat{p}_0(\xi)
+= \int e^{-ix\xi} \delta(x) dx
+= 1
+\]
+thus 
+\[
+p(t,x)
+= \frac{1}{2\pi} e^{ - \frac{x^2}{2\kappa^2 t}}
+  \int e^{ -\frac{\kappa^2 t}{2} (\xi + \frac{ix}{\kappa^2 t})^2} d\xi
+= \frac{1}{\sqrt{ 2\pi \kappa^2 t} } e^{ - \frac{x^2}{2\kappa^2 t}}
+\]
+
+
+% subsubsection solution_of_the_equation_without_drift (end)
+
+% subsection brownian_motion_cntd (end)
+
+% section lecture_20 (end)
+
+\section{lecture \# 21} % (fold)
+\label{sec:lecture_21}
+
+
+
+% section lecture_21 (end)
 
 \end{document}

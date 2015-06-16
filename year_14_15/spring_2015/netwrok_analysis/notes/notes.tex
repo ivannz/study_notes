@@ -4,7 +4,7 @@
 \usepackage{graphicx, url}
 
 \usepackage{amsmath, amsfonts, amssymb, amsthm}
-\usepackage{xfrac, mathptmx}
+\usepackage{mathptmx}
 
 \newcommand{\obj}[1]{{\left\{ #1 \right \}}}
 \newcommand{\clo}[1]{{\left [ #1 \right ]}}
@@ -23,7 +23,10 @@
 \newcommand{\Ntrl}{\mathbb{N}}
 \newcommand{\Pwr}{\mathcal{P}}
 \newcommand{\pr}{\mathbb{P}}
-\newcommand{\Ex}{\mathbb{E}}
+\newcommand{\ex}{\mathbb{E}}
+\newcommand{\Lcal}{\mathcal{L}}
+
+\newcommand{\argmax}{\mathop{\text{argmax}}}
 
 \newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
 
@@ -195,8 +198,8 @@ random number.
 The models are asymptotically equivalent.
 
 The mean node degree is given by
-\[\epsilon(G) = \frac{2 \Ex(m)}{n} = p\frac{2 n(n-1)}{2 n} \approx p n\]
-The graph density is the \[\rho \defn 2\frac{\Ex(m)}{n(n-1)}\]
+\[\epsilon(G) = \frac{2 \ex(m)}{n} = p\frac{2 n(n-1)}{2 n} \approx p n\]
+The graph density is the \[\rho \defn 2\frac{\ex(m)}{n(n-1)}\]
 
 The degree distribution of a random graph.
 
@@ -296,7 +299,7 @@ The expected degree of any node $i$ (the time the node was introduced):
 \[k_i(t) = m + \sum_{k=0}^k\frac{m}{n_0+i-1 + k}\]
 
 for $t>>n_0$
-\[k_i(t) \aaprox m \brac{1 + \log\frac{t}{i}}\]
+\[k_i(t) \approx m \brac{1 + \log\frac{t}{i}}\]
 
 The longer the node has been in the system, the more degree it has: ``the first move-in advantage''.
 
@@ -334,7 +337,7 @@ Preferential attachment represents the heuristic rule that ``similar attract''.
 \[k_i(t+\delta t) = k_i(t) + m \Pi(k_i)\delta t\]
 \[\frac{d}{dt}k_i(t) = m \Pi(k_i) = m \frac{m k_i}{2 m t}\]
 which has the solution: time evolution of a node $i$ degree
-\[k_i(t) = m\brac{\frac{t}{i}}^\tfrac{1}{2}\]
+\[k_i(t) = m\Bigl(\frac{t}{i}\Bigr)^\frac{1}{2}\]
 
 Nodes with degree less than $k$: $\frac{m^2}{k^2} t<i$
 
@@ -425,7 +428,7 @@ Notions of centrality usually deal with undirected graphs, corresponding to symm
 
 
 The degree centrality is just the number of nearest neighbours for a graph incidence matrix $A$:
-\[C_D(u) = \detla_u = \sum_{v\in V} A_{uv}\]
+\[C_D(u) = \delta_u = \sum_{v\in V} A_{uv}\]
 
 Normalized graph centrality, defined as $C_D^*(u) \defn \frac{C_D(u)}{\abs{V}-1}$, is useful for comparison between graphs, not just within one graphs.
 
@@ -602,7 +605,7 @@ Mixing is allowed with respect to any attribute, be it observed or latent., or e
 
 How much more often do attributes match across edges than expected at random? The modularity metric
 \[ Q = \frac{m_c-\brkt{m_c}}{m} = \frac{1}{2m}\sum_{u,v\in V} \Big( A_{u,v} - \frac{k_u k_v}{2m} \Big) \delta(c_u,c_v)\]
-where $c:V\to \mathcal{C}$ is the vertex labelling, class or attributes, and $m_c$ -- number of edges with the same attributes, and $\brkt{m_c} =\Ex(\#_c)$.
+where $c:V\to \mathcal{C}$ is the vertex labelling, class or attributes, and $m_c$ -- number of edges with the same attributes, and $\brkt{m_c} =\ex(\#_c)$.
 
 The term $\frac{k_u k_v}{2m}$ is responsible to capturing the expected number or connections had the graph been random.
 
@@ -718,7 +721,7 @@ Construct communities by progressively removing edges.
 \end{itemize}
 
 Community quality. Compare the fraction of edges within the cluster to expected fraction had edges been distributed at random:
-\[Q = \frac{1}{2m}\sum_{ij} \big(\A_{ij} - \frac{k_ik_j}{2m} \delta_{c_i,c_j}\big)\]
+\[Q = \frac{1}{2m}\sum_{ij} \big(A_{ij} - \frac{k_ik_j}{2m} \delta_{c_i,c_j}\big)\]
 
 % subsubsection heuristic_approach (end)
 
@@ -1029,7 +1032,7 @@ Numerical solution of diffusion equations: finite difference method.
 	\item[MISSING] slide 12
 \end{description}
 
-Let's model the diffusion of some substance on a graph. Let $\phI)i(t)$ be the
+Let's model the diffusion of some substance on a graph. Let $\phi(t)$ be the
 concentration at a node $i$ at time $t$ and suppose the diffusion is given by
 \[
 \phi_i(t+\delta t)
@@ -1111,7 +1114,7 @@ P
 % section lecture_11 (end)
 
 \section{Lecture \# 12} % (fold)
-\label{sec:lecture_#_12}
+\label{sec:lecture_12}
 
 \subsection{Epidemic dynamic model} % (fold)
 \label{sub:epidemic_dynamic_model}
@@ -1205,7 +1208,7 @@ $R_0$ is the basic reproduction number, which is the average number of agents
 infected by another agent before its recovery (removal from the population).
 \[
 R_0
-= \Ex(\beta \tau)
+= \ex(\beta \tau)
 = \int_0^\infty \gamma \tau e^{-\gamma \tau} d\tau
 = \frac{\beta}{\gamma}
 \]
@@ -1243,11 +1246,11 @@ level (generation, iteration) is given by
 The main assumption, that $\xi^n_i$ are mutually independent, yields
 \begin{multline*}
 G_{Z_{n+1}}(s)
-= \Ex s^{Z_{n+1}}
-= \Ex \Ex \bigl(s^{Z_{n+1}}\rvert Z_n\bigr)
-= \Ex \prod_{m=1}^{Z_n} \Ex \bigl(s^{\xi^n_m}\rvert Z_n\bigr)\\
-= \Ex \bigl( \Ex s^{\xi^n_m} \bigl)^Z_n
-= \Ex (G_\xi(s))^{Z_n}
+= \ex s^{Z_{n+1}}
+= \ex \ex \bigl(s^{Z_{n+1}}\rvert Z_n\bigr)
+= \ex \prod_{m=1}^{Z_n} \ex \bigl(s^{\xi^n_m}\rvert Z_n\bigr)\\
+= \ex \bigl( \ex s^{\xi^n_m} \bigl)^Z_n
+= \ex (G_\xi(s))^{Z_n}
 = G_{Z_n}( G_\xi(s) )
 \end{multline*}
 whence
@@ -1266,4 +1269,406 @@ following recursive equation for $q_n$:
 % subsection contagion_model (end)
 
 % section lecture_#_12 (end)
+
+\section{Lecture \# 13} % (fold)
+\label{sec:lecture_13}
+
+% Probabilistic models missed the first 5 slides
+
+Probabilities of a node $i$ of being infected is $x_i(t)$
+$\beta$ is the infection rate 
+\[\frac{d}{dt} x_i(t) = \beta (1-x_i(t)) \sum_j A_{ij} x_j(t)\]
+
+This is a non-linear equation, which is hard to solve. But it is possible to
+consider some approximations: early-time and the late-time approximations.
+
+\subsubsection{Early-time approximation} % (fold)
+\label{ssub:early_time_approximation}
+
+Consider the case $t\to 0$ and suppose $x_i(t) << 1$. Then the $(1-x_i(t))$ term
+can be take to be equal to $1$, whence
+\[\frac{d}{dt} x_i(t) \approx \beta A x(t)\]
+This system's solution in the eigenbasis of $A$ is given by
+\[x(t) = \sum_k c_k e^{\lambda_k \beta t} v_k\]
+When $t\to 0$ then for $\lambda_\text{max} = \lambda_1> \lambda_k$, the solution
+is approximated by
+\[x(t) = c_1 v_1 e^{\lambda_1 \beta t}\]
+indeed as $t\to 0$
+\[
+x(t) - c_j v_j e^{\lambda_j \beta t}
+= \sum_{k\neq 1} c_k \bigl(e^{\beta\lambda_k t}-e^{\beta\lambda_j t}\bigr) v_k
+= e^{\beta\lambda_j t} \sum_{k\neq 1} c_k \bigl(e^{-\beta(\lambda_j-\lambda_k) t}-1\bigr) v_k
+\]
+whence (?) this does not show any rate of convergence...
+
+% subsubsection early_time_approximation (end)
+
+\subsubsection{Late-time approximation} % (fold)
+\label{ssub:late_time_approximation}
+
+Now consider the limiting case when $t\to\infty$ and $x(t)\to x^*$. In this case it
+necessarily must be true that $\dot{x} = 0$, which implies that 
+\[\beta (1-x^*_i) \sum_j A_{ij} x^*_j = 0\]
+
+% subsubsection late_time_approximation (end)
+
+\subsection{The SIS model} % (fold)
+\label{sub:the_sis_model}
+
+Infection equations
+\[\frac{d}{dt} s_i(t) = \beta s_i(t) \sum_j A_{ij} x_j(t) - \gamma x_i(t)\]
+and the balance $s_i(t) = 1 - x_i(t)$.
+
+Early-time approximation (linearization): if $x_i(t) << 1$ then
+\[
+\frac{d}{dt} s_i(t)
+\approx \beta \sum_j A_{ij} x_j(t) - \gamma x_i(t)
+= \beta \sum_j (A_{ij} - \frac{\gamma}{\beta} 1_{ij}) x_j(t)
+\]
+whence
+\[\dot{x} = \beta (A - \frac{\gamma}{\beta} I) x\]
+This problem has the same eigenbasis, as the previous one, but 
+eigenvalues:
+\[x(t) = \sum_k c_k v_k e^{(\beta \lambda_k - \gamma )t} \]
+
+The relative magnitudes of $\lambda_1$ and $\frac{\gamma}{\beta}$ have a large
+impact on the limiting behaviour of the infection spread.
+
+In the previous lecture the critical value of $\frac{\gamma}{\beta}$ was $1$, while
+here it is determined by some characteristic of the structure of the connectivity
+graph. The larger the top eigenvalue, the more infection resilient the network is.
+
+% subsection the_sis_model (end)
+
+\subsection{SIR model as percolation} % (fold)
+\label{sub:sir_model_as_percolation}
+
+For every edge we flip a biased a coin to determine if the edge is active or not. The
+paths of activated edges is a percolation path. \textbf{Bond percolation}: only those
+nodes that are on a percolation path with an infected node will get infected.
+
+It is reminiscent of the random Erd\"os-Renyi graph. Thus if the probability of being
+activated is larger than some threshold, then the whole network becomes infected. This
+threshold is determined by the largest eigenvalue (Keeling et al.;2005).
+
+% subsection sir_model_as_percolation (end)
+
+% section lecture_13 (end)
+
+\section{Lecture \# 14} % (fold)
+\label{sec:lecture_14}
+
+A brief outline of the lecture. Diffusion of information and social contagion.
+Rumour spreading models: mean field model and homogeneous approximations.
+Propagation tree.
+
+Social contagion is understood as processes describing individual propensity to
+adopt and diffuse information. Such models are quite similar to epidemiological 
+models:
+\begin{description}
+	\item [``susceptible''] an individual, who has not yet been exposed to new
+	information;
+	\item [``infected''] an agent, who carries and actively disseminates the
+	rumour;
+	\item [``recovered''] an individual, aware of the new gossip, but no longer
+	spreading it.
+\end{description}
+
+Key parameters in social social diffusion are the density of connectivity and the
+virulence of a rumour.
+
+The key result is the criticality threshold on the ratio of virulence (the mean
+number of infected individuals) and the connectivity of the network (the average
+number of connected individuals) and which beyond which the whole population gets
+infected, whereas below -- the infection dies out.
+
+The main difference between physical and social diffusion is that no conservation
+of mass is involved in the latter.
+
+\subsection{Maki-Thomson model (1973)} % (fold)
+\label{sub:maki_thomson_model_1973}
+
+It is speculated that the rumour spreads via the process described below.
+Compartmental fully mixed model. There are three categories of individuals
+\begin{itemize}
+	\item Ignorants ($I$) -- those who do not known the rumour;
+	\item Spreaders ($S$) -- know the rumour and actively spreading it;
+	\item Stiflers ($R$) -- know the information, but ceased to disseminate it;
+\end{itemize}
+The rumour spreads via pairwise contacts (meetings): \begin{itemize}
+	\item $I-S \overset{\lambda}{\to} S-S$;
+	\item $S-R \overset{\alpha}{\to} R-R$;
+	\item $S-S \overset{\alpha}{\to} S-R$;
+\end{itemize}
+where $\lambda$ is the rate of ignorant-spreader contacts, and $\alpha$ -- is the 
+rate of spreader-spreader and spreader-stifler contacts.
+
+\subsubsection{Homogeneous approximation} % (fold)
+\label{ssub:homogeneous_approximation}
+
+Lattice or exponential network $G$ with $\bar{\delta}$ neighbours on average.
+Consider a network of fixed size:
+\begin{align*}
+	\dot{i} &= - \lambda \bar{\delta} i s\\
+	\dot{s} &= \lambda \bar{\delta} i s - \alpha \bar{\delta} s (s + r)\\
+	\dot{r} &= \alpha \bar{\delta} s (s + r)
+\end{align*}
+with $s+i+r = 1$ and $i = \frac{I(t)}{N}$ -- the share of ignorants, and so forth.
+
+As time goes on the process becomes saturated with ``stiflers''. Thus there exists
+$r_\infty = \lim_{t\to \infty} r(t)$, with
+\[r_\infty = 1 - e^{-(1+\frac{\lambda}{\alpha})r_\infty}\]
+In order for there to exist a stable non-zero solution it must be so that
+\[
+\frac{d}{d r_\infty} \bigl(
+	1 - e^{-(1+\frac{\lambda}{\alpha}) r_\infty}
+\bigr)\rvert_{r_\infty = 0} > 0
+\]
+In this case the rumour epidemic becomes super-critical when $1+\frac{\lambda}{\alpha}>1$,
+which means that any rumour, however weak and ridiculous, would still ``infect'' the whole
+population.
+
+% subsubsection homogeneous_approximation (end)
+
+\subsubsection{Mean field approach} % (fold)
+\label{ssub:mean_field_approach}
+
+The idea came from the particle physicists, who though to replace the pairwise
+interaction a particle with its neighbours by its interaction against the whole
+ensemble. This ``mean field'' approximation is valid when the local density of 
+particles in a system is high and the number of particles is high.
+
+First, group the nodes of $G = (V,E)$ with respect to the node degree:
+the topology of the network $G$ is static. The dynamics of the share of nodes with
+the same-connectivity pattern in each of the categories is given by
+\begin{align*}
+	\dot{i}_k &= -\lambda \bar{\delta} i_k \sum_{ d } \frac{ d P(d) s_d}{\bar{\delta}}\\
+	\dot{s}_k &= \lambda \bar{\delta} i_k \sum_{ d } \frac{ d P(d) s_d}{\bar{\delta}}
+		- \alpha \bar{\delta} \sum_{ d } \frac{ d P(d) s_d (s_d + r_d) }{\bar{\delta}}\\
+	\dot{r}_k &= \alpha \bar{\delta} \sum_{ d } \frac{ d P(d) s_d (s_d + r_d) }{\bar{\delta}}\\
+\end{align*}
+where $P(k)$ is the probability distribution of node degree:
+\[P(k) = \frac{1}{|V|} \sum_{v\in V} 1_{k}(\delta_v)\]
+
+% subsubsection mean_field_approach (end)
+
+% subsection maki_thomson_model_1973 (end)
+
+Rumour dynamics:
+\begin{itemize}
+	\item if a spreader meets an ignorant, then the ignorant becomes a spreader with rate $\lambda$;
+	\item \textbf{Missing items}.
+\end{itemize}
+
+The critical threshold for homogeneous, scale-free, or even random graphs is the same
+\[\frac{\alpha}{\lambda} \geq \frac{E \text{degree}}{E \text{degree}^2}\]
+
+% Spread of a good idea: Luis M.A, Bettencourt et al. 2005
+
+\subsubsection{Propagation tree} % (fold)
+\label{ssub:propagation_tree}
+
+Rumours usually spread in cascades, which look like trees. Recall the Galton-Watson
+branching process: \begin{itemize}
+	\item if $p \bar{\delta} < 1$ then rumour dies out exponentially;
+	\item if $p \bar{\delta} = 1$ then the number of infected nodes is fixed;
+	\item if $p \bar{\delta} > 1$ then rumour spreads throughout the whole network
+	with exponential asymptotics.
+\end{itemize}
+
+% subsubsection propagation_tree (end)
+
+% section lecture_14 (end)
+
+\section{Lecture \# 15} % (fold)
+\label{sec:lecture_15}
+
+Consdier a local intercation game, which rewards synchoronisation. If $u$ and $v$
+are adjacent nodes in a network $G = (V,E)$. If the strategies of $u$ and $v$ are
+aligned then both get payoff of either $(a,a)$ or $(b,b)$, and zero if opposite
+behaviour is adopted.
+
+Network coordination game, direct benfit effect. Let $p$ be the portion of adjacent
+nodes adopting a strategy $\pi_1$ then it is optimal to use $\sigma_1$ if
+\[ d p a \geq d (1-p) b\]
+whence the payoff treshold is $q=\frac{b}{a+b}$: if $p\geq q$ then choose $\sigma_1$.
+
+``Cascade'' is sequence of changes of behaviour, a ``chain reaction''. The size of the
+cascade is the number off nodes which changes the behaviour, and a cascade is complete
+if every node is affected.
+
+This activation cascade settles within a local cluster, since a cluster it densely
+connected within, but has much less connection to the outside.
+Mass media is a node, connected to almost any other vertex in the network.
+
+Another assumption is that every person has the same adoption threshold.
+
+Granovettor (1978): individual threshold model. The basic idea that each agent has
+individual threshold dependent on the idiosyncratic preferences.
+
+Let $\theta_i$ be the threshold of $u$-th agent, and $x$ is the number of participants.
+Each one makes a binary decision: $x>\theta_i$ then $+1$ and $-1$ otherwise.
+Let $f(x)$ be the density of people with threshold level $\theta=x$, and $F(x)$ be
+$\int_0^x f(s) ds$ the share of people with threshold $\theta$ not greater than $x$.
+\[F(x) = \sum_{x'\geq x} f(x')\]
+Initially, $x_0$ have $+1$ (joined a protest). Thus after the first iteration, there
+would be $x_1 = F(x_0)$ ratio, and so on.
+
+...
+
+Influence maximisation problem: activate certain nodes so as to maximise the size of
+the resulting cascade. More formally, find a $k$-set $A_0$...
+
+Properties of submodular set functions. A function $f:\mathcal{P}(V)\to \Real$
+is submodular if for $S<T\subseteq V$ with $S\subseteq T$ for all $v\notin T$
+\[
+f(S\cup \{v\})-f(S)\geq f(T\cup \{v\})-f(T)
+\]
+The function $f$ has a kind of diminishing returns and is monotonic: $f(S\cup \{v\})\geq f(S)$.
+
+Theorem. if $f$ is a submodular monotone function and $S$
+
+\begin{itemize}
+	\item $S=\emptyset$;
+	\item for each $i=1,\ldots, k$: select $v\notin S$ such that 
+		\[v = \argmax_{u\in V\setminus S} \sigma(S\cup\{u\}) - \sigma(S)\]
+	\item $S = S\cup \{v\}$.
+\end{itemize}
+where $\sigma:\mathcal{P}(V)\to \Real^+$ which is calculated via simulation:
+run the activation cascade from the set-argument of $\sigma$, to get the coverage.
+To speed up the greedy algorithm< it is possible to consider more ``central'' nodes
+first.
+
+% section lecture_15 (end)
+
+\section{Lecture \# 17} % (fold)
+\label{sec:lecture_17}
+
+\subsection{Label propagation} % (fold)
+\label{sub:label_propagation}
+
+The graph $G=(V,E)$ with edges representing similarity between vertices.
+In social networks edges do represent closeness due to assortative mixing -- bias
+in connectivity in favour of nodes with similar characteristics:
+\begin{itemize}
+	\item homophily ;
+	\item influence.
+\end{itemize}
+
+Supervise learning approach. Suppose teh set of vertices is split into two subsets:
+\begin{itemize}
+	\item nodes $V_l$ with ``labels'' $Y_l$;
+	\item nodes $V_u$ without ``labels''.
+\end{itemize}
+The goal is to infer the ``labels'' $Y_u$ for $V_u$. Features can be computed for each
+vertex $v\in V$: \begin{itemize}
+	\item local node features (intrinsic);
+	\item topological, graph-based features: connectivity patterns, labels of neighbours
+	neighbouring node degrees et c.).
+\end{itemize}
+However these features work if the nearest neighbours already have labels, which means
+that nodes surrounded by unlabelled vertices would not be susceptible to machine learning.
+
+The idea is to assume that unknown labels are latent random variables and either Bayesian
+modelling or \textbf{EM}.
+
+Iterative classification method: given a partitioned graph $G=(V,E)$ with $V = V_l \cup V_u$
+\begin{itemize}
+	\item compute $\Phi_l^0$ and train a relational classifier on $(\Phi_l^0, Y_l)$;
+	\item predict labels $Y^0_u$ for vertices $V_u$;
+	\begin{itemize}
+		\item compute $\Phi_u^i$ and train a classifier on $(\Phi^i, Y)$;
+		\item predict labels $Y^{i+1}_u$ for vertices $V_u$ from $\Phi^i$;
+	\end{itemize}
+	\item Output $Y^i_u$.
+\end{itemize}
+
+Relational classifier uses the nearest neighbours of a vertex to predict its label.
+\begin{itemize}
+	\item Weighet-vote classifier: 
+	\[\pr(y_i = c) = \frac{1}{Z} \sum_{j\in N_i} A_{ij} \pr(y_j=c|N_j)\]
+	\item Bayesian classifier: 
+		\[\pr(y_i = c) = \frac{\pr(N_i|y_i=c) \pr(y_i=c)}{\pr(N_i)}\]
+	\item and so on.
+\end{itemize}
+
+Semi-supervised learning: partially labelled dataset $X = X_l\cup X_u$. The labelled
+set is small compared to the volume of unlabelled set of data. Construct a similarity
+graph $G=(V,E)$ where every vertex corresponds to a data point. In our case the
+similarity graph is already given.
+
+\subsubsection{Random walk method} % (fold)
+\label{ssub:random_walk_method}
+
+Consider a random walk with absorbing states. Where labelled nodes are considered
+sink nodes. The probability for a node $i\in V_u$ to have label $c$ is given by
+\[\hat{y}_i(c) = \sum_{j\in V_l} p^\infty_{ij} y_j(c)\]
+where $y_j(c)$ is the probability distribution over labels and $p_{uv} = \pr(u\to v)$
+-- the transition kernel of the graph random walk. Assign the most probable label
+
+The kernel with absorbing nodes' modification is given by
+\[
+  \begin{pmatrix} P_{ll} & P_{lu}\\ P_{ul} & P_{uu} \end{pmatrix}
+= \begin{pmatrix} I & 0\\ P_{ul} & P_{uu} \end{pmatrix}
+\]
+based on $P = D^{-1} A$, $p_{ij} = \pr(i\to j)$ and $\sum_{j\in V} P_{ij} = 1$.
+
+There is actually no need to compute the limit of the transition kernel: just use
+iterative multiplication:
+\begin{align*}
+	Y^t &= P Y^{t-1}\\
+	Y^t_u &= P_{ul} Y_l + P_{uu} Y^{t-1}_u\\
+	Y^t_u &= \sum_{n=1}^t P_{uu}^{n-1} P_{ul} Y_l + P_{uu}^t Y_u\\
+\end{align*}
+and $Y^t_u$ converges to $(I-P_{uu})^{-1}P_{ul} Y_l$.
+
+Another variation is
+\[
+Y^t = \alpha S Y^{t-1} + (1-\alpha)Y^0
+\]
+where $S = D^{-\frac{1}{2}}AD^{-\frac{1}{2}}$ and it converges to
+\[\hat{Y} = (1-\alpha) (I - \alpha S)^{-1} Y^0\]
+and $Y^0 = \bigl(\begin{smallmatrix} Y_l\\0 \end{smallmatrix}\bigr)$.
+
+% subsubsection random_walk_method (end)
+
+\subsection{Regularization on graphs} % (fold)
+\label{sub:regularization_on_graphs}
+
+Find labels $\hat{Y} = (\hat{Y}_l, \hat{Y}_u)$ such that they are consistent
+\[
+\sum_{i\in V_l} (\hat{y}_i - y_i)^2 = \| \hat{Y}_l - Y_l\|^2
+\]
+honour the graph structure (locally smooth: does not vary too much in a neighbourhood)
+\[
+\frac{1}{2} \sum_{i,j\in V} A_{ij} (\hat{y}_i - \hat{y}_j)^2
+= \hat{Y}'(D-A)\hat{Y}
+= \hat{Y}' L \hat{Y}
+\]
+where $L$ is the graph Laplacian and (or) stable
+\[
+\epsilon \sum_{i\in V} \hat{y}_i^2 = \epsilon \|\hat{Y}\|^2
+\]
+
+Label propagation (random walk with absorption) is a special case of this regularization.
+\begin{itemize}
+	\item Label propagation: $ Q(Y) = \frac{1}{2} Y'L Y $;
+	\item Label spread: $ Q(Y) = \frac{1}{2} Y'\Lcal Y $;
+	\item Laplacian regularization: 
+	\[ Q(Y) = \frac{1}{2} Y' L Y + \mu \|\hat{Y}_l - Y_l\|^2 \]
+	find the eigenvectors $(e_i)$ of $L$ corresponding to $p$ smallest eigenvalues and then
+	classify using the optimal learned $(a_j)_{j=1}^p$
+	\[ \argmax_{a_j} \sum_{i\in V_l}^ (y_i - \sum_{j=1}^p a_j e_{ji})^2\]
+	which gives $\hat{a} = (E'E)^{-1} E'Y_l$. Classify according to
+	\[\hat{Y}_u = \text{sign} \sum_{j=1}^p a_j \]
+	MISSING(?)
+\end{itemize}
+
+% subsection regularization_on_graphs (end)
+
+% subsection label_propagation (end)
+
+
+% section lecture_17 (end)
+
 \end{document}
