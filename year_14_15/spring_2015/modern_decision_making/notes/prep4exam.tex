@@ -1007,9 +1007,11 @@ $\beta^*(\lambda)$ into $\Lcal(\beta_0, \beta, \lambda)$ the Lagrange dual becom
 		+ \sum_{i=1}^n \lambda_i\,,
 \end{align*}
 Let $H_{ij} = t_j t_i x_i' x_j$, which is the inner product in $\Real^p$ space of
-the $i$-th and $j$-th data points. In the matrix form the Lagrange dual is
-\[ g(\lambda) = \one' \lambda - \frac{1}{2} \lambda'H\lambda \,. \]
-The final dual problem thus becomes
+the $i$-th and $j$-th data points. Indeed,
+\[ H_{ij} = t_i \langle x_i, x_j \rangle t_j = \langle t_i x_i, t_j x_j \rangle \,.\]
+In the matrix form the Lagrange dual is
+\[ g(\lambda) = \one' \lambda - \frac{1}{2} \lambda'H\lambda \,, \]
+and so the final dual problem becomes
 \[ \one' \lambda - \frac{1}{2} \lambda' H \lambda \to \max_\lambda\,,\]
 subject to
 \[ \lambda \geq 0 \text{ and } \lambda' t = 0\,. \]
@@ -1544,7 +1546,7 @@ Due to reproducibility the penalty term reduces to
 And therefore the problem is equivalent to
 \[ (t-K\alpha)'(t-K\alpha) + \lambda \alpha' K \alpha \to \min_\alpha\,,\]
 with the first order conditions
-\[ 2K'(t-K\alpha) + \lambda K \alpha = 0\,, \]
+\[ 2 K'(t-K\alpha) + 2 \lambda K \alpha = 0 \,, \]
 which gives the optimal $\alpha^* = (K+\lambda I)^{-1} t$, since $K$ is invertible.
 The prediction of $t$ at a new $x$ is given by
 \[ \hat{t}(x) = K_x'\alpha^* = K_x' (K + \lambda I)^{-1} t \,, \]
