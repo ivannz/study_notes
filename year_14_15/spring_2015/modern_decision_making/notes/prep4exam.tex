@@ -18,6 +18,7 @@
 \newcommand{\RSS}{{\text{RSS}}}
 \newcommand{\Lcal}{\mathcal{L}}
 \newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Fcal}{\mathcal{F}}
 
 \usepackage[english, russian]{babel}
 \newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
@@ -690,6 +691,68 @@ impurity indices are recommended for use in growing classification trees.
 Due to hierarchical structure trees have high variance, errors at top nodes propagate
 to lower ones and small changes in training data can manifest in very different binary
 splits.
+
+\subsection{Alternative explanation} % (fold)
+\label{sub:alternative_explanation}
+
+Given some training dataset $(x_i,t_i)_{i\in I} \in \Real^p \times T$ constructing
+a regression tree amounts to finding a piecewise function
+\[ f(x) = \sum_{m=1}^M f_m( x ) 1_{R_m}(x)\,, \]
+for $(f_m)_{m=1}^M$ is some parametric family $\Fcal$, such that
+\[ \sum_{i\in I} \Lcal\bigl( t_i, f(x_i) \bigr) \to \min_{(f_m)_{m=1}^M}\,. \]
+
+This problem in NP-hard, even in a simplified case with $\Fcal$ being a family of
+constant maps $\Real^p\mapsto \Real$. In practice, the optimal $f^*$ is approximated
+by the ``forward selection'' procedure which is an iterative algorithm that makes
+a series of dichotomous partitions of the feature space.
+
+Let $J\subseteq I$ be a subset of the training data. For a region $R\subseteq \Real^p$
+define the observations falling into $R$ as
+\[ J(R) = \{ i\in J\,:\,x_i \in R\} \,. \]
+The algorithm tries to partition $R$ into $R_1$ and $R_2$ by greedily minimizing
+the overall \textbf{split impurity}, defined as
+\[ \frac{|J(R_1)|}{|J|} Q(R_1) + \frac{|J(R_2)|}{|J|} Q(R_2) \,, \]
+for some given region impurity measure $Q$. The partition is not arbitrary and is
+actually the half-spaces created by the separating hyperplane perpendicular to some
+dimension of features. Let $a=1,\ldots,p$ denote the axis of the split and $\theta$
+-- the splitting threshold. Define the half-spaces as
+\begin{align*}
+	R_+(a,\theta) &= \bigl\{ z \in\Real^p \big| z_a \in (-\infty,\theta] \bigr\}\,,\\
+	R_-(a,\theta) &= \Real^p \setminus R_-(a,\theta)\,.
+\end{align*}
+For the current subset $J\subseteq I$ of the dataset and region $R\subseteq \Real^p$,
+the forward selection determines the optimal split by solving
+\[
+(a^*,\theta^*) = \argmin_{(a,\theta)}
+  \frac{|J(R_-(a,\theta))|}{|J|} Q( R_-(a,\theta) )
++ \frac{|J(R_+(a,\theta))|}{|J|} Q( R_+(a,\theta) ) \,,
+\]
+and then applies the same greedy splitting for each subset of the dataset in $J_-(a^*,\theta^*)$
+and $J_+(a^*,\theta^*)$.
+
+The \textbf{impurity measure} $Q$ of region $R$ gauges how poorly the best local
+model in this region does in predicting the target variable. For general regression
+trees the measure is defined as the mean loss
+\[ Q(R) = \frac{1}{ |J(R)| } \sum_{i\in J(R)} \Lcal\bigl( t_i, f_R(x_i) \bigr) \,, \]
+for 
+\[ f_R = \argmin_{f\in \Fcal} \sum_{i\in J(R)} \Lcal\bigl( t_i, f(x_i) \bigr) \,, \]
+where $\Lcal:T\times T\to \Real$ is the loss function. In CART square loss is used
+for constructing a regression tree.
+
+For classification trees there are three most widely used impurity measures each
+with its own merits and faults. All of them are based on the empirical class
+probabilities conditional on $X\in R$ : for $k = 1,\ldots, K$
+\[ p_k(R) = \frac{1}{|J(R)|} \sum_{j\in J(R)} 1_{t_i = k}\]
+which estimate $\pr(T=k|X\in R)$. The classification itself is performed via assigning
+a class with the highest empirical posterior probability:
+\[ k_R = \argmax_{k=1,\ldots, K} p_k(R)\,, \]
+which has nothing to do with Baysian classification. The measures are \begin{description}
+	\item[Misclassification error] \[ Q(R) = 1 - p_{k_R}(R)\,; \]
+	\item[Entropy] \[ Q(R) = - \sum_{k=1}^K p_k(R) \log p_k(R) \,; \]
+	\item[Gini index] \[ Q(R) = \sum_{k=1}^K p_k(R) ( 1 - p_k(R)) \,. \]
+\end{description}
+
+% subsection alternative_explanation (end)
 
 \clearpage
 % section question_9 (end)
