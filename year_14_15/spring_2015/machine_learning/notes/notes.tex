@@ -4,7 +4,7 @@
 \usepackage{graphicx, url}
 
 \usepackage{amsmath, amsfonts, amssymb, amsthm}
-\usepackage{xfrac, mathptmx}
+\usepackage{mathptmx}
 
 \newcommand{\obj}[1]{{\left\{ #1 \right \}}}
 \newcommand{\clo}[1]{{\left [ #1 \right ]}}
@@ -22,6 +22,10 @@
 \newcommand{\Cplx}{\mathbb{C}}
 \newcommand{\Pwr}{\mathcal{P}}
 \newcommand{\pr}{\mathbb{P}}
+\newcommand{\ex}{\mathbb{E}}
+\newcommand{\Lcal}{\mathcal{L}}
+\newcommand{\argmin}{\mathop{\text{argmin}}}
+\newcommand{\argmax}{\mathop{\text{argmax}}}
 
 \newcommand{\defn}{\mathop{\overset{\Delta}{=}}\nolimits}
 
@@ -282,8 +286,8 @@ The Lagrangian is
 \[\mathcal{L} = x'Lx - \lambda ( x'x - N )\]
 and the first order conditions are given by
 \begin{align*}
-	\frac{\partial L}{\partial x} \quod:\quod 2Lx - 2\lambda x = \mathbf{0}\\
-	\frac{\partial L}{\partial \lambda} \quod:\quod x'x - N = 0
+	\frac{\partial L}{\partial x} \quad:\quad 2Lx - 2\lambda x = \mathbf{0}\\
+	\frac{\partial L}{\partial \lambda} \quad:\quad x'x - N = 0
 \end{align*} 
 
 ...
@@ -325,7 +329,7 @@ Power iterations method \begin{description}
 	\item[Iteration] \hfill\\
 		$r_{k+1} = M r_k$;
 	\item[Stopping] \hfill\\
-		$\nrm{r_{k+1}-r_k}_1 < \eps$;
+		$\nrm{r_{k+1}-r_k}_1 < \epsilon$;
 \end{description}
 
 Interpretation
@@ -522,7 +526,7 @@ The idea is to supplement bagging with sub-samples of features.
 % section lecture_9 (end)
 
 \section{Lecture \# 10} % (fold)
-\label{sec:lecture_#_10}
+\label{sec:lecture_10}
 
 Ensemble clustering methods
 The goal is to make the results robust by combining weak classifiers.
@@ -552,7 +556,7 @@ that their support is larger than a threshold.
 Another idea is to use a partition lattice. Each classifier produces a partition, which
 altogether form a basis of the lattice. 
 
-% section lecture_#_10 (end)
+% section lecture_10 (end)
 
 \section{Lecture \# 11} % (fold)
 \label{sec:lecture_11}
@@ -590,7 +594,7 @@ Let $\delta(\mu,X,\bar{X}) = \nu(\mu X,\bar{X})-\nu(\mu X, X)$. Then the abstrac
 capability functional:
 \begin{itemize}
 	\item The expected overfitting: $\mathbb{E} \delta(\mu,X,\bar{X})$;
-	\item $\ldota$
+	\item $\ldots$
 \end{itemize}
 
 % section lecture_11 (end)
@@ -610,7 +614,7 @@ Remove redundant or noisy variables.
 
 Consider a matrix $M\in \Real^{m\times n}$ with rank $r\leq m,n$. Then there exist
 orthogonal matrices $U\in \Real^{m\times m}$, $V\in \Real^{n\times n}$ and
-a diagonal matrix $\Sigma = \diag(\sigma_i)_{i=1}^r$ of non-negative and non-zero elements
+a diagonal matrix $\Sigma = \text{diag}(\sigma_i)_{i=1}^r$ of non-negative and non-zero elements
 such that 
 \[ M = U \Biggl( \begin{smallmatrix} \Sigma & 0\\0 & 0 \end{smallmatrix} \Biggr) V' \]
 the matrices $U,V$ are unique up to first $r$ columns.
@@ -691,7 +695,7 @@ Recall the Kullback-Leibler divergence for densities $p$ and $q$
 KL(P\|Q)
 = \ex_p \log \frac{p}{q}
 = \int p(x) \log \frac{p(x)}{q(x)} dx
-= \int \log \frac{\parital P}{\partial Q} dP
+= \int \log \frac{\partial P}{\partial Q} dP
 \]
 It is non-negative and $KL(P\|Q) = 0$ if and only if $p = q$ almost surely.
 Furthermore, if $KL(P\|Q)< KL(Q\|P)$ then $P$ is more embedden in $Q$ than $Q$ in $P$.
@@ -846,7 +850,7 @@ In order to further reduce the volume of computations one could use Huffman codi
 on the words from the frequency vocabulary. This permits one to compute a so called
 hierarchical soft-max (sigmoid). Let $\pi_w$ be the path from the leaf to the root
 of the Huffman tree. At each vertex $v$ of the tree there is an $\text{O}(v)$ out
-vector and there is a $\sfrac{\text{L}}{\text{R}}$ direction given by $s(u,w)=\pm1$.
+vector and there is a $\tfrac{\text{L}}{\text{R}}$ direction given by $s(u,w)=\pm1$.
 \[
 p(y_{nk} | x_n)
 = \prod_{u\in\pi_{y_{nk}}} \sigma\bigl( s(u,y_{nk}) \text{I}(x_n)'\text{O}(u)\bigr)
