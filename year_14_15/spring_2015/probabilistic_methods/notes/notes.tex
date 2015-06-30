@@ -4,7 +4,7 @@
 \usepackage{graphicx, url}
 
 \usepackage{amsmath, amsfonts, amssymb, amsthm}
-\usepackage{xfrac, mathptmx}
+\usepackage{mathptmx}
 
 \newcommand{\obj}[1]{{\left\{ #1 \right \}}}
 \newcommand{\clo}[1]{{\left [ #1 \right ]}}
@@ -180,7 +180,7 @@ Jensen's inequality. For any convex function $g$ of $X$ it is true that
 
 Fatou's lemma \[\int \liminf X_n d\mu \leq \liminf \int X_n d\mu\]
 
-Holder's inequality for nonnegative measurable $f$ and $g$ \[\int fg d\mu \leq \brac{\int f^p d\mu}^\frac{1}{p}\brac{\int g^q d\mu}^\frac{1}{q}\] whenever $\sfrac{1}{p}+\sfrac{1}{q}=1$.
+Holder's inequality for nonnegative measurable $f$ and $g$ \[\int fg d\mu \leq \brac{\int f^p d\mu}^\frac{1}{p}\brac{\int g^q d\mu}^\frac{1}{q}\] whenever $\frac{1}{p}+\frac{1}{q}=1$.
 
 Minkowski inequality \[\brac{\int {(f+g)}^p d\mu}^\frac{1}{p}\leq \brac{\int f^p d\mu}^\frac{1}{p} + \brac{\int g^p d\mu}^\frac{1}{p}\]
 
@@ -643,7 +643,7 @@ Multivariate distribution:
 The central limit theorem
 
 Suppose we have $\brac{\xi_k}_{k\geq1}\sim \mathcal{D}(\mu, \sigma^2)$ iid., Then
-\[\frac{\frac{1}{n}\sum_{k=1}^n \xi_k - \mu}{\sfrac{\sigma}{\sqrt{n}}} \overset{\mathcal{D}}{\to} \mathcal{N}(0,1)\]
+\[\frac{\frac{1}{n}\sum_{k=1}^n \xi_k - \mu}{\frac{\sigma}{\sqrt{n}}} \overset{\mathcal{D}}{\to} \mathcal{N}(0,1)\]
 
 \noindent\textbf{The Chebyshev inequality}\hfill\\
 Suppose $\xi$ is some random variable, then 
@@ -1084,7 +1084,7 @@ Define the cumulative sum $S_n = \sum_{k=1}^n X_k$ -- this is a discrete 1-D ran
 According to the Law of large numbers the mean displacement 
 \[\frac{S_n}{n} \overset{\Pr}{\to} 0\]
 
-An extreme value is the defined by the event $E_\alpha \defn \obj{ \sfrac{S_n}{n} = \alpha } = \obj{ S_n = n\alpha }$ for $\alpha\in \clo{-1,1}$.
+An extreme value is the defined by the event $E_\alpha \defn \obj{ \frac{S_n}{n} = \alpha } = \obj{ S_n = n\alpha }$ for $\alpha\in \clo{-1,1}$.
 
 Fluctuations around $0$ have of the order $\sqrt{n}$, that is why a large deviation is defined as $n\alpha$.
 
@@ -2408,7 +2408,7 @@ where $h_k$ are defined as such terms in the analytical expression of
 \sum_{i\geq 0} h_i z^i = \text{exp}\{ \sum_{j=0}^\infty f_j z^j \}
 \]
 where
-\[\phi_j = \int_{-\sfrac{1}{2}}^{\sfrac{1}{2}} e^{2\pi i \lambda j } \log f_Y( \lambda ) d\lambda \]
+\[\phi_j = \int_{-\frac{1}{2}}^{\frac{1}{2}} e^{2\pi i \lambda j } \log f_Y( \lambda ) d\lambda \]
 
 % section lecture_16 (end)
 
@@ -2703,7 +2703,7 @@ and finally
 \[
 \phi(Y^n)
  = I\Bigl\{ 
-\frac{\sqrt{n} \sqrt{\hat{\mu}_n -\mu_0} }{\sfrac{\sqrt{\sum_{k=1}^n (Y_k - \hat{\mu}_n)^2}}{\sqrt{n-1}} }
+\frac{\sqrt{n} \sqrt{\hat{\mu}_n -\mu_0} }{\frac{\sqrt{\sum_{k=1}^n (Y_k - \hat{\mu}_n)^2}}{\sqrt{n-1}} }
 \geq \hat{t}_\alpha
 \Bigr\}
 \]
@@ -2712,7 +2712,7 @@ since $\ex_{\theta_0}\phi(Y^n) = \alpha$ it must be true that
 and 
 \[
 T(Y^n)
-= \frac{\sqrt{n} \sqrt{\hat{\mu}_n -\mu_0} }{\sfrac{\sqrt{\sum_{k=1}^n (Y_k - \hat{\mu}_n)^2}}{\sqrt{n-1}} }
+= \frac{\sqrt{n} \sqrt{\hat{\mu}_n -\mu_0} }{\frac{\sqrt{\sum_{k=1}^n (Y_k - \hat{\mu}_n)^2}}{\sqrt{n-1}} }
 \]
 The distribution of the test statistic is Student's-$t$ with $n-1$ degrees of freedom.
 
