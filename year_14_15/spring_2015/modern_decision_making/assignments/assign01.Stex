@@ -693,6 +693,7 @@ First, load the dataset and setup the necessary procedures.
 # % 	"~/study_notes/year_14_15/spring_2015",
 # % 	"/modern_decision_making/assignments/report" ) )
 # % Sweave( file = "../Assign01.Stex", syntax = SweaveSyntaxLatex )
+# % http://www-bcf.usc.edu/~gareth/ISL/Credit.csv
 ## Load the dataset and remove the first column
   Credit <- read.csv( "../Credit.csv" )[ , -1 ]
 
