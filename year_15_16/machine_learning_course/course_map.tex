@@ -1,0 +1,131 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+% \usepackage[a4paper,margin=15mm,landscape]{geometry}
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{mathptmx}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes,shadows,arrows}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Machine Learning and Data Mining map}
+\author{Ignatov Dmitriy, Nazarov Ivan \rus{101мНОД(ИССА)}\\the DataScience Collective}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+	\item Clustering;
+	\item Classification: \begin{enumerate}
+		\item \textbf{S}upport \textbf{V}ector \textbf{M}achine \textbf{C}lassification;
+		\item \textbf{A}rtificiall \textbf{N}eural \textbf{N}etworks;
+		\item \textbf{D}ecision \textbf{T}ree, Na\"ive Bayes, one-Rule, $k$-Nearest Neighbours;
+		\item \textbf{Ada}ptive \textbf{Boost}ing, \textbf{B}ooststrap \textbf{Agg}regat\textbf{ing}, Random Forests;
+	\end{enumerate}
+	\item Regression: \begin{enumerate}
+		\item Regularized regression;
+		\item SVM-Regression;
+	\end{enumerate}
+	\item Recommender Systems: \begin{enumerate}
+		\item \textbf{S}ingular \textbf{V}alue \textbf{D}ecomposition;
+		\item User-Item based approach;
+		\item Trust-based approach;
+	\end{enumerate}
+	\item Outlier detection;
+	\item Data mining: \begin{enumerate}
+		\item Association rules;
+		\item Frequent itemset mining;
+		\item Sequence mining;
+	\end{enumerate}
+  \item Deep Learning;
+  \item Ranking: \begin{enumerate}
+    \item PageRank, HITS;
+    \item Learning to Rank;
+  \end{enumerate}
+  \item Feature Selection, extraction and Dimnesionalit Reduction: \begin{enumerate}
+    \item \textbf{S}ingular \textbf{V}alue \textbf{D}ecomposition -- \textbf{P}rincipal \textbf{C}omponent \textbf{A}nalysis;
+    \item \textbf{B}inary \textbf{M}atrix \textbf{F}actorization;
+    \item \textbf{S}tochastic \textbf{N}earest \textbf{N}eighbour, t-SNE;
+    \item Manifold Learning;
+  \end{enumerate}
+  \item Online learning;
+  \item Stream learning;
+  \item Concept Drift;
+	\item Big Data and Technology: \begin{enumerate}
+		\item Map-Reduce;
+		\item Apache Hadoop, Spark;
+	\end{enumerate}
+\end{enumerate}
+
+\begin{center}
+\begin{tikzpicture}
+% http://www.texample.net/tikz/examples/class-diagram/
+\tikzstyle{block}=[rectangle, draw=black, rounded corners,
+  drop shadow,
+  rectangle, rectangle split, rectangle split parts=2,
+  rectangle split part align={ center, left },
+  rectangle split part fill={ blue!50, blue!10 },
+  anchor=north, text=black, text width=5cm,font=\ttfamily,inner sep=5pt]
+\tikzstyle{myarrow}=[->, >=open triangle 90, thick]
+\tikzstyle{line}=[-, thick]
+
+\node (MLDM) [ block, rectangle split parts=1, text width=5cm ] {MLDM};
+
+\node (top_clust) [block, above left = 1cm of MLDM ] {
+  \textbf{Clustering}
+  \nodepart{second}name
+};
+\node (top_class) [block, below=1cm of top_clust] {
+  \nodepart{one}
+  \textbf{Classification}
+  \nodepart{two}Contents
+};
+\node (top_regr) [block, rectangle split, rectangle split parts=2,
+      below=1cm of top_class, text justified] {
+  \textbf{Regression}
+  \nodepart{second}name
+};
+\node (top_recsys) [block, rectangle split, rectangle split parts=2,
+      below=1cm of top_regr, text justified] {
+  \textbf{Recommender Systems}
+  \nodepart{second}name
+};
+\node (top_outlier) [block, rectangle split, rectangle split parts=2,
+      below=1cm of top_recsys, text justified] {
+  \textbf{Outlier detection}
+  \nodepart{second}name
+};
+
+\node (top_mining) [block, rectangle split, rectangle split parts=2,
+      below=1cm of top_outlier, text justified] {
+  \textbf{Data mining}
+  \nodepart{second}name
+};
+\node (top_big_data) [block, rectangle split, rectangle split parts=2,
+      below=1cm of top_mining, text justified] {
+  \textbf{Big Data and Technology}
+  \nodepart{second}name
+};
+
+
+
+
+
+% \node (CoolingLoopInstants) [comment, rectangle split, rectangle split parts=2, below=0.2cm of CoolingLoop, text justified]
+%     {
+%         \textbf{Instants}
+%         \nodepart{second}fw-loop\newline sw-loop
+%     };
+    
+
+\end{tikzpicture}
+\end{center}
+\end{document} 
+
+% 19369088
