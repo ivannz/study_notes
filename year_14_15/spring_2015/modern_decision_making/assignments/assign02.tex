@@ -54,60 +54,53 @@
 \section{Problem \# 1: part 1} % (fold)
 \label{sec:problem_1}
 
-\subsection{subproblem i} % (fold)
-\label{sub:subproblem_i}
-
-No solution.
-% subsection subproblem_i (end)
-
-\subsection{subproblem ii} % (fold)
-\label{sub:subproblem_ii}
-
-Consider the following problem:
-\[ \ex_{T|X} \Lcal\bigl( T, f(X)\bigr) \to \min_{f(\cdot)}\,, \]
-subject to the constraint $\one'f(X) = 0$.
-
-Let $l^k = (l^k_i)_{i=1}^K$ be the code vector of the $k$-th class, given by
-\[ l^k_i = \begin{cases}
-	1, &\text{ if } i = k\\
+Let $\bigl(x_i, t_i\bigr)_{i=1}^n\in X\times T$ be the training dataset
+sampled form a multivariate distribution $(X,T)$ with $T = \{ l_k | k=1,\ldots,K\}$
+where
+\[
+l_{km} = \begin{cases}
+	1, &\text{ if } im = k\\
 	- \frac{1}{K-1}, &\text{ otherwise}
-\end{cases}\,.\]
-
-Note that the by definition of the target variable 
-\[
-\pr\bigl( T = l^k\big\vert X \bigr)
-= \pr\bigl( C = C_k \big\vert X \bigr) \,,
+\end{cases}  \,.
 \]
-since there is one-to-one correspondence between random variables $T$ and $C$.
+Each $t_i$ denotes the class the data point $x_i$ is assigned to: $x_i\in \mathcal{C}_k$
+whenever $t_i = l_k$. Let $\mathcal{L}: T\times T \to \Real$ be some loss function
+given by
+\[ \mathcal{L}(t,y) = \text{exp}\bigl\{ -\frac{1}{K} t'y \bigr\} \,. \]
+A decision function $f:X\to T$ is called the population minimizer of $\mathcal{L}$ if
+$\sum_{k=1}^K f_k(\cdot) = 0$ and it solves
+\[ \ex_X \ex_{T|X}\mathcal{L}\bigl(T, f(X)\bigr) \to \min_{f(\cdot)} \,. \]
 
-Without the loss of generality one may consider $X$ fixed at some values, and denote
-\[ \pi_k = \pr\bigl( C = C_k \big\vert X \bigr)\,, \]
-and
-\[ f_k = f_k(X)\,. \]
-
-Expand the expectation into a sum ( $T$ may take $K$ different values ) :
+Conditional upon $X$ consider the following problem:
+\[ \ex_{T|X} \Lcal\bigl( T, f(X) \bigr) \to \min_{f(\cdot)}\,, \]
+subject to the constraint $\one'f(X) = 0$. The conditional expectation expands into
+a sum of $K$ values :
 \begin{align*}
-	\ex_{T|X} \Lcal\bigl( T, f(X)\bigr)
+	\ex_{T|X} \Lcal\bigl( T, f(X) \bigr)
 	&= \sum_{k=1}^K \pr\bigl( T = l^k \big\vert X \bigr) \Lcal\bigl( l^k, f(X) \bigr)\\
-	& = \ldots\,,
+	& = \ldots\,.
 \end{align*}
-and the coding permits further simplification
+The coding permits further simplification
 \[
-\ldots = \sum_{k=1}^K \pi_k \text{exp}\bigl\{ (K-1)^{-1}K^{-1} \sum_{j=1,j\neq k}^K f_j - K^{-1} f_k \bigr\} \,.
+\ldots = \sum_{k=1}^K \pi_k \text{exp}\bigl\{ - K^{-1} f_k + (K-1)^{-1}K^{-1} \sum_{j=1,j\neq k}^K f_j \bigr\} \,,
 \]
+where fro all $k=1,\ldots, K$
+\[ \pi_k = \pr\bigl( C = C_k \big\vert X \bigr) \,, \]
+and
+\[ f_k = f_k( X )\,. \]
 
-Now take a moment to simplify the expression in the exponent:
+The expression in the exponent can be further simplified :
 \begin{align*}
-	&\text{exp}\bigl\{ (K-1)^{-1}K^{-1} \sum_{j=1,j\neq k}^K f_j - K^{-1} f_k \bigr\}\\
-	&= \text{exp}\Bigl\{ (K-1)^{-1}K^{-1} \sum_{j=1}^K f_j - K^{-1} (K-1)^{-1} f_k - K^{-1} f_k \Bigr\}\\
+	&  \text{exp}\Bigl\{ - K^{-1} f_k + (K-1)^{-1}K^{-1} \sum_{j=1,j\neq k}^K f_j \Bigr\}\\
+	&= \text{exp}\Bigl\{ - K^{-1} (K-1)^{-1} f_k - K^{-1} f_k + (K-1)^{-1}K^{-1} \sum_{j=1}^K f_j \Bigr\}\\
 	&= \text{exp}\Bigl\{ - K^{-1}\bigl( (K-1)^{-1} + 1 \bigr) f_k \Bigr\}\\
 	&= \text{exp}\bigl\{ - (K-1)^{-1} f_k \bigr\}\,,
 \end{align*}
-where the requirement that $\sum_{j=1}^K f_j$ be $0$ was used.
-
-Thus the goal simplifies to finding the minimum
+where the requirement that $\sum_{j=1}^K f_j$ be $0$ was used. The problem thus
+simplifies to finding the minimum
 \[ \sum_{k=1}^K \pi_k \text{exp}\bigl\{ -(K-1)^{-1} f_k \bigr\} \to \min_{(f_k)_{k=1}^K} \,, \]
-subject to $\sum_{j=1}^K f_j = 0$. In fact this is an ordinary constrained minimization problem.
+subject to $\sum_{j=1}^K f_j = 0$, which is in fact an ordinary constrained minimization
+problem.
 
 The Lagrangian is:
 \[
@@ -145,17 +138,12 @@ and using the constraint yields
 \[ K f^*_k = (K-1) \Bigl( K \log \pi_k - \sum_{m=1}^K \log \pi_m \Bigr)\,, \]
 whence
 \[ f^*_k = (K-1) \Bigl( \log \pi_k - \frac{1}{K}\sum_{m=1}^K \log \pi_m \Bigr)\,. \]
-
 In the original notation this looks like:
 \[
 f^*_k(x)
 = (K-1) \Bigl( \log \pr\bigl( C = C_k \big\vert X \bigr)
 	- \frac{1}{K}\sum_{m=1}^K \log \pr\bigl( C = C_m \big\vert X \bigr) \Bigr)
 \,.\]
-% subsection subproblem_ii (end)
-
-\subsection{subproblem iii} % (fold)
-\label{sub:subproblem_iii}
 
 Now, the very same relation allows a symmetric expression of the probabilities
 with respect to the optimal $f^*$. Indeed, it implies that 
@@ -165,65 +153,265 @@ which simplifies to
 whence using the fact that $\sum_{k=1}^K \pi_k = 1$ one gets:
 \[
 \text{exp}\Bigl\{ -(K-1)^{-1}f_m \Bigr\} \pi_m
-	\sum_{k=1}^K  \text{exp}\Bigl\{ (K-1)^{-1}f_k \Bigr\} = \sum_{k=1}^K \pi_k \,.
+	\sum_{k=1}^K \text{exp}\Bigl\{ (K-1)^{-1}f_k \Bigr\} = \sum_{k=1}^K \pi_k \,.
 \]
-
 Thus one gets this neat expression:
 \[
 \pi_m = \frac{\text{exp}\Bigl\{ (K-1)^{-1}f_m \Bigr\} }{
 	\sum_{k=1}^K \text{exp}\Bigl\{ (K-1)^{-1}f_k \Bigr\}} \,.
 \]
 
-% subsection subproblem_iii (end)
-
-\subsection{subproblem iv} % (fold)
-\label{sub:subproblem_iv}
-
-First recall that in the binary classification case the idea was to sequentially
-apply weak binary classifiers $G^{(m)}(x)$ to modified versions of the training
-data to produce a final (better) classifier
-\[ G(x) = \text{sign} \sum_{m=1}^M \beta_m G^{(m)}(x) \,, \]
-where $(\beta_m)_{m=1}^M$ are the weights of each weak classifier.
-Each classifier individually could assign classes via taking the ``sign'' of some
-internal discriminant function $f^{(m)}$ :
-\[ G^{(m)}(x) = \text{sign} f^{(m)}(x) \,. \]
-
-In fact it is possible to redefine this binary classification in a way to facilitate
-intuition for the multiclass case. Indeed, put
-\[
-\hat{G}^{(m)}(x) = \biggl(\begin{smallmatrix} +1\\-1 \end{smallmatrix}\biggr)
-\text{sign} f^{(m)}(x)\,,
-\]
-and let
-\[ G(x) = \argmax_{j=1,2} \sum_{m=1}^M \beta_m \hat{G}^{(m)}(x) \,. \]
-The sum produces
-\[
-\biggl(\begin{smallmatrix} +1\\-1 \end{smallmatrix}\biggr)
-= \begin{pmatrix} \sum_{m=1}^M \beta_m G^{(m)}(x)\\-\sum_{m=1}^M \beta_m G^{(m)}(x) \end{pmatrix}\,,
-\]
-and thus the $\argmax$ produces a label equivalent to the ``sign'' case.
-
-In the case of a multiclass classification let each weak classifier return a vector
-$l_k$ as result of its classification, i.e. if $f(x)$ classified $x$ as $C_k$,
-then let
-\[
-\bigl[f(x)\bigr]_j = l_{kj} = \begin{cases}
-	1, &\text{ if } j = k\\
-	- \frac{1}{K-1}, &\text{ otherwise}
-\end{cases}\,.
-\]
-
-The combined classifier $G(x)$ based on $f^{(M)}(x) = \sum_{m=1}^M \beta_m f_m(x)$
-would classify according to the ``hard-max'' rule (1-vs-all):
+For a given $X$, finding the index of the largest component of the conditional population
+minimizer $f^*(X)$ reduces to :
 \begin{align*}
-	G(x)
-	&= \argmax_{j=1,\ldots, K} \bigl[f^{(M)}(x)\bigr]_j \\
-	= \argmax_{j=1,\ldots, K} \sum_{m=1}^M \beta_m \bigl[f_m(x)\bigr]_j \,.
+	\argmax_{k=1,\ldots,K} f^*_k(X)
+	&= \argmax_{k=1,\ldots,K} (K-1) \Bigl( \log \pr\bigl( C = C_k \big\vert X \bigr)
+		- \frac{1}{K}\sum_{m=1}^K \log \pr\bigl( C = C_m \big\vert X \bigr) \Bigr) \\
+	&= \argmax_{k=1,\ldots,K} \log \pr\bigl( C = C_k \big\vert X \bigr) \,,
 \end{align*}
+which gives the maximum posterior rule for class assignment. This is actually the reason
+for the population minimizer to be of interest in this problem.
 
-\textbf{No algorithm}.
+In order to come up with a multi-class extension of the AdaBoost algorithm, let's begin
+with reviewing AdaBoost for binary classification. The setting is as follows: given
+some training data $\bigl(x_i,t_i\bigr)_{i=1}^n\in X\times \{-1,1\}$ AdaBoost
+minimizes the exponential loss function by constructing an additive model (an ensemble)
+\[ G(x) = \sum_{m=1}^M \beta_m f_m(x) \,,\]
+where $(f_m)_{m=1}^M:X\to \{-1,1\}$ are binary classifiers, which are optimal in
+a certain sense, and $(\beta_m)_{m=1}^M$ are their individual weights. Final classification
+is performed by 
+\[ G(x) = \text{sign}(F_M(x)) = \text{sign} \sum_{m=1}^M \beta_m f_m(x) \,. \]
 
-% subsection subproblem_iv (end)
+It is possible to make the binary classification problem look similar to the multi-class
+problem. Indeed, define a new classifier $h_m$ for each $f_M$ by embedding the output of
+the latter in $\Real^2$ by setting:
+\[ h_m(x) = \begin{pmatrix}f_m(x)\\-f_m(x)\end{pmatrix} \,,\]
+and let
+\[ H = \sum_{m=1}^M \beta_m h_m \,.\]
+With this embedding the output of $H(x)$ is simply
+\[ H(x) =\begin{pmatrix}F_M(x)\\ -F_M(x)\end{pmatrix} \,.\]
+The classification rule, resulting from the majority vote, or the ``hard-max'' rule,
+yields identical class assignments:
+\[ \argmax_{k=1,2} H_k(x) = \begin{cases}
+	1, &\text{ if } H_1(x) - H_2(x) \geq 0\\
+	2, &\text{ if } H_2(x) - H_1(x) > 0
+\end{cases} = \begin{cases}
+	1, &\text{ if } 2 F_M(x) \geq 0\\
+	2, &\text{ if } -2 F_M(x) > 0
+\end{cases} = \begin{cases}
+	1, &\text{ if } G(x) = +1\\
+	2, &\text{ if } G(x) = -1
+\end{cases} \,, \]
+thus enabling generalisation of the binary classification to more than two classes.
+
+In the heart of AdaBoost is the \textbf{F}orward \textbf{S}tagewise \textbf{A}dditive
+\textbf{M}odelling approach which attempts to find an optimal solution to
+\[ \sum_{i=1}^n \mathcal{L}\bigl(t_i, F(x_i)\bigr) \to \min_F \,,\]
+for some loss function via the following greedy algorithm:
+\begin{enumerate}
+	\item set $F_0(x) = 0$;
+	\item for each $m=1,\ldots,M$ do: \begin{enumerate}
+		\item find \[
+		(\beta_m,f_m) = \argmin_{\beta, f}
+			\sum_{i=1}^n \mathcal{L}\bigl(t_i, F_{m-1}(x_i) + \beta f(x_i)\bigr)
+		\,; \]
+		\item set $F_m = F_{m-1} + \beta_m f_m$;
+	\end{enumerate}
+	\item yield $F_M$ as $F$.
+\end{enumerate}
+
+As in the original binary classification, in the multi-class setting each classifier
+$(f_m)_{m=1}^M$ takes values in a finite set $T\subseteq \Real^K$, which consists of
+labels $l_k$, $k=1,\ldots, K$ given by
+\[ l_{kj} = 1_{k=j} - \frac{1}{K-1} 1_{k\neq j} \,. \]
+Their weighted ensemble $F = \sum_{m=1}^M \beta_m f_m$ takes values in $\Real^K$.
+As has been noted above, each class assignments are done via the ``hard-max'' rule
+(1-vs-all):
+\[
+\argmax_{j=1,\ldots, K} F_j(x)
+	= \argmax_{j=1,\ldots, K} \sum_{m=1}^M \beta_m f_{mj}(x)
+\,. \]
+
+Consider $m$-th iteration,$m = 1,\ldots, M$, of FSAM with multi-class exp-loss
+\[ \mathcal{L}(t,y) = \text{exp}\bigl\{ -\frac{1}{K} t'y \bigr\} \,, \]
+and let $F_{m-1}:X\to \Real^K$ be the function, obtained by this iteration. Then
+at $m$-th iteration the algorithm tries to minimize 
+\[ \sum_{i=1}^n \mathcal{L}\bigl(t_i,F_{m-1}(x_i) + \beta_m f_m(x_i) \bigr)\,, \]
+with respect to $\beta_m$ and $f_m:X\to T$. The additive structure of the sought
+solution combined with the exponential form of the loss function permits confining
+the direct effect of prior iterations (through $F_m$) on this optimization problem
+in re-weighing of individual observations. Indeed the objective function becomes
+\begin{align*}
+	\sum_{i=1}^n \mathcal{L}\bigl(t_i,F_{m-1}(x_i) + \beta_m f_m(x_i) \bigr)
+	&= \sum_{i=1}^n \omega_{mi} \text{exp}\bigl\{ -\frac{\beta_m}{K} t_i' f_m(x_i) \bigr\}\,,
+\end{align*}
+where
+\[ \omega_{mi} = \text{exp}\bigl\{ -\frac{1}{K} t_i'F_{m-1}(x_i) \bigr\} \,. \]
+Therefore at $m$-th iteration FSAM in this instantiation seeks to solve
+\[ 
+\sum_{i=1}^n \omega_{mi} \text{exp}\bigl\{ -\frac{\beta_m}{K} t_i' f_m(x_i) \bigr\}
+	\to \min_{\beta_m,f_m}
+\,. \]
+
+For a given classifier $f: X\to T$ the value of the dot product $t'f(x)$ in the loss
+function can take only two values: if $f(x) = t$ then
+\[ t'f(x) = 1 + \frac{K-1}{(K-1)^2} = \frac{K}{K-1}\,, \]
+otherwise
+\[ t'f(x) = -\frac{2}{K-1} + \frac{K-2}{(K-1)^2} = -\frac{K}{(K-1)^2} \,. \]
+Therefore the expression in the exponent becomes
+\[
+-\frac{\beta_m}{K} t_i'f_m(x_i)
+= -\frac{\beta_m}{K-1} 1_{t_i=f_m(x_i)}
+	+ \frac{\beta_m}{(K-1)^2} 1_{t_i \neq f_m(x_i)} \,,
+\]
+and the objective function reduces to
+\begin{align*}
+	\sum_{i=1}^n \omega_{mi} \text{exp}\bigl\{ -\frac{\beta_m}{K} t_i' f_m(x_i) \bigr\}
+	&= \sum_{i:t_i = f_m(x_i)} \omega_{mi} \text{exp}\bigl\{ -\frac{\beta_m}{K-1} \bigr\} \\
+	&+ \sum_{i:t_i \neq f_m(x_i)} \omega_{mi} \text{exp}\bigl\{ \frac{\beta_m}{(K-1)^2} \bigr\} \,.
+\end{align*}
+The final minimization problem of the $m$-th iteration becomes
+\[
+e^{ -\frac{\beta_m}{K-1} }(1-\epsilon_m)
+	+ e^{ \frac{\beta_m}{(K-1)^2} }\epsilon_m
+\to \min_{\beta_m,f_m}
+\,, \]
+where $\epsilon_m$ is the weighted misclassification rate of the classifier $f_m$,
+defined as
+\[
+\epsilon_m
+= \frac{ \sum_{i=1}^n \omega_{mi}1_{t_i\neq f_m(x_i)} }{ \sum_{i=1}^n \omega_{mi} }
+\,. \]
+Hence the loss at $m$-th iteration depends on the classifier $f_m$ only through $\epsilon_m$.
+
+Given a classifier $f_m$, the optimal weight $\beta_m$ is determined through the
+first-order condition
+\[
+- \frac{1}{K-1} e^{ -\frac{\beta_m}{K-1} } (1-\epsilon_m)
++ \frac{1}{(K-1)^2} e^{ \frac{\beta_m}{(K-1)^2} } \epsilon_m = 0
+\,, \]
+whence
+\[
+\beta_m = \frac{(K-1)^2}{K} \biggl( \log \frac{1-\epsilon_m}{\epsilon_m} + \log (K-1) \biggr)
+\,. \]
+The second derivative of the loss function with respect to $\beta_m$ is obviously
+non-negative:
+\[
+\frac{1}{(K-1)^2} e^{ -\frac{\beta_m}{K-1} } (1-\epsilon_m)
++ \frac{1}{(K-1)^4} e^{ \frac{\beta_m}{(K-1)^2} } \epsilon_m
+\,,\text{--}\]
+which implies that given $f_m$ this $\beta_m$ is the minimizer.
+
+Plugging $\beta_m$ back into the objective function turns it into
+\begin{multline*}
+	e^{ -\frac{\beta_m}{K-1} } (1-\epsilon_m) + e^{ \frac{\beta_m}{(K-1)^2} } \epsilon_m = \\
+	= \biggl( (K-1) \frac{1-\epsilon_m}{\epsilon_m} \biggr)^{ \frac{1}{K}-1 } (1-\epsilon_m)
+		+ \biggl( (K-1) \frac{1-\epsilon_m}{\epsilon_m} \biggr)^{ \frac{1}{K} } \epsilon_m \,.
+\end{multline*}
+Denoting $\epsilon_m^{-1}$ by $x$, $x > 1$, simplifies it
+\[
+\bigl( (K-1) (x-1) \bigr)^{ \frac{1}{K}-1 } \frac{x-1}{x}
+	+ \bigl( (K-1) (x-1) \bigr)^{ \frac{1}{K} } \frac{1}{x}
+\,. \]
+
+Therefore, the goal of the $m$-th iteration after substituting $\beta_m$ is
+to find such classifier $f_m$ that the reciprocal of the weighted misclassification
+rate $x$ of which solves
+\[
+L(x)
+	= (x-1)^{ \frac{1}{K} } \frac{1}{x} (K-1)^{ \frac{1}{K} } \frac{K}{K-1}
+	\to \min_{x > 1}
+\,, \]
+after minor simplification. Since the feasible set $x > 1$ of this problem is not
+compact, there is no guarantee that there exist both its minimizer and maximizer. 
+
+The derivative of this expression with respect to $x$ (up to a constant) is 
+\[
+\frac{ \frac{1}{K}(x-1)^{ \frac{1}{K}-1 }x - (x-1)^{ \frac{1}{K} } }{x^2}
+= \frac{ x - K (x-1) }{x^2}\frac{1}{K} (x-1)^{ \frac{1}{K}-1 }
+\,, \]
+and its zero is achieved at $x_0 = \frac{K}{K-1}$. For $x\in[1,x_0)$ the derivative
+is greater than zero, whereas for all $x>x_0$ is it strictly less. Therefore the
+point $x_0$ is a local maximizer of the objective. However the behaviour of the first
+derivative of $L$ implies that, since $K\geq 2$ the objective function monotonically
+approaches zero as $x$ gets larger: $L(x)\downarrow 0$ as $x\to \infty$, -- and
+the same time $L(x) \downarrow 0$ for $x \to 1$.
+
+Thus there are two limiting solutions. The solution $x\to 1$ in fact corresponds to
+finding a perfect multi-class ``misclassifier'' -- a classifier either so ``corrupt''
+that it always assigns incorrect classes, almost on purpose. For obvious reasons of
+parsimony and interpretability of the ensemble such ignorant classifiers are very
+undesirable.
+
+In contrast, the other solution, $x\to \infty$, corresponds to a classifier $f_m$,
+the weighted misclassification rate $\epsilon_m$ of which tends to zero, meaning
+that $f_m$ attempts to solve the classification problem correctly for the given
+weights $(\omega_{mi})_{i=1}^n$.
+
+In conclusion, the optimal $f_m$ and $\beta_m$ at the $m$-th iteration of FSAM are
+given by
+\[ f_m = \argmin_f \sum_{i=1}^n \omega_{mi} 1_{t_i \neq f(x_i)} \,, \]
+and
+\[
+\beta_m
+	= \frac{(K-1)^2}{K} \biggl( \log \frac{1-\epsilon_m}{\epsilon_m} + \log (K-1) \biggr)
+\,, \]
+respectively for
+\[
+\epsilon_m
+	= \biggl( \sum_{i=1}^n \omega_{mi} \biggr)^{-1} \sum_{i=1}^n \omega_{mi} 1_{t_i \neq f(x_i)}
+\,. \]
+
+Now, let's see how the weight get updated after the $m$-th iteration. Since
+\[ F_m = F_{m-1} + \beta_m f_m \,, \]
+the new weights are
+\begin{align*}
+	\omega_{(m+1)i}
+	&= \text{exp}\bigl\{ -\frac{1}{K} t_i'F_m(x_i) \bigr\} \\
+	&= \text{exp}\bigl\{ -\frac{1}{K} t_i'F_{m-1}(x_i) \bigr\} \text{exp}\biggl\{ -\frac{\beta_m}{K} t_i'f_m(x_i) \biggr\}\\
+% -\frac{\beta_m}{K-1} 1_{t_i = f_m(x_i)} + \frac{\beta_m}{(K-1)^2} 1_{t_i \neq f_m(x_i)}
+% -\frac{\beta_m}{K-1} + \biggl( \frac{\beta_m}{(K-1)^2} + \frac{\beta_m}{K-1} \biggr) 1_{t_i \neq f_m(x_i)}
+% -\frac{\beta_m}{K-1} + \frac{\beta_m}{K-1} \frac{K}{K-1} 1_{t_i \neq f_m(x_i)}
+	&= \omega_{mi} e^{-\frac{\beta_m}{K-1}} \text{exp}\biggl\{ \beta_m \frac{K}{(K-1)^2} 1_{t_i \neq f_m(x_i)} \biggr\} \,.
+\end{align*}
+Note that only the value of the objective function depends on the total sum of
+the weights and the optimal value of $\beta_m$ and the ``optimal'' classifier $f_m$
+depend on 
+\[ \epsilon_m = \frac{\sum_{i=1}^n \omega_{mi} 1_{t_i \neq f_m(x_i)} }{\sum_{i=1}^n\omega_{mi}} \,. \]
+Therefore it is possible to ignore constant multipliers in the weight update expression.
+
+The final multi-class extension of AdaBoost algorithm is \begin{enumerate}
+	\item set $\omega_{0i} = \frac{1}{n}$ and $F_0 = 0$;
+	\item for $m=1,\ldots, M$ do: \begin{enumerate}
+		\item find a classifier solving
+		\[ f_m = \argmin_f \sum_{i=1}^n \omega_{mi}  1_{t_i \neq f(x_i)} \,, \]
+		and let $\epsilon_m$ be the achieved weighted misclassification rate;
+		\item set the importance weight of the classifier $f_m$ to
+		\[
+		\beta_m =
+			\frac{(K-1)^2}{K} \log (K-1) + \frac{(K-1)^2}{K} \log \frac{1-\epsilon_m}{\epsilon_m}
+		\,; \]
+		\item update the weights using the rule
+		\[
+		\omega_{(m+1)i} \propto
+			\omega_{mi} \text{exp}\bigl\{ \frac{ \beta_m K}{(K-1)^2} 1_{t_i \neq f_m(x_i)} \bigr\}
+		\,, \]
+		and normalize them, so that they sum to $1$;
+		\item set $F_m = F_{m-1} + \beta_m f_m$;
+	\end{enumerate}
+	\item return $F_M$.
+\end{enumerate}
+Another expression of the weight updating, which makes the effect on individual observations
+more apparent, is to use
+\[ \omega_{(m+1)i} \propto
+	\omega_{mi} \biggl( \frac{1-\epsilon_m}{\epsilon_m} \biggr)^{ (K-1) 1_{t_i \neq f_m(x_i)} }
+\,, \]
+and normalize. If $f_m$ is a good classifier, meaning that $\epsilon_m$ is close
+to $1$, then all misclassified observations would gain very weight. This elevated
+importance would force the next classifier to focus on them. In contrast, a weak
+classifier, with misclassification rate close to $\frac{1}{2}$ would almost negligibly
+affect the weights of misclassified data points. Hence each weight is the accumulated
+classification importance.
 
 % section problem_1 (end)
 
