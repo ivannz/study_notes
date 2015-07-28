@@ -94,7 +94,7 @@ The expression in the exponent can be further simplified :
 	&  \text{exp}\Bigl\{ - K^{-1} f_k + (K-1)^{-1}K^{-1} \sum_{j=1,j\neq k}^K f_j \Bigr\}\\
 	&= \text{exp}\Bigl\{ - K^{-1} (K-1)^{-1} f_k - K^{-1} f_k + (K-1)^{-1}K^{-1} \sum_{j=1}^K f_j \Bigr\}\\
 	&= \text{exp}\Bigl\{ - K^{-1}\bigl( (K-1)^{-1} + 1 \bigr) f_k \Bigr\}\\
-	&= \text{exp}\bigl\{ - (K-1)^{-1} f_k \bigr\}\,,
+	&= \text{exp}\bigl\{ - (K-1)^{-1} f_k \bigr\} \,,
 \end{align*}
 where the requirement that $\sum_{j=1}^K f_j$ be $0$ was used. The problem thus
 simplifies to finding the minimum
@@ -115,8 +115,8 @@ The KKT conditions for this problems are \begin{itemize}
 	\item
 	\[
 	\frac{\partial L}{\partial f_k}
-		= -(K-1)^{-1} \pi_k \text{exp}\bigl\{ -(K-1)^{-1} f_k \bigr\} + \lambda \,.
-	\]
+		= -(K-1)^{-1} \pi_k \text{exp}\bigl\{ -(K-1)^{-1} f_k \bigr\} + \lambda
+	\,. \]
 \end{itemize}
 Now, for any $k,m=1,\ldots,K$ one has the following:
 \[
