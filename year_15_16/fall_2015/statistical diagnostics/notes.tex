@@ -1,0 +1,77 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{mathptmx}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+
+% \usepackage[english, russian]{babel}
+% \newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+% \newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Methods of Statistical Diagnostics}
+\author{Nazarov Ivan, \rus{201мНОД(ИССА)}\\the DataScience Collective}
+\begin{document}
+\selectlanguage{english}
+\maketitle
+
+\subsection{Properties of $\sup$-functionals} % (fold)
+\label{sub:properties_of_sup_functionals}
+
+Consider the compact set $T$, and let $g:T\mapsto \Real$ be some function.
+For any $\kappa\geq 0$ put:
+\[ A_\kappa(g) = \bigl\{ s\in T : \sup_{t\in T} g(t) \leq g(s) + \kappa \bigr\}\,, \]
+and
+\[ B_\kappa(g) = \bigl\{ s\in T : \inf_{t\in T} g(t) \geq g(s) - \kappa \bigr\}\,. \]
+Consider the space with the unfiorm (supremum) norm:
+\[ \|h\| = \sup_{t\in T} |h(t)| \,. \]
+
+\noindent\textbf{Proposition}\hfill\\
+For any $g, h:T\mapsto \Real$ the following set inclusion hold:
+\[ A_{\kappa - 2\|h\|_\infty}(g) \subset A_\kappa(g+h)
+                                 \subset A_{\kappa + 2\|h\|_\infty}(g)\,, \]
+and similarly for the pre-minimum set:
+\[ B_{\kappa - 2\|h\|_\infty}(g) \subset B_\kappa(g+h)
+                                 \subset B_{\kappa + 2\|h\|_\infty}(g)\,. \]
+
+\noindent \textbf{Proof}\hfill\\
+Consider the pre-max sets only ($A_\kappa$). Let $R(g) = \sup_{t\in T} g(t)$.
+For any $\epsilon>0$ there must exist $t_\epsilon\in T$ such that
+\[ g(t_\epsilon) \geq R(G) - \epsilon \,. \]
+Thus, since $|h(t)| \leq \|h\|$ for any $t\in T$, it must be true that
+\[ R(g) - \epsilon - \|h\| \leq g(t_\epsilon) + h(t_\epsilon)
+                           \leq R(g + h)
+                           \leq R(g) + R(h)
+                           \leq R(g) + \|h\|\,,
+\]
+and since $\sup$ is subadditive. Therefore, since $\epsilon>0$ is arbitrary,
+it is true that
+\[ R(g) - \|h\| \leq R(g + h) \leq R(g) + \|h\|\,, \]
+whnece the $\sup$ functional is continuous w.r.t $\sup$-norm.
+
+Now by definition, for any $s\in A_\kappa(g+h)$, one has
+\[ R(g+h) - \kappa \leq g(s)+h(s) \leq R(g+h)\,, \]
+whence
+\[ g(s) \geg R(g+h) - \kappa - h(s)
+        \geq R(g) - \kappa + \bigl(R(g+h) - R(g)\bigr) - \|h\|
+        \geq R(g) - \kappa - 2\|h\|\,. \]
+Thus $A_\kappa(g+h) \subset A_{\kappa + 2\|h\|}(g)$.
+
+Finally, suppose $A_{\kappa-2\|h\|}(g) \neq \emptyset$. Then it is true that
+for any $s\in A_{\kappa-2\|h\|}(g)$:
+\[ g(s) + h(s) \geq R(g) - \kappa + 2\|h\| - \|h\|
+               \geq R(g+h) - \kappa + \bigl( R(g) - R(g+h) \bigr) + \|h\|
+               \geq R(g+h) - \kappa \,,\]
+which implies that $s\in A_\kappa(g+h)$. This proves
+\[ A_{\kappa-2\|h\|}(g)\subseteq A(g+h) \subseteq A_{\kappa+2\|h\|}(g) \,.\]
+
+% subsection properties_of_sup_functionals (end)
+
+Non-parametric Statistical Diagnosis: Problems and Methods, 2000 [Brodsky, Darkhovsky]
+
+\end{document}
