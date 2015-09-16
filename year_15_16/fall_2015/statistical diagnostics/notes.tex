@@ -9,6 +9,8 @@
 \newcommand{\Real}{\mathbb{R}}
 \newcommand{\Cplx}{\mathbb{C}}
 \newcommand{\Pwr}{\mathcal{P}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\wat}{\textbf{(?)}}
 
 % \usepackage[english, russian]{babel}
 % \newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
@@ -20,22 +22,90 @@
 \selectlanguage{english}
 \maketitle
 
+\section{Lecture \#1} % (fold)
+\label{sec:lecture_1}
+
+\subsection{Briefing} % (fold)
+\label{sub:briefing}
+
+There is no base text-book, only the lectures. Some information cols be fonud in
+a book by Brodsky and Darkhovsky (2000): ``Non-parametric Statistical Diagnosis:
+Problems and Methods''.
+
+% subsection briefing (end)
+
+\subsection{Retrospective change-point detection} % (fold)
+\label{sub:retrospective_change_point_detection}
+
+Suppose we have a finite collection of stochastic sequences: $\biggl(x^k\biggr)_{k=1}^K$,
+with each $x^k = (x_^k_n)_{n\geq 0}$. Consider a set of time moments
+$\Theta = (\theta_k)_{k=0}^K$, with
+\[0 = \theta_0 < \theta_k < \theta_{k+1} < \theta_K = 1 \,,\]
+for $k=1,\ldots,K$.
+
+We have a finite sample $\big(X^*_n\bigr)_{n=1}^N$ of the ``pasted'' sequence
+given for any $n$ by $x^k_n$, whenever
+\[ n\in ( \bigl\lfloor N\theta_s \bigr\rfloor; \bigl\lfloor N\theta_{s+1} \bigr\rfloor ] \,,\]
+or in other words, the observed sequence is defined as
+\[ x^*_n = \sum_{k=1}^K x^k_n \one_{(\theta_{k-1}, \theta_k]}\biggl( \frac{n}{N} \biggr) \,. \]
+The number of ``mixed-in'' types of sequences $K$ is known and fixed.
+
+%% Image on the middle top of page 3. (handwritten notes)
+
+Sometimes $K$ might be inferred from the spacing between the $\theta_s$'s:
+\[ |\theta_s - \theta_{s+1} | \geq \delta \,, \]
+for some $\delta > 0$ \wat.
+
+The goal is to estimate the whole vector $\Theta$ of change-points, given
+the observed sample. This is the so-called the ``series scheme''.
+
+One of the key observations is that if sequences differ in one particular characteristic
+(be it the mean, or the autocorrelation, or anything else), it is always possible to
+transform the observed time-series, so that the pasting moments manifest themselves
+in a change in some expected (mean) value. Basically, again, this is boils down to
+engineering of appropriate features.
+
+For instance, if it is expected that the distribution of values within each of $K$
+sequences is different, then the joint empirical distribution of neighbouring values
+changes as the process goes through the change-point (since its expected value is
+the real joint probability distribution \wat).
+
+That is why, without the loss of generality one can study the detection problem of
+the mean value:
+\[ x^*_n = \phi\biggl(\Theta, \frac{n}{N}\biggr) + \xi^*_n\,, \]
+where $\xi^*_n\sim$ i.i.d. with mean zero and $\phi: [0,1]^K\times[0,1]\to \Real$ is
+of the form:
+\[ \phi(\Theta, t) = \sum_{k=1}^K a_k \one_{(\theta_{k-1},\theta_k])}(t) \,, \]
+with $\Theta = (\theta_k)_{k=1}^K$.
+
+%% image with left-continuous, right limited function (page 4, bottom middle).
+
+Surprisingly, the test statistic for the series scheme is
+\[ Y_N(n,\delta) = \biggl[ \biggl(1-\frac{n}{N}\biggr) \frac{n}{N} \biggr]^\delta
+				  \biggl(  \frac{1}{n} \sum_{j=1}^n x^*_j
+				  		 - \frac{1}{N-n} \sum_{j=n+1}^N x^*_j \biggr) \,, \]
+
+%% Image on the bottom of page 4. (handwritten notes)
+
+% subsection retrospective_change_point_detection (end)
+
 \subsection{Properties of $\sup$-functionals} % (fold)
 \label{sub:properties_of_sup_functionals}
 
-Consider the compact set $T$, and let $g:T\mapsto \Real$ be some function.
-For any $\kappa\geq 0$ put:
-\[ A_\kappa(g) = \bigl\{ s\in T : \sup_{t\in T} g(t) \leq g(s) + \kappa \bigr\}\,, \]
-and
-\[ B_\kappa(g) = \bigl\{ s\in T : \inf_{t\in T} g(t) \geq g(s) - \kappa \bigr\}\,. \]
-Consider the space with the unfiorm (supremum) norm:
-\[ \|h\| = \sup_{t\in T} |h(t)| \,. \]
+Consider a space of functions $g: T\mapsto \Real$ on some compact set $T$ (topological space
+or a subset of $\Real$) with the uniform (supremum) norm:
+\[ \|h\| = \sup_{t\in T} | h(t) | \,. \]
+For any $\kappa\geq 0$ the ``almost maximum'' set is given by
+\[ A_\kappa(g) = \bigl\{ s\in T \,:\, g(s) + \kappa \geq \sup_{t\in T} g(t) \bigr\}\,, \]
+and the ``almost minimum'' by
+\[ B_\kappa(g) = \bigl\{ s\in T \,:\, g(s) - \kappa \leq \inf_{t\in T} g(t) \bigr\}\,. \]
+Whenever $\kappa<0$ both sets are empty.
 
 \noindent\textbf{Proposition}\hfill\\
-For any $g, h:T\mapsto \Real$ the following set inclusion hold:
+For any $g, h:T\mapsto \Real$ the following set inclusion holds:
 \[ A_{\kappa - 2\|h\|_\infty}(g) \subset A_\kappa(g+h)
                                  \subset A_{\kappa + 2\|h\|_\infty}(g)\,, \]
-and similarly for the pre-minimum set:
+-- and similarly for $B_\kappa$ :
 \[ B_{\kappa - 2\|h\|_\infty}(g) \subset B_\kappa(g+h)
                                  \subset B_{\kappa + 2\|h\|_\infty}(g)\,. \]
 
@@ -49,10 +119,10 @@ Thus, since $|h(t)| \leq \|h\|$ for any $t\in T$, it must be true that
                            \leq R(g) + R(h)
                            \leq R(g) + \|h\|\,,
 \]
-and since $\sup$ is subadditive. Therefore, since $\epsilon>0$ is arbitrary,
+and since $\sup$ is sub-additive. Therefore, since $\epsilon>0$ is arbitrary,
 it is true that
 \[ R(g) - \|h\| \leq R(g + h) \leq R(g) + \|h\|\,, \]
-whnece the $\sup$ functional is continuous w.r.t $\sup$-norm.
+whence the $\sup$ functional is continuous w.r.t $\sup$-norm.
 
 Now by definition, for any $s\in A_\kappa(g+h)$, one has
 \[ R(g+h) - \kappa \leq g(s)+h(s) \leq R(g+h)\,, \]
@@ -72,6 +142,6 @@ which implies that $s\in A_\kappa(g+h)$. This proves
 
 % subsection properties_of_sup_functionals (end)
 
-Non-parametric Statistical Diagnosis: Problems and Methods, 2000 [Brodsky, Darkhovsky]
+% section lecture_1 (end)
 
 \end{document}
