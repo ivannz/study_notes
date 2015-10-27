@@ -4,7 +4,7 @@
 \usepackage{graphicx, url}
 
 \usepackage{amsmath, amsfonts, amssymb, amsthm}
-\usepackage{mathptmx}
+% \usepackage{mathptmx}
 
 \newcommand{\Real}{\mathbb{R}}
 \newcommand{\Cplx}{\mathbb{C}}
@@ -12,9 +12,12 @@
 \newcommand{\one}{\mathbf{1}}
 \newcommand{\wat}{\textbf{(?)}}
 
-% \usepackage[english, russian]{babel}
-% \newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
-% \newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+\newcommand{\argmin}{\mathop{\text{argmin}}}
+\newcommand{\argmax}{\mathop{\text{argmax}}}
+
+\usepackage[russian, english]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
 
 \title{Methods of Statistical Diagnostics}
 \author{Nazarov Ivan, \rus{201мНОД(ИССА)}\\the DataScience Collective}
@@ -37,17 +40,17 @@ Problems and Methods''.
 \subsection{Retrospective change-point detection} % (fold)
 \label{sub:retrospective_change_point_detection}
 
-Suppose we have a finite collection of stochastic sequences: $\biggl(x^k\biggr)_{k=1}^K$,
-with each $x^k = (x_^k_n)_{n\geq 0}$. Consider a set of time moments
+Suppose we have a finite collection of stochastic sequences: $\bigl(x^k\bigr)_{k=1}^K$,
+with each $x^k = (x^k_n)_{n\geq 0}$. Consider a set of time moments
 $\Theta = (\theta_k)_{k=0}^K$, with
 \[0 = \theta_0 < \theta_k < \theta_{k+1} < \theta_K = 1 \,,\]
 for $k=1,\ldots,K$.
 
 We have a finite sample $\big(X^*_n\bigr)_{n=1}^N$ of the ``pasted'' sequence
 given for any $n$ by $x^k_n$, whenever
-\[ n\in ( \bigl\lfloor N\theta_s \bigr\rfloor; \bigl\lfloor N\theta_{s+1} \bigr\rfloor ] \,,\]
+\[ n\in \bigl( \lfloor N\theta_s \rfloor; \lfloor N\theta_{s+1} \rfloor \bigr] \,,\]
 or in other words, the observed sequence is defined as
-\[ x^*_n = \sum_{k=1}^K x^k_n \one_{(\theta_{k-1}, \theta_k]}\biggl( \frac{n}{N} \biggr) \,. \]
+\[ x^*_n = \sum_{k=1}^K x^k_n \one_{(\theta_{k-1}, \theta_k]}\bigl( \tfrac{n}{N} \bigr) \,. \]
 The number of ``mixed-in'' types of sequences $K$ is known and fixed.
 
 %% Image on the middle top of page 3. (handwritten notes)
@@ -77,8 +80,9 @@ where $\xi^*_n\sim$ i.i.d. with mean zero and $\phi: [0,1]^K\times[0,1]\to \Real
 of the form:
 \[ \phi(\Theta, t) = \sum_{k=1}^K a_k \one_{(\theta_{k-1},\theta_k])}(t) \,, \]
 with $\Theta = (\theta_k)_{k=1}^K$.
-
+  
 %% image with left-continuous, right limited function (page 4, bottom middle).
+% \includegraphics{./caglad}
 
 Surprisingly, the test statistic for the series scheme is
 \[ Y_N(n,\delta) = \biggl[ \biggl(1-\frac{n}{N}\biggr) \frac{n}{N} \biggr]^\delta
@@ -127,16 +131,20 @@ whence the $\sup$ functional is continuous w.r.t $\sup$-norm.
 Now by definition, for any $s\in A_\kappa(g+h)$, one has
 \[ R(g+h) - \kappa \leq g(s)+h(s) \leq R(g+h)\,, \]
 whence
-\[ g(s) \geg R(g+h) - \kappa - h(s)
-        \geq R(g) - \kappa + \bigl(R(g+h) - R(g)\bigr) - \|h\|
-        \geq R(g) - \kappa - 2\|h\|\,. \]
+\begin{align*}
+g(s) & \geq R(g+h) - \kappa - h(s) \\
+     & \geq R(g) - \kappa + \bigl(R(g+h) - R(g)\bigr) - \|h\|\\
+     & \geq R(g) - \kappa - 2\|h\|\,.
+\end{align*}
 Thus $A_\kappa(g+h) \subset A_{\kappa + 2\|h\|}(g)$.
 
 Finally, suppose $A_{\kappa-2\|h\|}(g) \neq \emptyset$. Then it is true that
 for any $s\in A_{\kappa-2\|h\|}(g)$:
-\[ g(s) + h(s) \geq R(g) - \kappa + 2\|h\| - \|h\|
-               \geq R(g+h) - \kappa + \bigl( R(g) - R(g+h) \bigr) + \|h\|
-               \geq R(g+h) - \kappa \,,\]
+\begin{align*}
+g(s) + h(s) & \geq R(g) - \kappa + 2\|h\| - \|h\| \\
+            & \geq R(g+h) - \kappa + \bigl( R(g) - R(g+h) \bigr) + \|h\|\\
+            & \geq R(g+h) - \kappa \,,
+\end{align*}
 which implies that $s\in A_\kappa(g+h)$. This proves
 \[ A_{\kappa-2\|h\|}(g)\subseteq A(g+h) \subseteq A_{\kappa+2\|h\|}(g) \,.\]
 
@@ -144,4 +152,161 @@ which implies that $s\in A_\kappa(g+h)$. This proves
 
 % section lecture_1 (end)
 
+\section{Lecture 2} % (fold)
+\label{sec:lecture_2}
+
+As the number of observation grow a function of the sample becomes increasingly
+more deterministic. Take for example the max-likelihood.
+
+Consider some function $f(t)$ with a maximum, but we observe its contaminated
+version 
+\[ f(t) + \epsilon g(t) \,. \]
+What if we take the $\max$ of this sum is is possible to state that with the number
+of observations the finite smample $\max$ approaches to the limiting $\max$.
+
+Consider a compact set $T$ in some normed space $(X,\|\cdot\|)$ with $\sup$ norm.
+The $\kappa$ pre-max set is
+\[ A_\kappa(f) = \{ t\in T \,:\, \sup_{s\in T} g(s)\leq g(t) + \kappa \}\,, \]
+and analoguosly for $\kappa$ pre-min set of $g$.
+
+Then the following inclusion is true: for any $g,h\in \Real^T$
+\[ A_{\kappa-2\|h\|}(g)
+  \subseteq A_\kappa(g+h)
+  \subseteq A_{\kappa+2\|h\|}(g) \,. \]
+
+The distance from a set to a point is given by
+\[ d(x, A) = \inf_{y\in A} \|x-y\| \,,\]
+whereas the distance between sets $A,B\subseteq \Omega$ is
+\[ d(A,B) = \max\bigl\{ \sup_{ x\in A } d(x,B),
+                        \sup_{ x\in B } d(x, A) \bigr \}\,, \]
+which is a metric on $\mathcal{P}(\Omega)$.
+
+\noindent Corollary to the inclusion\hfill\\
+Suppose $\|h_n\|\to 0$, then for all $\kappa>0$
+\[ \sup_{ x\in A_\kappa(g+h_n) } d\bigl(x, A_\kappa(g)\bigr) \to 0 \,, \]
+and analogously for the $\kappa$ pre-min set.
+
+\noindent Corollary \# 2\hfill\\
+For sufficiently small $\kappa$ and $\|h\|$ the following inclusion is true
+\[ A_\kappa(|g+h|) \subseteq A_{\kappa+2\|h\|} (|g|) \,,\]
+and 
+\[ \sup_{x\in A_\kappa(|g+h|)} d\bigl( x, A_\kappa (|g|) \bigr) \to 0 \,,\]
+since 
+\[ \sup |f(t)| = \max\{ \sup f(t), -\inf f(t) \} \,. \]
+
+\noindent \hfill\\
+Suppose there is a function $\rho:\Real^+\to \Real^+$ such that for all
+$\kappa_1,\kappa_2\in [0,\kappa_0)$
+\[ d( A_{\kappa_1}(f), A_{\kappa_2}(f) ) \leq \rho( |\kappa_1-\kappa_2| )\,, \]
+then for any $\kappa\leq \kappa_0$, and $\|h\| < \frac{\kappa}{2}$
+\[ d( A_\kappa(f+h), A_\kappa(f) ) \leq \rho( 4\|h\| ) \,. \]
+
+Consider a continupis map $x(t)$ with $t_0$ the unique maximal point. Then there
+exists a continuous monotonous function $F$ such that 
+\[ x(t_0)-x(t) \leq F( \|t_0-t\| ) \,. \]
+Suppose furthermore $A_0(x+h)\neq \emptyset$. Then 
+\[ d(t_0, A_0(x+h)) \leq F^{-1}(2\|h\|)\,. \]
+
+H\:older condition:
+\[ |x(t_1)-x(t_2)| \leq L\|t_0-t\|^p \,.\]
+
+\subsection{Pasting changepoint detection algorithm} % (fold)
+\label{sub:pasting_changepoint_detection_algorithm}
+
+Recall that one has a sequence $(X^N_n)$ defiend as
+\[ X^n_n = \phi\bigl( \theta, \frac{n}{N}\bigr) + \xi^N_n \,, \]
+for some $\phi(\theta, t)$, $t\in [0,1]$ -- the change point model and the noise term
+$\xi^N_n$ has mean zero. In the simplest case $\phi$ is piecewise-constant:
+\[ \phi(\theta, t) = \sum_{k=1}^K x^k_{[tN]} 1_{ [ \theta_{k-1};\theta_k) }(t)\,. \]
+
+The key test statistic is
+\[ Y_N(n,\delta) = \Bigl[ \frac{(N-n)n}{N^2} \Bigr]^\delta
+                  \bigl( n^{-1} \sum_{j=1}^n X^N_j
+                   + (N-n)^{-1} \sum_{j=n+1}^N X^N_j\bigr) \,, \]
+with $\delta\in\{0,\frac{1}{2},1\}$.
+
+The algorithm consists of three steps:\begin{itemize}
+  \item Find the first split point $n^* = \argmax |Y_N(n,1)|$;\begin{itemize}
+    \item Split the sample by $n^* \pm \eta N$;
+    \item Recursively find split points in the resultng halves, unless they are too
+    short for splitting;
+  \end{itemize}
+  \item Consider the ordered list of split points $(n_j)_{j=1}^J$, which are
+  candidates for change points;
+  \item For a two-sided window of width $w$ around some $n_j$, which covers no window
+    of any other candidate : \begin{itemize}
+    \item Recall that $\sqrt{N}Y([Nt], 1)$ converges to $\sigma W^0(t)$, where
+    \[ W^0(t) = W(t) - t W(1) \,; \]
+    \item choose a threshold $A$ for the error of the first kind $\alpha$, which is
+    the probability of detecting a changepoint given its absence;
+    \item using this test the list of candidates is pruned.
+  \end{itemize}
+  \item For a two-sided window of each ``proven'' change point it is possible to show that
+  for a change point $\theta$
+  \[ m(t) = \begin{cases}
+    h_1\frac{1-\theta}{1-t}, &\text{ if }t\leq \theta\\
+    h_2\frac{\theta}{t} \end{cases}\,, \]
+    is the limiting expectation of $Y_n(N,0)$;
+    \item Comupte $m^* = \argmax|Y_N(m, 0)|$, which is a more accurate extimate of
+    the change point in this window;
+    \item Then compute 
+    \[ g_n = \begin{cases}
+      \sqrt{\frac{n}{N-n}}\bigl(1-\frac{m^*}{N}\bigr) |Y_N(m^*, 0)|, &\text{ if }n\leq m^*\\
+      \sqrt{\frac{N-n}{n}}\frac{m^*}{N} |Y_N(m^*, 0)|
+    \end{cases} \,.\]
+    \item Then use the centering
+    \[  V_n = |Y_N(n, \frac{1}{2})| - g_n \,, \]
+    to conveniently detect \wat.
+\end{itemize}  
+
+Donsker theorem (briefly): the limit of the following partial sums
+\[ \frac{1}{\sqrt{N}} \sum_{k=1}^{Nt} \xi_k\,, \]
+is a continuous-time process.
+
+% subsection pasting_changepoint_detection_algorithm (end)
+
+% section lecture_2 (end)
+
+\section{EEG} % (fold)
+\label{sec:eeg}
+
+Correlations are inapplicable since EEG is strongly non-stationary, if it is
+even random (chaotic). Even with neuron models, every EEG analysis is based
+on ``best-fit'' approach.
+
+Spectral analysis extracts different distinct bands: signals of specific frequency.
+Since there is no phenomenoligical model of the brain it is hard to even know what
+to look for.
+
+Take 6 spectra and some extra time-series characteristics like frquency of inter-
+-level transitions. In the end the data had about 160 features, which later were
+reduced down to 38 features. The fit on the whole set was very good, though there
+was no cross-validation at all.
+
+The complexity approach does not require any prior domain knowledge. Any time-series
+has an intrinsitc characteristic known as the $\epsilon$--complexity: what can be
+omitted from the dataset in order to recover it with some specified precision.
+
+Mandelbrot -- self-similarity
+
+The brand new topic is $\epsilon$-complexity of vector valued functions.
+
+% section eeg (end)
+
+\section{Functional egression} % (fold)
+\label{sec:functional_egression}
+
+People are attached to a simple base model.
+
+% section functional_egression (end)
+
+Suppose there is a high-dimensional vector. The key hypothesis is that is is just
+a point on some multi-dimensional manifold embeddee in a higher dimensional space.
+
+\section{Lecture \#4} % (fold)
+\label{sec:lecture_4}
+
+
+
+% section lecture_4 (end)
 \end{document}
