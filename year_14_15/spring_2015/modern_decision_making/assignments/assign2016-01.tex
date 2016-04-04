@@ -1,0 +1,527 @@
+\documentclass[a4paper,12pt]{extarticle}
+\usepackage[utf8]{inputenc}
+
+\usepackage{geometry}
+\usepackage{fullpage}
+
+\usepackage[mathcal]{euscript}
+% \DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{mathptmx}
+
+\usepackage{algorithm2e}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\Pwr}{\mathcal{P}}
+\newcommand{\Scal}{\mathcal{S}}
+\newcommand{\Acal}{\mathcal{A}}
+
+\newcommand{\rank}{\mathop{\mathtt{rank}}\nolimits}
+
+\newcommand{\one}{\mathbf{1}}
+
+\newcommand{\sign}{\mathop{\text{sign}}\nolimits}
+\newcommand{\cov}{\mathop{\text{cov}}\nolimits}
+\newcommand{\tr}{\mathop{\text{tr}}\nolimits}
+\newcommand{\pr}{\mathop{\mathbb{P}}\nolimits}
+\newcommand{\ex}{\mathop{\mathbb{E}}\nolimits}
+\newcommand{\argmin}{\mathop{\mathtt{argmin}}\nolimits}
+
+
+\title{Assignment \#1}
+\author{}
+\begin{document}
+\maketitle
+
+\section{Problem \#1} % (fold)
+\label{sec:problem_1}
+Suppose for some $c>0$ we have
+$$ \eta(x) = \pr\bigl(T=1\,\big|\, X=x\bigr) = \frac{x}{c+x} \,.$$
+The Bayes classifier is given by the following decision rule :
+$$\delta(x)
+  = 1_{\eta(x) \geq \frac{1}{2}}
+  = \begin{cases} 1 & \text{ if } \eta(x)\geq \frac{1}{2},\\
+          0 & \text{ otherwise}
+    \end{cases}
+  \,. $$
+The Bayes risk is given by the probability of misclassification by this classification
+rule $\delta$:
+\begin{align*}
+  \mathcal{R}^* = \pr_{T,X}\bigl(\delta(X)\neq T\bigr)
+    &= \ex_X \ex_{T\,|\,X}\bigl(1_{\delta(X)\neq T}\,\big|\,X\bigr) \\
+    &= \ex_X \Bigl(
+      \ex_{T\,|\,X}\bigl(1_{\eta(X) < \frac{1}{2}}1_{T=1}\,\big|\,X\bigr)
+       + \ex_{T\,|\,X}\bigl(1_{\eta(X)\geq \frac{1}{2}}1_{T=0}\,\big|\,X\bigr) \Bigr) \\
+    &= \ex_X \Bigl(
+      1_{\eta(X) < \frac{1}{2}}\ex_{T\,|\,X}\bigl(1_{T=1}\,\big|\,X\bigr)
+       + 1_{\eta(X)\geq \frac{1}{2}}\ex_{T\,|\,X}\bigl(1_{T=0}\,\big|\,X\bigr) \Bigr) \\
+    &= \ex_X \Bigl(
+      1_{\eta(X) < \frac{1}{2}}\eta(X)
+       + 1_{\eta(X)\geq \frac{1}{2}}(1-\eta(X)) \Bigr)
+    \,.
+\end{align*}
+Therefore 
+\begin{align*}
+  \pr_{T,X}\bigl(\delta(X)\neq T\bigr)
+  &= \ex_X \Bigl(\frac{1}{2} + 
+     1_{\eta(X) < \frac{1}{2}}\bigl(\eta(X)-\frac{1}{2}\bigr)
+       + 1_{\eta(X)\geq \frac{1}{2}}\bigl(\frac{1}{2}-\eta(X)\bigr) \Bigr) \\
+  &= \frac{1}{2} \ex_X \bigl( 1 - \lvert2\eta(X)-1\rvert \bigr) \,.
+\end{align*}
+Since $X+c>0$ with probability one we have:
+\begin{align*}
+  1 - \lvert2\eta(X)-1\rvert 
+  &= \frac{1}{X+c} \bigl( X + c - \lvert X - c \rvert \bigr)
+   = \frac{1}{X+c} \bigl( (X - c) - \lvert X - c \rvert + 2c\bigr) \\
+  &= \frac{1}{X+c} \bigl( 2 \min\{X - c, 0\} + 2c\bigr) \,,
+\end{align*}
+whence
+$$ \mathcal{R}^*
+  = \pr_{T,X}\bigl(\delta(X)\neq T\bigr)
+  = \ex_X \frac{1}{X+c} \bigl( \min\{X - c, 0\} + c\bigr)
+  = \ex_X \frac{\min\{X, c\}}{X+c}
+  \,.$$
+
+If $x=c$ with probability one (almost surely) then the risk in equal to
+$$ \mathcal{R}^* = \ex_X \frac{\min\{X, c\}}{X+c} = \frac{c}{2c} = \frac{1}{2}\,.$$
+
+Suppose $X\sim \mathbb{U}[0, Mc]$ for some $M>0$. Then
+\begin{align*}
+  \mathcal{R}^* = \ex_X \frac{\min\{X, c\}}{X+c}
+    &= \ex_X \frac{c}{X+c} + \ex_X \frac{X-c}{X+c} 1_{X < c}\\
+    &= \ex_X \frac{c}{X+c} + \ex_X \biggl(1-2\frac{c}{x+c}\biggr) 1_{X < c}\\
+    &= \frac{1}{M} \int_c^{(M+1)c} x^{-1} dx
+       + \int_0^c \frac{1}{Mc} \biggl(1-\frac{2c}{x+c}\biggr) dx \\
+    &= M^{-1} \biggl. \ln x \biggr\rvert_c^{(M+1)c}
+       + M^{-1} - 2M^{-1} \int_c^{2c} x^{-1} dx \\
+    &= M^{-1} \bigl( \ln (M+1) + 1 - 2 \ln 2 \bigr)
+  \,,
+\end{align*}
+whence $ \mathcal{R}^* = M^{-1} \ln \frac{e}{4}(M+1) $.
+
+The first derivative of the Bayes risk is given by
+\begin{align*}
+\frac{\partial \mathcal{R}^*}{\partial M}
+  &= \frac{ M(M+1)^{-1} - \ln \frac{e}{4}(M+1) }{M^2}\\
+  &= \frac{ 1 - (M+1)^{-1} + \ln (M+1)^{-1} - \ln \frac{e}{4} }{M^2}
+  = \frac{ \phi\bigl((M+1)^{-1}\bigr) + \ln \frac{4}{e} }{M^2}
+  \,,
+\end{align*}
+where $\phi(x) = 1 - x + \ln x$. A quick analysis of this continuous function shows
+that for $x\in(0,1)$ it is strictly increasing and $\phi(x)<0$, which means that there
+exists exactly one $x_0\in(0,1)$ such that $\phi(x_0) = \ln\frac{e}{4}$. Note that
+for $M\geq 2$ we have $\frac{1}{M+1}\in(0, \frac{1}{3}]$ and that
+$$ \frac{64}{27} < e
+  \Leftrightarrow \ln \frac{4}{3} < \frac{1}{3} 
+  \Leftrightarrow 1 - \frac{1}{3} - \ln 3 < 1 - \ln 4
+  \Leftrightarrow \phi\biggl(\frac{1}{3}\biggr) < \ln\frac{e}{4}\,.$$
+Thus the risk steadily decreases to $0$ at least for all $M\geq 2$ albeit very slowly.
+
+So if $M=2$, i.e. when the distribution of $X$ is less spread (or more concentrated) then
+the risk is equal to $\mathcal{R}^* = \frac{1}{2}\ln \frac{3e}{4}$, whereas if $M=4$ it is
+given by $\mathcal{R}^* = \frac{1}{4}\ln \frac{5e}{4}$, which is less. Indeed,
+$$ \mathcal{R}^*(2) - \mathcal{R}^*(4)
+  = \frac{1}{4}\biggl(\ln \frac{9 e^2}{16} - \ln \frac{5e}{4} \biggr)
+  = \frac{1}{4} \ln\frac{9 e}{20} \geq 0\,.$$
+
+For this particular form of the conditional probability, the more spread out the distribution
+of $X$ is, the likelier the event $T=1$ becomes given $X$, since
+$$ \pr\bigl(T=1\,\big\vert\,X \bigr) \geq \alpha
+  \Leftrightarrow \eta(X) \geq \alpha
+  \Leftrightarrow X\geq \frac{\alpha}{1-\alpha}c
+  \,. $$
+
+% section problem_1 (end)
+
+\section{Problem \#2} % (fold)
+\label{sec:problem_2}
+Let $y=(y_i)_{i=1}^n \in \mathbb{R}^{n\times 1}$, $X=(x_i')_{i=1}^n\in \mathbb{R}^{n\times k}$
+with $x_i\in\mathbb{R}^{k\times 1}$. Suppose $y_i\sim \mathcal{N}(x_i'\beta, \sigma_i^2)$ are
+id with
+$$ f_{Y_i}(y_i) = (2\pi \sigma_i^2)^{-\frac{1}{2}}
+  \text{exp}\bigl(-\frac{1}{2\sigma_i^2}(y_i-x_i'\beta)^2 \bigr) \,, $$
+where $\beta \in\mathbb{R}^{k\times 1}$. The variance of the $i$-th observation
+is given by $j \sigma^2$ if $i\in I_j$ where $I_j$ are the indices of observation
+of the $j$-th sub sample.
+
+Altogether the sample has multivariate normal distribution $y \sim \mathcal{N}_n(X\beta, \Sigma)$
+with $\Sigma = \sigma^2 S$, where the matrix $S$ is block diagonal, symmetric and positive.
+Let the $j$-th block of $S$ be denoted by $S_{[j]} = j I_{n_j} \in \mathbb{R}^{n_j\times n_j}$.
+Then $S$ is of the form
+$$ S = \begin{pmatrix}
+  S_1 & \cdots & 0 & \cdots & 0 \\
+  \vdots & \ddots & \vdots &\vdots & \vdots\\
+  0 & \cdots & S_j & \cdots & 0 \\
+  \vdots & \cdots & \vdots & \ddots & \vdots\\
+  0 & \cdots & 0 & \cdots & S_p
+\end{pmatrix}\,. $$
+Note that the inverse of $S$ has the same block-diagonal structure with blocks given
+by $S^{-1}_{[j]} = j^{-1}I_{n_j}$.
+
+Thus the $\log$-likelihood of the whole sample is given by
+\begin{align*}
+\mathcal{L}
+  &= -\frac{n}{2} \log 2\pi
+    - \frac{1}{2} \log\bigl\lvert \Sigma\bigr\rvert
+    - \frac{1}{2} (y-X\beta)'\Sigma^{-1}(y-X\beta)\\
+  &= -\frac{n}{2} \log 2\pi
+    + \frac{n}{2} \log\sigma^{-2}
+    - \frac{1}{2} \log \bigl\lvert S\bigr\rvert
+    - \sigma^{-2} \frac{1}{2} \tr S^{-1}(y-X\beta)(y-X\beta)'
+    \,.
+\end{align*}
+The Maximum likelihood estimates of $\beta$ and $\sigma^2$ are given by the solutions to
+the first order conditions, given by \begin{align*}
+\frac{\partial\mathcal{L}}{\partial \sigma^{-2}}\,:
+  &\quad \frac{n}{2} \frac{1}{\sigma^{-2}} - \frac{1}{2} (y-X\beta)'S^{-1}(y-X\beta) = 0\,,\\
+\frac{\partial\mathcal{L}}{\partial \beta}\,:
+  &\quad - \bigl(X'S^{-1}X \beta - X'S^{-1} y \bigr)\sigma^{-2} = \mathbf{0}\,,
+\end{align*}
+where $\mathbf{0}$ is the zero $k\times 1$ vector.
+
+The \textbf{FOC} for $\sigma^{-2}$ simplifies to
+$$ n \sigma^2 = (y-X\beta)'S^{-1}(y-X\beta) \,. $$
+Since $S$ is positive definite, $S^{-1}$ is also \textbf{PD}, and there exists a symmetric
+$A = S^{-\frac{1}{2}}$ of block-diagonal structure with blocks given by $A_{[j]} = \sqrt{j} I_{n_j}$.
+Thus 
+$$ n \sigma^2
+  = (y-X\beta)'S^{-1}(y-X\beta)
+  = (y-X\beta)'A' A(y-X\beta)
+  = \|A(y-X\beta)\|^2 \,. $$
+
+Let $y_{[j]} = (y_i)_{i\in I_j}$ be the $n_j \times 1$ vector of targets and
+$X_{[j]} = (x_i')_{i\in I_j}$ the $n_j\times k$ matrix of input vectors (in rows)
+from the $j$-th sub sample. Then due to the specific structure of $S^{-1}$ we have
+\begin{align*}
+  n \sigma^2
+    &= \sum_{j=1}^p (y_{[j]} - X_{[j]}\beta)' S^{-1}_{[j]} (y_{[j]} - X_{[j]}\beta) \\
+    &= \sum_{j=1}^p j^{-1} (y_{[j]} - X_{[j]}\beta)' (y_{[j]} - X_{[j]}\beta) 
+      = \sum_{j=1}^p \frac{1}{j} \sum_{i\in I_j} (y_i - x_i'\beta)^2 \,.
+\end{align*}
+
+As for $\beta$ we have the following equation
+$$ X'S^{-1}\bigl(X \beta - y \bigr) = \mathbf{0}
+  \Leftrightarrow X'A^2\bigl(X \beta - y \bigr) = \mathbf{0} \,,$$
+which can be simplified because of the structure of $S^{-1}$ to:
+$$ \sum_{j=1}^p X_{[j]}'S^{-1}_{[j]}\bigl(X_{[j]} \beta - y_{[j]}\bigr) = \mathbf{0} \,,$$
+which implies that $\beta$ solves
+$$ \sum_{j=1}^p\frac{1}{j} \sum_{i\in I_j} x_i\bigl(x_i' \beta - y_i\bigr) = \mathbf{0} \,.$$
+
+If the matrix $X'S^{-1}X$ is invertible, then
+\begin{align*}
+  \hat{\beta} &= (X'S^{-1}X)^{-1}X'S^{-1}y\,,\\
+  \hat{\sigma}^2 &= n^{-1} (y-X\hat{\beta})'S^{-1}(y-X\hat{\beta})\,.
+\end{align*}
+
+Thus plugging the estimate of $\beta$ into a norm-expression for $n\sigma^2$ we get
+$n\hat{\sigma}^2 = \|V\|^2$ for $V = A(y-X\hat{\beta})$. Note that
+$$ V = A(y-X\hat{\beta}) = A(I_n - X(X'S^{-1}X)^{-1}X'S^{-1}) y \,,$$
+which means that $V$ is linear transformation of a multivariate normal vector. Therefore
+$$ V \sim \mathcal{N}_n \bigl(\mu_v, \Sigma_V \bigr) \,.$$
+The mean $\mu_V$ is given by
+$$ \mu_V = \ex A(I_n - X(X'S^{-1}X)^{-1}X'S^{-1}) (X\beta + \xi) \,,$$
+for $\xi \sim \mathcal{N}_n(0, \Sigma)$, which reduces due to linearity of $\ex$ to
+\begin{align*}
+  \mu_V
+    &= A(I_n - X(X'S^{-1}X)^{-1}X'S^{-1}) X \beta \\
+    &= AX(I_n - (X'S^{-1}X)^{-1}X'S^{-1}X) \beta
+     = AX(I_n - I_n) \beta \\
+    &= 0
+  \,.
+\end{align*}
+The variance of $V$ is given by $ \Sigma_V = \ex A Q \xi\xi'Q'A'$ for $Q=I_n - X(X'S^{-1}X)^{-1}X'S^{-1}$,
+which evaluates to
+\begin{align*}
+  \Sigma_V
+    &= A Q \ex(\xi\xi') Q'A' = \sigma^2 A Q S Q' A' \\
+    &= \sigma^2 A \bigl( S - X(X'S^{-1}X)^{-1}X' - X(X'S^{-1}X)^{-1}X' \\
+    & \quad + X(X'S^{-1}X)^{-1}X'S^{-1}X(X'S^{-1}X)^{-1}X' \bigr) A'\\
+    &= \sigma^2 A \bigl( S - X(X'S^{-1}X)^{-1}X'\bigr) A'\\
+    &= \sigma^2 \bigl(I_n - AX(X'A'AX)^{-1}X'A'\bigr)\\
+    &= \bigl[W = AX\bigr]=  \sigma^2 \bigl(I_n - W(W'W)^{-1}W'\bigr)\,.
+\end{align*}
+
+Thus $V$ follows a centered multivariate Gaussian distribution with variance
+$\Sigma_V$ computed above.
+
+The expected value of $n\hat{\sigma}^2$ is given by \begin{align*}
+\ex \|V\|^2
+  &= \ex V'V = \ex \tr V'V = \ex \tr VV' = \tr \ex VV' = \tr \Sigma_V\\
+  &= \sigma^2 \tr (I_n - W(W'W)^{-1}W')\\
+  &= \sigma^2 (\tr I_n - \tr W(W'W)^{-1}W') = \sigma^2 (n - \tr (W'W)^{-1}W'W)\\
+  &= \sigma^2 (n - \tr I_k) = \sigma^2 (n - k) \,,
+\end{align*}
+whence the expectation of $\frac{n\hat{\sigma}^2}{n-k} = \frac{\|V\|^2}{n-k}$ is $\sigma^2$.
+
+Finally let $\hat{\beta}_j$ be the OLS estimate of $\beta$ computed over the $j$-th subsample:
+$$ \hat{\beta}_j = (X_{[j]}'X_{[j]})^{-1}X_{[j]}'y_{[j]} \,.$$
+This estimator is unbiased since
+$$\ex \hat{\beta}_j
+  = (X_{[j]}'X_{[j]})^{-1}X_{[j]}' \ex y
+  = (X_{[j]}'X_{[j]})^{-1}X_{[j]}' \bigl(X_{[j]}\beta + \ex \xi\bigr)
+  = (X_{[j]}'X_{[j]})^{-1}X_{[j]}' X_{[j]}\beta
+  = \beta
+  \,.$$
+The covariance of a subsample estimator $\hat{\beta}_j$ is given by
+\begin{align*}
+  \cov(\hat{\beta}_j)
+    &= (X_{[j]}'X_{[j]})^{-1}X_{[j]}'
+        \ex(y_{[j]}-X_{[j]}\beta)(y_{[j]}-X_{[j]}\beta)'
+      X_{[j]} (X_{[j]}'X_{[j]})^{-1} \\
+    &= (X_{[j]}'X_{[j]})^{-1}X_{[j]}' \bigl(\sigma^2 S_{[j]}\bigr) X_{[j]} (X_{[j]}'X_{[j]})^{-1} \\
+    &= \sigma^2 \bigl(j^{-1} X_{[j]}' X_{[j]}\bigr)^{-1}
+  \,.
+\end{align*}
+Now the covariance of $\hat{\beta}$ -- the full sample estimator is given by
+$$ \cov(\hat{\beta})
+  = (X'S^{-1}X)^{-1}X'S^{-1} \cov(y) S^{-1}X(X'S^{-1}X)^{-1}
+  = \sigma^2 (X'S^{-1}X)^{-1}
+  \,. $$
+The block-diagonal structure of $S$ permits to express the product $X'S^{-1}X$ as
+$$ X'S^{-1}X = \sum_{m=1}^p X_{[m]}'S^{-1}_{[m]}X_{[m]} = \sum_{m=1}^p m^{-1} X_{[m]}'X_{[m]} \,, $$
+whence
+$$ \cov(\hat{\beta}) = \sigma^2 \biggl( \sum_{m=1}^p m^{-1} X_{[m]}'X_{[m]} \biggr)^{-1} \,, $$
+
+Note that $\sum_{m=1}^p m^{-1} X_{[m]}'X_{[m]} \succeq j^{-1} X_{[j]}' X_{[j]}$, since
+$$ \sum_{m=1}^p m^{-1} X_{[m]}'X_{[m]} - j^{-1} X_{[j]}' X_{[j]}
+  = \sum_{m\neq j} \biggl(\frac{1}{\sqrt{m}}X_{[m]}\biggr)' \biggl(\frac{1}{\sqrt{m}}X_{[m]}\biggr) \succeq 0 \,. $$
+Using the provided hint we get that
+$$ \sum_{m=1}^p m^{-1} X_{[m]}'X_{[m]} \succeq j^{-1} X_{[j]}' X_{[j]}
+  \Leftrightarrow \cov(\hat{\beta}_j) \succeq \cov(\hat{\beta})\,,$$
+since $\sigma^2 > 0$.
+Therefore the full sample estimator in this setting is more efficient than a subsample estimator.
+
+% section problem_2 (end)
+
+\section{Problem \#3} % (fold)
+\label{sec:problem_3}
+
+Let $y=(y_i)_{i=1}^n \in \mathbb{R}^{n\times 1}$ be the vector of targets,
+$X=(x_i')_{i=1}^n\in \mathbb{R}^{n\times d}$ -- the matrix of $d$ feature input
+observations $x_i\in\mathbb{R}^{d\times 1}$ and $\beta \in \mathbb{R}^{d\times 1}$.
+Let $e_k \in \mathbb{R}^{d\times 1}$ be the $k$-th unit vector and $X_k = Xe_k$ be
+the $k$-th columns of $X$. Suppose $X_k'X_k = 1$.
+
+Elastic-net regression minimizes the following loss
+$$ \mathcal{L} (\beta) = \|y - X\beta\|^2 + \lambda \|\beta \|^2 + \mu \|\beta \|_1 \,, $$
+where $\lambda,\mu>0$ and $\|\cdot\|$ and $\|\cdot\|_1$ are the $l^2$ and $l^1$
+norms respectively: $\|\beta\|_1 = \sum_{k=1}^d |\beta_k|$.
+
+For any $j=1,\ldots, d$ we can express the loss as 
+$$ \mathcal{L} (\beta_j, \beta_{-j})
+  = \|y - X_j\beta_j - X_{-j}\beta_{-j}\|^2
+  + \lambda \|\beta_{-j} \|^2 + \lambda \beta_j^2
+  + \mu \|\beta_{-j} \|_1 + \mu |\beta_j|
+  \,, $$
+since $X\beta = \sum_{k=1}^d (Xe_k)(e_k'\beta) = \sum_{k=1}^d X_k\beta_k$, where
+$X_{-j}$ is the design matrix without hte $j$-th column and $\beta_{-j}$ is the
+parameter vector $\beta$ without the $j$-th element. If $Y_j = y - X_{-j}\beta_{-j}$
+then
+$$ \mathcal{L} (\beta_j, \beta_{-j})
+  = (Y_j - X_j\beta_j)'(Y_j - X_j\beta_j) + \lambda \beta_j^2 + \mu |\beta_j|
+  + \bigl(\lambda \|\beta_{-j} \|^2 + \mu \|\beta_{-j} \|_1\bigr)
+  \,. $$
+
+With $\beta_{-j}$ held fixed, $\mathcal{L} (\beta_j, \beta_{-j})$ is a sum of convex
+and linear functions of $\beta_j$, and thus is itself convex. $\mathcal{L} (\beta_j, \beta_{-j})$
+is differentiable with respect to $\beta_j$ everywhere but at $0$ due to the $|\beta_j|$
+term. Holding $\beta_{-j}$ fixed, for $\beta_j>0$ we have
+$$ \frac{\partial \mathcal{L} (\beta_j, \beta_{-j})}{\partial \beta_j}
+  = - 2 X_j'(Y_j - X_j\beta_j) + 2\lambda \beta_j + \mu \,, $$
+and for $\beta_j < 0$ --
+$$ \frac{\partial \mathcal{L} (\beta_j, \beta_{-j})}{\partial \beta_j}
+  = - 2 X_j'(Y_j - X_j\beta_j) + 2\lambda \beta_j - \mu \,. $$
+Therefore, since $X_j'X_j=1$, for $\beta_j\neq 0$ we get
+$$ \frac{\partial \mathcal{L} (\beta_j, \beta_{-j})}{\partial \beta_j}
+  = 2\bigl( (1+\lambda) \beta_j - R_j + \frac{\mu}{2} \sign(\beta_j) \bigr) \,, $$
+where $R_j = X_j' Y_j$.
+
+For $\beta_j > 0$ the \textbf{FOC}
+$$ (1+\lambda) \beta_j - R_j + \frac{\mu}{2} \sign(\beta_j) = 0 \,, $$
+implies $\beta_j = \beta_j^* = \biggl(R_j - \frac{\mu}{2}\biggr)(1+\lambda)^{-1}$ and
+$R_j - \frac{\mu}{2} > 0$.
+Similarly, for $\beta_j < 0$ the \textbf{FOC}
+$$ (1+\lambda) \beta_j - R_j - \frac{\mu}{2} \sign(\beta_j) = 0 \,, $$
+implies $\beta_j = \beta_j^* = \biggl(R_j + \frac{\mu}{2}\biggr)(1+\lambda)^{-1}$ and
+$R_j + \frac{\mu}{2} < 0$.
+
+Using proof by contradiction, we get the following chains of implications
+$$ \beta_j > 0 \Rightarrow R_j - \frac{\mu}{2} > 0 \Rightarrow \beta_j\geq 0 \,, $$
+and
+$$ \beta_j < 0 \Rightarrow R_j + \frac{\mu}{2} < 0 \Rightarrow \beta_j\leq 0 \,. $$
+
+Can it be so that $R_j - \frac{\mu}{2} > 0$, but $\beta_j = 0$? No, since $\beta_j$
+is the minimizer of $\mathcal{L} (\beta_j, \beta_{-j})$. Indeed, suppose $\beta_j=0$
+is optimal when $R_j - \frac{\mu}{2} > 0$. Then
+$$ \mathcal{L} (0, \beta_{-j})
+    = Y_j'Y_j + \bigl(\lambda \|\beta_{-j} \|^2 + \mu \|\beta_{-j} \|_1\bigr) \,, $$
+must be smaller than ($\beta_j^*>0$)
+$$ \mathcal{L} (\beta_j^*, \beta_{-j})
+    = (Y_j - X_j\beta_j^*)'(Y_j - X_j\beta_j^*)
+      + \lambda {\beta_j^*}^2 + \mu \beta_j^*
+      + \bigl(\lambda \|\beta_{-j} \|^2 + \mu \|\beta_{-j} \|_1\bigr) \,. $$
+Thus we must have the following inequality
+$$ 2 Y_j'X_j\beta_j^* \leq {\beta_j^*}^2 (X_j'X_j + \lambda) + \mu \beta_j^* \,, $$
+which is equivalent to
+$$ 2 \biggl(R_j - \frac{\mu}{2}\biggr) \leq \beta_j^* (1 + \lambda) \,, $$
+since $\beta_j^*>0$.
+Finally, plugging in the expression for $\beta_j^*$ we get
+$$ R_j - \frac{\mu}{2} \leq 0 \,, $$
+which is a contradiction. Thus optimality of $\beta_j$ given $\beta_{-j}$ implies
+$$ \beta_j > 0 \Leftrightarrow R_j - \frac{\mu}{2} > 0 \,, $$
+and using analogous argumentation
+$$ \beta_j < 0 \Leftrightarrow R_j + \frac{\mu}{2} < 0 \,. $$
+Finally, by contrapositive
+$$ \beta_j = 0 \Leftrightarrow R_j \in\biggl[-\frac{\mu}{2}, \frac{\mu}{2}\biggr] \,. $$
+
+The minimum of $\mathcal{L} (\beta_j, \beta_{-j})$ holding $\beta_{-j}$ fixed is
+given by
+$$ \beta_j
+  = (1+\lambda)^{-1} \biggl\{
+      \biggl(R_j - \frac{\mu}{2}\biggr)_+ + \biggl(R_j + \frac{\mu}{2}\biggr)_-
+    \biggr\}
+  \,.$$
+
+\noindent Consider the first term for $R_j > 0$. If $R_j - \frac{\mu}{2} \geq 0$ then
+$$ \biggl(R_j - \frac{\mu}{2}\biggr)_+
+  = R_j \biggl( 1 - \frac{\mu}{2R_j}\biggr)_+ \,, $$
+and if $0 < R_j < \frac{\mu}{2}$ then
+$$ \biggl(R_j - \frac{\mu}{2}\biggr)_+
+  = 0 = R_j \biggl( 1 - \frac{\mu}{2R_j}\biggr)_+ \,. $$
+Hence
+$$ \biggl(R_j - \frac{\mu}{2}\biggr)_+
+  = R_j \biggl( 1 - \frac{\mu}{2|R_j|}\biggr)_+ 1_{R_j>0} \,, $$
+since $R_j = |R_j|$ when $R_j>0$.
+
+\noindent Let's analyze the second term for $R_j < 0$. For such $R_j$ we have this equivalence
+$$ R_j + \frac{\mu}{2} \leq 0
+  \Leftrightarrow R_j \biggl( 1 + \frac{\mu}{2R_j}\biggr) \leq 0
+  \Leftrightarrow 1 + \frac{\mu}{2R_j} \geq 0
+  \,. $$
+So if $R_j + \frac{\mu}{2} \leq 0$ then
+$$ \biggl(R_j + \frac{\mu}{2}\biggr)_-
+  = R_j \biggl( 1 + \frac{\mu}{2R_j}\biggr)_+ \,, $$
+and if $- \frac{\mu}{2} < R_j < 0$ then
+$$ \biggl(R_j + \frac{\mu}{2}\biggr)_-
+  = 0 = R_j \biggl( 1 + \frac{\mu}{2R_j}\biggr)_+ \,. $$
+However, $R_j = -|R_j|$ when $R_j<0$, whence
+$$ \biggl(R_j + \frac{\mu}{2}\biggr)_-
+  = R_j \biggl( 1 - \frac{\mu}{2|R_j|}\biggr)_+ 1_{R_j<0} \,. $$
+
+Therefore
+$$ \beta_j
+  = (1+\lambda)^{-1} R_j \biggl( 1 - \frac{\mu}{2|R_j|}\biggr)_+ 1_{R_j\neq0} \,,$$
+and assuming that $0\cdot \infty = 0$ we finally get
+$$ \beta_j = (1+\lambda)^{-1} R_j \biggl( 1 - \frac{\mu}{2|R_j|}\biggr)_+ \,.$$
+
+\noindent Let's use the following simple coordinate descent algorithm (\ref{prob3_cden}) to
+minimize the elastic net loss:
+
+\begin{algorithm}[H]
+  \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+  \Input{$X\in\mathbb{R}^{n\times d}$, $y\in\mathbb{R}^{n\times 1}$, $\lambda, \mu > 0$.}
+  \Output{Value of $\beta$ that minimizes the elastic-net loss $\mathcal{L}(\beta)$.}
+  \BlankLine
+  $\theta_{0, d} \leftarrow \hat{\beta}_{\text{Ridge}} = (X'X + \lambda I_d)^{-1} X'y $\;
+  \For{$t=1,2,\ldots$}{
+    $\theta_{t, 0} \leftarrow \theta_{t-1,d}$\;
+    Pick a random permutation $(j_{t,i})_{i=1}^d$ of $\{1,\ldots, d\}$\;
+    \For{$i=1,\ldots,d$}{
+      $\hat{\beta} \leftarrow \theta_{t,i-1}$\;
+      $\hat{\beta}_{j_{t,i}} \leftarrow \argmin_\beta \mathcal{L}(\beta, \hat{\beta}_{-j_{t,i}}) $\;
+      \tcc{the $\hat{\beta}_{j_{t,i}}$ is given by $(1+\lambda)^{-1} R_{j_{t,i}} \bigl( 1 - \frac{\mu}{2|R_{j_{t,i}}|}\bigr)_+$}
+      $\theta_{t, i} \leftarrow \hat{\beta}$\;
+    }
+    \tcc{Check convergence criterion on $\mathcal{L}(\theta_{t, d})$ against
+      $\mathcal{L}(\theta_{t-1,d})$}
+  }
+  \caption{Coordinate descent elastic net solver}\label{prob3_cden}
+\end{algorithm}
+
+\noindent Since each $\theta_{t,i}$ is the minimizer of $\mathcal{L}$ holding all coordinates
+of $\theta_{t,i-1}$ but $j_{t,i}$-th fixed, every iteration of the inner loop is
+guaranteed not to increase the value of $\mathcal{L}$. Thus for all $t\geq 1$ we
+have 
+$$ \forall\,i=1,\ldots, d\, :\,
+   \mathcal{L}(\theta_{t,i}) \leq \mathcal{L}(\theta_{t,i-1}) \,. $$
+The random permutations are used to break up possible symmetries in $\mathcal{L}$,
+and in fact do not change the fact that for all $t\geq 1$ we have
+$$ \mathcal{L}(\theta_{t,d}) \leq \mathcal{L}(\theta_{t-1,d}) \,. $$
+
+Furthermore, since $\mu, \lambda > 0$, the function $\mathcal{L}$ is strictly convex,
+which implies that the local (one-coordinate) minimizer actually decreases the value
+of the loss. Furthermore the optimal solution to the loss minimization problem is
+unique, which means that the sequence $\theta_{t,d}$ must almost surely converge to
+the optimal minimizer. Thus the algorithm (\ref{prob3_cden}) indeed iteratively decreases
+the loss.
+
+The computational complexity of the inner loop is $\mathcal{O}(n d^2)$ since on each
+iteration we have to recompute the vector $R_{j_{t,i}} = y - X_{-j_{t,i}} \hat{\beta}_{-j_{t,i}}$,
+which requires $C n d$ floating point operations.
+
+Note that since the elastic-net problem is close to the ridge regression problem,
+the minimization is started from the ridge-regression solution, and not from the OLS
+solution.
+
+% section problem_3 (end)
+
+\section{Problem \#4} % (fold)
+\label{sec:problem_4}
+
+Consider the dataset $\bigl(x_i, t_i\bigr)_{i=1}^n$, with ties in $x_i$, to be 
+fit by a curve $g$. The input data does not affect the penalty term, so one has
+to deal with the goodness-of-fit term $\sum_{k=1}^n (t_k g_\theta(x_k))^2$
+$$ \sum_{i=1}^n (t_i - g(x_i) )^2
+  = \sum_{k=1}^K \sum_{i=1}^{n_k} (t_{ki} - g(x_k) )^2
+  \,, $$
+where $K$ is the number of distinct $x_i$ and $t_{ki}$ is the $i$-th target value
+in the $k$-th group with the same $x_k$. Next, focus on the inner sum:
+$$ \sum_{i=1}^{n_k} (t_{ki} - g(x_k) )^2  \,, $$
+and note that for $\bar{t}_k = \frac{1}{n_k}\sum_{i=1}^{n_k} t_{ki}$
+$$ (t_{ki} - \bar{t}_k + \bar{t}_k - g(x_k) )^2
+  = (t_{ki} - \bar{t}_k)^2
+  + 2 (t_{ki} - \bar{t}_k)(\bar{t}_k - g(x_k) )
+  + (\bar{t}_k - g(x_k) )^2
+  \,. $$
+Thus
+\begin{align*}
+  \sum_{i=1}^{n_k} (t_{ki} - g(x_k) )^2
+    &= n_k (\bar{t}_k - g(x_k) )^2
+     + \sum_{i=1}^{n_k} (t_{ki} - \bar{t}_k)^2
+     + 2 (\bar{t}_k - g(x_k) ) \sum_{i=1}^{n_k} (t_{ki} - \bar{t}_k) \\
+    &= n_k (\bar{t}_k - g(x_k) )^2 + \sum_{i=1}^{n_k} (t_{ki} - \bar{t}_k)^2 \,,
+\end{align*}
+since $\sum_{i=1}^{n_k} (t_{ki} - \bar{t}_k) = \sum_{i=1}^{n_k} t_{ki} - n_k \bar{t}_k = 0$.
+This implies
+$$ \sum_{i=1}^n (t_i - g(x_i) )^2
+  = \sum_{k=1}^K n_k (\bar{t}_k - g(x_k) )^2
+  + \sum_{k=1}^K \sum_{i=1}^{n_k} (t_{ki} - \bar{t}_k)^2
+  \,, $$
+note that the last term is independent of $g$. Therefore the smoothing spline problem
+for data with ties turns out to be equivalent to
+$$ \min_{g\in C^2[a,b]} \Bigl\{
+    \sum_{k=1}^K n_k (\bar{t}_k - g(x_k) )^2
+      + \lambda \int_a^b |g''(x)|^2 dx
+  \Bigr\}
+  \,. $$
+This is an instance of a generalization of the smoothing spline problem, which
+essentially is the introduction of individual weighting of the data-points in the
+dataset: for $(x_i, t_i)_{i=1}^n$ with no ties in $x_i$ and weights $(w_i)_{i=1}^n\geq 0$
+$$ \sum_{i=1}^n w_i \bigl(t_i - g(x_i)\bigr)^2
+    + \lambda \int_a^b |g''(s)|^2 ds \to \min_{g\in C^2[a,b]}
+  \,. $$
+The solution to the weighted problem is again in the Natural Cubic spline family,
+since we can always consider an NCS with the same goodness-of-fit term, but
+with apriori smaller penalty term (recall that the natural cubic spline has the least
+penalty in $C^2[a,b]$). The solution in the weighted case is
+$$ \hat{g} = ( W + \lambda K )^{-1} W t \,, $$
+where $K = QR^{-1} Q'$ is the penalty matrix and $W$ is the diagonal matrix of
+weights.
+
+% section problem_4 (end)
+
+\end{document}
