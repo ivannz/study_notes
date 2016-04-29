@@ -1530,6 +1530,14 @@ However
 \end{align*}
 for some $n\geq n_0(x)$.
 
+Indeed, for ant $c\geq 0$ one has
+\[ \int_0^{+\infty} e^{-\frac{1}{2}(x+c)^2}
+	= e^{-\frac{c^2}{2}} \int_0^{+\infty} e^{-cx} e^{-\frac{1}{2}x^2} \]
+But $e^{-cx} \leq 1$ for all $x\geq 0$, whence
+\[ \int_0^{+\infty} e^{-\frac{1}{2}(x+c)^2}
+	\leq e^{-\frac{c^2}{2}} \int_0^{+\infty} e^{-\frac{1}{2}x^2}
+	= e^{-\frac{c^2}{2}} \frac{\sqrt{2\pi}}{2} \]
+
 Consider independent $\brac{Y_i}_{i=1}^n$ such that they are subgaussian: $\exists \sigma^2 > 0$ with \[\ex\big( e^{\lambda Y_i} \big) \leq \text{exp}\big( \frac{\sigma^2 \lambda^2}{2} \big)\]
 then 
 \[\Pr\brac{ \frac{1}{\sqrt{n}}\sum_{i=1}^n Y_i > x }\leq e^{-\frac{x^2}{2}}\]
