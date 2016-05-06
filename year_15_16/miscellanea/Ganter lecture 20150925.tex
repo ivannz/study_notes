@@ -1,0 +1,108 @@
+\section{Dilworth's theorem} % (fold)
+\label{sec:dilworth_s_theorem}
+
+Consider a set of shapes to be cut optimally and efficiently from a sheet
+of some material. Arrange the shapes according to the geomatric containment
+partial order induced by ``subset'' relation. Every chain (linearly ordered
+subset of a poset) in this containment Hasse diagramme is producible from a
+single shape specimen.
+
+The question is how many chains cover this ordered set?
+
+\subsection{Definitions} % (fold)
+\label{sub:definitions}
+Let $(J,\geq)$ be a poset with partial order $\geq$. Any $i,j \in J$ are
+comparable if either $(i,j)\in \geq$ or $j\geq i$, and incomparable otherwise.
+
+A subset of pairwise comparable elements is a \textbf{chain}, similarly a set
+of pairwise incomparable elements is an \textbf{anti-chain}.
+
+\textbf{Width} is the size of the largest anti-chain and the \textbf{height} or
+the \textbf{length} is the size of the largest chain minus 1 (the number of edges).
+
+% subsection definitions (end)
+
+\noindent the Theorem\hfill\\
+A poset $(J,R)$ has width $n$ if and only if it can be covered by $n$ chains,
+but not by fewer.
+
+An obvious corollary is that if a poset can be covered by $n$ chains, then its
+width cannot be less than $n$.
+
+$\Rightarrow$ Width $n$ needs $n$ chains, since any two elements in the anti-chain
+are incomparable. Therefore thay cannot be in any chain.
+
+$\Leftarrow$
+
+% section dilworth_s_theorem (end)
+
+Applications: marriage theorem, max flow min cut over transportation graphs
+(with edge capacity). Cut through the flow network, and define the capacity
+of the cut as the sum of capacities of edges over the cut.
+
+Another application: take a poset of pairs $(\mathbb{N}\times \mathbb{N}, \geq)$
+with the order corresponding to component-wise partial order. This poset contains
+no infinite anti-chains, but it contains an anti-chain of any finite order (proof
+by induction). Thus it cannot it be covered by finitely many chains.
+
+
+\section{Ganter's Colloquium} % (fold)
+\label{sec:ganters_colloquium}
+
+Is Formal Concept analysis useful?
+
+Is it maths? Even mathemticians do not know what mathematics is, but they
+have a clear feeling of what it might be.
+
+Lattice theory, as a study of a paritcular algebraic structure, originated in
+the 20-th century. Dedekind called it a ``dualgruppe''. Willie based the
+research on FCA in philosophical foundations.
+
+The main direction on any Hasse diagram of a lattice is eaither upward or
+downward. The lattice permits the reconstruction if the original data, whereas
+the dimensionality reduced data is not a fithful representation.
+
+\rus{м14НД ИССА}
+
+\noindent Definition \hfill \\
+A formal context is a triple $(G,M,I)$ with $I\subseteq G\times M$ -- a relation
+representing ``an object $g$ has an attribute $m$'' for any $(g,m)\in I$.
+
+In a lattice diagram the nodes are the formal concepts and the edges represent
+the ``subconcept'' relation.
+
+\noindent ...\hfill\\
+
+For any $A\subseteq G$ and $B\subseteq M$ put
+\begin{align*}
+	A' &= \{ m\in M\,:\, \forall g\in A\, (g,m)\in I \}\\
+	B' &= \{ g\in G\,:\, \forall m\in B\, (g,m)\in I \}\,.
+\end{align*}
+The mapping $X\mapsto X''$ is a closure operator:\begin{itemize}
+	\item idempotent: $(X'')'' = X''$;
+	\item monotonic: $X\subseteq Y$ implies $X''\subseteq Y''$;
+	\item extensivity: $X\subseteq X''$.
+\end{itemize}
+
+Nifty application: construct a lattice of formal concepts over McDonald's
+allergen table.
+
+Another application: see Revenko, ICFCA 2014.
+
+Concept lattices not necessarily need to be computed in order to perform
+FCA. For instance, Iceberg lattice (algrothim to compute it is Titanic, which
+basically ``searches for an iceberg'' in the lattice -- not an effective one).
+
+% section ganters_colloquium (end)
+
+%% Not in the speech:
+In pattern structures $\bigl(G, (D, \sqcap), \delta\bigr)$ the Galois connection
+is
+\[ A' = \sqcap\limits_{ g\in A } \delta(g) \,, \]
+and
+\[ d' = \{ g\in G\,:\, d \sqsubseteq \delta(g) \} \,, \]
+with the connection property:
+\[ d \sqsubseteq A' \Leftrightarrow A \subseteq d' \,,\]
+since $a \sqsubset b$ if and only if $a = a\sqcap b$ for any $a,b\in D$.
+%% End
+

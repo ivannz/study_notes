@@ -1,0 +1,238 @@
+Deep learning
+
+The problem of image annotaion is comprised of both computer vision and text
+analysis. The immediate generalization is descriptiopn synthesis.
+
+Components: \begin{description}
+	\item[Image] Transfer learning: take OxfordNet and use the 7-th fully connected
+	layer as image features;
+	\item[Text] Use Word2Vec as representaion for each word, pool words from sentences 
+	using a generalised version of Fisher Vectors.
+\end{description}
+
+ \textbf{H}ybrid \textbf{G}aussian \textbf{L}aplacian \textbf{M}ixture \textbf{M}odels
+are used for text vector poolung into Fisher vectors.
+
+This HGLMM might be reagrded as an elstic net regularization: a combination of $L^2$
+and $L^1$ norms. For $\phi(x)$
+\[ \phi(x) = \frac{1}{\sqrt{2\pi \sigma^2}} \text{exp}\bigl(-\frac{|x-\mu|^2}{2\sigma^2}\bigr) \,, \]
+and $\lambda(x)$
+\[ \lambda(x) = \frac{1}{\sqrt{2 s}} \text{exp}\bigl(-\frac{|x-m|}{2s}\bigr) \,, \]
+with weights $\beta\in[0,1]$
+\[\phi(x)^\beta \lambda(x)^{1-\beta} \,. \]
+
+The mixture model with respect to latent $\beta$ is estimated using the EM. This enables
+a decision of which distribution fits better each particuclar observation.
+
+Now the (observed) Fisher vector is the gradient of the log-likelihood with respect to
+the parameters. As opposed to the true Fisher vector, which is 
+\[ \ex \frac{\partial}{\partial \theta} \log L(X,\thea) \,, \]
+check this.
+
+Next the obtianed image and text representations are projected into a common lower
+dimensional space using the \textbf{C}anonical \textbf{C}orrelation \textbf{A}nalysis:
+\[
+	\text{image} \mapsto \text{CNN:}f_7 \overset{W}{\mapsto} \Real^\text{Common} \text{ and }
+	\text{text} \mapsto \text{W2v} \overset{V}{\mapsto} \Real^\text{Common} \,.\]
+
+
+Sublinear-time approximation algorithms
+
+The fact that there a huge amounts of information shapes the need for better algorithms.
+Take big networks for instance. The challenge is to process and analyse this
+data efficiently. Sublinear-time algorithms are such that use less resources than
+the input size. One of the issue is that we cannot read the entire input. That is why
+we have to deal with approximation to optimal solutions and randomized algorithms.
+
+Randomization: \begin{itemize}
+	\item Random sampling $\to$ partial information;
+	\item Really interesting algorithms $\to$ adaptive sampling.
+\end{itemize}
+
+The simplest graph analysis problem: find the average degree, but having only
+local knowledge. The graph is conected. This is similar to a problem of finding
+an average of a set of $n$ values. Sublinearity won't permit distinguishing the
+input which is crucial to the solution.
+
+However it is possible to get an approximation in $\Omeega(\sqrt{n})$.
+
+Feige;s algorithm: \begin{itemize}
+	\item Repeat $O(\frac{1}{\epsilon})$ times: sample $O(\epsilon\sqrt{n})$ (\wat)
+		vertices;
+	\item Compute the average degree of the sampled subgraph.
+\end{itemize}
+With neighbours of any vertex the $1+\epsilon$ approximation is faster.
+Minimal Spanning Tree -- linear-time randomized algorithm.
+
+Chazelle, Rubinfeld, Trevisan (2001).
+
+Within a graph of constant degree it is possible to find the heaviest edge with
+accuracy $\epsilon$ in $\epsilon n$.
+
+
+Data Properties Estimation as Statistical Inverse Problem.
+\noindent No notes. \hfill\\
+
+Feature Selecton by Conditional Distribution Contrasting.
+Consider $D$ as the set of objects with data $X\times \{0,1\}$.
+The average risk is defined as
+\[ -\ex_{x,y} ( y\log p_0(x) + {1-y}\log p_1(x)) \,, \]
+and its empritical verison is penalized with the Rademacher penalty:
+\[ \text{MISSING} \,.\]
+
+Learning with Submodular Functions: A Convex Optimization Perspective
+
+Submodularity is almost everywhere, take clustering for instance, and even
+topic modelling (structured sparsity -- Jennaton et al. 2010).
+
+Minimization porblem:
+\[ f(A) \to \min_{A\subseteq \Omega}\,, \]
+and in case of finite $\Omega$ it can be reformulatedas a problem on the 
+hyper cube $2^\Omega$. Regularized minimization problem is then
+\[ \sum_{i=1}^n \L(y_i, f((x_i)) + \lambda \Theta(f) \to \min_{f\in \Fcal} \,,\]
+as in convex optimization problem.
+
+A set function and it comes in the general-to-specific topic trees.
+$f:\Pcal(\Omega)\to \Real$ is submodular if one has
+\[ f(T) + f(S) \leq f(T \cap S) + f(S\cup T) \,, \]
+for any $S, T \sbseteq \Omega$ with $f(\emptyset)=0$. In other words
+for all $\omega\in\Omega$
+\[ S \mapsto f(S\cup\{\omega\}) - f(S) \,, \]
+is non-increasing, diminishing return. For instante set cardinality id submodular.
+Cuts are submodular, entropy is submodular.
+
+A cut of a pair of sets $V_1,V_2\subseteq V$ with $V_1\cap V_2 = \emptyset$
+is the total number of edges crossing over the cut $(V_1, V_2)$.
+
+Choquet integral
+\[ f(w) = \sum_{k=1}^p w_k\bigl( f( (j_i)_{i=1}^k ) - f( (j_i)_{i=1}^{k-1} ) \bigr) \,, \]
+for $w_{j_k}$ decreasing with $k$. For cuts 
+\[ f(w) = \sum_{k,j\in V} d_{kj} |w_j-w_k| \,. \]
+
+A function is submodual if and only if the integral is convex. Furthermore
+if $F$ is submodual then
+\[ \min_{A\subseteq \Omega} F(A) = \min_{w\in\{0,1\}^p} f(w)
+								 = \min_{w\in[0,1]^p} f(w) \,. \]
+theorem (Lovasz, 1982).
+
+Lets look at the dual problem:
+\[ \min_{A\subseteq \Omega} F(A) = \max_{s\in B(F)}\sum_{k\in \Omega} \min\{s_k, 0\} \,,\]
+The best algorithms are polynomial, but $O(p^6)$.
+
+Total variation image denoising
+\[ \min_{w\in \Real^p} f(w) + \frac{1}{2}\|w-z\|^2
+	= \max_{s\in B(F)} \frac{1}{2}\|z\|^2
+						- \frac{1}{2}\|s-z\|^2 \,. \]
+and is equivalent to projecting $z$ onto $B(F)$. This last porblem is smooth, 
+albeit on a nastier domain.
+
+A set function is decomposable if
+\[ F(Z) = \sum_{j=1}^r F_j(A) \,. \]
+% If eac h$F_j$ is easily minimizable,
+% c.f. Jekka, Bach, 
+
+
+Distributed Coordinate Descent for Regularized Logistic Regression
+The dataset is partitioned into $(S_i)_{i=1}^p$ and the each block is fed into
+a separate machine.
+
+The main questions are \begin{itemize}
+	\item how to compute $\Delta \beta^m$;
+	\item how to organise the communication between the nodes.
+\end{itemize}
+Armijo rule
+\[ L(\beta + \Delta \beta) + R(\beta + \Delta \beta)
+	\leq L(\beta + \Delta \beta) + R(\beta) + o(\Delta \beta^m) \,.\]
+
+\[ L(\beta + \alpha \Delta \beta) =
+	\sum_{i=1}^n \log\Bigl(1+\text{exp}\bigl(-y_i (\beta + \alpha\Delta\beta)'x_i \bigr)\Bigr) \,,\]
+
+Next comes the problem of load balancing: the sysyem's efficiency is determined
+by the worst preforming node. This led to ``asynchronous load balancing''.
+
+The GLMNET performs the following minimization:
+\[ \argmin_{\delta} L(\beta) + \nabla L(\beta)'\delta
+		+ \frac{1}{2} \delta' \nabla^2L(\beta)\delta\,, \]
+in a distributed fashion.
+
+Large-scale learning
+Feature hashing: $h(x_i) = \text{hash}(x_i)$.\begin{itemize}
+	\item collisions are rare;
+	\item dot products are unbiased.
+\end{itemize}
+Counts: keep the data for conditional probabilites.
+\[ \phi(x) = ( n^+, n^-, \log\frac{n^+}{n^-}, \text{isBackOff}) \,, \]
+where the counts are retrieved from the table and the table is 
+only the head. Tricks for doing rolling counts.
+
+Now combine hashing with counting: counts for hash buckets. Use a number of hashes
+$h_j:X\to \mathbb{N}$ and upon query take the $\min$ of the bucket counts.
+
+The backoff of the main table can be an alias for another one, which is more
+condensed lookupt table.
+
+Differential privacy: prevent leakage from any label in the table.
+Design a table that returns a distribution, but for new unseen elements returns
+something regular:
+\[\frac{\pr c_T(x) = z }{\pr c_T'(x) = z } \leq e^\epsilon \,. \]
+% cf. Dracula.
+
+
+Vorontsov:
+A collection of documents $\Dcal$ and each document $d\in \Dcal$ is a certain sequence
+of words $w\in V$: $d\in V^+$. The goal is to infer a subset of topics in each $d$ and 
+the topic-term structure. PLSA performs regularized stichastic matrix factorisation:
+$p_{dw} = \sum_{t\in T}\phi_{wt} \theta_{td}$, where $\phi_{wt}$ is the conditional word
+distribution $p(w|t)$ and $\theta_{td}$ is the topic distribution within the given
+document. Unless the problem is regularized, it is ill-posed.
+
+LDA
+\[ L(\Phi,\Theta)
+	= \sum_{d,w} n_{dw} \log \sum_t \phi_{wt}\theta_{td}
+		+ \sum_{t,w}\beta_w \log \phi_{tw}
+		+ \sum_{t,d}\alpha_t \log \theta_{td} \,, \]
+PLSA 
+\[ L(\Phi,\Theta)
+	= \sum_{d,w} n_{dw} \log \sum_t \phi_{wt}\theta_{td}
+		+ R(\Phi,\Theta) \,. \]
+Bayesian regularizier
+\[ R(\Phi,\Theta) =
+	\beta_0 \sum_{t,w} \beta_w \log\phi_{wt}
+	+ \alpha_0 \sum_{t,w} \alpha_w \log\theta_{td} \,, \]
+Sparse regularizier
+\[ R(\Phi,\Theta) = -
+	\beta_0 \sum_{t,w} \beta_w \log\phi_{wt}
+	- \alpha_0 \sum_{t,w} \alpha_w \log\theta_{td} \,. \]
+
+Multimodality topic modelling
+\[ L(\Phi,\Theta)
+	= \sum_m \lambda_m \sum_{d,w\in D\times W_m} n_{dw} \log \sum_t \phi_{wt}\theta_{td}
+		+ \sum_{t,w}\beta_w \log \phi_{tw}
+		+ \sum_{t,d}\alpha_t \log \theta_{td} \,, \]
+Psotional regularizier
+\[ \sum_d \sum_{i=1}^{n_d} R_{di}( (p_{tdw_i})_{t\in T} ) \,. \]
+
+Temoral topci model
+\begin{align*}
+	R_1(\Theta) &= -\tau_1\sum_{y\in Y}\sum_{t\in T} \log p(t|y)\\
+	R_2(\Theta) &= -\tau_2\sum_{y\in Y}\sum_{t\in T} | p(t|y) - p(t|y-1) |
+\end{align*}
+
+Reliable Diagnostics by Conformal Predictors
+What is a conformal predictor?
+Take the training set $(x_i, y_i)$. Calssification for a candidate $x$ is done
+exhaustively: by trying all possible labels, -- and the whole set is tested for
+randmness.
+
+Martin L\"of-test for randomness:
+\[ \pr^n\{ t(Z) \leq \epsilon \} \leq \epsilon \,, \]
+and $t$ is upper semicomputable.
+
+Applications to Venn machines.
+
+
+Dynamic Style Analysis of Hedge Funds and Kalman Smoother
+\[ \sum_{t=1}^T (r_t - h_t\beta_t)^2 + \lambda \sum_{t=2}^T (\beta_t - f(\beta_{t-1}))'\Omega^{-1} (\beta_t - f(\beta_{t-1})) \,, \]
+
+
+Vapnik:

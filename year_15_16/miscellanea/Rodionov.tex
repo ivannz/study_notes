@@ -1,0 +1,999 @@
+\section{Lectures} % (fold)
+\label{sec:lectures}
+
+Consider a sequence $(\xi_n)_{n\geq1}$ of independent and identically distributed
+random variables with $\ex\xi_1 = a$ and $\var \xi_1 = \sigma^2$. Then for
+$S_n = \sum_{j=1}^n \xi_j$ it is true that
+\[ \frac{S_n - \ex S_n}{\sqrt{ \var S_n }} \overset{\mathcal{D}}{\to} \mathcal{N}(0,1) \,,\]
+(the central limit theorem), and
+\[ \frac{S_n}{n} \overset{\text{a.s}}{\to} a\,, \]
+(the law of large numbers). Furthermore the law of double logarithm holds:
+\[ \limsup_{n\to \infty} \frac{S_n}{ \sqrt{ 2n\sigma^2 \ln \ln n  } } = 1 \,\pr\text{a.s} \,. \]
+
+Consider a random walk $S_n = \sum_{j=1}^n \xi_j$ build upon a sequence of
+independent identically distributed random variables with $\xi_i\sim\text{Bern}(p)$.
+Then for $m>0$ the probability is given by 
+\[ \pr( S_n = m ) = C_n^{n+} p^{n^+} (1-p)^{n^-}\,,\]
+where $n^+ + n^- = n$ and $n^+ - n^- = m$, whence
+\[ \pr( S_n = m ) = \begin{cases}
+		0 , &\text{ if }|m|>n\text{ or } n-m\neq 2k \\
+		C_n^\frac{n+m}{2} p^\frac{n+m}{2} (1-p)^\frac{n-m}{2}
+\end{cases} \,. \]
+
+Now the number of trajectories from $(\alpha, a)$ to $(\beta, b)$ that intersect $0$
+with $a<b$ and $\alpha, \beta >0$ is given by the number of paths from $(-\alpha,a)$
+to $(\beta, b)$:
+\[ \text{\#} = C_{b-a}^\frac{b-a+\beta+\alpha}{2} \,, \]
+by using the reflection principle (a bijection between any path).
+
+Next, the number of trajectories from $(0,0) \to (x,n)$, $x>0$, and not touching
+$0$ is given by the  difference between the total number of trajectories from
+$(1,1)$ to $(x,n)$ and the number of paths with the same endpoints that touch $0$:
+\begin{align*}
+	\text{\#} &= C_{n-1}^\frac{n+x-2}{2} - C_{n-1}^\frac{n+x}{2} \\
+		&= C_n^\frac{n+x}{2} \frac{x}{n}\,.
+\end{align*}
+
+For a symmteric random walk the probability $\pr(S_{2k}\neq 0\,k=1\ldots n)$
+is given by
+\[ \cdots = \sum_{m=-n}^n \pr( S_0=0, S_{2k}\neq 0\,k=1\ldots n-1, S_{2n}=2m ) \,. \]
+Since the random walk starts from $(0,0)$ and has steps $\pm 1$, the number
+of trajectories that never pass $0$ at even moments is the same as just
+the number of paths from $(0,0)$ to $(2m,2n)$ that do not touch zero. Thus
+\[ \cdots = 2 \sum_{m=1}^n 2^{-2n} C_{2n}^\frac{2m+2n}{2} \frac{2m}{2n} \,, \]
+which is equal to
+\[ \cdots = 2^{-(2n+1)} \sum_{m=1}^n C_{2n}^{m+n-1} - C_{2n}^{m+n} = 2^{-(2n-1}} C_{2n-1}^n \,. \]
+Finaly, 
+\begin{align*}
+	\cdots &= 2^{-(2n-1}} \frac{(2n-1)!}{(n-1)!n!} \\
+			  &= 2^{-(2n-1}} \frac{ (2n)!}{(n-1)!n!} \frac{1}{2n}\\
+			  &= 2^{-2n} C_{2n}^n \,.
+\end{align*}
+
+Finaly, the probability that a symmetric random walk ends up in $(0,2n)$, while
+not having touched any zero at even moments is given by
+\begin{align*}
+	\pr(S_{2k}\neq 0\,k=1\ldots n-1) - \pr(S_{2k}\neq 0\,k=1\ldots n) 
+		&= 2^{-2n+2} C_{2n-2}^{n-1} - 2^{-2n} C_{2n}^n \\
+		&= 2^{-2n} ( 4 C_{2n-2}^{n-1} - C_{2n}^n) \\
+		&= 2^{-2n} \frac{(2n)!}{n!n!}\bigl(\frac{4 n^2}{2n(2n-1)}-1\bigr) \\
+		&= \frac{(2n)!}{n!n!}\frac{2^{-2n}}{2n-1} \,.
+\end{align*}
+
+Consider a symmetric random walk $S_n$. Then for any $N > 0$
+\[ \pr\bigl( \max_{k\leq n} S_k \geq N;\, S_n < N \bigr) = \pr( S_n > N ) \,. \]
+Indeed,
+\[ \pr\bigl( \max_{k\leq n} S_k \geq N;\, S_n < N \bigr)
+	= \sum_{m=-n}^{N-1} \pr\bigl( \max_{k\leq n} S_k \geq N,\, S_n = m \bigr) \,, \]
+Now, using the reflection principle the number of paths from $(0,0)\to(m,n)$, $m\in [-n,N-1]$,
+touching $N$ is the same as the number of paths from $(0,0)\to (2N-m,n)$, passing
+through $N$. Since by construction of the random walk th latter paths necessarily cross
+the level $N$, one has
+\[ \# = C_n^\frac{2N-m+n}{2} \,, \]
+for $m=-n\ldots N-1$. Since the walk is symmteric 
+\[ \pr\bigl( \max_{k\leq n} S_k \geq N,\, S_n = m \bigr)
+	= 2^{-n} C_n^\frac{2N-m+n}{2} = \pr( S_n = 2N-m ) \,, \]
+whence
+\[ \pr\bigl( \max_{k\leq n} S_k \geq N,\, S_n < N \bigr)
+	= \sum_{m=N-1}^{-n} \pr( S_n = 2N-m )
+	= \sum_{m=N+1}^{2N+n} \pr( S_n = k )
+	= \pr( S_n > N ) \,. \]
+
+Now
+\begin{align*}
+	\pr\bigl( \max_{k\leq n} S_k \geq N;\, S_n < N \bigr)
+		&= \pr\bigl( \max_{k\leq n} S_k \geq N \bigr)
+		 - \pr\bigl( S_n \geq N \bigr) \\
+\end{align*}
+since 
+\[ \{ S_n \geq N \} \subseteq \{ \max_{k\leq n} S_k \geq N \}\,. \]
+Therefore
+\[ \pr\bigl( \max_{k\leq n} S_k \geq N \bigr)
+	= \pr\bigl( S_n = N \bigr) + 2\pr\bigl( S_n > N \bigr) \,, \]
+which implies that
+\[ \pr\bigl( \max_{k\leq n} S_k \geq N \bigr)
+	= 2^{-n} C_n^\frac{N+n}{2}
+		+ 2 2^{-n} \sum_{k=N+1}^n C_n^\frac{n+k}{2} \,. \]
+
+Consider a general discrete random walk $S_n$ build from $\xi_i\sim\text{Bern}(p)$.
+For $m<N$ the probability
+\[ \pr\bigl( \max_{k\leq n} S_k \geq N;\,S_n = m \bigr)
+	= p^\frac{n+m}{2} q^\frac{n-m}{2} \#_1 \,,\]
+where $\#_1$ is the number of paths from $(0,0)\to(m,n)$ that reach level $N$.
+The probability ``signature'' is that of any path with enough upward and downward
+steps to end up at level $(m,n)$. The number of relevant paths $\#_1$ is given by
+\[ \#_1 = C_n^\frac{2N-m+n}{2}
+		= C_n^\frac{2n-2N+m-n}{2}
+		= C_n^{\frac{n+m}{2}-N} \,. \]
+
+Finally, the probability
+\[ \pr(\max_{k\leq n} S_k = N;\,S_n = m )
+	= \pr(\max_{k\leq n} S_k \geq N;\,S_n = m )
+	- \pr(\max_{k\leq n} S_k \geq N + 1;\,S_n = m )\,, \]
+since
+\[ \{ \max_{k\leq n} S_k = N\} \cap \{\,S_n = m \}
+	= \{ \max_{k\leq n} S_k \geq N\} \cap \{\,S_n = m \}
+	\setminus \{ \max_{k\leq n} S_k \geq N + 1\} \cap \{\,S_n = m \} \,.\]
+Thus for $p = q = \frac{1}{2}$ one has 
+\[ \pr(\max_{k\leq n} S_k = N;\,S_n = m )
+	= 2^{-n}\bigl( C_n^\frac{2N-m+n}{2}
+		- C_n^\frac{n+2(N+1)-m}{2} \bigr)
+	= \pr(S_n = 2N-m) - \pr(S_n = 2(N+1)-m)\,, \]
+after alluding to symmetries of $C_n^m$.
+
+Consider a discrete nonegative random variable $\xi$. The probability generating
+function is defined as $\phi_\xi(z) = \ex z^\xi$ for any $z\in[0,1]$. It's immediate
+properites are \begin{itemize}
+	\item $\phi_\xi(1) = 1$;
+	\item $\phi_\xi(0) = \pr(\xi=0)$;
+	\item Since the \textbf{pgf} is an analytic function (admits an infinite series
+	representation) it is differentiable and it can actually be shown that the order
+	of integration and differentiation can be interchanged. Thus
+	$\frac{d}{dz}\phi_\xi(z)\bigl.\bigr\rvert_{z=1} = \ex\xi$;
+	\item $\phi_{\xi+\eta}(z) = \phi_\xi(z) \phi_\eta(z)$ if $\xi$ and $\eta$ are independent;
+	\item $\phi_\xi(z) = \sum_{k\geq 0} z^k \pr(\xi=k)$;
+	\item $\pr(\xi = k) = \frac{1}{k!}\phi_\xi^{(k)}(0)$ for any $k\geq 0$.
+\end{itemize}
+
+A simple branching process is constructed as follows $(\xi_{n,k})_{n,k\geq0}$ iid
+integer-valued random variable. Then
+\[ Z_{n+1} = \sum_{i=1}^{Z_n} \xi_{n-1,k} \,, \]
+is a Galton-Watson branching process.
+
+Some very interesting questions arise in relaiton to this process: \begin{itemize}
+	\item what is the probability of extinction?
+	\item what is the distribution of $Z_n$?
+	\item What are the properties of the total number of ``particles'' in the process:
+		\[ Y = 1 + \sum_{n \geq 1} Z_n \,? \]
+\end{itemize}
+
+The extinction evnet of a branching process $(Z_n)_{n\geq 0}$ is defined as 
+\[ E = \{ \exists n\geq 1\,:\, Z_n = 0 \} \,, \]
+with $ E_n = \{ Z_n = 0 \} $ and $\pi_n = \pr(E_n)$.
+
+First, $E_n\uparrow E$, since $E_n\subseteq E_{n+1}$ and 
+\[ \{ \exists n\geq 1\,:\, Z_n = 0 \} = \bigcup_{n\geq 0} E_n \,. \]
+Thus by upper continuity of measure $\pr$, $\pi_n\uparrow \pi$, where $\pi=\pr(E)$.
+
+Next, it is true that 
+\[ \phi_{Z_n}(z) = \phi_\xi(\phi_{Z_{n-1}}(z) ) \,.\]
+Indeed, \begin{align*}
+	\ex z^{Z_{n+1}}
+		&= \ex\ex\bigl( \prod_{i=1}^{Z_n} z^\xi_{n+1,i} \bigr. \bigr\lvert Z_n\bigr)\\
+		&= \ex\prod_{i=1}^{Z_n}\ex\bigl( z^\xi_{n+1,i} \bigr. \bigr\lvert Z_n\bigr)\\
+		&= \ex\bigl( \phi_\xi(z) \bigr)^Z_n\,.
+\end{align*}
+Further iterated expansion yields
+\[ \ex z^{Z_{n+1}} = \phi_\xi \comp \cdots \comp \phi_\xi (z) \,, \]
+-- a composition of $n+1$ generating functions. The conclusion follows by associativity
+of functional composition.
+
+Finally,  the extinction probability is the fixed point of $\phi_\xi$. Indeed,
+since $\pi_n = \pr\{Z_n = 0\} = \phi_{Z_n}(0)$, one has
+\[ \phi_xi( \pi_n ) = \phi_\xi(\phi_{Z_n}(0)) = \phi_{Z_{n+1}}(0) = \pi_{n+1} \,,\]
+whence
+\[
+	\pi = \lim_{n\to \infty} \pi_{n+1}
+		= \lim_{n\to \infty} \phi_\xi(\pi_n)
+		= \phi_\xi\bigl(\lim_{n\to \infty} \pi_n\bigr) \,, \]
+by continuity of $\phi_\xi$.
+
+\noindent Theorem \hfill\\
+Suppose $\ex \xi = \mu$. Then the following alternative holds for the solution of
+the equation $\pi=\phi_\xi(\pi)$ :
+\begin{enumerate}
+	\item if $\mu < 1$, this equation has a unique solution $\pi=1$, i.e. the process
+	eventually dies out;
+	\item if $\mu \geq 1$, then there exist a solution $\pi\in(0,1)$;
+\end{enumerate}
+
+First of all note that derivative of any order of $\phi_\xi$ is non-negative, since
+a pgf is non-decreasing analytic ($C^\infty([0,1])$).
+$\phi_\xi$ must be convex. 
+
+Suppose $\mu>1$. Then the derivative $h(z) = \phi_\xi(z) - z$ at $z=1$ is $\mu-1>0$
+which implies that in the immediate left vicintiy of $1$, where $\phi_\xi(1)=1$, there
+necessarily must be a point $q<1$ such that $\phi_\xi(q)<q$, whence $h(q)<0$. At the
+same time $h(0) = \phi_\xi(0) \geq 0$, which implies by continuity that there exists
+$q\in[0,1)$ with $\phi_\xi(q)=q$.
+
+% On the other hand if $\mu<1$, then there is no $q\in[0,1)$ such that $q=\phi_\xi(q)$.
+% Indeed, since at $z=1$ one has $\phi_\xi'(1) = \mu<1$, and $\phi_\xi'(z)$ is a non-negative
+% and increasing map, one surely has $\phi_\xi'(z)<1$, whence $h(z)'<0$ for all $z\in[0,1)$.
+
+\noindent Theorem \hfill\\
+For $Y = 1 + \sum_{n\geq1} Z_n$ one has 
+\[ g(z) = z\phi_\xi(g(z)) \,,\]
+where $g(z) = \ex( z^Y \vert Y < \infty)$. Note that
+\[ g(z) = \sum_{k\geq 1}\pr(Y=k)z^k\,,\]
+whence
+\[ g(1) = \pr(Y<\infty) = \pr(\exist n\geq1\,:\,Z_n=0) = \pi \,. \]
+
+Next, if $Y_n = 1+\sum_{k=1}^n Z_k$ for all $n\geq1$ then
+\[ \phi_{Y_{n+1}} = z\phi_\xi(\phi_{Y_n}(z)) \,, \]
+Indeed, \begin{align*}
+	\phi_{Y_{n+1}}(z)
+		&= \ex\ex\bigl( \prod_{i=1}^{n+1} z^{Z_i} \bigr. \bigr\lvert Z_1,\ldots,Z_n\bigr)\\
+		&= \ex\prod_{i=1}^n z^{Z_i}  \ex\bigl( z^{Z_{n+1}} \bigr. \bigr\lvert Z_1,\ldots,Z_n\bigr)\\
+		&= \ex z^{Y_{n-1}+Z_n} \ex\bigl( z^{Z_{n+1}} \bigr. \bigr\lvert Z_n\bigr)\\
+		&= \ex z^{Y_{n-1}} \bigl(z \phi_\xi(z)\bigr)^{Z_n}\,, \\
+\end{align*}
+whence \begin{align*}
+	\phi_{Y_{n+1}}(z)
+		&= \ex z^{Y_{n-1}} \bigl(z \phi_\xi(z)\bigr)^{Z_n}\,, \\
+		&= \ex z^{Y_{n-2}+Z_{n-1}} \ex\bigl( \bigl(z \phi_\xi(z)\bigr)^{Z_n} \bigr. \bigr\lvert Z_{n-1}\bigr) \,, \\
+		&= \ex z^{Y_{n-2}} \Bigl( z \phi_\xi\bigl(z \phi_\xi(z)\bigr) \Bigr)^{Z_{n-1}} \,. \\
+\end{align*}
+Thus
+\[ \phi_{Y_{n+1}}(z) = z \phi_\xi\bigl( z \phi_\xi( \cdots z\phi_\xi( z ) ) \bigr) \,, \]
+with
+\[ \phi_{Y_{n+1}}(z) = z \phi_\xi\bigl( \phi_{Y_n}( z ) \bigr) \,. \]
+
+Now, if for $n\geq 1$ one has $\phi_{Y_n}\leq \phi_{Y_{n-1}}$, then
+\[ \phi_{Y_{n+1}} = z\phi_\xi( \phi_{Y_n} ) \leq z\phi_\xi( \phi_{Y_{n-1}} ) = \phi_{Y_n}\,,\]
+over $z\in[0,1]$. Now for $n=1$ one has $\phi_{Y_0} = z \geq z \phi_\xi(z) = \phi_{Y_1}$
+by the basic properties of a pgf. There a map $g$ defined pointwise as the limit
+\[ g(z) = \lim_{n\to\infty} g_{Y_n}(z) \,, \]
+is well-defined for any $z\in[0,1]$ since $g_{Y_n}(z) \downarrow$ and $g_{Y_n}(z) \in [0,1]$.
+By continuity of $\phi_\xi$ one has
+\[ \lim_{n\to\infty} g_{Y_{n+1}}(z) = z \phi_\xi\bigl( \lim_{n\to\infty} \phi_{Y_n}( z ) \bigr) \,, \]
+whence $g(z) = z\phi_\xi( g(z) )$.
+
+
+\noindent Definition\hfill \\
+A process $(X_t)_{t\in T}$ is a process with independent increments if for all 
+$n\geq 1$ and any $(t_j)_{j=0}^n\in T$ with $t_j<t_{j+1}$ the random variables
+\[ X_{t_0} \text{ and } (X_{t_j} - X_{t_{j-1}})_{j=1}^n \,,\]
+are jointly independent.
+
+\noindent Kolmogorov's theorem\hfill \\
+Let $(Q_s)_{s\in T^+}$ with $T^+ = \cup_{k\geq 1} T^k$ be a family of measures
+on $(\Omega, \Fcal)$ that satisfy the symmetry
+\[ Q_{s_1,\ldots,s_n}( \prod_{j=1}^n B_j )
+ = Q_{s_{\sigma(1)},\ldots,s_{\sigma(n)}}(\prod_{j=1}^n B_{\sigma(j)})
+\,,\]
+for any permutation $\sigma$ and consistency
+\[ Q_{s_1,\ldots,s_n,s_{n+1}}( \prod_{j=1}^n B_j \times \Omega )
+ = Q_{s_1,\ldots,s_n}( \prod_{j=1}^n B_j )\,,\]
+conditions. Then there exists a process $(X_t)_{t\inT}$ defined on the same
+measurable space which has
+\[ \text{Law}( X_{s_1},\ldots,X_{s_n} ) = Q_{s_1,\ldots,s_n}\,. \]
+
+\noindent Definition\hfill \\
+A collection of characteristic functions $\phi$ satisfies the symmetry condition
+if
+\[ \phi_{s_1,\ldots,s_n}( \lambda_1, \ldots, \lambda_n )
+ = \phi_{s_{\sigma(1)},\ldots,s_{\sigma(n)}}( (\lambda_{\sigma(j)})_{j=1}^n )
+\,,\]
+for any permutation $\sigma$. A collection meets the consistency condition if
+\[ \phi_{s_1,\ldots,s_n,s_{n+1}}( \lambda_1, \ldots, \lambda_n, 0 )
+ = \phi_{s_1,\ldots,s_n}( \lambda_1, \ldots, \lambda_n )\,.\]
+
+\noindent Existence of process with independent increments\hfill \\
+Let a family of characteristic functions $\phi_{st}$ satisfy the following 
+requirement:
+\[ \phi_{su}(z)\phi_{ut}(z) = \phi_{st}(z) \,, \]
+for all $s<u<t$ and any $z\in \Real$, then there exists a process $X_t$ with
+independent increments for which
+\[ \phi_{X_t-X_s}(z) = \phi_{ts}(z)\,. \]
+
+\noindent Definition\hfill \\
+A poisson process $(N_t)_{t\geq 0}$ with intensity measure $m$ on $\Real^+$
+is a faimly of random variables such that \begin{itemize}
+	\item $N_0 = 0$ almost surely;
+	\item $N_t$ has independent increments;
+	\item $N_t-N_s \sim \text{Pois}(m\bigl((t;s]\bigr))$ for $t \geq s$.
+\end{itemize}
+In the simplest case the intensity measure $m((s,t]) = \lambda(t-s)$.
+
+\noindent Statement\hfill \\
+The covariance function of a Poisson process with constant intensity $\lambda$
+is
+\[ R(s,t) = \lambda\min\{s,t\} \,. \]
+
+\noindent Definition\hfill \\
+Let $(\xi_k)_{k\geq1}$ be a family of non-negative random variables and put
+$S_n = \sum_{i=1}^n \xi_i$. The recovery process is defined as
+\[ X_t = \sup\{n\,:\,S_n \leq t\} \,.\]
+
+\noindent Theorem\hfill \\
+Explicit modification of a poisson process. Let $(\eta_i)_{i\geq1}$ be a family
+of independent identically distributed random variables with $\eta_i\sim\text{Exp}(\lambda)$.
+Then the recovery process constructed from $(\eta_i)_{i\geq1}$ is a poisson process
+with constant intensity $\lambda$.
+
+\noindent Statement\hfill \\
+If $S_n=\sum_{i=1}^n \xi_i$ for $(\xi_i)_{i\geq1}\sim\text{Exp}$ iid, then
+\[ p_{S_{n-1}, S_n}(a,b) = p_{S_{n-1}}(a) p_{\xi_n}(b-a) \,,\] 
+
+\noindent Properties of a Poisson process\hfill \\
+\begin{itemize}
+	\item Nondecreasing (since the increments are non-negative);
+	\item Piecewise-constant;
+	\item C\'adl\'ag;
+	\item The jumps are equal to $1$ almost surely, where a jump at $t>0$ is
+		defined as
+		\[ J_t = N_t - \lim_{s\uparrow t} N_s\,; \]
+		Indeed, if at $t>0$ the jump is at least $2$ then at least one exponential
+		random variable must equal zero -- this has probability zero.
+	\item The jump times are gamma-distributed: $Y_n\sim\Gamma(\lambda,n)$;
+\end{itemize}
+
+\noindent Homework\hfill\\
+Let $(X_t)_{t\in T}$ be a process with independent increments. Then for any
+\[ 0 = t_0 < t_1 < \cdots < t_n = s < t\,, \]
+one has that $(X_{t_k} - X_{t_{k-1}})_{k=1}^n$, $X_t-X_s$ are jointly independent.
+Show that $X_t-X_s$ is independent of $\sigma(X_u,\,u\leq s)$.
+\noindent \textbf{Solution...}\hfill\\
+
+Consider a process $Y_t = \sum^{N_t}_{j=1} \xi_j$, where $(\xi_j)_{j\geq 1}$ are
+iid and independent of the Poisson process $(N_t)_{t\geq 0}$ of intensity $\lambda$.
+Show that $Y_t$ has independent increments.
+\noindent \textbf{Solution...}\hfill\\
+Let $t>s$. Then
+\[ Y_t = \sum^{N_t}_{j=N_s+1} \xi_j + \sum^{N_s}_{j=1}\xi_j \,, \]
+whence
+\[ Y_t = \sum^{N_t-N_s}_{j=1} \xi_{N_s+j} + Y_s\,. \]
+% Since $\xi_i$ is independent of $N_s$, and $N_t-N_s$ is independent from $X_s$
+
+
+
+
+Let $(N_t)_{t\geq0}$ be a Poisson process with intensity $\lambda$. Show that
+\[ \frac{1}{t}N_t \to \lambda \text{a.s}\,. \]
+\noindent \textbf{Solution...}\hfill\\
+
+Let $(\xi_n)_{n\geq 0}$ be independent exponentially distributed random variables
+with parameter $\lambda$, $S_n = \sum_{k=1}^n \xi_k$, and $N_t$ be the a recovery
+process $\sup_{n\geq 0}\{ S_n\leq t \}$. For any $t>0$ put $V_t = S_{N_t+1} - t$ and
+$U_t = t-S_{N_t}$. Compute \begin{itemize}
+	\item Compute $\pr(V_t > v,\, U_t > u)$;
+	\item Show that $V_t$ and $U_t$ are independent and $V_t\sim \text{Exp}(\lambda)$;
+	\item Find the distribution function of $U_t$ and its expectation.
+\end{itemize}
+\noindent \textbf{Solution...}\hfill\\
+Consider 
+\[ \pr(V_t > v,\, U_t > u) = \pr(V_t > v,\, U_t > u,\, N_t=0)
+						   + \sum_{m\geq1} \pr(V_t > v,\, U_t > u,\, N_t=m) \,. \]
+The event $N_t=m$ is nothing but $\{S_m\leq t<S_{m+1} \}$, whereas $V_t>v$ and $U_t>u$
+are $S_{N_t+1}>t+v$ and $S_{N_t}<t-u$ respectively. Therefore 
+\[ \pr(V_t > v,\, U_t > u,\, N_t=m)
+	= \pr(S_{m+1}>t+v,\, S_m<t-u,\,S_m\leq t<S_{m+1})
+	= \pr(S_{m+1}>t+v,\, S_m < t-u)\,.\]
+Now
+\begin{align*}
+	\pr(V_t > v,\, U_t > u)
+		&= \pr(\xi_1>t+v, \, t>u) + \sum_{m\geq1} \pr(S_{m+1}>t+v,\, S_m < t-u)
+		&= e^{-\lambda(t+v)}1_{u\in[0,t)} + \sum_{m\geq1} \iint p_{S_{m+1},s_m}(x,y) 1_{y<t-u}1_{x>t+v} dxdy\\
+		&= e^{-\lambda(t+v)}1_{u\in[0,t)} + \iint \sum_{m\geq1} p_{\xi_{m+1}}(x-y)p_{s_m}(y) 1_{y<t-u}1_{x>t+v} dxdy\\
+		&= e^{-\lambda(t+v)}1_{u\in[0,t)}
+			+ \iint \sum_{m\geq1} \lambda e^{-\lambda(x-y)} \frac{\lambda^m}{\Gamma(m)} x^{m-1}e^{-\lambda x} 1_{y<t-u}1_{x>t+v} dxdy\\
+		&= e^{-\lambda(t+v)}1_{u\in[0,t)}
+			+ \iint \lambda e^{-\lambda(x-y)} \lambda e^{-\lambda x} 1_{y<t-u}1_{x>t+v} \sum_{m\geq0} \frac{\lambda^m}{m!} x^m dxdy\\
+		&= e^{-\lambda(t+v)}1_{u\in[0,t)}
+			+ \iint \lambda e^{-\lambda(x-y)} \lambda e^{-\lambda x} 1_{y<t-u}1_{x>t+v} e^{\lambda x} dxdy\\
+		&= e^{-\lambda(t+v)}1_{u\in[0,t)} + \iint \lambda e^{-\lambda(x-y)} \lambda 1_{y<t-u}1_{x>t+v} dxdy\\
+		&= e^{-\lambda(t+v)}1_{u\in[0,t)} + e^{-\lambda(t+v)} ( e^{\lambda(t-u)} - 1 ) \,.
+\end{align*}
+
+Let $(N_t)_{t\geq 0}$ be a Poisson process of intensity $\lambda$. Find the expected
+number of jumps on $[0,T]$ such that \begin{itemize}
+	\item there are no other jumps in their right $\epsilon$-vicinity;
+	\item there are no jumps in their left $\epsilon$-vicinity;
+	\item there are no jumps in their two-sided $\epsilon$-vicinity.
+\end{itemize}
+The right $\epsilon$-vicinity: first note that $N_t$ is the number of jumps of
+the poisson process up to time $t$. Considering the explicit modification of the
+Poisson process: $N_t = \sup_{n\geq1} \{S_n\leq t\}$, for $S_n=\sum_{k=1}^n\xi_k$
+with $\xi_k\sim\text{Exp}(\lambda)$ iid, -- each jump $k=1,\ldots,N_t$ has
+``duration'' $\xi_{k+1}-\xi_k$. Hence the sum
+\begin{align*}
+	\#_t &= \sum_{k=1}^{N_t} 1_{ S_{k+1} - S_k > \epsilon }\\
+		&= \sum_{m\geq 1} \sum_{k=1}^m 1_{ S_{k+1}-S_k > \epsilon }1_{N_t=m} \\
+		&= \bigl[\text{re-arranging}\bigr] \\
+		&= \sum_{k\geq 1} 1_{ S_{k+1}-S_k > \epsilon } \sum_{m\geq k} 1_{N_t=m}\\
+		&= \sum_{k\geq 1} 1_{ S_{k+1}-S_k > \epsilon } 1_{N_t\geq k} \,,
+\end{align*}
+shows how many jumps took longer that $\epsilon$ to take place. It is equivalent
+to
+\[ \#_t = \sum_{k\geq 1} 1_{ S_{k+1}-S_k > \epsilon } 1_{S_k\leq t} \,. \]
+The expectation is
+\begin{align*}
+	\ex \#_t
+	&= \sum_{k\geq1} \iint p_{S_{k+1},S_k}(x,y) 1_{x-y>\epsilon}1_{y\geq t}dxdy
+	&= \sum_{k\geq1} \iint p_{\xi_{k+1}}(x-y) p_{S_k}(y) 1_{x-y>\epsilon}1_{y\geq t} dxdy \\
+	&= \int \int \lambda e^{-\lambda(x-y)} 1_{x>\epsilon+y}
+		\sum_{k\geq1} \frac{\lambda^k}{\Gamma(k)} y^{k-1}e^{-\lambda y} 1_{y\geq t} dxdy \\
+	&= \int \int \lambda e^{-\lambda x} 1_{x>\epsilon+y} \lambda e^{\lambda y} 1_{y\geq t} dxdy \\
+	&= \int e^{-\lambda (\epsilon + y)} \lambda e^{\lambda y} 1_{y\geq t} dy \\
+	&= e^{-\lambda \epsilon} \int \lambda e^{\lambda y} 1_{y\geq t} dy \\
+	&= e^{-\lambda \epsilon} (e^{\lambda t} - 1) \,.
+\end{align*}
+
+As for the left $\expansion$-vicinity: one needs to compute the expectation of
+\begin{align*}
+	\#_t &= \sum_{k=1}^{N_t} 1_{ S_k - S_{k-1} > \epsilon }\\
+		 &= 1_{ \xi_1 > \epsilon }1_{\xi_1 \leq t}
+		 	+ \sum_{k\geq 2} 1_{ S_k - S_{k-1} > \epsilon }1_{S_k\leq t} \,.
+\end{align*}
+This is given by the integal
+\begin{align*}
+	\ex \#_t
+		&= e^{-\lambda \epsilon} - e^{-\lambda t} +
+			\sum_{k\geq1} \iint p_{S_{k+1},S_k}(x,y) 1_{x-y>\epsilon}1_{x\leq t}dxdy \,.
+\end{align*}
+The second sum is given by
+\begin{align*}
+	\ldots
+		&= \sum_{k\geq1} \iint p_{S_{k+1},S_k}(x,y) 1_{x-y>\epsilon}1_{x\leq t}dxdy
+		&= \sum_{k\geq1} \iint p_{\xi_{k+1}}(x-y) p_{S_k}(y) 1_{x-y>\epsilon}1_{x\leq t} dxdy \\
+		&= \int \int \lambda e^{-\lambda(x-y)} 1_{x\leq t} 1_{x>\epsilon+y} \lambda dxdy \\
+		&= \int \bigl(e^{-\lambda (\epsilon+y)} - e^{-\lambda t}\bigr)
+					e^{\lambda y} 1_{t-\epsilon > y} \lambda dy \\
+		&= e^{-\lambda \epsilon} (t-\epsilon) - e^{-\lambda t} (e^{\lambda (t-\epsilon)} - 1)\\
+		&= e^{-\lambda \epsilon} (t-\epsilon-1) + e^{-\lambda t}
+\end{align*}
+whence
+\[ \ex \#_t
+	= e^{-\lambda \epsilon} - e^{-\lambda t} +
+		e^{-\lambda \epsilon} (t-\epsilon-1) + e^{-\lambda t} \,, \]
+reduces to
+\[ \ex \#_t = e^{-\lambda \epsilon} (t-\epsilon) \,,\]
+for $t\geq \epsilon$.
+
+Now the two-sided $\epsilon$-vicinity case:
+
+\noindent Definition\hfill\\
+A process $(X_t)_{t\in T}$ is gaussian if for any $n\geq1$ and $t_1<\cdots<t_n$
+the vector $(X_{t_j})_{j=1}^n$ has joint gaussian distribution.
+
+\noindent Theorem (on existence of gaussian processes)\hfill\\
+Consider $a:T\to \Real$ and a positive definite and symmetric $r:T\times T\to \Real$.
+Then there exists $(\Omega, \Fcal, P)$ and a gaussian process $(X_t)_{t\in T}$ on it,
+such that its mean is $a(t)$ and its covarinace is $r(s,t)$. The characteristic
+function is
+\[\phi_x( t ) =  \text{exp}\bigl( i t'x - \frac{1}{2} x'Rx \bigr) \,. \]
+
+Now the following function $k:T\times T\to\Real$ with $T\subseteq \Real$ given by
+$k(s,t) = \min\{s,t\}$ is positive definite. Indeed, note that for any $s,t\in T$
+\[ \min\{s,t\} = \int_0^\infty 1_{u\geq t} 1_{u\geq s} du \,, \]
+whence for any $n\geq 1$, $(t_i)_{i=1}^n\in T$ and $(\alpha_i)_{i=1}^n$ one has
+\[
+	\sum_{i,j=1}^n \alpha_i\alpha_j k(t_i, t_j)
+		= \int \bigl( \sum_{i=1}^n \alpha_i 1_{t>t_i} \Bigr)^2 du
+		\geq 0
+\,. \]
+
+\noindent Definition \hfill\\
+The Wiener Process $(W_t)_{t\geq 0}$ is such a gaussian process that \begin{itemize}
+	\item $\ex W_t = 0$;
+	\item $\cov(W_t, W_s) = \min\{\s,t}$ for any $t,s\geq 0$.
+\end{itemize}
+An equivalent definition is that \begin{itemize}
+	\item $W_0=0$ almost surely;
+	\item $(W_t)_{t\geq 0}$ has independent increments;
+	\item $W_t-W_s\sim\Ncal(0, t-s)$.
+\end{itemize}
+
+\noindent Definition  \hfill\\
+A modification of the process $(X_t)_{t\in T}$ is a process $(Y_t)_{t\in T}$,
+such that $\pr(X_t=Y_t)=1$ for all $t\in T$.
+
+\noindent Definition  \hfill\\
+Processes $(X_t)_{t\in T}$ and $(Y_t)_{t\in T}$ are indistinguishable if 
+\[ \pr(X_t=Y_t\,\forall t\in T )=1 \,. \]
+
+\noindent Properties \hfill\\
+Consider a process $X$ as a function mapping $(\Omega, \Fcal, \pr) \to (\Real^T, \Bcal(\Real^T))$.
+A trajectory is a map $X(\omega): T \to \Real$.
+\begin{itemize}
+	\item There exists a modification of the Wiener process, which has continuous
+	trajectories;
+	\item Every trajectory of a Wiener process is nowhere differentiable;
+	\item The total variation of the Wiener process on any $[s,t]$ in infinite;
+	\item It obey the double-logarithm law:
+		\[\pr\biggl( \limsup_{t\to\infty} \frac{W_t}{\sqrt{ 2t \log\log t }} \biggr) = 1 \,, \]
+	\item Local double-logarithm law:
+		\[\pr\biggl( \limsup_{t\to0} \frac{W_t}{\sqrt{ \frac{2}{t}\log\log t }} \biggr) = 1 \,, \]
+\end{itemize}
+
+\noindent Homework\hfill\\
+Let $(W_t)_{t\geq 0}$ be a Brownian Motion porcess. Then \begin{itemize}
+	\item $X_t = tW_{\frac{1}{t}} 1_{t>0}$ is a Wiener process. Indeed it is gaussian,
+	its expectation is zero, and covarinace
+	\[ \cov(X_t, X_s) = ts \min\{ \frac{1}{t}, \frac{1}{s} \} = \min\{s,t\} \,; \]
+	\item $X_t = \sqrt{c}W_{\frac{t}{c}}$, $c>0$ is a Brownian Motion. Again, it is gaussian,
+	its expectation is $0$ and covarinace structure is $\min\{t,s\}$;
+	\item $X_t = W_{t+a}-W_a$, $a>0$ is a Wiener process. Once again, for a fixed $a$ the
+	process is zero-mean gaussian process. The covarinace is 
+	\[ \cov(X_s, X_t) = \min{t+a,s+a} - \min{t+a,a} - \min{a,s+a} + a \,, \]
+	which simplifies down to $\min\{t,s\}$, since $t,s\geq 0$;
+	\item $X_t = W_t 1_{t<T} + (2W_T - W_t)1_{t\geq T}$ is a Wiener process (reflected).
+	First, fix some $s < t$. Then \[ X_t-X_s = \begin{cases}
+		W_t-W_s, &\text{ if } t<T\\
+		W_T-W_t + W_T-W_s, &\text{ if } s<T\leq t\\
+		W_s-W_t, &\text{ if } T\leq s
+	\end{cases}\,. \]
+	In the first, as well as in the last case, the distribution is $\Ncal(0,t-s)$. The
+	case $s<T\leq t$ is a bit more involved: gaussian is elliptic, whence the sum is
+	gaussian, but the variance is
+	\[ \var( 2W_T-W_t-W_s ) = 4T+t+s - 4T - 4s + 2s = t-s \,. \]
+	Next, fix some $n\geq1$ and $t_1<\cdots<t_k<T\geq t_{k+1}<\cdots<t_n$. Then the
+	random vector $(X_{t_i})_{i=1}^n$ is defined as $X_{t_i} = W_{t_i}$ for $i\leq k$
+	and $X_{t_i} = 2W_T - W_{t_i}$ for $i\geq k+1$. The increments are
+	\[ X_{t_i}-X_{t_{i-1}} = \begin{cases}
+		W_{t_i}-W_{t_{i-1}}, &\text{ if }i\leq k\\
+		2W_T - W_{t_{k+1}} - W_{t_k}, &\text{ if }i=k\\
+		-(W_{t_i}-W_{t_{i-1}}), &\text{ if }i \geq k+1
+	\end{cases} \,,\]
+	and since $t_k<T\leq t_{k+1}$ all increments are jointly independent. Finallly,
+	$X_0 = W_0 = 0$ a.s.
+\end{itemize}
+
+Consider a gaussian process $(Y_t)_{t\in [0,1]}$ with covarinace function
+$r(s,t) = \min\{s,t\}-s t$. First, this $r(s,t)$ is positive definite: indeed
+\[ r(s,t) = s(1-t)1_{t\geq s} + t(1-s)1_{t<s} \geq 0\,, \]
+since $s,t\in[0,1]$. Thus this gaussian process exists.
+The map $t\mapsto \frac{t}{t+1}$ is strictly increasing, whence $Y_\frac{t}{t+1}$
+is still a gaussian process. Furthermore $X_t$ is gaussian. Now, its expectation
+is $0$, and the covarinace structure -- 
+\begin{align*}
+	\cov(X_t, X_s) &= (s+1)(t+1) \cov\bigl(Y_\frac{t}{t+1}, Y_\frac{s}{s+1}\bigr) \\
+		&= (s+1)(t+1)\bigl( \min\{\frac{s}{s+1},\frac{t}{t+1}\}-\frac{s}{s+1} \frac{t}{t+1} \bigr)\\
+		&= \min\{s(t+1),t(s+1)\} - st \\
+		&= st + \min\{s,t\} - st \,.
+\end{align*}
+
+The law of double logarithm also implies that the multidimensional Wiener process
+$\bigl((W^k_t)_{k=1}^K\bigr)_{t\geq0}$ leaves any ball in $\Real^k$ around the
+origin with probability one. Indeed, just put a hypercube around the ball, and notice
+that any single coordinate of the process has to stay within some symmetric band
+around zero with probability one.
+
+Let $(W_t)_{t\geq 0}$ be a Wiener process. Show that on any interval $[a,b]\subseteq \Real^+$
+the total variation of $W_t$
+\[ |W|_{[a,b]} = \sup_\bigl\{ \sum_{i=0}^n |W_{t_{i+1}}-W_{t_i}|\,:\,
+							  \forall n\geq 1,\,(t_i)_{i=1}^n\uparrow\in [a,b] \bigr\}
+	\,, \]
+is infinte.
+
+First, consider the problem of quadratic variation of a Wiener process on $[a,b]$.
+Notice that by definition for any $a,b$ it is true that
+\[
+	\sup_{n\geq 0} \sum{k=1}^{2^n} | W_{a+\frac{k}{2^n}(b-a)}-W_{a+\frac{k-1}{2^n}(b-a)} |^2 
+		\leq \sup_\bigl\{ \sum_{i=0}^n |W_{t_{i+1}}-W_{t_i}|^2\,:\,
+						  \forall n\geq 1,\,(t_i)_{i=1}^n\uparrow\in [a,b] \bigr\}
+ \,. \]
+Now, for 
+\[ \Delta_{nk} = \bigl( W_{a+\frac{k}{2^n}(b-a)}-W_{a+\frac{k-1}{2^n}(b-a)} \bigr)^\,,\]
+one has $\ex \Delta_{nk} = \frac{b-a}{2^n}$, and 
+\[ \ex\bigl(\Delta_{nk} - \frac{b-a}{2^n}\bigr) = 2\frac{(b-a)^2}{4^n} \,, \]
+since $W_t$ is gaussian. Next, by Chebyshev inequality,
+\[ \pr\bigl(\bigl| \sum_{k=1}^{2^n} \Delta_{nk} - \frac{b-a}{2^n}\bigr| > \epsilon \bigr)
+	\leq 2\frac{2^n (b-a)^2}{4^n \epsilon^2}\,, \]
+whence
+\[
+	\limsup_{N\geq1} \sum_{n=1}^N \pr\biggl(
+			\biggl| \sum_{k=1}^{2^n} \Delta_{nk} - \frac{b-a}{2^n}\biggr| > \epsilon
+		\biggr) \leq \limsup_{N\geq1} 2\sum_{n=1}^N\frac{(b-a)^2}{2^n \epsilon^2}
+	\,,\]
+the right-hand side of which is a convergent series. Thus by Borel-Cantelli lemma
+one has
+\[\pr\biggl( \biggl| \sum_{k=1}^{2^n} \Delta_{nk} - \frac{b-a}{2^n}\biggr| > \epsilon
+				\text{ i.o. } \biggr) = 0 \,, \]
+whence for any $\epsilon > 0$ with probability $1$ there is $N\geq1$ such that
+for all $n\geq N$
+\[ \biggl| \sum_{k=1}^{2^n} \Delta_{nk} - \frac{b-a}{2^n}\biggr| \leq \epsilon \,. \]
+Therefore, 
+\[ \lim_{n\to\infty} \sum_{k=1}^{2^n} \Delta_{nk} = b-a \,, \]
+and, if a continuous modification of $(W_t)_{t\geq 0}$ is considered, then
+\[ b-a = \sup_\bigl\{ \sum_{i=0}^n |W_{t_{i+1}}-W_{t_i}|^2\,:\,
+					  \forall n\geq 1,\,(t_i)_{i=1}^n\uparrow\in [a,b] \bigr\} \,. \]
+
+Now, notice that
+\[ \sum_{i=0}^n |W_{t_{i+1}}-W_{t_i}|^2 \leq
+	\sum_{i=0}^n |W_{t_{i+1}}-W_{t_i}| \max_{i=0}^n |W_{t_{i+1}}-W_{t_i}| \,,\]
+which implies that
+\[ \sum_{i=0}^n |W_{t_{i+1}}-W_{t_i}|
+	\geq \frac{\sum_{i=0}^n |W_{t_{i+1}}-W_{t_i}|^2}{\max_{i=0}^n |W_{t_{i+1}}-W_{t_i}|} \,. \]
+
+\noindent Definition\hfill\\
+A filtration on $(\Omega, \Fcal, \pr)$ is a nested family of $\sigma$-algebras:
+$\mathbb{F} = (\Fcal_t)_{t\in T}$ with $\Fcal_s\subseteq\Fcal_t\subseteq\Fcal$
+for any $s<t\in T$.
+
+\noindent Definition\hfill\\
+A process $(X_t)_{x\in T}$ is adapted to filtration $\mathbb{F}$ if $X_t\in \Fcal_t$
+for all $t\in T$.
+
+\noindent Definition\hfill\\
+The natural filtration of a process $(X_t)_{t\in T}$ is a filtration $\mathbb{F}^X$
+with $\Fcal_t = \sigma\bigl(X_s,\, s\leq t\bigr)$.
+
+\noindent Definition\hfill\\
+A markov moment with respect to $\mathbb{F}$ is a random variable $\tau:\Omega\to T$
+with $\{\tau \leq t\}\in \Fcal_t$.
+
+\noindent Definition\hfill\\
+A stopping time $\tau$ is an almost surely finite markov moment.
+
+\noindent Example \hfill\\
+For a process $(X_n)_{n\geq 0}$, $\tau_B = \inf\{n\,:\,X_n\in B\}$, $B\in \Bcal(\Real)$,
+is a markov moment with respect to $\mathbb{F}^X$.
+
+Indeed,
+\[ \{\tau_B\leq n\} = \bigcup_{m\geq 0} \{ \tau_B\leq n \} \cap \{ \tau_B = m \} \,, \]
+whence
+\begin{align*}
+	\{\tau_B\leq n\} &= \bigcup_{m=0}^n \{ \tau_B = m \}\\
+		&= \bigcup_{m=0}^n \{ X_m\in B \} \setminus\bigl( \cup_{i=0}^{m-1} \{ X_i\in B \} \bigr)\\
+		&= \bigcup_{m=0}^n \{ X_m\in B \} \,,
+\end{align*}
+which is an element of $\Fcal_m$.
+
+\noindent Example \hfill\\
+Consider the Wiener process $(W_t)_{t\geq 0}$. The first hitting time of level $y>0$,
+$\tau_y=\inf\{t\geq 0\,:\,w_t = y\}$, is a markov moment.
+
+Let $(X_t)_{t\geq0}$ be a continuous process with values in a metric space $(X,d)$.
+The map $\Phi_A$ defined as $x\mapsto d(x,A)$ is is continuous in $(X,d)\to[0,+\infty]$
+for any $A\subseteq X$. Therefore for $A$ closed in $(X,d)$ one has that
+$\Phi_A^{-1}(\{0\})=A$. Thus $\{X_t\in A\} = \{\Phi_A(X_t) = 0\}$, whence
+\[ \tau_A = \inf\{t\geq 0\,:\,X_t\in A\} = \inf\{t\geq 0\,:\,Z_t = 0\} \,, \]
+for $Z_t = \Phi_A(X_t)$. If $X_0\notin A$, then $Z_0 > 0$.
+
+Now, consider a continuous process $(Z_t)_{t\geq0}$ with nonegative values that
+starts out at some arbitrary positive value: $Z_0>0$, -- and filtration $\mathbb{F}^X$. 
+The random variable $\tau = \inf\{t\geq 0\,:\,Z_t = 0\}$ is a markov moment.
+
+If $\tau=0$, then by continuity of $Z_t$, $Z_0=0$. If $\tau>0$, then for any
+$0<t<\tau$ one has $Z_t>0$. Now
+\[ \{\tau > t\} = \cup_{n\geq 1} \cap_{q\leq t} \{Z_q > n^{-1} \} \,, \]
+$\Leftarrow$ if $\omega\in \cup_{n\geq 1} \cap_{q\leq t} \{Z_q > n^{-1}$, then
+in must be true that $Z_s(\omega)>n^{-1}$ for all $s\leq t$ by continuity, whence
+$\tau(\omega)\geq t$. However, $Z_t>0$ implies by continuity that there is $s>t$
+sufficiently close tot $t$ with $Z_s>0$, whence $\tau(\omega)>t$.
+$\Rightarrow$ if $\omega\in\{\tau>t\}$, then $Z_s>0$ for all $s\in[0,t]$. Since
+$Z_t$ is continuous and $[0,t]$ is compact, there exists $u\in[0,t]$ such that
+\[ 0 < Z_u(\omega) = \inf_{v\in[0,t]}Z_v \,. \]
+Hence there exists $n\geq 1$ with $n^{-1}\leq Z_u(\omega)$, which implies that
+$\omega \in \cup_{n\geq1} \cap_{ q\leq t } \{Z_q>n^{-1}\}$. So 
+\[ \{\tau>t\} = \cup_{n\geq1} \cap_{ q\leq t } \{Z_q>n^{-1}\} \,, \]
+and therefore
+\[ \{\tau\leq t\} = \cap_{n\geq1} \cup_{ q\leq t } \{Z_q\leq n^{-1}\} \,, \]
+whence
+\[ \{\tau_A\leq t\} = \cap_{n\geq1} \cup_{ q\leq t } \{X_q\in \Phi_A^{-1}([0,n^{-1}])\} \,. \]
+Since for any $n\geq1$ and any rational $q\leq t$
+\[ \{X_q\in \Phi_A^{-1}([0,n^{-1}])\} \in \Fcal_t \,,\]
+one has that $\{\tau_A\leq t\}\in \Fcal_t$.
+
+As a sanity check, consider
+\[ \omega \in \cap_{n\geq1} \cup_{ q\leq t } \{X_q\in \Phi_A^{-1}([0,n^{-1}])\} \,. \]
+For such $\omega$ there exists $(q_n)_{n\geq1}\in[0,t]$ with $d(X_{q_n}(\omega),A)\leq n^{-1}$.
+Since $q_n$ is bounded, there is $t^*\in[0,t]$ and a convergent subsequence $q_{n_m}\to t^*$
+such that $d(X_{q_{n_m}}(\omega),A)\leq (n_m)^{-1}$ and $n_m\uparror$. Hence by continuity
+of $d(x,A)$, one has 
+\[ \lim_{m\to \infty} d(X_{q_{n_m}}(\omega),A) = d( \lim_{m\to \infty} X_{q_{n_m}}(\omega),A)\,, \]
+whence continuity of $X_t$ implies that
+\[ d(X_{t^*}(\omega),A)= \lim_{m\to \infty} d(X_{q_{n_m}}(\omega),A) = 0 \,. \]
+Therefore $\tau_A(\omega)\leq t^*\leq t$.
+
+\noindent Definition\hfill\\
+A Levy process is a random process $(X_t)_{\geq0}$ with \begin{itemize}
+	\item independent increments;
+	\item $X_t-X_s \overset{\Dcal}{=} X_{t+h}-X_{s+h}$ for all $s<t$ and $h$;
+	\item $X_0=0$ a.s.;
+	\item has right-continuous left-limited trajectories.
+\end{itemize}
+
+\noindent Strong Markov property\hfill\\
+For a Wiener process $(W_t)_{t\geq 0}$ it is true that for any $a\geq 0$
+\[ W_{t+a}-W_a \overset{\Dcal}{=} W_t \,.\]
+Now let $\tau$ be a stopping time with respect $\mathbb{F}^W$. Then the process
+$W_{t+\tau}-W_\tau$ is a Wiener process independent of $\Fcal_\tau$, which is
+defined as
+\[ \Fcal_\tau = \bigl\{ A\in \Fcal\,:\,
+						A\cap \{\tau\leq t\} \in \Fcal_t\,\forall t \bigr\} \,.\]
+
+\noindent Statement\hfill\\
+The Strong markov property holds for Levy processes as well.
+
+\noindent Example\hfill\\
+Let $(\xi_n)_{n\geq1}$ be iid nonnegative random variables. Then the process
+$X_t = \sum_{n=1}^{N_t} \xi_n$, where $N_t$ is a Poisson process, is a Levy
+process.
+
+\noindent Reflection Principle \hfill\\
+Let $(W_t)_{t\geq0}$ be the Wiener process, and $\tau$ a stopping time with
+respect to $\mathbb{F}^W$, then the process
+\[ X_t = \begin{cases}
+	W_t, &\text{ if }t\leq \tau\\
+	2W_\tau - W_t
+\end{cases} \,,\]
+is itself the Wiener process.
+
+\noindent Definition\hfill\\
+The running maximum of the Wiener process $(W_t)_{t\geq0}$, defined as
+\[ M_t \sup_{s\in[0,t]} W_s\,, \]
+has the following property: for $y<x$
+\[ \pr\bigl(M_t \geq x,\, W_t\leq y \bigr) = \pr\bigl(W_t\geq 2x-y\bigr)\,. \]
+
+\noindent Statement \hfill\\
+It is true that $|W_t| \overset{\Dcal}{=} M_t$ for all $t\geq0$.
+Indeed,
+\[ \pr( M_t \geq C ) = \pr( M_t\geq C,\, W_t\leq C ) + \pr( M_t\geq C,\, W_t\geq C ) \,,\]
+whence
+\[ \pr( M_t \geq C ) = \pr( W_t\geq C ) + \pr( M_t\geq C,\, W_t\geq C ) \,.\]
+However, $\{W_t\geq C\}\subseteq \{M_t\geq C\}$ implies that
+\[ \pr( M_t \geq C ) = \pr( W_t\geq C ) + \pr( W_t\geq C ) \,.\]
+By definition of a Wiener process 
+\begin{align*}
+	\pr( |W_t|\geq C )
+		&= \pr( W_t\geq C ) + \pr( W_t\leq -C ) \\
+		&= \pr( W_t\geq C ) + \pr( -W_t \geq C ) \\
+		&= \pr( W_t\geq C ) + \pr( W_t \geq C ) \,.
+\end{align*}
+
+\noindent Statement\hfill\\
+It is true that $M_t\in \Fcal_t$. Indeed, $\{M_t\leq y\} = \{\tau_y > t\}$.
+
+\noindent Homework\hfill\\
+Consider a filtration $\mathbb{F} = (\Fcal_n)_{n\geq0}$ and a sequence of markov moments
+$(\tau_n)_{n\geq1}$ with respect to $\mathbb{F}$. Then
+\[ \sum_{i=1}^k \tau_i,\,\prod_{i=1}^k \tau_i,\,\sup_{i=1}^k \tau_i,\,\inf_{i=1}^k \tau_i \,, \]
+are all stopping times. Indeed, \begin{align*}
+	\{\tau_1+\tau_2\leq m\} &= \cup_{i+j\leq m}\{\tau_1=i\}\cap \{\tau_2=j\} \in \Fcal_i,\Fcal_j\subseteq \Fcal_m \\
+	\{\tau_1\cdot\tau_2\leq m\} &= \cup_{i\cdot j\leq m}\{\tau_1=i\}\cap \{\tau_2=j\} \in \Fcal_i,\Fcal_j\subseteq \Fcal_m \\
+	\{\sup_{i=1}^k \tau_i \leq m\} &= \cap_{i=1}^k\{\tau_i\leq m\} \in \Fcal_m \\
+	\{\inf_{i=1}^k \tau_i \leq m\} &= \cup_{i=1}^k\{\tau_i\leq m\} \in \Fcal_m \,.
+\end{align*}
+
+Next, let $(W_t)_{t\geq0}$ be the Wiener process, and $\tau_y = \min\{t\feq 0:\,W_t=y\}$
+for $y>0$. Find the density of $\tau_y$.
+
+Notice that
+\[ \pr(\tau_y > t) = \pr(M_t < y ) = \pr( |W_t|<y )\,,\]
+whence
+\[ \pr(\tau_y\leq t) = 2\int_y^\infty \frac{1}{\sqrt{2\pi t}} e^{-\frac{u^2}{2t}} du \,. \]
+Differentiating with respect to $t$ yields
+\[ p_{\tau_y}(t)
+	= \int_y^\infty \bigl( \frac{u^2}{t} - 1 \bigr)
+					\frac{1}{t \sqrt{2\pi t}} e^{-\frac{u^2}{2t}} du \,. \]
+Integrating by parts \begin{align*}
+	\frac{1}{t \sqrt{2\pi t}} \int_y^\infty \frac{u^2}{t} e^{-\frac{u^2}{2t}} du
+		&= \frac{1}{t \sqrt{2\pi t}} \int_y^\infty (-u) \biggl( \frac{-u}{t} e^{-\frac{u^2}{2t}} \biggr)du\\
+		&= \frac{1}{t \sqrt{2\pi t}} \bigl.-u e^{-\frac{u^2}{2t}}\bigr\rvert_y^\infty
+			+ \int_y^\infty \frac{1}{t \sqrt{2\pi t}} e^{-\frac{u^2}{2t}} du\\
+		&= \frac{1}{t \sqrt{2\pi t}} y e^{-\frac{y^2}{2t}}
+			+ \int_y^\infty \frac{1}{t \sqrt{2\pi t}} e^{-\frac{u^2}{2t}} du\,,
+\end{align*}
+whence
+\[ p_{\tau_y}(t) = \frac{y}{t} \frac{1}{\sqrt{2\pi t}} e^{-\frac{y^2}{2t}} \,. \]
+
+The expectation is given by
+\begin{align*}
+	\ex \tau_y &= \int_0^\infty t \frac{y}{t} \frac{1}{\sqrt{2\pi t}} e^{-\frac{y^2}{2t}} dt\\
+\end{align*}
+which is a divergent integral.
+
+let $(W_t)_{t\geq0}$ be the Wiener porcess. Find the density of
+\[ Y_a = \sup_{t\in[\tau_y,\tau_y+a]} W_t \,,\]
+for some $y>0$.
+
+First notice that
+\[ Y_a = \sup_{s\in[0,a]} W_{s+\tau_y}
+	   = W_{\tau_y} + \sup_{s\in[0,a]} W_{s+\tau_y}-W_{\tau_y} \,,\]
+$W_{\tau_y} = y$ and $Y_a\geq y$ almost surely. By the Strong Markov property of
+the Brownian motion $\hat{W}_s = W_{s+\tau_y}-W_{\tau_y}$ is the Wiener process.
+Now
+\[ \sup_{s\in[0,t]} \hat{W}_s \overset{\Dcal}{=}
+	|\hat{W}_t| \overset{\Dcal}{=}
+	|W_{t+\tau_y}-W_{\tau_y}| \overset{\Dcal}{=}
+	\sup_{s\in[0,t]} W_{s+\tau_y}-W_{\tau_y} \,, \]
+whence 
+\[ Y_a - y \overset{\Dcal}{=} |W_a| \,. \]
+Thus for $c\geq y$
+\begin{align*}
+	\pr(Y_a\leq c) &= \pr(|W_a|\leq c-y)\\
+		&= \int_{y-c}^{c-y} \frac{1}{\sqrt{2\pi a}} e^{-\frac{x^2}{2a}} dx\,,
+\end{align*}
+whence the density is
+\[ p_{Y_a} = 2\frac{1}{\sqrt{2\pi a}} e^{-\frac{(c-y)^2}{2a}} 1_{ c\geq y} \,. \]
+
+
+
+
+
+
+\noindent Homework\hfill\\
+Show that a Poisson process of intensity $\lambda$ is a homogeneous markov chain.
+Find its transition probabilities, infinitesimal kernel and the stationary distribution.
+
+The poisson process is a markov process, since it has independent increments.
+Fix some $t>s\geq0$ and $n\geq m$. Then
+\begin{align*}
+	P_{n\to m}(s,t) &= \pr(N_t=n|N_s=m)\\
+		&= \frac{\pr(N_t=n,\,N_s=m)}{\pr(N_s=m)} \\
+		&= \pr(N_t-N_s=n-m|N_s=m) \\
+		&= \pr(N_t-N_s=n-m) = \frac{(\lambda(t-s))^{n-m}}{(n-m)!} e^{-\lambda(t-s)}\\
+		&= \pr(N_{t-s} = n-m) = P_{n\to m}(t-s) \,,
+\end{align*}
+whence the chain must be homogeneous. For $n=m$ its infinitesimal operator is given
+by
+\[ Q_{nm} = \lim_{t\downarrow 0} \frac{d}{dt} P_{nm}(t)
+	= \lim_{t\downarrow 0} -\lambda e^{-\lambda t}
+	= -\lambda \,, \]
+while for $m=n+1$
+\[ Q_{nm} = \lim_{t\downarrow 0} \lambda ( 1 - \lambda t ) e^{-\lambda t} = \lambda \,, \]
+and for $m-n>1$
+\[ Q_{nm} = \lim_{t\downarrow 0} \lambda \biggl( 1 - \frac{\lambda t}{n-m} \biggr)
+				\frac{(\lambda t)^{n-m-1}}{(n-m-1)!} e^{-\lambda t} = 0 \,. \]
+Now
+\[ P_{nm}(t) = \frac{(\lambda t)^{n-m}}{(n-m)!} e^{-\lambda t} > 0\,,\]
+for all $n\leq m$ and $t$. Therfore by the ergodic theorem there must exist a
+stationary distribution $(\pi_k)_{k\geq0}$ given by 
+\[ \pi_k = \lim_{t\to\infty} P_{nk}(t) \,. \]
+But for any $n\geq n\geq 0$ one has $P_{nk}(t) \to 0$, whence $\pi_k = 0$ for
+all $k\geq 0$.
+
+Let $Q\in\Real^{n\times n}$ be such that $q_{ij}\geq 0$ for $i\neq j$ and
+$\sum_{j=1}^n q_{ij} = 0$ for all $i=1,\ldots,n$. Show that matrices $P_t = e^{tQ}$
+consitute a stochastic semi-group.
+
+Let $Q = P^{-1} \Lambda P$ be the decomposition of $Q$ into a Jordan normal form:
+$P\in \Real^{n\times n}$ -- a nonsigular matrix, and $\Lambda$ -- jordan block matrix.
+Then for any $k\geq1$ it is true that $Q^k = P^{-1}P\Sigma^k P$, whence the matrix
+exponential $\text{exp}( tQ )$ is given by
+\[ \text{exp}(tQ) = P^{-1}\biggl( \sum_{ k\geq0 } \frac{t^k \Lambda^k}{k!} \biggr) P \,. \]
+Now
+\[ e^{(t-u)Q} e^{(u-s)Q} = 
+P^{-1}\biggl( \sum_{ k\geq0 } \frac{(t-u)^k \Lambda^k}{k!}
+			  \sum_{ m\geq0 } \frac{(u-s)^m \Lambda^m}{m!} \biggr) P\,, \]
+which reduces to
+\[ e^{(t-u)Q} e^{(u-s)Q} = 
+P^{-1}\biggl( \sum_{ k\geq0 } \frac{(t-u)^k \Lambda^k}{k!}
+			  \sum_{ m\geq0 } \frac{(u-s)^m \Lambda^m}{m!} \biggr) P\,. \]
+Now
+\begin{align*}
+	\sum_{ k,m\geq0 } \frac{(t-u)^k \Lambda^k}{k!} \frac{(u-s)^m \Lambda^m}{m!}
+		&= \sum_{n\geq0} \frac{1}{n!} \sum_{i=0}^n n!
+				\frac{(t-u)^i \Lambda^i}{i!} \frac{(u-s)^{n-i} \Lambda^{n-i}}{(n-i)!} \\
+		&= \sum_{n\geq0} \frac{1}{n!}\bigl( (t-u) \Lambda + (u-s) \Lambda \bigr)^n \\
+		&= \sum_{n\geq0} \frac{(t-s)^n \Lambda^n}{n!} \,,
+\end{align*}
+whence
+\[ e^{(t-u)Q} e^{(u-s)Q} = e^{(t-s)Q} \,, \]
+which proves that $e^{tQ}$ is a stochastic semi-group (actually the Jordan
+decomposition was not needed).
+
+Let $(X_t)_{t\geq 0}$ be a homogeneous markov chain with $\Xcal = \{1,2,3\}$. Let
+it transition matrix be
+\[ P(h) = \begin{pmatrix}
+	1-\lambda h+o(h) & \lambda h+o(h) & o(h) \\
+	o(h) & 1-\mu h+o(h) & \mu h + o(h) \\
+	\nu h+o(h) & o(h) & 1-\nu h+o(h)
+\end{pmatrix} \,,\]
+with $h\to0+$ and $\lambda,\mu,\nu > 0$. Show that such matrix satisfies the
+ergodic theorem and find its infinitesimal kernel and the stationary distribution.
+
+In order to satisfy the requirements of the Ergodic theorem, use the semi-group
+property of the stochastic matrix: consider $P(2h) = P(h)P(h)$
+\[
+P(h)P(h) = \begin{pmatrix}
+	( 1 - \lambda h )^2 + o(h) & 2 \lambda h - \lambda^2 h^2 - \lambda \mu h^2 + o(h) & \lambda \mu h^2 + o(h) \\
+	\mu \nu h^2 + o(h) & ( 1 - \mu h )^2 + o(h) & 2 \mu h - \mu^2 h^2 - \mu \nu h^2 + o(h) \\
+	2\nu h - \nu^2 h^2 - \lambda \nu h^2 + o(h) & \lambda \nu h^2 + o(h) & ( 1 - \nu h )^2 + o(h)
+\end{pmatrix}
+\,.\]
+Now $P(2h)$ satisfies the requirements of the ergodic theorem, since it is possible
+to choose $h>0$ so small, that any selected columns of $P(2h)$ is positive.
+The infinitesimal kernel is given by
+\[ Q = \lim_{h\downarrow 0} \frac{P(h) - I}{h} = \begin{pmatrix}
+		-\lambda + o(1) & \lambda + o(1) & o(1) \\
+		o(1) & -\mu + o(1) & \mu + o(1) \\
+		\nu + o(1) & o(1) & -\nu + o(1)
+	\end{pmatrix} \,, \]
+which yields
+\[ Q = \begin{pmatrix}
+	-\lambda & \lambda & 0 \\ 0 & -\mu & \mu \\ \nu & 0 & -\nu
+\end{pmatrix} \,.\]
+The stationary distribution is determined by the solution 
+\[ \mathbf{0} = \Pi Q \text{ and } \Pi \one = 1 \,, \]
+whence $\lambda \pi_1 = \nu \pi_3$, $ \lambda \pi_1 = \mu \pi_2$ and $\mu\pi_2 = \nu\pi_3$.
+Thus
+\[ \pi_1 = \frac{\nu \mu}{\nu \mu + \lambda \mu + \lambda \nu }\,. \]
+
+Let $(X_i)_{i=1}^n$ be nonnegative independent identically distributed random
+variables with distribution $F(x)$. Show that the process $(Y_x)_{x\geq 0}$, with
+\[ Y_x = \frac{1}{n} \sum_{j=1}^n 1_{X_i\leq x} \,, \]
+is a markov chain. If it is, then find its transition probabilitiy kernel and
+check for homogeneity.
+
+Let's check the Markov property directly. First of all observe that $Y_x$ is
+a nondecreasing function in $x$. Indeed, for any $i=1,\ldots,n$ one has
+\[ 1_{X_i\leq x} \leq 1_{X_i\leq y} \,,\]
+for all $x<y$. Let $n\geq1$ and consider $z_1<\ldots<z_n<x$ with integer
+\[  k_1\leq \ldots \leq k_n \leq k_x \,. \]
+Then consider the event
+\[ A = \{ nY_x = k_x\} \cap \bigcap_{i=1}^n \{ nY_{z_i} = k_i\} \,. \]
+Now $nY_a = m$ means that exactly $m$ variables $(X_i)_{i=1}^n$ take values in
+$(-\infty, a]$. Consider the ordered statistics $X_{(i)}$, in which case the event
+$nY_a = m$ is equivalent to the event $\{ X_{(m)}\leq a < X_{(m+1)} \}$. Therefore
+\[ \ldots = \{ X_{(k_x)} \leq x\} \cap \{ x < X_{(k_x+1)} \}
+	\cap \bigcap_{i=1}^n \{ X_{(k_i)} \leq z_i\} \cap \{ z_i < X_{(k_i+1)} \} \,, \]
+whence
+\[\ldots =
+\{ X_{(k_1)} \leq z_1\}
+	\cap \bigcap_{i=1}^{n-1} \{ z_i < X_{(k_i+1)} \leq X_{(k_{i+1})} \leq z_{i+1}\}
+	\cap \{ z_n < X_{(k_n+1)} \leq X_{(k_x)} \leq x \} \cap \{ x < X_{(k_x+1)} \}
+\,. \]
+Represent $A$ as 
+\[ A = \biguplus_\pi A \cap \bigcup_{i=1}^n \{ X_{(i)} = X_{\pi_i}\} = \biguplus_\pi A \cap P_\pi \,,\]
+where $\pi$ is some permutation $\{1\ldots n\}$. Then for a particular permutation
+$\pi$ one has
+\begin{align*}
+	A \cap P_\pi &= P_\pi \cap \cap_{j=1}^{k_1} \{ X^*_j \leq z_1\} \\
+		&\cap \bigcap_{i=1}^{n-1} \cap_{j=k_i+1}^{k_{i+1}} \{ z_i < X^*_j \leq z_{i+1} \} \\
+		&\cap \cap_{j=k_n+1}^{k_x} \{ z_n < X^*_j \leq x \} \\
+		&\cap \cap_{j=k_x+1}^n \{ x < X^*_j \} \,,
+\end{align*}
+
+
+where $X^*_i = X_{\pi_i}$. Notice that for a given permutation $\pi$ the random
+variables $(X^*_i)_{i=1}^n$ are iid with $F(x)$, whence
+\begin{align*}
+	\pr( A\cap P_\pi ) = \prod_{j=1}^{k_1} \pr(X^*_j \leq z_1) \\
+		&\cdot \prod_{i=1}^{n-1} \prod_{j=k_i+1}^{k_{i+1}} \pr(z_i < X^*_j \leq z_{i+1}) \\
+		&\cdot \prod_{j=k_n+1}^{k_x} \pr( z_n < X^*_j \leq x ) \\
+		&\cdot \prod_{j=k_x+1}^n \pr(x < X^*_j)
+	\,,
+\end{align*}
+and
+\begin{align*}
+	\pr( A ) = \sum_\pi \pr( A\cap P_\pi ) \\
+		&= \sum_\pi \prod_{j=1}^{k_1} \pr(X_{\pi_j} \leq z_1) \\
+			&\cdot \prod_{i=1}^{n-1} \prod_{j=k_i+1}^{k_{i+1}} \pr(z_i < X_{\pi_j} \leq z_{i+1}) \\
+			&\cdot \prod_{j=k_n+1}^{k_x} \pr( z_n < X_{\pi_j} \leq x ) \\
+			&\cdot \prod_{j=k_x+1}^n \pr(x < X_{\pi_j}) \\
+
+		&= \sum_\pi \prod_{j=1}^{k_1} \pr(X_{\pi_j} \leq z_1) \\
+			&\cdot \prod_{i=1}^{n-1} \prod_{j=k_i+1}^{k_{i+1}} \pr(z_i < X_{\pi_j} \leq z_{i+1}) \\
+			&\cdot \prod_{j=k_n+1}^{k_x} \pr( z_n < X_{\pi_j} \leq x ) \\
+			&\cdot \prod_{j=k_x+1}^n \pr(x < X_{\pi_j}) \,.
+\end{align*}
+Finally
+\begin{align*}
+	\pr( A\cap P_\pi ) = F(z_1)^{k_1} \\
+		&\cdot \prod_{i=1}^{n-1} ( F(z_{i+1}) - F(z_i) )^{ k_{i+1} - k_i } \\
+		&\cdot ( F(x) - F(z_n) )^{k_x-k_n} \\
+		&\cdot ( 1 - F(x) )^{n-k_x} \,,
+\end{align*}
+\[ 
+
+\,,\]
+
+
+
+\[ \ldots = \{ X_{(k_1)} \leq z_1\}
+	\cap \bigcap_{i=1}^{n-1} \{ z_i < X_{(k_i+1)} \leq X_{(k_{i+1})} \leq z_{i+1}\}
+	\cap \{ z_n < X_{(k_n+1)} \leq X_{(k_x)} \leq x \} \cap \{ x < X_{(k_x+1)} \} \,.\]
+
+ and .which yields
+
+
+Let $(X_t)_{t\geq 0}$ be a homogeneous markov chain with $\Xcal = \{1,2\}$. Let
+it transition matrix be
+\[ P(h) = \begin{pmatrix}
+	1-\lambda h+o(h) & \lambda h+o(h)\\
+	\mu h + o(h) & 1-\mu h+o(h)
+\end{pmatrix} \,,\]
+with $h\to0+$ and $\lambda,\mu > 0$. Find its distribution at time $t$ if its
+initial distribution is $\pi_0 = (1,0)$.
+
+
+
+
+
+
+
+% section lectures (end)

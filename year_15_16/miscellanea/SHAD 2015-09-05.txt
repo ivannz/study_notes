@@ -1,0 +1,30 @@
+SHAD 2015-09-05
+
+gini - AUC generalisation to multiclasss problems. Basicaly assesses rankings.
+
+Feature pruning: 
+	* first few were removed using feature importances from RF (plus some fiddling with scores);
+	* the rest via leave-one-feature-out cross validation on the features.
+
+Label transformation: 1...69 -> making the regression look like ranking.
+
+Drop-connect layers: sparsify by making at most $k$ random connection to previous layer output.
+
+Try to look at the data before delving deep into model building.
+
+Stacking: train1, train2, train
+scouting -- lv1-lv2-holdout: 40-30-30
+production training : out-of-fold-1: get the second stage features from the k-fold. (train on the rest and predict on the folded -> this gives the meta features for the held out sample)
+to predict on the tes sample use:
+
+
+
+Tube pricing contest:
+1) XGboost (raw feautes);
+2) Regularized Greedy Forest (raw features) -- each tree is further optimized (pruning et c.);
+3) Neural Network (top 200 features form random forest 2);
+4) Extra Trees (raw features).
+
+
+EEG:
+	pass
