@@ -1,0 +1,42 @@
+As stated in \ref{BurnaevVovk2012} it would be interesting to generalise this result
+to the case of Kernel Ridge regression.
+
+Given a train sample $(x_i, y_i)_{i=1}^n \in X\time \Real$ a general kernel-based
+machine learning regularized loss minimization problem is to slove
+$$ \Lcal\Bigl(\bigl(x_i, y_i\bigr)_{i=1}^n, f\Bigr)
+  + a \Omega\bigl(\|f\|\bigr)
+  \to \min_{f\in \Hcal}\,, $$
+where $\Hcal$ is a Hilbert Space fith Reproducing Kernel $K$, $\Lcal$ is a loss
+function which depends on $f$ through $(f(x_i))_{i=1}^n$, and $\Omega:\Real\mapsto\Real$
+is a monotone increasing function, used for regularization. In this setting
+the Representer theorem states that the optimal solution is to be sought in a finite
+dimensional linear span of the canonical feature maps $x\mapsto K(x, \cdot)$
+evaluated at the sample objects:
+$$ f^* \in \bigl\{ \alpha'\Phi\,:\, \alpha \in\Real^{n\times 1} \bigr\} \,, $$
+where $\Phi = (k_{x_i})_{i=1}^n \in \Hcal^{n\times 1}$, $k_x = K(x,\cdot)$.
+
+In partcular the Kernel \textbf{RR} problem is 
+$$ \|y-f(x)\|^2 + a \|f\|_\Hcal \to \min_{f \in \Hcal}\,, $$
+with $f(x) \in \Real^{n\times 1}$ a vector of $f$ evaluated at $x=((x_i))_{i=1}^n$.
+
+Let $X$ be some abstract measurable space of observations, and $K:X\times X\mapsto \Real$
+be a product-measurable positive definite function: for any $n\geq1$ and any $(x_i)_{i=1}^n\in X$,
+the $n\times n$ matrix $K = (K(x_i, x_j))_{i,j=1}^n$ is positive semidefinite.
+
+A random process $(f_x)_{x\in X} \sim GP(m(x), K(x,x'))$, with mean $m:X\mapsto \Real$
+and covariance $K:X\times X\mapsto \Real$ is a Gaussian Process if all its finite
+dimensional distributions are mutlivariate Gaussian: for any $n\geq1$ and any
+$(x_i)_{i=1}^n\in X$ the vector $f = (f(x_i))_{i=1}^n\in \Real^{n\times 1}$ has 
+Multivartiate Gaussian distribution with mean $(m(x_i))_{i=1}^n$ and covarinace $K$
+given by
+$$ K
+  = (K(x_i, x_j))_{i,j=1}^n
+  = \begin{pmatrix}
+    K(x_1, x_1) & \cdots & K(x_1, x_n)\\
+    \vdots & \ddots & \vdots\\
+    K(x_n, x_1) & \cdots & K(x_n, x_n)
+  \end{pmatrix} \,. $$
+
+Gaussian process fromulation of the Ridge regression problem is a s follows.
+
+$$ \sum_{i=1}^n \sum_{i=1}^n \alpha_i K(x_i, x_j) \alpha_j\,, $$

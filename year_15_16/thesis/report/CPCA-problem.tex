@@ -1,0 +1,1658 @@
+\documentclass[a4paper,14pt]{article}
+% \documentclass[a4paper,14pt]{extarticle}
+\usepackage[utf8]{inputenc}
+
+\usepackage{geometry}
+\usepackage{fullpage}
+
+\usepackage[mathcal]{euscript}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{mathptmx}
+\usepackage{algorithm2e}
+
+\newcommand{\diag}{\mathop{\text{diag}}\nolimits}
+\newcommand{\ex}{\mathop{\mathbb{E}}\nolimits}
+\newcommand{\pr}{\mathop{\mathbb{P}}\nolimits}
+\newcommand{\prto}{\overset{\pr}{\to}}
+\newcommand{\lawto}{\overset{\mathcal{D}}{\to}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\nil}{\mathbf{0}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Scal}{\mathcal{S}}
+\newcommand{\Lcal}{\mathcal{L}}
+\newcommand{\Zcal}{\mathcal{Z}}
+\newcommand{\Xcal}{\mathcal{X}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\tr}{\mathop{\mathtt{tr}}\nolimits}
+\newcommand{\argmin}{\mathop{\mathtt{argmin}}\nolimits}
+
+\makeatletter
+    \newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+
+
+\title{Conformalized Probabilistic Principal Component Analysis}
+\author{Ivan Nazarov}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Probabilistic PCA} % (fold)
+\label{sec:probabilistic_pca}
+
+\noindent Suppose $F\sim\mathcal{N}_p(0, I_p)$, $\epsilon\sim\mathcal{N}_d(0, \Psi)$
+and $\epsilon\perp F$. Further let $X = W F + \mu + \epsilon$, where
+$\mu \in \Real^{d\times 1}$ and $W\in\Real^{d\times p}$.
+
+The joint distribution of $F$ and $X$ is determined by this equation:
+$$ \begin{pmatrix} F \\ X \end{pmatrix}
+    = \begin{pmatrix} 0 \\ \mu \end{pmatrix}
+    + \begin{pmatrix} W & I_d \\ I_p & 0 \end{pmatrix}
+      \begin{pmatrix} F \\ \epsilon \end{pmatrix}
+    \,,$$
+whence
+$$ \begin{pmatrix} F \\ X \end{pmatrix}
+    \sim \mathcal{N}_{p+d}\Biggl(\begin{pmatrix} 0 \\ \mu \end{pmatrix},
+                                 \begin{pmatrix} I_p & W' \\ W & \Psi + WW' \end{pmatrix}
+                          \Biggr)
+    \,.$$
+
+Now, if
+$$ \begin{pmatrix}X_1\\X_2\end{pmatrix}
+    \sim \mathcal{N}_{d_1+d_2}\Biggl(\begin{pmatrix} \mu_1 \\ \mu_2 \end{pmatrix},
+                                     \begin{pmatrix} \Sigma_{11} & \Sigma_{12} \\
+                                                     \Sigma_{21} & \Sigma_{22} \end{pmatrix}
+                              \Biggr)
+    \,,$$
+then the conditional distribution of $X_1$ given $X_2$ is thus Gaussian with 
+$$ X_1|X_2
+    \sim \mathcal{N}_{d_1}(\mu_1 + \Sigma_{12}\Sigma_{22}^{-1}(x_2-\mu_2),
+                           \Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21})
+    \,.$$
+
+Note, that $\bigl(\Psi + WW'\bigr)^{-1}$ is in fact an inverse of a low-rank update of
+a positive definite matrix. Therefore by sherman-Morrison-Woodbury identiy it is equal to
+$$ \bigl(\Psi + WW'\bigr)^{-1} 
+    = \Psi^{-1} - \Psi^{-1} W\bigl(I_p + W'\Psi^{-1}W\bigr)^{-1}W'\Psi^{-1}
+    \,. $$
+Premultiplying by $W'$ yields
+\begin{align*}
+W' \bigl(\Psi + WW'\bigr)^{-1} 
+    &= W'\Psi^{-1} - W'\Psi^{-1} W\bigl(I_p + W'\Psi^{-1}W\bigr)^{-1}W'\Psi^{-1}\\
+    &= \Bigl(\bigl(I_p + W'\Psi^{-1}W\bigr) - W'\Psi^{-1} W\Bigr)
+       \bigl(I_p + W'\Psi^{-1}W\bigr)^{-1}W'\Psi^{-1} \\
+    &= \bigl(I_p + W'\Psi^{-1}W\bigr)^{-1}W'\Psi^{-1} \,.
+\end{align*}
+Furthermore, 
+\begin{align*}
+I_p - W' \bigl(\Psi + WW'\bigr)^{-1} W
+    &= \bigl(I_p + W'\Psi^{-1}W\bigr)^{-1} \Bigl(\bigl(I_p + W'\Psi^{-1}W\bigr)-W'\Psi^{-1} W\Bigr)\\
+    &= \bigl(I_p + W'\Psi^{-1}W\bigr)^{-1}\,.
+\end{align*}
+Thus the posterior (conditional) distribution of the latent factor $F$ given $X$ is
+$$ p_{F|X} = \mathcal{N}_p(M^{-1}W'\Psi^{-1}(X-\mu),M^{-1}) \,,$$
+with $M = I_p + W'\Psi^{-1}W$.
+
+\subsection{Maximum Likelihood solution} % (fold)
+\label{sub:maximum_likelihood_solution}
+
+The overall likelihood of train data $(x_j)_{j=1}^n\in \Real^{d\times 1}$,
+collected in the data matrix $X = \bigl(x_j'\bigr)_{j=1}^n\in\Real^{n\times d}$,
+with one sample per row, is given by
+$$ \mathcal{L}
+    = \log L
+    = \sum_{j=1}^n p(x_j)
+    = -\frac{nd}{2}\log 2\pi + \frac{n}{2} \log \lvert C^{-1}\rvert
+        - \frac{n}{2} \mathop{\text{tr}}\nolimits{C^{-1}S}
+    \,, $$
+where $S = n^{-1}\sum_{j=1}^n (x_j-\mu)(x_j-\mu)'$, $\mu = n^{-1} \sum_{j=1}^n x_j$,
+is the sample covariance matrix.
+
+Let $(U_j, \lambda_j)_{j=1}^d$ is be the eigenvector-eigenvalue pairs of $S$, sorted
+in non-increasing order of eigenvalues: $\lambda_j\geq \lambda_{j+1}$. Let $U$ be
+the matrix, collecting the eigenvectors in columns. The matrix $U$ is orthogonal and
+its columns spans the entire space $\Real^d$. Next, for a subset $J\subset\{1,\ldots,d\}$,
+$\lvert J\rvert = p$, define $U_J = (U_j)_{j\in J}$ -- a $d\times p$ matrix of eigenvectors.
+
+In the case when $\Psi = \sigma^2 I_d$, for a fixed $\sigma^2$ and $p$ one can show
+that the optimal solution for $W$ is given by (c.f. \cite{bishop1999} and handwritten
+notes)
+$$ W = U_J L_J R' \,, $$
+where $R$ is an arbitrary $p\times p$ rotation matrix (orthonormal columns), $J$
+is given by $\{1, \ldots, p\}$, $L_J = \diag\bigl(\lambda_j\bigr)_{j\in J}$ and
+$l_j = (\lambda_j - \sigma^2)_+$, with $(a)_+ = \max\{0, a\}$. In a more compact
+notation the ML solution is given by
+$$ W = U_{:p} (\Lambda_{:p} - \sigma^2 I_p)^\frac{1}{2} R\,,$$
+where columns of $U_{:p}$ are the $p$ largest eigenvectors of $S$ with associated
+eigenvalues in $\Lambda_{:p} = \diag\bigl((\lambda_j)_{j=1}^p\bigr)$ and
+$\sigma^2 = (d-p)^{-1}\sum_{j=p+1}^d\lambda_j$.
+
+% subsection maximum_likelihood_solution (end)
+
+\subsection{Choice of abnormality score} % (fold)
+\label{sub:choice_of_abnormality_score}
+
+The Kullback-Leibler divergence of $\mathcal{N}_1$ from $\mathcal{N}_0$, both Gaussian
+in $\Real^{d\times 1}$, is given by:
+$$ \mathop{\text{KL}}\nolimits(\mathcal{N}_d(\mu_0,\Sigma_0) \| \mathcal{N}_d(\mu_1,\Sigma_1))
+    = \frac{1}{2}\biggl[ \log \frac{\lvert\Sigma_1\rvert}{\lvert\Sigma_0\rvert}
+    + (\mu_1-\mu_0)'\Sigma_1^{-1}(\mu_1-\mu_0)
+    + \mathop{\text{tr}}\nolimits\Sigma_1^{-1}\Sigma_0
+    - d\biggr]
+    \,.$$
+with $\mathop{\text{KL}}\nolimits(p\|q)=\mathop{\mathbb{E}}\nolimits_p \log\frac{p}{q}$
+indicating how much extra ``information'' is needed to approximate $p$ with $q$.
+
+In the case when $\Psi = \sigma^2I_d$, the posterior density of the latent factor
+having observed $X$ is
+$$ p_{F|X} =\mathcal{N}_p(M_0^{-1}W'(x-\mu), \sigma^2 M_0^{-1}) \,,$$
+where $M_0 = \sigma^2 I_p + W'W$. Therefore the Kulback-Leibler divergence of
+the posterior from the prior is given by:
+\begin{align*}
+\mathop{\text{KL}}\nolimits(p_F\|p_{F|X}(x))
+    &= \frac{1}{2}\biggl[\log \lvert \Sigma_1\rvert
+    + \mu_1' \Sigma_1^{-1} \mu_1
+    + \mathop{\text{tr}}\nolimits \Sigma_1^{-1}
+    - p\biggr]\\
+    &= \frac{1}{2}\biggl[\log \lvert M^{-1}\rvert
+    + (x-\mu)'\Psi^{-1} W M^{-1} W'\Psi^{-1}(x-\mu)
+    + \mathop{\text{tr}}\nolimits M
+    - p\biggr]\\
+    &= \frac{1}{2}\biggl[p \log \sigma^2
+    - \log \lvert M_0 \rvert
+    + \sigma^{-2} (x-\mu)'W M_0^{-1} W'(x-\mu)
+    + \sigma^{-2} \mathop{\text{tr}}\nolimits M_0
+    - p\biggr]\,.
+\end{align*}
+
+This expression can be simplified. First note that $W'W$ is equal to:
+$$W'W
+    = R'(\Lambda_{:p} - \sigma^2 I_p)^\frac{1}{2} U_{:p}' U_{:p} (\Lambda_{:p} - \sigma^2 I_p)^\frac{1}{2} R
+    = R'(\Lambda_{:p} - \sigma^2 I_p) R
+    \,,$$
+and that 
+$$ M_0^{-1}
+    = (\sigma^2 I_p + W'W)^{-1}
+    = R' (\sigma^2 RR' + (\Lambda_{:p} - \sigma^2 I_p))^{-1} R
+    = R' \Lambda_{:p}^{-1} R\,.$$
+Hence
+$$ W M_0^{-1} W'
+    =  U_{:p} (\Lambda_{:p} - \sigma^2 I_p)^\frac{1}{2} \Lambda_{:p}^{-1}
+              (\Lambda_{:p} - \sigma^2 I_p)^\frac{1}{2} U_{:p}'
+    = U_{:p} (I_p - \sigma^2 \Lambda_{:p}^{-1}) U_{:p}'
+    \,.$$
+Furthermore 
+$$\log \lvert M_0^{-1}\rvert
+    = \log \lvert R'\rvert \lvert \Lambda_{:p}^{-1}\rvert \lvert R\rvert
+    = - \sum_{j=1}^p \log \lambda_j\,,$$
+and 
+$$ - p + \sigma^{-2} \mathop{\text{tr}}\nolimits M_0
+    = - p + \sigma^{-2} \mathop{\text{tr}}\nolimits R' \Lambda_{:p} R
+    = - p + \sigma^{-2} \sum_{j=1}^p \lambda_j
+    = \sum_{j=1}^p \biggl(\frac{\lambda_j}{\sigma^2} - 1 \biggr)\,,$$
+which are parts of the likelihood of an individual observation.
+Letting the posterior mean be
+$$ \hat{F}_x
+    = M_0^{-1} W' (x - \mu)
+    = R'\Lambda_{:p}^{-\frac{1}{2}} (I_p - \sigma^2\Lambda_{:p}^{-1})^\frac{1}{2} U_{:p}' (x - \mu)
+    \,,$$
+Therefore the divergence is given by
+$$
+\mathop{\text{KL}}\nolimits(p_F\|p_{F|X}(x))
+    = \frac{1}{2}\biggl[\sum_{j=1}^p \biggl(
+        \frac{\lambda_j}{\sigma^2} - 1 - \log \frac{\lambda_j}{\sigma^2}
+    \biggr)
+    + (x-\mu)' U_{:p} (I_p\sigma^{-2} - \Lambda_{:p}^{-1}) U_{:p}'(x-\mu)\biggr]\,.
+$$
+
+The last summand of the KL divergence can be represented as discrepancy between
+the distance to the centre $\mu$ and the sum of the distance ot the subspace
+(the reconstruction error) and the within-subspace Mahalanobis distance. Indeed
+\begin{align*}
+   (\ldots)
+    &= \sigma^{-2} (x-\mu)' U_{:p} U_{:p}' (x-\mu)
+    - (x-\mu)' U_{:p} \Lambda_{:p}^{-1} U_{:p}'(x-\mu)\\
+    &= \sigma^{-2} (x-\mu)' (x-\mu)
+    - \sigma^{-2} (x-\mu)' \bigl(I_d - U_{:p} U_{:p}' \bigr)(x-\mu)
+    - (x-\mu)' U_{:p} \Lambda_{:p}^{-1} U_{:p}'(x-\mu)\,.
+\end{align*}
+
+% subsection choice_of_abnormality_score (end)
+
+\subsection{Reconstruction error} % (fold)
+\label{sub:reconstruction_error}
+
+Let's consider the reconstruction error of an observation $x$ based on the parameters
+estimated on the training sample $(x_j)_{j=1}^n\in \Real^{d\times 1}$.
+
+The process of learning and reconstrcting is as follows: for some $p<d$ perform
+1. Given the original training data sample $(x_j)_{j=1}^n\in \Real^{d\times 1}$, estimate:
+    1. the center and covariane matrices of the data:
+        $\hat{\mu} = X'1(1'1)^{-1}$ and $\hat{S} = n^{-1}\sum_{j=1}^n (x_j-\hat{\mu})(x_j-\hat{\mu})'$;
+    2. Find the eigenvalue decomposition of the covariance matrix using SVD $U \Lambda U' = \hat{S}$;
+    3. Put $\hat{\sigma}^2 = (d-p)^{-1}\sum_{j=p+1}^d \lambda_j$ and
+        $$\hat{W} = U_{\cdot:p} (\Lambda_{:p} - \hat{\sigma}^2 I_p)^\frac{1}{2} R\,;$$
+    4. **[Optional]** compute the posterior distribution of latent factors.
+2. For a test sample $z\in \Real^{d\times 1}$ compute the parameters of the posterior
+distribution $p_{F|X}(f, x) = \mathcal{N}_p(\hat{\sigma}^{-2}M^{-1}W'(x-\hat{\mu}), M^{-1})$:
+$$ F|X \overset{\mathcal{D}}{\sim} \hat{\sigma}^{-2}M^{-1}W'(x-\hat{\mu}) + M^{-\frac{1}{2}}\xi\,,$$
+for $\xi\sim\mathcal{N}_p(0,I_p)$.
+
+Since $M^{-1} = \sigma^2 R' \Lambda_{:p}^{-1} R$ the root matrix is
+$M^{-\frac{1}{2}} = \hat{\sigma} \Lambda_{:p}^{-\frac{1}{2}} R$.
+But now notice that for any rotation matrix $R$ (orthogonal) it is true that
+$$\xi \overset{\mathcal{D}}{\sim} R'\xi\,,$$
+whenever $\xi \sim \mathcal{N}_d(0, I_d)$.
+
+Therefore 
+$$ F|X \overset{\mathcal{D}}{\sim}
+    \hat{\sigma}^{-2}M^{-1}W'(x-\hat{\mu})
+    + \hat{\sigma} \Lambda_{:p}^{-\frac{1}{2}}\xi\,,$$
+for $\xi\sim\mathcal{N}_p(0,I_p)$.
+
+Let $$ \epsilon(x)$$ be the norm of the reconstruction residual.
+$$\epsilon(x) = \|x-\mu - W M^{-1}W'\Psi^{-1}(x-\mu) - W\eta\|^2 \,.$$
+
+
+% subsection reconstruction_error (end)
+
+
+\subsection{Generic residual variance ``smoothing''} % (fold)
+\label{sub:generic_residual_variance_smoothing}
+
+Consider a random variable $z\sim \mathcal{N}_d(\mu, \Sigma)$, where the mean $\mu$
+and the positive definite non-degenrerate covariance $\Sigma$ are known. Let $U \Lambda U'$
+be the eigen-decomposition of $\Sigma$: $U$ is a unitary matrix of eigenvectors, and
+$\Lambda$ -- a diagonal matrix with the eigenvalues on the main diagonal (ordered
+non-increasingly), columns of $U$ span $\Real^{d\times 1}$.
+
+For a fixed $p=0,\ldots, d$ the decomposition of $\Sigma$ can be expressed as
+$$ \Sigma
+    = \begin{pmatrix}U_p & U_p^\perp\end{pmatrix}
+    \begin{pmatrix}\Lambda_{:p} & 0\\0&\Lambda_{p+1:}\end{pmatrix}
+    \begin{pmatrix}U_p'\\{U_p^\perp}'\end{pmatrix}\,,$$
+where $U_p$ is the matrix with the first $p$ columns of $U$, $U_p^\perp$ -- the last
+$d-p$ columns of $U$, orthogonal to $U_p$, $\Lambda_{:p}=\diag\bigl((\lambda_j)_{j=1}^p\bigr)$
+and $\Lambda_{p+1:}=\diag\bigl((\lambda_j)_{j=p+1}^d\bigr)$.
+
+Since $\Sigma$ is positive definite, there exists a square root matrix $\Sigma^\frac{1}{2}$
+given by
+$$ \Sigma
+    = \begin{pmatrix}U_p & U_p^\perp\end{pmatrix}
+    \begin{pmatrix}\Lambda_{:p}^\frac{1}{2} & 0\\0&\Lambda_{p+1:}^\frac{1}{2}\end{pmatrix}
+    \begin{pmatrix}U_p'\\{U_p^\perp}'\end{pmatrix}
+    = U_p \Lambda_{:p}^\frac{1}{2} U_p' + U_p^\perp \Lambda_{p+1:}^\frac{1}{2} {U_p^\perp}'\,.$$
+
+For $\sigma^2_p = (d-p)^{-1}\sum_{j=p+1}^d \lambda_j$ define the following matrix:
+$$ \Sigma^*
+    = \begin{pmatrix}U_p & U_p^\perp\end{pmatrix}
+    \begin{pmatrix}\Lambda_{:p} & 0\\0&\sigma^2_p I_{d-p}\end{pmatrix}
+    \begin{pmatrix}U_p'\\{U_p^\perp}'\end{pmatrix}
+    = U_p\Lambda_{:p}U_p' + \sigma^2 U_p^\perp {U_p^\perp}'\,,$$
+i.e. the variance in the residual eigen-directions is evenly spread (it is worth
+noting, that residual variance leveling does not require that eigen-directions be
+ordered according to their principality). $\Sigma^*$ is the adjusted (smoothed)
+version of covariance $\Sigma$.
+
+Note that $U_p^\perp {U_p^\perp}'$ is a projector onto the subspace, orthogonal to
+the principal subspace spanned by the columns of $U$. Indeed, since columns of $U$
+constitute an orthonormal basis in $\Real^{d\times 1}$, every $x$ in it can be
+uniquely expressed as $ x = U_p X + U_p^\perp X^\perp$, where $X$ and $x^\perp$ are
+coordinates with respect to the appropriate basis given by inner products $X = U_p' x$
+and $X^\perp = {U_p^\perp}'x$. Therefore $I_d = U_p U_p' + U_p^\perp {U_p^\perp}'$
+whence 
+$$ \Sigma^* = U_p\Lambda_{:p}U_p' + \sigma^2 \bigl(I_d - U_p U_p' \bigr) \,.$$
+
+Since $\Sigma$ is positive definite, the inverse of its adjusted version $\Sigma^*$
+is given by
+$$ {\Sigma^*}^{-1}
+    = \begin{pmatrix}U_p & U_p^\perp\end{pmatrix}
+    \begin{pmatrix}\Lambda_{:p}^{-1} & 0\\0&\sigma^{-2}_p I_{d-p}\end{pmatrix}
+    \begin{pmatrix}U_p'\\{U_p^\perp}'\end{pmatrix}
+    = U_p\Lambda_{:p}^{-1}U_p' + \sigma^{-2} \bigl(I_d - U_p U_p' \bigr)
+    \,.$$
+
+% subsection generic_residual_variance_smoothing (end)
+
+\subsection{Distribution of abnormality scores} % (fold)
+\label{sub:distribution_of_abnormality_scores}
+
+For any $z\in \Real^{d\times 1}$ define the following values:
+\begin{align*}
+    W_z &= (z-\mu)' U_p\Lambda_{:p}^{-1} U_p' (z-\mu)\,;\\
+    B_z &= (z-\mu)' \bigl( I_d - U_p U_p'\bigr) (z-\mu) \sigma^{-2}\,.
+\end{align*}
+The above results clearly imply that the Mahalanobis distance between $z$ and $\mu$
+with curvature matrix $\Sigma^*$ can be expressed as
+$$ (z-\mu)'{\Sigma^*}^{-1}(z-\mu) = W_z + B_z \,.$$
+
+For an observation point $z$ the value $W_z$ is the within-subspace distance of
+a sample from the centre of the subspace, and $B_z$ is the distance of a point to
+the principal subspace itself. The latter can also be interpreted as a reconstruction
+error, adjusted for the typical error scale in the residual subspace $\sigma^2$.
+
+It is interesting to know the distribution of these quantities in the normal setting:
+when $z\sim\mathcal{N}_d(\mu, \Sigma)$, which can be expressed as $z = \mu + \Sigma^\frac{1}{2} \xi$
+for $\xi\sim\mathcal{N}_d(0, I_d)$.
+
+% subsection distribution_of_abnormality_scores (end)
+
+\subsubsection{Distribution of $W_z$} % (fold)
+\label{ssub:distribution_of_w_z}
+
+Due to orthogonality of the columns of $U$ the value $W_z$ reduces to
+$$ W_z
+    = (z-\mu)'U_p\Lambda_{:p}^{-1}U_p'(z-\mu)
+    = \xi' \Sigma^\frac{1}{2} U_p\Lambda_{:p}^{-1}U_p' \Sigma^\frac{1}{2} \xi
+    = \xi' U_p \Lambda_{:p}^\frac{1}{2}\Lambda_{:p}^{-1}\Lambda_{:p}^\frac{1}{2} U_p' \xi
+    = \xi' U_p U_p' \xi
+    \,.$$
+The vector $U_p' \xi$ has $\mathcal{N}_p(0, I_p)$ distribution, whence $W_z \sim \chi^2_p$.
+
+% subsubsection distribution_of_w_z (end)
+
+\subsubsection{Distribution of $B_z$} % (fold)
+\label{ssub:distribution_of_b_z}
+
+The quantity $B_z$ reduces to
+$$ B_z
+    = \sigma^{-2} (z-\mu)' (I_d - U_p  U_p') (z-\mu)
+    = \sigma^{-2} \xi' \Sigma^\frac{1}{2} \bigl(I_d - U_p  U_p'\bigr) \Sigma^\frac{1}{2} \xi
+    = \sigma^{-2} \xi' U_p^\perp \Lambda_{p+1:} {U_p^\perp}' \xi
+    \,,$$
+since due to orthonormality of $U$
+$$ \Sigma^\frac{1}{2} (I_d - U_p  U_p')
+    = U_p^\perp \Lambda_{p+1:}^\frac{1}{2} {U_p^\perp}'
+    \,.$$
+Note that ${U_p^\perp}' \xi \sim \mathcal{N}_{d-p}(0, I_{d-p})$ whence $B_z$ can be expressed
+as a weighted sum of independent $\chi^2_1$ distributed random variables:
+$$ B_z \sim \sum_{j=p+1}^d \frac{\lambda_j}{\sigma^2} \chi^2_1\,.$$
+
+% subsubsection distribution_of_b_z (end)
+
+\subsubsection{Independence of $W_z$ and $B_z$} % (fold)
+\label{ssub:independence_of_w_z_and_b_z}
+
+Note that for $\xi \sim \mathcal{N}_d(0, I_d)$ the random variables $(\eta_j)_{j=p+1}^d = {U_p^\perp}'\xi$
+and $(\eta_j)_{j=1}^p = U_p\xi$ are independent, with distributions $\mathcal{N}_{d-p}(0, I_{d-p})$
+and $\mathcal{N}_p(0, I_p)$ respectively, which can be expressed as $\eta\sim \mathcal{N}_d(0, I_d)$.
+
+Thus the quantities of interest cna be expressed as
+$$ B_z = \sum_{j=p+1}^d \frac{\lambda_j}{\sigma^2} \eta_j^2\,
+    \text{ and }
+   W_z = \sum_{j=1}^p \eta_j^2\,,$$
+which implies that $B_z$ and $W_z$ are independent.
+
+% subsubsection independence_of_w_z_and_b_z (end)
+
+\subsubsection{Non-Gaussian case} % (fold)
+\label{ssub:non_gaussian_case}
+
+However, if $z$ is not Gaussian, but still has mean $\mu$ and covariance $\Sigma$,
+these representations are still valid, except for the independence and the distribution
+family:
+$$ B_z = \sum_{j=p+1}^d \frac{\lambda_j}{\sigma^2} \eta_j^2\,,$$
+and
+$$ W_z = \sum_{j=1}^p \eta_j^2\,,$$
+for some $\eta \sim \mathcal{D}_d(0, I_d)$ with arbitrary dependence structure but fixed
+standard first and second moments.
+
+% subsubsection non_gaussian_case (end)
+
+\subsection{Asymptotic distribution of the distances} % (fold)
+\label{sub:asymptotic_distribution_of_the_distances}
+
+Let $V_n\in\mathbb{d\times d}$ be a sequence of positive semidefinite matrices that
+converge in probability to a positive definite matrix $V$. Then by \textbf{continuous
+mapping theorem} (\cite{vaart2000}), one has $V_n^{-1} \prto V^{-1}$, since matrix
+inversion (for invertible matrices) is a continuous map. Indeed, the inverse of
+a nonsingular matrix $A$ is given by $(\mathop{\text{det}}A)^{-1}\mathop{\text{adj}}A$,
+where each entry is a polynomial of the elements of the original matrix $A$.
+
+Furthermore, if vectors $X_n\prto X$, $X_n, X \in\Real^{d\times1}$ and matrices
+$A_n\prto A$, then the reshaped concatenated vector $(X_n \,A_n) \prto (X\,A)$. This
+implies that the quadratic form $X_n'A X_n$ converges in probability to $X'AX$, since
+the map $(x, A) \mapsto x'Ax$ is continuous, being a composition of matrix-vector
+products $A'b$ which are continuous.
+
+By the law of large numbers the sample mean is consistent:
+For any sequence of random vectors $\hat{\mu}_n\in\Real^{d\times1}$, that
+converges in probability to a nonrandom $\mu$, and for any $Q_n \prto Q$ the continuous
+mapping theorem implies that for any random variable $z$ (on the same probability
+space)
+$$ (z-\hat{\mu}_n)'Q_n (z-\hat{\mu}_n) \prto (z-\mu)'Q(z-\mu) \,,$$
+since the sequence $z_n = z - \hat{\mu}_n$ converges in probability to $z - \mu$.
+
+Thus in order to prove the asymptotic distribution of the distance it suffices to show
+that $\hat{U}_n \prto U $ and $\hat{\lambda}_{nj} \prto \lambda_j $,
+where $\hat{S}_n = \hat{U}_n \hat{\Lambda}_n \hat{U}_n'$ and $\Sigma = U \Lambda U'$ are
+the eigen-decompositions of the sample and population covariance matrices respectively.
+
+% subsection asymptotic_distribution_of_the_distances (end)
+
+% section probabilistic_pca (end)
+
+\section{Conformalized PPCA} % (fold)
+\label{sec:conformalized_ppca}
+
+A \textbf{N}on-\textbf{C}onformity \textbf{M}easure is any measurable map
+$A: \mathbf{Z}^+\times \mathbf{Z} \to \Real$, where $\mathbf{Z}$ denotes the sample
+space $\Real^{d\times1}$. Let $(x_i)_{i=1}^n\in\mathbf{Z}$, and $X = (x_i)_{i=1}^n$
+denotes both the sample and the design matrix $\Real^{n\times d}$, with the meaning
+clear from the context. Let $z \in \mathbf{Z}$ be a test sample and for any $j=1,\ldots,n$
+denote by $X_{-j}$ the original sample $X$ without the $j$-th observation, or the matrix
+$X$ with $j$-th row removed, depending on the context.
+
+The \textbf{C}onformal \textbf{A}nomaly \textbf{S}core, $\mathop{\mathtt{CAS}}\nolimits(X, A)$,
+applied to a sample $X\in \mathbf{Z}^n$ for the non-conformity measure $A$ proceeds
+as follows:
+\begin{enumerate}
+    \item for $i=1,\ldots, n$ compute $\alpha_i = A(X_{-i}, x_i)$;
+    \item let $\bar{F}(a) = n^{-1} \sum_{i=1}^n 1_{[a, +\infty)}(\alpha_i)$ (left-closed right-open);
+    \item return empirical p-values $(p_i)_{i=1}^n$, given by $p_i = \bar{F}(\alpha_i)$.
+\end{enumerate}
+Notice, that for a general NCM $A$ this procedure is very computationally intensive.
+
+In turn, the Conformal Anomaly Detector, $\mathop{\mathtt{CAD}}\nolimits(X, A, \epsilon)$
+for some fixed significance level $\epsilon\in[0,1]$, is performed with the following
+steps:
+\begin{enumerate}
+    \item compute $(p_i)_{i=1}^n = \mathop{\mathtt{CAS}}\nolimits(X, A)$;
+    \item return $ \bigl(1_{[0,\epsilon]}(p_i)\bigr)_{i=1}^n$.
+\end{enumerate}.
+
+The \textbf{PC}-based \textbf{N}on-\textbf{C}onformity \textbf{M}easure $B(X,z)$
+is defined through the following computation procedure:
+\begin{enumerate}
+    \item estimate the sample mean $\mu = \hat{\mu}\bigl((x_i)_{i=1}^n\bigr)$ with
+        $$ \hat{\mu}(X) = X'\one (\one'\one)^{-1}\,;$$
+    \item estimate the sample covariance matrix (MLE) $S = \hat{S}\bigl((x_i)_{i=1}^n\bigr)$
+        by
+        $$ \hat{S}(X) = n^{-1} \bigl(X - \one\mu'\bigr)'\bigl(X - \one\mu'\bigr) \,;$$
+    \item compute the \textbf{S}pectral \textbf{D}ecomposition of $S = U \Lambda U'$ and
+        let $\sigma^2 = (d-p)^{-1}\sum_{j=p+1}^d \lambda_j$;
+    \item return the value of $B_z(\mu, \Sigma, p)$ given by
+        $$ (z-\mu)'\bigl(I_d - U_{:p} U_{:p}'\bigr) (z-\mu) \sigma^{-2} \,.$$
+\end{enumerate}
+
+The PC-based Conformal Anomaly Detector for a train sample $X$, a test object $z$
+and significance level $\epsilon$ is defined as 
+$$ \mathop{\mathtt{PCCAD}}\nolimits(X, z, \epsilon)
+    = \bigl(\mathop{\mathtt{CAD}}\nolimits(\tilde{X}, B, \epsilon)\bigr)_{n+1}
+    \,,$$
+where $\tilde{x}_i = x_i$ for $i=1,\ldots, n$ and $\tilde{x}_{n+1} = z$ is the extended
+sample $\tilde{X}$.
+
+\subsection{Type \rom{1} error} % (fold)
+\label{sub:type_1_error}
+
+The type \rom{1} error is the probability of a false alarm: a scenario when the detector
+signals that an observation is anomalous, when in fact it has been generated by
+the original distribution.
+
+Schafer and Vovk in \cite{vovk2005} established that for arbitrary non-conformity measures and
+sequence $(z_n)_{n\geq1}$ generated by an exchangeable distribution, the on-line
+conformal prediction procedure is 
+in cases conformal procedures
+
+% subsection type_i_error (end)
+
+% section conformalized_ppca (end)
+
+\section{the problem} % (fold)
+\label{sec:the_problem}
+
+Suppose $P = P_0 (1-\gamma) + P_1 \gamma$, where the ``normal'' distribution $P_0$
+is $\mathcal{N}_d(\mu, \Sigma)$, with $\Sigma = \sigma^2 I_d + WW'$ for some
+$W\in \Real^{d\times p}$ and $P_1$ is the anomalous distribution, which can
+be arbitrary.
+
+The problem is to estimate the decay asymptotics of the following quantity for
+$\gamma \approx 0$ and a given value $R^2$:
+$$ \pr_{z\sim P}(B_z \leq R^2)
+	= (1-\gamma) \pr_0(B_z \leq R^2) + \gamma \pr_1(B_z \leq R^2)
+	\,,$$
+with $\pr_k = \pr_{z\sim P_k}$. This quantity measures the discriminative power
+of the anomaly detector given by
+$$ \mathop{\mathtt{ANOM}}(z, R) = 1_{[R^2, +\infty)}(B_z) \,.$$
+It is safe to assmue that $R^2$ is such that $\pr_0(B_z \geq R^2) = \epsilon$ for
+some significace level $\epsilon\in(0,\tfrac{1}{2})$. It would also be interesting
+to estimate the speed of decay of this probability, for $P_1$ given by
+$\mathcal{N}_d(\mu, \nu^2 I_d)$ in the case when $\nu\to \infty$. In this case
+the contaminating distribution is increasingly uniform in the whole space
+$\Real^{d\times 1}$.
+
+% section the_problem (end)
+\clearpage
+
+\section{No Dim-Red. result} % (fold)
+\label{sec:no_dim_red_result}
+
+Suppose $Y\sim \Ncal_d(\mu, I_d)$, and $(Z_a)_{a=1}^n \sim \Ncal_d(0, I_d)$ iid,
+with $Y$ independent of $(Z_a)_{a=1}^n$. Collect $Z_a$ into an $n\times d$ matrix
+$Z = (Z_a')_{a=1}^n$ Consider a quadratic form $T^2$ given by
+$$ T^2 = Y' S^{-1} Y \,, $$
+where $n S = \Scal = \sum_{a=1}^n Z_aZ_a' = Z'Z$.
+\begin{description}
+    \item[Step 1:] Since $Y\sim \Ncal_d$, $Y\neq 0$ almost surely, which implies that
+    it is possible to construct a random orthonormal basis in $\Real^{d\times 1}$,
+    by taking a basis in the orthogonal subspace $[Y]^\perp$ and performing Gram-Schmidt
+    procedure. This basis can be collected column-wise into a random matrix $Q$:
+    $$ Q = \begin{pmatrix} Y \|Y\|^{-1} & Q_{-1} \end{pmatrix}\,, $$
+    such that $Q' Q = I_d$ and $Q Q' = I_d$, since the columns constitute a basis.
+    In particular, $Q'_{-1} y = \nil_{d-1\times 1}$, $Q_{-1}'Q_{-1}=I_{d-1}$ and
+    $$ I_d = Y \|Y\|^{-2} Y' + Q_{-1}Q_{-1}'\,. $$
+    \item[Step 2:] Notice that $T^2$ transforms into
+    $$ \frac{T^2}{n}
+        = Y'Q Q' \Scal^{-1} Q Q'Y
+        = (Q'Y)' \bigl(Q' \Scal Q\bigr)^{-1} Q'Y
+        = \|Y\| e_1'\bigl(Q'\Scal Q\bigr)^{-1}e_1 \|Y\|
+        = \frac{\|Y\|^2}{b^{-1}}
+        \,, $$
+    where $b = e_1' \bigl(Q' \Scal Q\bigr)^{-1} e_1$, because by construction
+    $$ Q'Y
+        = \begin{pmatrix} \|Y\|^{-1} Y'Y \\ Q_{-1}'Y \end{pmatrix}
+        = \begin{pmatrix} \|Y\| \\ 0 \end{pmatrix}
+        = e_1\|Y\|
+        \,, $$
+    \item[Step 3:] Now, the matrix $Q' \Scal Q$ has the following structure:
+    $$ Q' \Scal Q
+        = \begin{pmatrix}
+            X' \Scal X & X' \Scal Q_{-1} \\
+            Q_{-1}' \Scal X & Q_{-1}' \Scal Q_{-1}
+        \end{pmatrix}
+        \,,$$
+    where $X = Y \|Y\|^{-1}$. Using block matrix inversion formula (Schur?):
+    $$ \begin{pmatrix}
+        A & B \\ C & D
+    \end{pmatrix}^{-1}
+        = \begin{pmatrix}
+            M^{-1} & - M^{-1} B D^{-1}\\
+            - D^{-1} C M^{-1} & D^{-1} + D^{-1} C M^{-1} B D^{-1}
+        \end{pmatrix}
+        \,,$$
+    with $M = A - C'D^{-1}B$, one gets
+    $$ b
+        = e_1' \bigl(Q' \Scal Q\bigr)^{-1} e_1
+        = M^{-1}
+        = \Bigl(X' \Scal X - X' \Scal Q_{-1} \bigl(Q_{-1}' \Scal Q_{-1}\bigr)^{-1} Q_{-1}' \Scal X \Bigr)^{-1}
+        \,, $$
+    Therefore
+    $$ \frac{T^2}{n}
+        = \|Y\|^2 \Bigl(
+            X' \Scal X
+            - X' \Scal Q_{-1} \bigl(Q_{-1}' \Scal Q_{-1}\bigr)^{-1} Q_{-1}' \Scal X
+        \Bigr)^{-1}
+        \,. $$
+    \item[Step 4:] Recall that $\Scal = \sum_{a=1}^n Z_a Z_a'$. Let's introduce
+    the following random variables: $\xi_a = X'Z_a$ and $\eta_a = Q_{-1}' Z_a$.
+    For any $a=1,\ldots, n$ it is true that conditionally on $Q$ ($Y$ and $Q_{-1}$)
+    we have $\xi_a \sim \Ncal(X'0, X' I_d X) = \Ncal(0, 1)$,
+    $$ \eta_a
+        \sim \Ncal(Q_{-1}'0, Q_{-1}'I_d Q_{-1}) = \Ncal(0, I_{d-1})
+        \,, $$
+    and $\xi_a$ is independent of $\eta_a$, since $Q_{-1}'X = 0$ by construction and
+    both are Gaussian. Furthermore, conditional upon $Q$, the samples $(\xi_a)_{a=1}^n$
+    and $(\eta_a)_{a=1}^n$ are independent of one another. Finally
+    $$ Z_a
+        = I_d Z_a
+        = \bigl(XX' + Q_{-1}Q_{-1}'\bigr) Z_a
+        = X\xi_a + Q_{-1} \eta_a
+        \,, $$
+    by the fact that the columns of $Q$ are an orthonormal basis of $\Real^{d\times 1}$.
+    \item[Step 5:] Let $\xi = (\xi_a)_{a=1}^n \in \Real^{n\times 1}$ and put
+    $\eta = (\eta_a')_{a=1}^n \in \Real^{n\times d-1}$. With these in place, one
+    gets the following simplifications:
+    $$ X' \Scal X
+        = \sum_{a=1}^n X'Z_a Z_a'X = \sum_{a=1}^n \xi_a^2
+        = \xi' \xi
+        \,, $$
+    then
+    $$ Q_{-1}' \Scal Q_{-1}
+        = \sum_{a=1}^n Q_{-1}'Z_a Z_a'Q_{-1} = \sum_{a=1}^n \eta_a\eta_a'
+        = \eta' \eta
+        \,, $$
+    and finally
+    $$ X' \Scal Q_{-1} \bigl(Q_{-1}' \Scal Q_{-1}\bigr)^{-1} Q_{-1}' \Scal X
+        = \xi'\eta \bigl(\eta'\eta\bigr)^{-1}\eta'\xi
+        \,. $$
+    Thus the complicated expression in $T^2$ reduces to
+    $$ \rho
+        = \xi' \xi - \xi'\eta \bigl(\eta'\eta\bigr)^{-1}\eta'\xi
+        = \xi' (I_n - \eta \bigl(\eta'\eta\bigr)^{-1}\eta') \xi
+        \,. $$
+    \item[Step 6:] Conditional on both $Q$ and $\eta$ the last quantity $\rho$ in step 5
+    is $\chi^2_{n-(d-1)}$ distributed. Indeed, let
+    $$ \pi_\eta = I_n - \eta \bigl(\eta'\eta\bigr)^{-1}\eta' \,, $$
+    be the projector onto the subspace orthogonal to the column-space of $\eta$, and
+    consider its spectral decomposition: $\pi_\eta = V D V'$, $P$ -- an orthogonal
+    $n\times n$ matrix of column-eigenvectors of $\pi_\eta$ and $D$ -- the diagonal
+    matrix of the eigenvalues. Since $\pi_\eta$ is idempotent, and $P'P = PP' = I_n$,
+    we have $D^2=D$, whence the eigenvalues of $\pi_\eta$ are either $0$ or $1$. Furthermore,
+    its trace
+    $$ \tr \pi_\eta
+        = \tr I_n - \tr \eta(\eta'\eta)^{-1}\eta'
+        = n - \tr I_{d-1}
+        = n - (d - 1)
+        \,. $$
+    Finally, since the conditional distribution of $\xi$ is $\Ncal_n(0, I_n)$, and
+    the standard Gaussian is rotationally invariant ($R\xi \overset{\mathcal{D}}{=} \xi$
+    for any orthogonal matrix $R$), one has
+    $$ \rho
+        = \xi' \pi_\eta \xi
+        = (V'\xi)' D (V'\xi)
+        = \sum_{a=1}^n \sum_{l=1}^n (V'\xi)'e_a (e_a' D e_l) e_l' (V'\xi)
+        = \sum_{a=1}^n D_{aa} (e_a' V'\xi)' (e_a' V'\xi)
+        = \sum_{a=1}^n D_{aa} \epsilon_a^2
+        \,,$$
+    where $\epsilon_a = e_a' (V'\xi) \sim \Ncal(0,1)$ iid conditional on $Q$ and $\eta$.
+    Since exactly $n-(d-1)$ of eigenvalues are $1$ and others are $0$, $\rho \sim \chi^2_{n - (d-1)}$
+    conditionally on $Q$ and $\eta$.
+    \item[Step 7:] Using the results from prior steps, the characteristic function of $\rho$
+    undergoes the following chain of transformations:
+    \begin{align*}
+        \phi_{\rho}(t)
+            &= \ex e^{i t \rho}
+            = \ex_{Y, Q, Z} e^{i t \rho(Y, Q, Z)}\\
+            &= \bigl[\text{condition on } Z\bigr]
+            = \ex_{Y, Q} \ex_{Z | Q, Y} e^{i t \rho(Z| Y, Q)}\\
+            &= \bigl[Z =\eta Q_{-1}' + \xi X' \bigr]
+            =\ex_{Y, Q} \ex_{(\eta, \xi) | Q, Y} e^{i t \rho(\xi, \eta | Y, Q)}\\
+            &= \bigl[\text{condition on } \xi\bigr]
+            = \ex_{Y, Q} \ex_{\eta | Q, Y} \ex_{\xi| Q, Y, \eta} e^{i t \rho(\xi | Y, Q, \eta)} \\ 
+            &= \bigl[\xi \perp \eta | Q, Y \bigr]
+            = \ex_{Y, Q} \ex_{\eta | Q, Y} \ex_{\xi| Q, Y} e^{i t \rho(\xi | Y, Q, \eta)} \\
+            &= \bigl[{\xi | Q, Y} \sim \Ncal_n(0, I_n)\bigr]
+            = \ex_{Y, Q} \ex_{\eta | Q, Y} \psi(t) \\
+            &= \ex_{Y, Q, \eta} \psi(t)
+            = \psi(t)
+            \,,
+    \end{align*}
+    where $\psi$ is the characteristic function of $\chi^2_{n - (d-1)}$. Therefore
+    the distribution of $\rho$ is independent of $Y$ and is $\chi^2_{n - (d-1)}$
+    distributed.
+    \item[Step 8:] Note that, $\|Y\|^2 \sim \chi^2_d$. Thus the value
+    $$ \frac{T^2}{n}
+        = Y' \Scal^{-1} Y
+        \overset{\mathcal{D}}{=} \frac{\chi^2_d}{\chi^2_{n-(d-1)}}
+        \,, $$
+    whence
+    $$ \frac{T^2}{n}\frac{n-(d-1)}{d} \sim F\bigl(d, n-(d-1)\bigr) \,. $$
+    If $Y$ has nonzero mean $\mu$, then the final distribution is non-central $F$
+    with the same degrees of freedom, but a non-centrality parameter $\mu' \mu$
+    (the distribution of the denominator is unaffected by $\mu$).
+\end{description}
+
+% section no_dim_red_result (end)
+
+\section{Conformal Kernel Ridge Regression} % (fold)
+\label{sec:conformal_kernel_ridge_regression}
+
+In this section we are going to generalize the result of \cite{BurVovk2014} to
+the case of kernel-based ridge regression.
+
+\subsection{Ridge Regression} % (fold)
+\label{sub:ridge_regression}
+
+Given train-set observations $(x_i, y_i)_{i=1}^n \in \Real^{d\times 1}\times \Real$,
+with $x_i$ collected row-wise in a design matrix $X\in \Real^{n\times d}$, the target
+vector -- $y=(y_i)_{i=1}^n \in \Real^{n\times 1}$, and a regularization parameter
+$a > 0$, the sample-space \textbf{R}idge \textbf{R}egression problem solves this
+minimization problem
+$$ \Lcal(X, y, a)
+  = (y - X\beta - \one\beta_0)'(y - X\beta - \one\beta_0) + a\beta'\beta
+    \to \min_{\beta_0\in \Real, \beta\in\Real^{d\times 1}}
+  \,. $$
+In fact the intercept term is estimated with
+$$ \hat{\beta}_0 = \bar{y} - \bar{X} \hat{\beta} \,, $$
+where $\bar{y}$ and $\bar{X}$ are the mean target and observation values respectively,
+and $\hat{\beta}$ solves the intercept-free Ridge regression problem run on centered
+observations and targets. Therefore int the following we omit the intercept term and
+assume that the relevant columns in the design matrix have been dealt with, and both
+the design matrix and the targets have been centered.
+
+Since this one is problem of convex optimization, there exist a unique solution
+given by 
+\begin{align*}
+  \hat{\beta}
+    &= (X'X + a I_p)^{-1} X' y \\
+    &= X' (a I_n + XX')^{-1} y \,,
+\end{align*}
+in the direct and the equivalent dual forms, respectively (refer to the appendix for
+details). Predictions on the test set $X^* = (x_i)_{i=n+1}^{n+m}\in \Real^{m\times d}$,
+given the train-set, are
+\begin{align*}
+  \hat{y}^*_{\vert(X,y), X^*} = X^* \hat{\beta}
+    &= X^* (X'X + a I_p)^{-1} X' y \\ 
+    &= X^* X' (a I_n + XX')^{-1} y \,,
+\end{align*}
+again in the direct and dual form, respectively.
+
+The major drawback of this statement of the \textbf{RR} problem is that it does not
+provide any confidence intervals for these predictions. One possibility of remedying
+this is to introduce some distributional assumptions and project the \textbf{RR} problem
+into Bayesian framework.
+
+% subsection ridge_regression (end)
+
+\subsection{Bayesian Ridge Regression} % (fold)
+\label{sub:bayesian_ridge_regression}
+
+A particular case of Bayesian restatement of parameter estimation in a given model
+assumes that there is some prior distribution on $\beta$ given by density $\pi_\beta$,
+and a conditional distribution of target observations with density $p(y|\beta, X)$.
+The posterior distribution (density) is found with the help of Bayes theorem:
+$$ p(\beta|y, X)
+  = \frac{p(y|X, \beta) \pi_\beta}{p(y|X)}
+  \propto p(y|X, \beta) \pi_\beta
+  \,, $$
+where $X$ are assumed to be deterministic.
+
+In the Bayesian setting \textbf{RR} problem is stated as follows. The prior on the
+parameters $\beta \sim \pi_\beta = \Ncal_p(0, I_p)$ and the conditional of $y$ given $X$
+and $\beta$ is determined by the equation $y = x'\beta + \epsilon$, where the innovation
+term $\epsilon\sim \Ncal(0, a)$ and is independent of $\beta$. If the train sample is
+$(X, y)\in \Real^{n\times d} \times \Real^{n\times 1}$, then we have the following
+joint distribution:
+$$ \begin{pmatrix} \epsilon\\ \beta \end{pmatrix}
+  \sim \Ncal_{n+p}\biggl(
+      \begin{pmatrix} 0 \\ 0 \end{pmatrix},
+      \begin{pmatrix} a I_n & 0 \\ 0 & I_p \end{pmatrix}
+    \biggr)
+  \,, $$
+which yields
+$$ \begin{pmatrix} y\\ \beta \end{pmatrix}
+  \sim \Ncal_{n+p}\biggl(
+      \begin{pmatrix} 0 \\ 0 \end{pmatrix},
+      \begin{pmatrix}
+        a I_n + XX' & X \\
+        X' & I_p
+      \end{pmatrix}
+    \biggr)
+  \,, $$
+since $y = X\beta + \epsilon$ -- is a linear combination given $X$.
+
+Conditional on the training set, $\beta$ has Gaussian distribution with
+\begin{align*}
+  \beta_{|(X, y)}
+  &\sim \Ncal_p\Bigl(
+      X' \bigl(a I_n + XX'\bigr)^{-1} y, \,
+      I_p - X'\bigl(a I_n + XX'\bigr)^{-1}X
+    \Bigr) \\
+  &= \Ncal_p\Bigl(
+      \bigl(a I_p + X'X\bigr)^{-1} X' y, \,
+      a \bigl(a I_p + X'X\bigr)^{-1}
+    \Bigr) \,,
+\end{align*}
+since
+$$ \bigl(a I_n + XX'\bigr)^{-1}
+  = \frac{1}{a} \Bigl(I_n - X\bigl(aI_p + X'X\bigr)^{-1}X'\Bigr)
+  \,, $$
+and
+$$ X' \bigl(a I_n + XX'\bigr)^{-1} = \bigl(a I_p + X'X\bigr)^{-1} X' \,. $$
+Prediction and forecast distributions on a test set $X^*$, given the train $(X,y)$,
+can be obtained similarly. Indeed, denoting by $\epsilon^*\in \Real^{m\times 1}$
+the theoretical innovation terms for the test target values $y^*\in \Real^{m\times 1}$
+over $X^* = (x_i)_{i=n+1}^{n+m}\in \Real^{m\times d}$, we have the following
+distribution of the parameter $\beta$ and the innovations
+$$ \begin{pmatrix} \epsilon \\ \epsilon^* \\ \beta \end{pmatrix}
+  \sim \Ncal_{n+m+p}\begin{pmatrix} 
+      \begin{pmatrix} 0 \\ 0 \\ 0 \end{pmatrix},
+      \begin{pmatrix} a I_n & 0 & 0 \\ 0 & a I_m & 0 \\ 0 & 0 & I_p \end{pmatrix}
+    \end{pmatrix}
+  \,. $$
+A prediction $\hat{y}^*$ is just the value of $y^*$ when the influence of the noise
+term is neglected. Its distribution, conditional on $(X, y)$ and $X^*$, can be derived
+easily, since the train targets and the test predictions are just a linear combination of
+innovations and weights above:
+$$ \begin{pmatrix} y \\ \hat{y}^* \end{pmatrix}
+    = \begin{pmatrix}
+      I_n & 0 & X \\
+      0 & 0 & X^*
+    \end{pmatrix}
+    \begin{pmatrix} \epsilon \\ \epsilon^* \\ \beta \end{pmatrix}
+  \,, $$
+which gives
+$$ \begin{pmatrix} y \\ \hat{y}^* \end{pmatrix}
+  \sim \Ncal_{n+m}\begin{pmatrix}
+      \begin{pmatrix} 0 \\ 0 \end{pmatrix},
+      \begin{pmatrix}
+        a I_n + XX' & X{X^*}' \\
+        X^*X' & X^*{X^*}'
+      \end{pmatrix}
+    \end{pmatrix}
+  \,, $$
+whence
+\begin{align*}
+  \hat{y}^*_{|(X, y), X^*}
+    & \sim \Ncal_m\Bigl(
+        X^* X' \bigl(a I_n + XX' \bigr)^{-1} y, \,
+        X^* {X^*}' - X^*X' \bigl(a I_n + XX' \bigr)^{-1} X {X^*}'
+      \Bigr) \\
+    & = \Ncal_m\Bigl(
+        X^* \bigl(a I_p + X'X\bigr)^{-1} X' y, \,
+        a X^* \bigl(a I_p + X'X\bigr)^{-1} {X^*}'
+      \Bigr) \,.
+\end{align*}
+The conditional distribution of the forecast of $y_*$, which takes into account
+the innovation term, is given by
+\begin{align*}
+  y^*_{|(X, y), X^*}
+    & \sim \Ncal_m\Bigl(
+        X^* X' \bigl(a I_n + XX' \bigr)^{-1} y, \,
+        a I_m + X^* {X^*}' - X^*X' \bigl(a I_n + XX' \bigr)^{-1} X {X^*}'
+      \Bigr) \\
+    & = \Ncal_m\Bigl(
+        X^* \bigl(a I_p + X'X\bigr)^{-1} X' y, \,
+        a I_m + a X^* \bigl(a I_p + X'X\bigr)^{-1} {X^*}'
+      \Bigr) \,.
+\end{align*}
+If the train and test samples are pooled and used for estimation, then the \textbf{M}aximum
+\textbf{A}posteriori \textbf{P}rediction residuals are given by
+$$ \begin{pmatrix} \hat{r} \\ \hat{r}^* \end{pmatrix}
+  = \begin{pmatrix} y \\ y^* \end{pmatrix}
+  - \begin{pmatrix} X \\ X^* \end{pmatrix} \Biggl(
+      a I_p + \begin{pmatrix} X' & {X^*}' \end{pmatrix} \begin{pmatrix} X \\ X^* \end{pmatrix}
+    \Biggr)^{-1} \begin{pmatrix} X' & {X^*}' \end{pmatrix}
+  \begin{pmatrix} y \\ y^* \end{pmatrix}
+  \,, $$
+or equivalently
+$$ \begin{pmatrix} \hat{r} \\ \hat{r}^* \end{pmatrix}
+  = a \Biggl(
+      a I_{n+m}
+      + \begin{pmatrix} X \\ X^* \end{pmatrix} \begin{pmatrix} X' & {X^*}' \end{pmatrix} 
+    \Biggr)^{-1}
+  \begin{pmatrix} y \\ y^* \end{pmatrix}
+  \,, $$
+since the posterior density in is the largest at the mean in the gaussian case.
+This second formulation permits the expression of the pooled sample residuals via
+the predictions made on the train-set only, since
+$$ \Biggl(
+      a I_{n+m}
+      + \begin{pmatrix} X \\ X^* \end{pmatrix}
+        \begin{pmatrix} X' & {X^*}' \end{pmatrix} 
+  \Biggr)^{-1}
+  = \begin{pmatrix}
+    Q + Q X {X^*}' M_*^{-1} X^* X' Q & - Q X {X^*}' M_*^{-1} \\
+    - M_*^{-1} X^* X' Q & M_*^{-1}
+  \end{pmatrix}
+\,, $$
+where $Q = \bigl(a I_n + X X'\bigr)^{-1}$ and
+$$ M_* = a I_m + X^* {X^*}' - X^* X' Q X {X^*}' \,, $$
+which is positive semidefinite and invertible becasue $a>0$. Therefore
+\begin{align*}
+\hat{r}^*
+  = \begin{pmatrix} 0 & I_m \end{pmatrix}
+    \begin{pmatrix} \hat{r} \\ \hat{r}^* \end{pmatrix}
+  &= a \begin{pmatrix} - M_*^{-1} X^* X' Q & M_*^{-1} \end{pmatrix}
+  \begin{pmatrix} y \\ y^* \end{pmatrix} \\
+  &= a M_*^{-1} \bigl( y^* - X^* X' Q y \bigr)
+  = a M_*^{-1} \bigl( y^* - \hat{y}^*_{|(X, y), X^*} \bigr) \,.
+\end{align*}
+On the other hand
+$$ \hat{r}^*
+  = y^* - X^*\bigl(
+      a I_p + X'X + {X^*}'X^*
+    \bigr)^{-1} \bigl( X'y + {X^*}'y^* \bigr)
+  \,. $$
+Note that $X^* {X^*}' - X^* X' Q X {X^*}'$ is the covariance matrix of the prediction at $X^*$
+trained on $(X, y)$ and is thus positice definite. Thus implies that $M \succeq a I_m$, and
+hence $I_m \succeq a M^{-1}$, which means that the pooled sample residuals $\hat{r}^*$
+have smaller norm as a vector in $\Real^{m\times 1}$, than the residuals predicted for a test
+set $X^*$ over the train $(X, y)$.
+
+The conditional distribution of forecasts $y^*$ readily yields an $\epsilon$-confidence interval
+for a test observation $x_*\in\Real^{d\times 1}$ given by
+\begin{align*}
+  y^*_{|(X, y), x_*}
+    & \sim \Ncal_m\Bigl(
+        x_*' X' \bigl(a I_n + XX' \bigr)^{-1} y,
+        a + x_*' x_* - x_*' X' \bigl(a I_n + XX' \bigr)^{-1} X x_*
+      \Bigr) \\
+    & = \Ncal_m\Bigl(
+        x_*' \bigl(a I_p + X'X\bigr)^{-1} X' y, 
+        a + a x_*' \bigl(a I_p + X'X\bigr)^{-1} x_*
+      \Bigr)
+    \,.
+\end{align*}
+In this setting, Bayesian \textbf{RR} provides a confidence interval for the forecasts
+at the cost of relying on Gaussianity assumptions. The interval is given by
+$$ \bigl(
+  \hat{y}_* - \sqrt{a + a g_*} q_\epsilon,
+  \hat{y}_* + \sqrt{a + a g_*} q_\epsilon
+  \bigr) \,, $$
+where $q_\epsilon$ is the $1-\frac{\epsilon}{2}$-quantile of the standard normal
+distribution, $g_* = x_*' \bigl(a I_p + X'X\bigr)^{-1} x_*$ and
+\begin{align*}
+\hat{y}_*
+  &= x_*' \bigl(a I_p + X'X\bigr)^{-1} X' y \\
+  &= x_*' X' \bigl(a I_n + XX' \bigr)^{-1} y \,.
+\end{align*}
+
+In \cite{BurVovk2014} the distributional assumption on $\beta$, as well as the assumption
+of deterministic $X$, are relaxed and an procedure is developed, which yields a confidence
+interval, which performs asymptotically as well as the Bayesian interval with respect to
+efficiency and coverage probability.
+
+\subsection{Conformalized Ridge Regression} % (fold)
+\label{sub:conformalized_ridge_regression}
+
+\subsubsection{Conformal predictors} % (fold)
+\label{ssub:conformal_predictors}
+
+Systematic study of conformal procedures for machine learning began in 2005 in the work
+\cite{Vovketal2005}. Conformal...
+
+Conformal prediction is a technique designed to yield a statistically valid measure
+of confidence for individual predictions made by a machine learning algorithm and
+to be applicable in both the supervised and unsupervised settings. In the supervised
+case, let $\Zcal$ denote the object-target space $\Xcal \times Y$. The core of this
+technique is a measurable map $A: \Zcal^+\times \Zcal \mapsto \Real$ -- a \textbf{N}on
+-\textbf{C}onformity \textbf{M}easure, which for a training sample $Z = (z_i)_{i=1}^n$
+and a test object $z_*\in \Zcal$ returns a value $A(Z, z_*)$, which quantifies how
+much different $z_*$ is relative to a sample $Z$. A conformal predictor is a procedure,
+that takes in a sample $Z_{:n}=(z_i)_{i=1}^n\in\Zcal$, a test object $x_*\in\Xcal$,
+and a confidence level $\epsilon\in(0,1)$, and outputs a confidence set
+$\Gamma^\epsilon(Z, x_*) \subseteq Y$ for the corresponding target value $y_*$
+(see algorithm~\ref{conf_predictor}). The central idea is to use compute an empirical
+estimate the p-value of a test object-target pair $(x_*, y_*)$ using some convenient
+\textbf{NCM} with respect to the reference sample $Z_{:n}$.
+
+\begin{algorithm}[H]
+  \caption{Conformal predictor}\label{conf_predictor}
+  \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+  \Input{
+    $A$ -- \textbf{NCM}, $\epsilon \in (0,1)$ -- significance level, training sample
+    $Z_{:n}=(z_i)_{i=1}^n \in \Zcal^+$ and a test object $x_*\in \Xcal$.}
+  \Output{Confidence set $\Gamma^\epsilon$ for the test target $y_*$.}
+  \BlankLine
+  $\Gamma^\epsilon \leftarrow \emptyset$\;
+  \For{$y \in Y$}{
+    $z_{n+1} \leftarrow (x_*, y)$\;
+    \For{$i = 1,\ldots, n, n+1$}{
+      $Z_{-i} \leftarrow \bigl(z_j\bigr)_{j=1, j\neq i}^{n+1}$\;
+      $\alpha_i \leftarrow A(Z_{-i}, z_i)$\;
+    }
+    $ p^y \leftarrow (n+1)^{-1} \bigl\lvert \{
+        i=1,\ldots, n, n+1 \,:\, \alpha_i \geq \alpha_{n+1}
+      \} \bigr\rvert $\;
+    \If{$p^y > \epsilon$}{
+      $\Gamma^\epsilon \leftarrow \Gamma^\epsilon \cup\{y\}$\;
+    }
+  }
+  Return $\Gamma^\epsilon$\;
+\end{algorithm}
+
+In \cite{Vovketal2005} is has been shown, that if a sequence $(z_n)_n{\geq1}$ is generated
+by an exchangeable distribution $P$, then the coverage probability of the prediction set
+$\Gamma^\epsilon$, yielded by procedure \ref{conf_predictor}, is at least $1-\epsilon$
+and successive errors are independent in online learning and prediction setting.
+Thus the outlined procedure guarantees that unconditionally
+$$ \pr\bigl( y_* \notin \Gamma^\epsilon(Z_{:n}, x_*)\bigr) \leq \epsilon \,, $$
+where $\pr = P_{Z_{:n}, {z_*}}$, $(x_*, y_*)=z_*$, and $Z_{:n}$ denotes a sample of
+size $n$. In a special case, when $z_n$ are iid the measure is just the product measure
+$P_{z_1} \otimes \ldots \otimes P_{z_n} \otimes P_{z_*}$.
+
+In general, any real-valued jointly measurable \textbf{NCM} could be used, the only
+difference will be in the size of the predicted confidence set (efficiency) and its
+informativeness. Despite attractive theoretical guarantees, the procedure suffers
+from a significant drawback: in the general case it is very computationally inefficient,
+since it exhaustively searches over $Y$ (infeasible in regression settings) and
+loops over all observations in the extended sample $Z_{:n}\cup\{z_*\}$ to get
+the calibration set of $(\alpha_i)_{i=1}^{n+1}$.
+
+However this result does not offer probabilistic guarantees with respect to the
+prediction error ($y_* \notin \Gamma^\epsilon(Z_{:n}, x_*)$) conditional on both
+the training sample and the test object. And neither this procedure yields efficient
+confidence sets in the conditional case.
+
+% subsubsection conformal_predictors (end)
+
+\subsubsection{Conformal Predictor for Ridge Regression} % (fold)
+\label{ssub:conformal_ridge_regression}
+
+Suppose one has a stream of observations $(x_n, y_n)_{n\geq1}$, with $x_n \sim P$ iid
+having some well defined $\ex x_1 x_1'$, and targets given by $ y_n = x_n'\beta + \epsilon_n$,
+for some common random $\beta \in\Real^{d\times 1}$ independent of $(x_n)_{n\geq1}$,
+and innovation $\epsilon_n \sim \Ncal(0, a)$ iid, independent of both $x_n$ and $\beta$.
+Notice that $(x_n, y_n)_{n\geq1}$ are iid conditionally on $\beta$.
+
+Let $(X, y) = (x_i, y_i)_{i=1}^n$, $n\geq 1$, be the training sample with $X \in \Real^{n\times d}$
+and $y\in \Real^{n\times 1}$. Consider some test object-target pair $(x_*, y_*)$
+with $x_*\in \Real^{d\times 1}$ and $y_*\in \Real$. Define $A\bigl((X, y), (x_*, y_*)\bigr)$
+as
+$$ A\bigl((X, y), (x_*, y_*)\bigr)
+  = y_* - x_*' \Bigl( a I_p + X'X + x_* x_*' \Bigr)^{-1}
+    \bigl( X'y + x_* y_* \bigr)
+  \,, $$
+i.e. as the predicted residual for the $x_*$ object, estimated on the pooled sample
+$(X \cup\{x_*\}, y \cup\{y_*\})$.
+
+A conformal procedure for the Ridge Regression is constructed as follows.
+the non-conformity measure given by 
+
+\noindent The main result in \cite{BurVovk2014} is The restatement of the main in that
+paper is provided below.
+\noindent\textbf{Theorem \cite{BurVovk2014}}\hfill\\
+
+
+% subsubsection conformal_ridge_regression (end)
+
+
+% subsection conformalized_ridge_regression (end)
+
+
+% subsection bayesian_ridge_regression (end)
+
+
+use Sherman-Morrison-Woodbury identity
+
+\subsection{Kernel Ridge Regression} % (fold)
+\label{sub:kernel_ridge_regression}
+
+As stated in \cite{BurVovk2014} it would be interesting to generalize this result
+to the case of Kernel Ridge regression. However, first it a proper recap of what 
+kind of mathematical object an RKHS is seems appropriated.
+
+\subsubsection{RKHS} % (fold)
+\label{ssub:rkhs}
+
+A tuple $(\Hcal, \langle\cdot, \cdot\rangle)$ is an inner-product space over $\Real$
+if $\Hcal$ is a vector space over $\Real$, and $\langle\cdot, \cdot\rangle : \Hcal
+\times \Hcal \mapsto \Real$ is an inner product in $\Real$ -- a map linear in both
+arguments, symmetric, and possessing the following properties:
+\begin{enumerate}
+  \item $\langle f, f\rangle\geq 0$ for any $f\in \Hcal$;
+  \item $\langle f, f\rangle = 0$ if and only if $f = \nil_\Hcal$.
+\end{enumerate}
+Over the field of complex numbers $\Cplx$ the requirements of symmetry and bi-
+linearity are swapped with being Hermitian, and linear with respect to the first
+argument. In the following presentation all considered vector spaces are over the
+field of reals.
+
+A Hilbert space is an inner product space, which is complete with respect to the
+natural metric induced by the norm $ \|f\| = \sqrt{\langle f, f\rangle} $. A \textbf{R}eproducing
+\textbf{K}ernel \textbf{H}ilbert \textbf{S}pace is a complete inner-product vector
+space of maps $\Xcal \mapsto \Real$ over the field $\Real$, in which the evaluation
+functional defined by $\epsilon_x(f) = f(x)$ is $(\Hcal, \|\cdot\|) \mapsto (\Real, |\cdot|)$
+bounded for any $x\in \Xcal$ (in normed spaces bounded linearity is equivalent to
+continuity). Equivalently, an \textbf{RKHS} is a Hilbert space for which there exists
+a map $\phi:\Xcal\to\Hcal$, and a \textbf{P}ositive \textbf{D}efinite kernel function
+$K:\Xcal \times \Xcal \mapsto \Real$ such that \begin{enumerate}
+  \item $K(x,y) = \langle \phi(x), \phi(y) \rangle$ for all $x, y\in \Xcal$;
+  \item $g(x) = \langle g, K(x, \cdot)\rangle$ for all $x\in \Xcal$ and every
+  $g\in \Hcal$.
+\end{enumerate}
+A function $K:\Xcal \times \Xcal \mapsto \Real$ is positive definite if for any
+$n\geq1$, $(x_i)_{i=1}^n \in \Xcal$ and $\alpha \in \Real^{n\times 1}$
+$$ \alpha'K\alpha
+  = \sum_{i=1}^n \sum_{j=1}^n \alpha_j \alpha_i K(x_i, x_j)
+  \geq 0
+  \,, $$
+or, in other words the Gram matrix $K$ is positive semi-definite, where $K$ is an
+$n \times n$ matrix of $K(x_i, x_j)$. Note that unlike linear algebra, ``positive
+definite'' here permits such non-zero weights, for which the product is exactly zero.
+Positive definite kernels are also known as Mercer kernels, or covariance kernels.
+
+Finally, any \textbf{PD} kernel $K$ gives rise to a so called \textbf{canonical RKHS}
+associated with $K$ constructed by a standard metric-completion argument for a pre-Hilbert
+space (a non-complete inner-product space)
+$$ \Hcal_0
+  = \bigl\{
+    \sum_{i=1}^n \alpha_i K(x_i, \cdot)
+    \,:\, n\geq1, (x_i)_{i=1}^n \in \Xcal, (\alpha_i)_{i=1}^n\in \Real
+  \bigr\}
+  \,, $$
+with an inner-product $ \langle f, g \rangle = \sum_{i=1}^n \sum_{j=1}^m \alpha_i K(x_i, z_j) \beta_j $,
+where $f, g\in \Hcal_0$ with representations $f = \sum_{i=1}^n \alpha_i K(x_i, \cdot)$
+and $g = \sum_{j=1}^m \beta_j K(z_j, \cdot)$. In the completed RKHS $\Hcal = \bigl[\Hcal_0\bigr]$
+the map $\phi$ is given by the canonical map $x\mapsto K(x, \cdot)$ and $K$ is the
+reproducing kernel. The inner-prodcut is extended to $\Hcal$ by contonuity as a step
+in completion of $\Hcal_0$. It is worth noting, that the pre-Hilbert space $\Hcal_0$
+is by construction dense everywhere in $\Hcal$ with respect to the norm-mertic
+induced by the completed inner-product.
+
+% subsubsection rkhs (end)
+
+\subsubsection{Kernel methods} % (fold)
+\label{ssub:kernel_methods}
+
+Given a train sample $(x_i, y_i)_{i=1}^n \in X\times \Real$ a general kernel-based
+machine learning regularized loss minimization problem is to solve
+$$ \Lcal\Bigl(\bigl(x_i, y_i\bigr)_{i=1}^n, f\Bigr)
+  + a \Omega\bigl(\|f\|\bigr)
+  \to \min_{f\in \Hcal}\,, $$
+where $\Hcal$ is a Hilbert Space with Reproducing Kernel $K$, $\Lcal$ is a loss
+function which depends on $f$ through $(f(x_i))_{i=1}^n$, and $\Omega:\Real\mapsto\Real$
+is a monotone increasing function used for regularization. In this setting the Representer
+theorem states that the optimal solution is to be sought in a finite dimensional
+linear span of the canonical feature maps $\phi: x\mapsto K(x, \cdot)$ evaluated at
+the sample objects:
+$$ f^* \in \bigl\{ \alpha'\Phi\,:\, \alpha \in \Real^{n\times 1} \bigr\} \,, $$
+where $\Phi = \bigl(\phi(x_i)\bigr)_{i=1}^n \in \Hcal^{n\times 1}$.
+
+Another principle, the so called ``Kernel-trick'' states that whenever an ML algorithm
+could be reduced to a form, which depends on the training sample data only thorough
+inner-products between the objects (a or Gram matrix), then it is possible to construct
+another ML algorithm by simply replacing the products with an arbitrary \textbf{PD}
+kernel. It should be noted that care must be taken to ensure additional conditions
+on the input domain imposed by this ``trick'' are met.
+
+In particular, the \textbf{RR} solution in its dual form depends only on the Gram
+matrix if inter-object inner-products $X X'$ in the input domain, which is why it is
+possible to restate it as the Kernel \textbf{RR} problem: given a training sample
+$X = (x_i)_{i=1}^n\in\Xcal^{n\times 1}$ and $y\in\Real^{n\times 1}$
+$$ \|y - f\|^2 + a \|f\|^2 \to \min_{f \in \Hcal} \,, $$
+with $f \in \Real^{n\times 1}$ being a column-vector of $f$ evaluated at every input
+in $X$. Here $\Hcal$ is the canonical RKHS associated with a Mercer kernel $K$. Note
+that with slight abuse of notation the inner-products and norms over $\Hcal$ and
+$\Real^{n\times 1}$ are used without denoting which is which, since it is always
+clear from both the context and the type of the argument of the norm as a function.
+
+The Representer theorem states that the solution to this minimization is of the form
+$f = \Phi'\alpha$, for $\Phi = (\phi(x_i))_{i=1}^n \in \Hcal^{n\times 1}$. By definition
+of the Gram matrix $K$ and due to its symmetry for any $j=1,\ldots,n$
+$$ f(x_j)
+  = \Phi(x_j)' \alpha
+  = k_{x_j}' \alpha
+  = (K e_j)' \alpha
+  = e_j' K \alpha
+  \,, $$
+where $k_x = \Phi(x) = (\phi(x_i)(y))_{i=1}^n \in \Real^{n\times 1}$ and $e_j$ is
+the $j$-th unit vector in $\Real^{n\times 1}$. Furthermore
+$$ \| f \|^2
+  = \sum_{i=1}^n\sum_{j=1}^n\alpha_i\alpha_j \langle\phi(x_i), \phi(x_j)\rangle
+  = \sum_{i=1}^n\sum_{j=1}^n\alpha_i\alpha_j K(x_i, x_j)
+  = \alpha' K \alpha \,. $$
+Thus the kernel Ridge Regression problem is reduced to the following finite-dimensional
+convex minimization problem:
+$$ \|y - K \alpha \|^2 + a \alpha' K \alpha \to \min_{\alpha\in \Real^{n\times 1}} \,. $$
+The First order conditions:
+$$ \,, $$
+imply that
+$$ \hat{\alpha} = (aI_n + K)^{-1} y \,\text{ and }\, \hat{y}_x = k_x' \alpha \,, $$
+-- the estimated weight vector and an optimal prediction at $x\in \Xcal$.
+
+% subsubsection kernel_methods (end)
+
+\subsubsection{KRR analysis} % (fold)
+\label{ssub:krr_analysis}
+
+Similarly to the ordinary Ridge Regression in the input-space, the feature-space RR
+has the following properties.
+
+Consider a problem of estimating the prediction accuracy of the test sample $(X^*, y^*)$
+given a training sample $(X, y)$, where $X = (x_i)_{i=1}^n$, $y\in \Real^{n\times 1}$,
+$X^* = (x^*_j)_{j=1}^m = (x_i)_{i=n+1}^{n+m}$ and $y^*\in \Real^{m\times 1}$. 
+The out-of-train-sample prediction residuals are given by
+$$ y^* - \hat{y}^*_{|(X, y), X^*}
+  = y^* - K_{XX^*}' (a I_n + K_{XX})^{-1} y
+  \,, $$
+with $K_{XX^*} = (k_{x^*_j})_{j=1}^m = (K(x_i, x^*_j))_{i=1,j=1}^{n,m} \in \Real{n\times m}$.
+
+Now consider an in-sample prediction based on the optimal weights over the pooled
+sample $(\tilde{X}, \tilde{y})$ given by $((X, X^*), (y, y^*))$. First, since the
+matrix $a I_n + K_{XX}$ is always invertible for $a > 0$, block-matrix inversion
+formula implies:
+\begin{align*}
+  Q_{\tilde{X}}
+    &= \bigl( a I_{n+m} + K_{\tilde{X}\tilde{X}} \bigr)^{-1}
+    = \begin{pmatrix}
+      a I_n + K_{XX} & K_{XX^*} \\
+      K_{X^*X} & a I_m + K_{X^*X^*}
+    \end{pmatrix}^{-1} \\
+    &= \begin{pmatrix}
+      Q_X + Q_X K_{XX^*} M^{-1} K_{X^*X} Q_X & - Q_X K_{XX^*} M^{-1} \\
+      - M^{-1} K_{X^*X} Q_X & M^{-1}
+    \end{pmatrix}
+    \,,
+\end{align*}
+where $Q_X = \bigl( a I_n + K_{XX} \bigr)^{-1}$ and
+$$ M = aI_m + K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*} \,. $$
+Since $a I_{n+m} + K_{\tilde{X}\tilde{X}}$ is an invertible positive definite matrix,
+its inverse is \textbf{PD} as well, whence $M$ is positive definite and invertible
+as well. It is possible to show (see sec.~\ref{ssub:gaussian_process_formulation})
+that the matrix $K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}$ is also \textbf{PD}. Therefore,
+we have that $M \succeq a I_m$ whence $a M^{-1} \preceq I_m$, or that the matrix $M$
+defines an expanding linear transformation $\Real^{n\times 1} \mapsto \Real^{n\times 1}$.
+
+If we let $H_{\tilde{X}} = K_{\tilde{X}\tilde{X}} Q_{\tilde{X}}$, then
+the in-sample residuals are given by
+$$ \begin{pmatrix} y\\ y^* \end{pmatrix} - \begin{pmatrix}
+      \hat{y}_{|(\tilde{X}, \tilde{y})} \\
+      \hat{y}^*_{|(\tilde{X}, \tilde{y})}
+    \end{pmatrix}
+  = \bigl( I_{n+m} - H_{\tilde{X}} \bigr)
+    \begin{pmatrix} y\\ y^* \end{pmatrix}
+  = a Q_{\tilde{X}}
+    \begin{pmatrix} y\\ y^* \end{pmatrix}
+  \,, $$
+since
+$$ I_{n+m} - H_{\tilde{X}}
+  = \bigl(
+      a I_{n+m} + K_{\tilde{X}\tilde{X}} - K_{\tilde{X}\tilde{X}}
+    \bigr) Q_{\tilde{X}}
+  = a I_{n+m} Q_{\tilde{X}}
+  \,. $$
+Therefore
+\begin{align*}
+  y^* - \hat{y}^*_{|(\tilde{X}, \tilde{y})}
+    &= a \begin{pmatrix} 0\\ I_m \end{pmatrix} Q_{\tilde{X}}
+        \begin{pmatrix} y\\ y^* \end{pmatrix}
+    = a \begin{pmatrix} - M^{-1} K_{X^*X} Q_X & M^{-1} \end{pmatrix}
+      \begin{pmatrix} y\\ y^* \end{pmatrix} \\
+    &= a M^{-1} \bigl( y^* - K_{X^*X} Q_X y \bigr)
+    = a M^{-1} \bigl( y^* - \hat{y}^*_{|(X, y), X^*} \bigr)
+    \,,
+\end{align*}
+which means that the out-of-sample residuals are generally larger than the corresponding
+in-sample ones. Note that 
+\begin{align*}
+  H_{\tilde{X}}
+    &= K_{\tilde{X}\tilde{X}} Q_{\tilde{X}}
+     = K_{\tilde{X}\tilde{X}} \bigl( a I_{n+m} + K_{\tilde{X}\tilde{X}} \bigr)^{-1}\\
+    &= \begin{pmatrix}
+      K_{XX} & K_{XX^*} \\
+      K_{X^*X} & K_{X^*X^*}
+    \end{pmatrix}
+    \begin{pmatrix}
+      Q_X + Q_X K_{XX^*} M^{-1} K_{X^*X} Q_X & - Q_X K_{XX^*} M^{-1} \\
+      - M^{-1} K_{X^*X} Q_X & M^{-1}
+    \end{pmatrix}
+    \,,
+\end{align*} 
+which simplifies to
+\begin{align*}
+  H_{\tilde{X}}
+    % = \begin{pmatrix}
+    %   K_{XX} Q_X + K_{XX} Q_X K_{XX^*} M^{-1} K_{X^*X} Q_X - K_{XX^*} M^{-1} K_{X^*X} Q_X
+    %   & - K_{XX} Q_X K_{XX^*} M^{-1} + K_{XX^*} M^{-1} \\
+    %   K_{X^*X} Q_X + K_{X^*X} Q_X K_{XX^*} M^{-1} K_{X^*X} Q_X - K_{X^*X^*} M^{-1} K_{X^*X} Q_X
+    %   & - K_{X^*X} Q_X K_{XX^*} M^{-1} + K_{X^*X^*} M^{-1}
+    % \end{pmatrix}
+    % & = \begin{pmatrix}
+    %   K_{XX} Q_X - \bigl(I_n - K_{XX} Q_X \bigr) K_{XX^*} M^{-1} K_{X^*X} Q_X
+    %   & \bigl(I_n - K_{XX} Q_X \bigr) K_{XX^*} M^{-1} \\
+    %   \bigl( M - K_{X^*X^*} + K_{X^*X} Q_X K_{XX^*} \bigr) M^{-1} K_{X^*X} Q_X
+    %   & \bigl( K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*} \bigr) M^{-1}
+    % \end{pmatrix} \\
+    % = \begin{pmatrix}
+    %   K_{XX} Q_X - \bigl(I_n - K_{XX} Q_X \bigr) K_{XX^*} M^{-1} K_{X^*X} Q_X
+    %   & \bigl(I_n - K_{XX} Q_X \bigr) K_{XX^*} M^{-1} \\
+    %   a M^{-1} K_{X^*X} Q_X
+    %   & I_m - a M^{-1}
+    % \end{pmatrix}
+    & = \begin{pmatrix}
+      H_X - \bigl(I_n - H_X \bigr) K_{XX^*} M^{-1} K_{X^*X} Q_X
+      & (I_n - H_X) K_{XX^*} M^{-1} \\
+      a M^{-1} K_{X^*X} Q_X
+      & I_m - a M^{-1}
+    \end{pmatrix}\\
+    & = \begin{pmatrix}
+      I_n - a \bigl( Q_X + Q_X K_{XX^*} M^{-1} K_{X^*X} Q_X \bigr)
+      & a Q_X K_{XX^*} M^{-1} \\
+      a M^{-1} K_{X^*X} Q_X
+      & I_m - a M^{-1}
+    \end{pmatrix} \,,
+\end{align*}
+since $I_n - H_X = a Q_X$. Thus
+\begin{align*}
+  \begin{pmatrix} y\\ y^* \end{pmatrix} - \begin{pmatrix}
+        \hat{y}_{|(\tilde{X}, \tilde{y})} \\
+        \hat{y}^*_{|(\tilde{X}, \tilde{y})}
+      \end{pmatrix}
+    &= a \begin{pmatrix}
+        Q_X + Q_X K_{XX^*} M^{-1} K_{X^*X} Q_X & - Q_X K_{XX^*} M^{-1} \\
+        - M^{-1} K_{X^*X} Q_X & M^{-1}
+      \end{pmatrix}
+      \begin{pmatrix} y\\ y^* \end{pmatrix} \\
+    % &= a \begin{pmatrix}
+    %     Q_X y - Q_X K_{XX^*} M^{-1} \bigl( y^* - K_{X^*X} Q_X y \bigr)\\
+    %     M^{-1} \bigl( y^* - K_{X^*X} Q_X y \bigr)
+    %   \end{pmatrix} \\
+    % &= \begin{pmatrix} (I_n - H_X) y \\ 0 \end{pmatrix}
+    % + a \begin{pmatrix} - Q_X K_{XX^*} \\ I_m \end{pmatrix}
+    %   M^{-1} \bigl( y^* - K_{X^*X} Q_X y \bigr) \\
+    &= \begin{pmatrix} (I_n - H_X) y \\ 0 \end{pmatrix}
+    + a \begin{pmatrix} - Q_X K_{XX^*} \\ I_m \end{pmatrix}
+      M^{-1} \bigl( y^* - \hat{y}^*_{|(X, y), X^*} \bigr) \,,
+\end{align*}
+where $\hat{y}^*_{|(X, y), X^*} = K_{X^*X} Q_X y$ and
+$M = aI_m + K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}$.
+
+Similarly to sec.~\ref{sub:bayesian_ridge_regression} in the particular case of the test sample
+consisting of just one object $(x^*, y^*)$ we have:
+$$ y^* - \hat{y}^*_{|(\tilde{X}, \tilde{y})}
+  = a m^{-1} (y^* - \hat{y}^*_{|(X, y), x^*}) \,, $$
+and 
+$$ y - \hat{y}_{|(\tilde{X}, \tilde{y})}
+  = (y - \hat{y}_{|(X, y)}) - a Q k_{x^*} m^{-1} (y^* - \hat{y}^*_{|(X, y), x^*}) \,, $$
+where $\hat{y}$ and $\hat{y}^*$ are pooled-sample predictions of $y$ and $y^*$
+respectively, and
+$$ m = a + k(x^*, x^*) - k_{x^*}' Q k_{x^*} \,, $$
+for $Q=(aI_n + K)^{-1}$ and $K = K_{XX} \in \Real^{n\times n}$.
+
+% subsubsection krr_analysis (end)
+
+\subsubsection{Gaussian Process formulation} % (fold)
+\label{ssub:gaussian_process_formulation}
+
+A random process $(f_x)_{x\in \Xcal} \sim GP(m(x), K(x,x'))$, with mean $m : \Xcal
+\mapsto \Real$ and \textbf{PD} function $K : \Xcal \times \Xcal \mapsto \Real$ is
+a Gaussian Process if all its finite dimensional distributions are multivariate
+Gaussian: for any $n\geq1$ and any $(x_i)_{i=1}^n \in \Xcal$ the vector $f \in \Real^{n\times 1}$
+given by $f = (f(x_i))_{i=1}^n$ has Multivariate Gaussian distribution with mean
+$(m(x_i))_{i=1}^n$ and covariance $K$ given by the Gram matrix of $K$ evaluated at
+the ``sampling'' points $(x_i)_{i=1}^n$:
+$$ \begin{pmatrix} f(x_1) \\ \vdots \\ f(x_n) \end{pmatrix}
+  \sim \Ncal_n\begin{pmatrix}
+    \begin{pmatrix} m(x_1) \\ \vdots \\ m(x_n) \end{pmatrix},
+    \begin{pmatrix}
+      K(x_1, x_1) & \cdots & K(x_1, x_n)\\
+      \vdots & \ddots & \vdots\\
+      K(x_n, x_1) & \cdots & K(x_n, x_n)
+    \end{pmatrix}
+  \end{pmatrix}
+  \,. $$
+
+Suppose for an $x\in\Xcal$ one can observe a noisy measurement $y_x$ of some process
+$(f_x)_{x\in\Xcal} \sim GP(m(x), K(x,x'))$:
+$$ y_x = f(x) + \epsilon_x \,, $$
+with $\epsilon_x\sim \Ncal(0,a)$ iid for all $x\in \Xcal$ and independent of
+$(f_x)_{x\in\Xcal}$. Suppose we are given a training sample $X=(x_i)_{i=1}^n\in\Xcal^{n\times 1}$
+with measurements $y = (y_{x_i})_{i=1}^n\in\Real^{n\times 1}$, and test objects
+$X^* = (x_i)_{i=n+1}^{n+l} = (x^*_j)_{j=1}^l\in\Xcal^{l\times 1}$. Denote by $m$
+and $m^*$ the values of $m$ evaluated at $X$ and $X^*$ and collected into appropriately
+sized vectors. Analogously define $f$ and $f^*$ as evaluations at $X$ and $X^*$.
+Then independence and Gaussianity implies 
+$$ \begin{pmatrix} f \\ f^* \\ \epsilon \\ \epsilon^* \end{pmatrix}
+  \sim \Ncal_{n+l+n+l}\begin{pmatrix}
+      \begin{pmatrix} m \\ m^* \\0 \\ 0 \end{pmatrix},
+      \begin{pmatrix}
+        K_{XX} & K_{XX^*} & 0 & 0 \\
+        K_{X^*X} & K_{X^*X^*} & 0 & 0 \\
+        0 & 0 & a I_n & 0 \\
+        0 & 0 & 0 & a I_m
+      \end{pmatrix}
+    \end{pmatrix}
+  \,. $$
+
+On the one hand the train measurements and test predictions (noise-free) have the
+distribution
+$$ \begin{pmatrix} y \\ \hat{y}^* \end{pmatrix}
+  \sim \Ncal_{n+l}\begin{pmatrix}
+    \begin{pmatrix} m \\ m^* \end{pmatrix},
+    \begin{pmatrix}
+      a I_n + K_{XX} & K_{XX^*} \\
+      K_{X^*X} & K_{X^*X^*}
+    \end{pmatrix}
+  \end{pmatrix}
+  \,, $$
+because
+$$ \begin{pmatrix} y \\ \hat{y}^* \end{pmatrix}
+  = \begin{pmatrix}
+      I_n & 0 & I_n & 0 \\
+      0 & I_m & 0 & 0
+      \end{pmatrix}
+  \begin{pmatrix} f \\ f^* \\ \epsilon \\ \epsilon^* \end{pmatrix}
+  \,. $$
+Thus distribution of $\hat{y}^*_{|(X, y), X^*}$, conditional on $(X,y)$ and $X^*$ is
+$$ \hat{y}^*_{|(X, y), X^*}
+  \sim \Ncal_l\Bigl(
+    m^* + K_{X^*X} Q_X \bigl(y - m\bigr),
+    K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}
+  \Bigr) \,, $$
+where $Q_X = \bigl(a I_n + K_{XX}\bigr)^{-1}$. It is worth noting, that this
+actually proves that the matrix $K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}$ is \textbf{PD}
+for any $X\in\Xcal^{n\times1}$ and $X^*\in\Xcal^{l\times1}$.
+On the other hand, the train target values and the test forecasts (noisy) are jointly
+distributed as
+$$ \begin{pmatrix} y \\ y^* \end{pmatrix}
+  \sim \Ncal_{n+l}\begin{pmatrix}
+    \begin{pmatrix} m \\ m^* \end{pmatrix},
+    \begin{pmatrix}
+      a I_n + K_{XX} & K_{XX^*} \\
+      K_{X^*X} & a I_m + K_{X^*X^*}
+    \end{pmatrix}
+  \end{pmatrix}
+  \,, $$
+whence the conditional distribution of the forecast is
+$$ y^*_{|(X, y), X^*}
+  \sim \Ncal_l\Bigl(
+    m^* + K_{X^*X} Q_X \bigl(y - m\bigr),
+    a I_m + K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}
+  \Bigr)
+  \,. $$
+In fact the MAP prediction coincides with the Bayesian prediction
+given by
+$$ \hat{y}^*_{|(X, y), X^*}
+  = \ex_{p(f^*|(X, y), X^*)} f^*
+  = m^* + K_{X^*X} Q_X \bigl(y - m\bigr)
+  \,. $$
+
+The Kernel Ridge regression is usually formulated with $m=0$, whence the Bayesian
+forecast distribution of a target value at a test object $x^*\in \Xcal$ is 
+$$ y^* \sim \Ncal(k_{x^*}'Q_X y, a + K(x^*, x^*) - k_{x^*}'Q_X k_{x^*}) \,, $$
+with $k_x = (K(x_i, x))_{i=1}^n\in\Real^{n\times1}$.
+
+% The confidence interval for
+% $y^*$ is thus given by
+% $$ \bigl(
+%     \hat{y}^*_{|(X, y), x^*} - \sqrt{a + a g_*} q_\epsilon,
+%     \hat{y}^*_{|(X, y), x^*} + \sqrt{a + a g_*} q_\epsilon
+%   \bigr) \,, $$
+
+% subsubsection gaussian_process_formulation (end)
+
+Suppose the input domain $\Xcal$ is a measurable space endowed with a probability
+measure $P_\Xcal$, and $K : \Xcal \times \Xcal \mapsto \Real$ is a \textbf{PD}
+kernel which is also $\Xcal \otimes \Xcal \mapsto \mathcal{B}(\Real)$ measurable.
+
+% subsection kernel_ridge_regression (end)
+
+% section conformal_kernel_ridge_regression (end)
+
+\section{Empirical study} % (fold)
+\label{sec:empirical_study}
+
+\subsection{Methodology} % (fold)
+\label{sub:methodology}
+
+Before describing the experimental setup it is necessary to define and discuss the key
+metrics, used to gauge performance of confidence regions.
+
+\subsubsection{Metrics} % (fold)
+\label{ssub:metrics}
+
+Let $\Gamma(x^*)$ be a measurable subset of $\Real$, which supposedly covers some
+random variable $y^*\sim \rho_{x^*}$, where $x^*\in \Xcal$ is fixed and given. The first
+performance metric is the \textbf{coverage} probability given by
+$$ \mathtt{coverage}\bigl(\Gamma(x^*)\bigr)
+  = \pr_{y^*\sim\rho_{x^*}}\bigl(y^*\in \Gamma(x^*)\bigr)
+  \,. $$
+If $\Gamma$ depends on some other random variables, like a training sample, then
+the probability is computed with implicit conditioning upon them. Furthermore, if
+$\Gamma(x^*)$ is an $\epsilon$-confidence region for $y^*$, $\epsilon\in(0, 1)$,
+then it is required that this region be at least conservatively valid, i.e.
+$\Gamma$ must ensure that
+$$ \mathtt{coverage}\bigl(\Gamma(x^*)\bigr) \geq 1-\epsilon \,. $$
+Note that here we consider $x^*$ to be specified, which means that we are interested
+in how well the confidence regions performs at that particular point.
+
+Giving up conditioning on $x^*$ yields another coverage metric, given by
+$$ \mathtt{coverage}\bigl(\Gamma(\cdot)\bigr)
+  = \pr_{(x^*, y^*)\sim\rho}\bigl(y^* \in \Gamma(x^*)\bigr)
+  \,. $$
+The difference between these two probabilities is that the former considers $x^*$ as
+fixed, and thus computes conditional coverage, whereas the latter assumes that $x^*$
+is random, thereby yielding an unconditional coverage probability (which accounts for
+the uncertainty in $x^*$ too). It is worth noting that is a confidence region is
+conditionally valid for all $x^*\in \Xcal$ but within a set of measure zero, then
+this region is unconditionally valid.
+
+Conditional and unconditional coverage are estimated with their empirical analogues
+and require different experimental setups. The unconditional coverage can be estimated
+on one validation sample $(X^*, y^*)=(x^*_j, y^*_j)_{j=1}^m \sim \rho$ with the
+sample mean hit rate:
+$$ \widehat{\mathtt{coverage}}_m\bigl(\Gamma(\cdot)\bigr)
+  = m^{-1} \sum_{j=1}^m 1_{y^*_j \in \Gamma(x^*_j)} \,. $$
+Estimation of conditional appears to be more complicated, since it requires sampling
+from the conditional distribution $y^*\sim \rho_{x^*}$ of $\rho$ at all (feasible
+finite case) or sufficiently many (infeasible finite or infinite case) sample points
+from $\Xcal$. Similarly to the unconditional case, conditional coverage as $x^*$ is
+the mean hit rate of $\Gamma(x^*)$
+$$ \widehat{\mathtt{coverage}}_{m_{x^*}}\bigl(\Gamma(x^*)\bigr)
+  = m_{x^*}^{-1} \sum_{j=1}^{m_{x^*}} 1_{y^*_{x^*,j} \in \Gamma(x^*)} \,, $$
+where $(y^*_{x^*,j})_{j=1}^{m_{x^*}}\sim \rho_{x^*}$ is the sample at $x^*$. If
+$F^*\subseteq \Xcal$ is the sample of $x^*$, used to obtain subsamples of $y^*_{x^*, j}$
+then the unconditional estimate could be computed with
+$$ \widehat{\mathtt{coverage}}_{F^*}\bigl(\Gamma(\cdot)\bigr)
+	= \frac{1}{\lvert F^*\rvert} \sum_{x^* \in F^*}
+      \widehat{\mathtt{coverage}}_{m_{x^*}}\bigl(\Gamma(x^*)\bigr) \,. $$
+
+In this study, we are interested in the validity of the conformal confidence region
+procedure itself and thus consider global coverage properties. That is why in the
+numerical experiments the unconditional coverage is measured. Furthermore, we also
+perform a validity check based on a one-sided hypothesis test: namely, the binomial
+test is used to test if the unconditional coverage is at least $1-\epsilon$.
+
+Having some consistent estimate of the true univariate distribution (the empirical
+CDF would suffice), it is possible to construct multiple regions with the same
+(asymptotic) coverage. Since we consider the case of regression, it is therefore
+desirable to have connected and narrow valid confidence regions, since they are
+more precise. The precision of a 1D-confidence region, or its efficiency, is measured
+by its width, which for an arbitrary region $\Gamma\subseteq \Real$ is given by
+the size of the convex hull of $\Gamma$, i.e.
+$$ \mathtt{width}(\Gamma)
+  = \inf\{\beta-\alpha\,:\, \Gamma\subseteq [\alpha, \beta]\}
+  \,. $$
+
+% subsubsection metrics (end)
+
+\subsubsection{Data Generating process} % (fold)
+\label{ssub:data_generating_process}
+
+We consider the following target-DGPs for numerical experimentation:
+\begin{itemize}
+    \item The train and test targets are generated by a Gaussain Process with
+    an RBF-kernel with parameter $\gamma>0$ and noise variance $a>0$: given
+    a sample of points $X\subseteq \Xcal$ we have
+    $$ (y_x)_{x\in X} \sim \Ncal_X(0, a I_X + K_{XX})\,, $$
+    for $K_{XX} = (K(x,x'))_{x,x'\in X}$ with
+    $$ K(x,x') = \mathop{\text{exp}}\biggl\{- \gamma \|x-x'\|2 \biggr\}\,; $$
+    \item The targets are produces by a slightly bu randomly distorted deterministic
+    function, picked from a set of ``nasty'' functions used to test numerical
+    optimization procedures.
+\end{itemize}
+
+% subsubsection data_generating_process (end)
+
+\subsubsection{Experimental protocols} % (fold)
+\label{ssub:experimental_protocols}
+
+The task of producing realistic datasets for testing is split in to phases and it
+intimately tied with proper experiment design. Basically, first it is necessary to
+draw some reasonably large validation subset $X^*\subseteq \Xcal$ within the input
+domain. This dedicated test set is used to compute the metrics of interest.
+
+The desired properties of the confidence regions and the methods, employed for their
+estimation, suggest the following design of a general experiment:
+given a small set of significance levels $E\subseteq (0,1)$ do
+\begin{enumerate}
+    \item generate $(\tilde{X}, \tilde{y}) \sim \mathtt{DGP}$;
+    \item split the full sample into $(X, y) = (x_i, y_i)_{i=1}^n$ and
+    $(X^*, y^*) = (x^*_j, y^*_j)_{j=1}^m$ -- train and test sets, respectively;
+    \item for each test object $(x^*_j, y^*_j)$ do:\begin{itemize}
+      \item obtain an collection of nested regions $(\Gamma^\epsilon_j)_{\epsilon\in E}$
+      $$ \Gamma^\epsilon_j
+        = \Gamma^\epsilon\bigl((X, y), x^*_j\bigr) \,, $$
+      either by means of a conformal procedure for \textbf{KRR}, or via a Gaussian
+      Process \textbf{KRR} model;
+    \end{itemize}
+    \item For every $\epsilon \in E$ compute the following metrics:
+    \begin{align*}
+        \widehat{\mathtt{coverage}}^\epsilon_m &= m^{-1} \sum_{j=1}^m 1_{y^*_j \in \Gamma^\epsilon_j} \,; \\
+        \widehat{\mathtt{width}}^\epsilon_m &= m^{-1} \sum_{j=1}^m \mathtt{width}\Bigl(\Gamma^\epsilon_j\Bigr) \,; \\
+    \end{align*}
+\end{enumerate}
+These reflect the unconditional coverage probability and the efficiency of the constructed
+confidence regions. The Law of large numbers implies that these metrics approximate their
+population counterparts.
+
+% subsubsection experimental_protocols (end)
+
+% subsection methodology (end)
+
+% section empirical_study (end)
+
+\end{document}
+
+
+% Recall that the Kernel Ridge Regression solves the following problem:
+% $$ \sum_{i=1}^n (y_i - f(x_i) - \mu)^2 + \lambda \|f\|^2
+%   \to \min_{f\in \Hcal_K, \mu \in \Real}
+%   \,, $$
+% for a given PD kernel $K:\Xcal\times \Xcal \to \Real$ and its induced canonical RKHS
+% $\Hcal_K$. The representer theorem \cite{ref:representer} states that this problem is
+% equivalent to
+% $$ \|y - K_{XX}\beta - \one \mu\|^2 + \lambda \beta'K_{XX}\beta
+%   \to \min_{\beta\in \Real^{n\times 1}, \mu \in \Real}
+%   \,, $$
+% with $\|\cdot\|$ -- the euclidean norm, $\one\in\Real^{n\times 1}$ -- a vector of ones,
+% and $k_{XX}$ defined as in \ref{eq:gp_cond_dist}. Elementary matrix algebra yields the
+% following first order conditions, which are sufficient, since the problem is convex:
+% \begin{align}
+%   \frac{\partial}{\partial \beta}
+%     \,&:\, 2\lambda K_{XX}\beta + 2 K_{XX}^2 \beta - 2 K_{XX}(y - \one \mu) = 0 \,,\\
+%   \frac{\partial}{\partial \mu}
+%     \,&:\, 2 \one'\one \mu - 2 \one'(y - K_{XX} \beta) = 0 \,.
+% \end{align}
+% %% Auxiliary derivation
+% Assuming $K_{XX}$ is invertible, the equations after simplification become
+% \begin{align}
+%   (\lambda I_n + K_{XX}) \beta = y - \one \mu \\
+%   \one' K_{XX} \beta - \one'(y - \one \mu) = 0
+% \end{align}
+% which implies $\lambda \one'\beta = 0$. Thus the solution to this problem is given by
+% \begin{equation} \label{eq:eq_99}
+%   \begin{pmatrix}
+%     \lambda I_n + K_{XX} & \one \\
+%     \one' & 0
+%   \end{pmatrix}
+%   \begin{pmatrix}
+%     \beta \\ \mu
+%   \end{pmatrix}
+%   = \begin{pmatrix}
+%     y \\ 0
+%   \end{pmatrix}
+%   \,.
+% \end{equation}
+% Routine block matrix inversion yields
+% \begin{equation} \label{eq:eq_99}
+%   \begin{pmatrix}
+%     \beta \\ \mu
+%   \end{pmatrix}
+%   = \begin{pmatrix}
+%     Q + Q \one m^{-1} \one' Q & - Q \one m^{-1}\\
+%     - m^{-1} \one'Q & m^{-1}\\
+%   \end{pmatrix}
+%   \begin{pmatrix}
+%     y \\ 0
+%   \end{pmatrix}
+%   \,,
+% \end{equation}
+% with $m = - \one' Q \one$ (non-zero since $Q$ exits) and $Q = (\lambda I_n + K_{XX})^{-1}$.
+% Therefore the solution is
+% \begin{align} \label{eq:eq_99}
+%   \mu &= (\one' Q \one)^{-1} \one' Q y \,,\\
+%   \beta &= Q (y - \one \mu) \,.
+% \end{align}
+% If $\mu$ is assumed to be zero, then $\beta = (\lambda I_n + K_{XX})^{-1} y$.
+
+

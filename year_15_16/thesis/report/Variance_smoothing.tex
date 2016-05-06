@@ -1,0 +1,222 @@
+\documentclass[a4paper,14pt]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{geometry}
+\usepackage{fullpage}
+
+\usepackage[mathcal]{euscript}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{mathptmx}
+
+\newcommand{\diag}{\mathop{\text{diag}}\nolimits}
+\newcommand{\ex}{\mathop{\mathbb{E}}\nolimits}
+\newcommand{\pr}{\mathop{\mathbb{P}}\nolimits}
+\newcommand{\prto}{\overset{\pr}{\to}}
+\newcommand{\lawto}{\overset{\mathcal{D}}{\to}}
+\newcommand{\one}{\mathbf{1}}
+
+\title{Residual varaince smoothing}
+\author{Ivan Nazarov}
+
+\begin{document}
+\maketitle
+
+\section{Generic residual variance ``smoothing''} % (fold)
+\label{sec:generic_residual_variance_smoothing}
+
+Consider a random variable $z\sim \mathcal{N}_d(\mu, \Sigma)$, where the mean $\mu$
+and the positive definite non-degenrerate covariance $\Sigma$ are known. Let $U \Lambda U'$
+be the eigen-decomposition of $\Sigma$: $U$ is a unitary matrix of eigenvectors, and
+$\Lambda$ -- a diagonal matrix with the eigenvalues on the main diagonal (ordered
+non-increasingly), columns of $U$ span $\mathbb{R}^{d\times 1}$.
+
+For a fixed $p=0,\ldots, d$ the decomposition of $\Sigma$ can be expressed as
+$$ \Sigma
+    = \begin{pmatrix}U_p & U_p^\perp\end{pmatrix}
+    \begin{pmatrix}\Lambda_{:p} & 0\\0&\Lambda_{p+1:}\end{pmatrix}
+    \begin{pmatrix}U_p'\\{U_p^\perp}'\end{pmatrix}\,,$$
+where $U_p$ is the matrix with the first $p$ columns of $U$, $U_p^\perp$ -- the last
+$d-p$ columns of $U$, orthogonal to $U_p$, $\Lambda_{:p}=\diag\bigl((\lambda_j)_{j=1}^p\bigr)$
+and $\Lambda_{p+1:}=\diag\bigl((\lambda_j)_{j=p+1}^d\bigr)$.
+
+Since $\Sigma$ is positive definite, there exists a square root matrix $\Sigma^\frac{1}{2}$
+given by
+$$\Sigma
+    = \begin{pmatrix}U_p & U_p^\perp\end{pmatrix}
+    \begin{pmatrix}\Lambda_{:p}^\frac{1}{2} & 0\\0&\Lambda_{p+1:}^\frac{1}{2}\end{pmatrix}
+    \begin{pmatrix}U_p'\\{U_p^\perp}'\end{pmatrix}
+    = U_p \Lambda_{:p}^\frac{1}{2} U_p' + U_p^\perp \Lambda_{p+1:}^\frac{1}{2} {U_p^\perp}'\,.$$
+
+
+For $\sigma^2_p = (d-p)^{-1}\sum_{j=p+1}^d \lambda_j$ define the following matrix:
+$$\Sigma^*
+    = \begin{pmatrix}U_p & U_p^\perp\end{pmatrix}
+    \begin{pmatrix}\Lambda_{:p} & 0\\0&\sigma^2_p I_{d-p}\end{pmatrix}
+    \begin{pmatrix}U_p'\\{U_p^\perp}'\end{pmatrix}
+    = U_p\Lambda_{:p}U_p' + \sigma^2 U_p^\perp {U_p^\perp}'\,,$$
+i.e. the variance in the residual eigen-directions is evenly spread (it is worth
+noting, that residual variance leveling does not require that eigen-directions be
+ordered according to their principality). $\Sigma^*$ is the adjusted (smoothed)
+version of covariance $\Sigma$.
+
+Note that $U_p^\perp {U_p^\perp}'$ is a projector onto the subspace, orthogonal to
+the principal subspace spanned by the columns of $U$. Indeed, since columns of $U$
+constitute an orthonormal basis in $\mathbb{R}^{d\times 1}$, every $x$ in it can be
+uniquely expressed as $ x = U_p X + U_p^\perp X^\perp$, where $X$ and $x^\perp$ are
+coordinates with respect to the appropriate basis given by inner products $X = U_p' x$
+and $X^\perp = {U_p^\perp}'x$. Therefore $I_d = U_p U_p' + U_p^\perp {U_p^\perp}'$
+whence 
+$$ \Sigma^* = U_p\Lambda_{:p}U_p' + \sigma^2 \bigl(I_d - U_p U_p' \bigr) \,.$$
+
+Since $\Sigma$ is positive definite, the inverse of its adjusted version $\Sigma^*$
+is given by
+$$ {\Sigma^*}^{-1}
+    = \begin{pmatrix}U_p & U_p^\perp\end{pmatrix}
+    \begin{pmatrix}\Lambda_{:p}^{-1} & 0\\0&\sigma^{-2}_p I_{d-p}\end{pmatrix}
+    \begin{pmatrix}U_p'\\{U_p^\perp}'\end{pmatrix}
+    = U_p\Lambda_{:p}^{-1}U_p' + \sigma^{-2} \bigl(I_d - U_p U_p' \bigr)
+    \,.$$
+
+% subsection generic_residual_variance_smoothing (end)
+
+\subsection{Distribution of abnormality scores} % (fold)
+\label{sub:distribution_of_abnormality_scores}
+
+For any $z\in \mathbb{R}^{d\times 1}$ define the following values:
+\begin{align*}
+    W_z &= (z-\mu)' U_p\Lambda_{:p}^{-1} U_p' (z-\mu)\,;\\
+    B_z &= (z-\mu)' \bigl( I_d - U_p U_p'\bigr) (z-\mu) \sigma^{-2}\,.
+\end{align*}
+The above results clearly imply that the Mahalanobis distance between $z$ and $\mu$
+with curvature matrix $\Sigma^*$ can be expressed as
+$$ (z-\mu)'{\Sigma^*}^{-1}(z-\mu) = W_z + B_z \,.$$
+
+For an observation point $z$ the value $W_z$ is the within-subspace distance of
+a sample from the centre of the subspace, and $B_z$ is the distance of a point to
+the principal subspace itself. The latter can also be interpreted as a reconstruction
+error, adjusted for the typical error scale in the residual subspace $\sigma^2$.
+
+It is interesting to know the distribution of these quantities in the normal setting:
+when $z\sim\mathcal{N}_d(\mu, \Sigma)$, which can be expressed as $z = \mu + \Sigma^\frac{1}{2} \xi$
+for $\xi\sim\mathcal{N}_d(0, I_d)$.
+
+% subsection distribution_of_abnormality_scores (end)
+
+\subsubsection{Distribution of $W_z$} % (fold)
+\label{ssub:distribution_of_w_z}
+
+Due to orthogonality of the columns of $U$ the value $W_z$ reduces to
+$$W_z
+    = (z-\mu)'U_p\Lambda_{:p}^{-1}U_p'(z-\mu)
+    = \xi' \Sigma^\frac{1}{2} U_p\Lambda_{:p}^{-1}U_p' \Sigma^\frac{1}{2} \xi
+    = \xi' U_p \Lambda_{:p}^\frac{1}{2}\Lambda_{:p}^{-1}\Lambda_{:p}^\frac{1}{2} U_p' \xi
+    = \xi' U_p U_p' \xi
+    \,.$$
+The vector $U_p' \xi$ has $\mathcal{N}_p(0, I_p)$ distribution, whence $W_z \sim \chi^2_p$.
+
+% subsubsection distribution_of_w_z (end)
+
+\subsubsection{Distribution of $B_z$} % (fold)
+\label{ssub:distribution_of_b_z}
+
+The quantity $B_z$ reduces to
+$$B_z
+    = \sigma^{-2} (z-\mu)' (I_d - U_p  U_p') (z-\mu)
+    = \sigma^{-2} \xi' \Sigma^\frac{1}{2} \bigl(I_d - U_p  U_p'\bigr) \Sigma^\frac{1}{2} \xi
+    = \sigma^{-2} \xi' U_p^\perp \Lambda_{p+1:} {U_p^\perp}' \xi\,,$$
+since due to orthonormality of $U$
+$$\Sigma^\frac{1}{2} (I_d - U_p  U_p')
+    = U_p^\perp \Lambda_{p+1:}^\frac{1}{2} {U_p^\perp}'
+    \,.$$
+Note that ${U_p^\perp}' \xi \sim \mathcal{N}_{d-p}(0, I_{d-p})$ whence $B_z$ can be expressed
+as a weighted sum of independent $\chi^2_1$ distributed random variables:
+$$B_z \sim \sum_{j=p+1}^d \frac{\lambda_j}{\sigma^2} \chi^2_1\,.$$
+
+% subsubsection distribution_of_b_z (end)
+
+\subsubsection{Independence of $W_z$ and $B_z$} % (fold)
+\label{ssub:independence_of_w_z_and_b_z}
+
+Note that for $\xi \sim \mathcal{N}_d(0, I_d)$ the random variables $(\eta_j)_{j=p+1}^d = {U_p^\perp}'\xi$
+and $(\eta_j)_{j=1}^p = U_p\xi$ are independent, with distributions $\mathcal{N}_{d-p}(0, I_{d-p})$
+and $\mathcal{N}_p(0, I_p)$ respectively, which can be expressed as $\eta\sim \mathcal{N}_d(0, I_d)$.
+
+Thus the quantities of interest cna be expressed as
+$$ B_z = \sum_{j=p+1}^d \frac{\lambda_j}{\sigma^2} \eta_j^2\,
+    \text{ and }
+   W_z = \sum_{j=1}^p \eta_j^2\,,$$
+which implies that $B_z$ and $W_z$ are independent.
+
+% subsubsection independence_of_w_z_and_b_z (end)
+
+\subsubsection{Non-Gaussian case} % (fold)
+\label{ssub:non_gaussian_case}
+
+However, if $z$ is not Gaussian, but still has mean $\mu$ and covariance $\Sigma$,
+these representations are still valid, except for the independence and the distribution
+family:
+$$B_z = \sum_{j=p+1}^d \frac{\lambda_j}{\sigma^2} \eta_j^2\,,$$
+and
+$$W_z = \sum_{j=1}^p \eta_j^2\,,$$
+for some $\eta \sim \mathcal{D}_d(0, I_d)$ with arbitrary dependence structure but fixed
+standard first and second moments.
+
+% subsubsection non_gaussian_case (end)
+
+\subsection{Asymptotic distribution of the distances} % (fold)
+\label{sub:asymptotic_distribution_of_the_distances}
+
+Let $V_n\in\mathbb{d\times d}$ be a sequence of positive semidefinite matrices that
+converge in probability to a positive definite matrix $V$. Then by \textbf{continuous
+mapping theorem} (\ref{vaart2000}), one has $V_n^{-1} \prto V^{-1}$, since matrix
+inversion (for invertible matrices) is a continuous map. Indeed, the inverse of
+a nonsingular matrix $A$ is given by $(\mathop{\text{det}}A)^{-1}\mathop{\text{adj}}A$,
+where each entry is a polynomial of the elements of the original matrix $A$.
+
+Furthermore, if vectors $X_n\prto X$, $X_n, X \in\mathbb{R}^{d\times1}$ and matrices
+$A_n\prto A$, then the reshaped concatenated vector $(X_n \,A_n) \prto (X\,A)$. This
+implies that the quadratic form $X_n'A X_n$ converges in probability to $X'AX$, since
+the map $(x, A) \mapsto x'Ax$ is continuous, being a composition of matrix-vector
+products $A'b$ which are continuous.
+
+By the law of large numbers the sample mean is consistent:
+For any sequence of random vectors $\hat{\mu}_n\in\mathbb{R}^{d\times1}$, that
+converges in probability to a nonrandom $\mu$, and for any $Q_n \prto Q$ the continuous
+mapping theorem implies that for any random variable $z$ (on the same probability
+space)
+$$ (z-\hat{\mu}_n)'Q_n (z-\hat{\mu}_n) \prto (z-\mu)'Q(z-\mu) \,,$$
+since the sequence $z_n = z - \hat{\mu}_n$ converges in probability to $z - \mu$.
+
+Thus in order to prove the asymptotic distribution of the distance it suffices to show
+that $\hat{U}_n \prto U $ and $\hat{\lambda}_{nj} \prto \lambda_j $,
+where $\hat{S}_n = \hat{U}_n \hat{\Lambda}_n \hat{U}_n'$ and $\Sigma = U \Lambda U'$ are
+the eigen-decompositions of the sample and population covariance matrices respectively.
+
+% subsection asymptotic_distribution_of_the_distances (end)
+
+% section probabilistic_pca (end)
+
+\section{the problem} % (fold)
+\label{sec:the_problem}
+
+Suppose $P = P_0 \gamma + P_1 (1-\gamma)$, where the ``normal'' distribution $P_0$ is
+$\mathcal{N}_d(\mu, \Sigma)$, with $\Sigma = \sigma^2 I_d + WW'$ for some $W\in \mathbb{R}^{d\times p}$
+and $P_1$ is the anomalous distribution, which can be arbitrary.
+
+The problem is to estimate the a following quantity:
+$$ \pr_{z\sim P_1}(B_z \leq R^2) \,,$$
+which measures the discriminative power of an anomaly detector
+given by
+$$ \mathop{\mathtt{ANOM}}(z, R) = 1_{[R^2, +\infty)}(B_z) \,.$$
+
+It would also be interesting to estimate the speed of decay of this probability, for
+$P_1$ given by $\mathcal{N}_d(\mu, \nu^2 I_d)$ in the case when $\nu\to \infty$.
+
+
+
+% section the_problem (end)
+
+\end{document}

@@ -1,0 +1,78 @@
+\section{Numerical experiments} % (fold)
+\label{sec:numerical_experiments}
+
+In this section we are going to conduct a numerical study of the validity and
+efficiency of reconstruction confidence intervals.
+
+We study two types of Kernel Ridge Regression based confidednce regions: the Gaussian
+Process confidence interval and the confomalized confidence interval. Recall that,
+the GP interpreation of KRR states that the forcast of $y^*$ conditinoal on the observed
+train sampel $(X, y)$ and input $x^*$ is
+$$ \bigl.y^*\bigr\rvert_{(X, y), x^*}
+    \sim \Ncal(k_X(x^*)' Q_X y,
+        \hat{\sigma}^2(\labmda + k(x^*,x^*) - k_X(x^*)'Q_X k_X(x^*)))
+    \,,$$
+with $k_X(\cdot) = \bigl(k(x_i, \cdot)\bigr)_{i=1}^n\in \Hcal^{n\times 1}$ -- the vector
+of canonical featue maps evalueated at the train, and $Q_X = (\labmda I_n + K_x)^{-1}$,
+where $K_x = (K(x_i, x_j))_{i,j=1,1}^{n,n}$ -- the kernel's sample Gram matrix. Hence
+the GP CI is given by
+$$ \Gamma^\epsilon_{(X, y)}(x^*)
+    = \hat{y}_{(X, y)}(x^*) + \sqrt{\hat{\sigma}^2 m_X(x^*)} z_{1-\frac{\epsilon}{2}}
+        \times [-1,1]
+    \,, $$
+where $\hat{y}_{(X, y)}(x) = k_X(x^*)' Q_X y$ and
+$$ m_X(x^*) = \labmda + k(x^*,x^*) - k_X(x^*)'Q_X k_X(x^*)) \,. $$
+Note that on fact $m_X(x_i) = (e_i'Q_Xe_i)^{-1}$ using the block matirx inversion
+formula.
+
+For a given $x^*\in X^*$ the CKRR Confidence Intervals are given by:
+$$ \Gamma^\epsilon_x = \{ z\in\Real\,:,\, p^z_{(X,y),x^*} \geq \epsilon \}\,, $$
+where
+$$ p^z_{(X,y),x^*}
+    = (n+1)^{-1} \lvert\{i\in 1,\ldots, n+1 \,:\,
+        \alpha_i^z \leq \alpha_{n+1}^z \}\rvert
+    \,. $$
+The vector $\alpha^z=(\alpha_i^z)_{i=1}^{n+1}$ is given by
+$$ \alpha^z
+    = \begin{pmatrix}
+        I_{n+1} - \begin{pmatrix}
+            K_X & k_X(x^*)\\
+            k_X(x^*)' & k(x^*, x^*)
+        \end{pmatrix} \begin{pmatrix}
+            \labmda + K_X & k_X(x^*)\\
+            k_X(x^*)' & \labmda + k(x^*, x^*)
+    \end{pmatrix}^{-1} \end{pmatrix}
+    \begin{pmatrix} y \\ z \end{pmatrix}
+    \,, $$
+which reduces after some algebra to
+$$ \alpha^z
+    = \begin{pmatrix} (I_n - K_X Q_X) y\\ 0 \end{pmatrix}
+    - \lambda \begin{pmatrix}
+            Q_X k_X(x^*)\\ -1
+        \end{pmatrix}
+        m_X(x^*)^{-1} (z - \hat{y}_{(X, y)}(x^*))
+    \,. $$
+
+\subsection{1D-case} % (fold)
+\label{sub:1d_case}
+
+Let $\Xcal =[0,1]$ be the space of inputs (the domain) and let the targets be real
+values. The general experiment setup for reconstruction confidence for some
+$f:\Xcal\mapsto\Real$ is as follows:
+\begin{itemize}
+    \item Produce a large sample of inputs $\tilde{X} = (x_i)_{i=1}^N\in \Xcal$
+    on a fine grid with $x_i = N^{-1} k$ for $k=0, \ldots, N$, and draw values
+    $\tilde{y}=(f(x_i))_{i=1}^N$;
+    \item Split $(\tilde{X}, \tilde{y})$ into nonoverlapping train and test subsamples,
+    $(X, y) = (x_i, y_i)_{i=1}^n$ and $(X^*, y^*) = (x_i, y_i)_{i=n+1}^{n+m}$ respectively;
+    \item Compute the $\epsilon$-confindece intervals $(\Gamma^\epsilon_{(X, y)}(x))_{x\in X^*}$
+    for the test subsample;
+    \item Assess the validity and perfomance of the constructed confidence sets.
+\end{itemize}
+
+The experiment was conducted over several typical $1$D test functions used to assess the approximation precision.
+
+
+% subsection 1d_case (end)
+
+% section numerical_experiments (end)
