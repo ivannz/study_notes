@@ -1,0 +1,110 @@
+\documentclass[a4paper]{article}
+% \usepackage[a4paper,margin=15mm,landscape]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{fullpage}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{mathptmx}
+
+% \usepackage{tikz}
+% \usetikzlibrary{positioning,shapes,shadows,arrows}
+
+\usepackage[english, russian]{babel}
+\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
+\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
+
+\title{Machine Learning and Data Mining map}
+\author{Ignatov Dmitriy, Nazarov Ivan \rus{101мНОД(ИССА)}\\the DataScience Collective}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+	\item Clustering: \begin{enumerate}
+    \item $k$-means clustering;
+    \item Hierarchical clustering;
+    \item Density-based clustering;
+    \item Graph clustering (Spectral, min-cut et c.);
+    \item Mean-shift;
+  \end{enumerate}
+  \item Ranking: \begin{enumerate}
+    \item PageRank, HITS;
+    \item Learning to Rank;
+  \end{enumerate}
+  \item Classification: \begin{enumerate}
+    \item Support Vector Machine Classification (with kernels);
+    \item $1$-rule, rulesets;
+    \item Decision-, Regression- Trees;
+    \item Na\"\i ve Bayes;
+    \item $k$-Nearest Neighbours;
+    \item Artificiall Neural Networks;
+  \end{enumerate}
+  \item Regression: \begin{enumerate}
+    \item Linear models;
+    \item Regularization (to battle overfitting);
+    \item Support Vector Machine Regression;
+  \end{enumerate}
+  \item Ensemble methods: \begin{enumerate}
+    \item Booststrap Aggregating;
+    \item Adaptive Boosting;
+    \item Random Forests (mention Relational Random Forest);
+    \item Gradient Boosting;
+  \end{enumerate}
+  \item Data mining: \begin{enumerate}
+    \item Frequent itemsets (Sequence-, Graph-, Pattern mining);
+    \item Bi-, Tri- clustering;
+    \item Association rules;
+  \end{enumerate}
+	\item Recommender Systems: \begin{enumerate}
+		\item User-, Item- based approach;
+    \item Pattern structure recommender systems;
+    \item Trust-based approach;
+    \item Matrix Factorization: \begin{enumerate}
+      \item Singular Value Decomposition;
+      \item Binary Matrix Factorization;
+    \end{enumerate}
+  \end{enumerate}
+  \item Dimensionality reduction: \begin{enumerate}
+    \item Principal component analysis;
+    \item Stochastic Nearest Neighbour ($t$-SNE);
+    \item Isomap;
+    \item Manifold Learning;
+  \end{enumerate}
+  \item Statistical learning: \begin{enumerate}
+    \item Na\"\i ve Bayes classification;
+    \item Mixture models: \begin{enumerate}
+      \item PLSA (``frequentist'', EM);
+      \item LDA (bayesian HMM, simulation);
+    \end{enumerate}
+    \item Variational inference;
+  \end{enumerate}
+  \item Big-Data : \begin{enumerate}
+    \item Map-Reduce ideology;
+    \item Stochastic (batch) gradient descent;
+    \item Online-, stream- learning;
+    \item Concept drift;
+    \item Technology: \begin{enumerate}
+      \item Apache Hadoop, Spark;
+      \item Amazon AWS;
+    \end{enumerate}
+  \end{enumerate}
+  \item Deep Learning: \begin{enumerate}
+    \item Convolutional Neural Networks for Computer Vision;
+    \item Packages: \begin{enumerate}
+      \item Lasagne, Theano;
+    \end{enumerate}
+    \item Applications: \begin{enumerate}
+      \item Image Recognition (pixel level);
+      \item Language Processing (character level);
+    \end{enumerate}
+  \end{enumerate}
+  \item Outlier detection: early warning systems;
+  \item Feature selection: garbage in, garbage out: \begin{enumerate}
+    \item Feature engineering;
+    \item Stacking (using classifier outputs as features);
+  \end{enumerate}
+\end{enumerate}
+
+\end{document}
