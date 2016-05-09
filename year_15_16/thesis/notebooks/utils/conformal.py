@@ -112,11 +112,64 @@ def absolute_CCR(A_i, B_i, A_n, B_n):
 
 def RRCM(A, B, levels):
     A, B = A.copy(), B.copy()
-    A[B < 0] *= -1 ; B[B < 0] *= -1
-    return confidence_region(*absolute_CCR(A, B, A[-1:], B[-1:]), levels=levels)
+    A[B < 0] *= -1
+    B[B < 0] *= -1
+    N, A_n, B_n = A.shape[0], A[-1], B[-1]
+    
+    ## compute P and Q
+    P, Q = - (A + A_n) / (B + B_n), (A - A_n) / (B_n - B)
+
+    breaks_ = np.unique(np.r_[P, Q, -np.inf, np.inf])
+    breaks_ = breaks_[~np.isnan(breaks_)]
+
+    ## locate the associated endpoints
+    Pi_, Qi_ = np.searchsorted(breaks_, P), np.searchsorted(breaks_, Q)
+    delta_ = np.zeros(breaks_.shape[0] + 1, dtype=np.float)
+    for p, q, a_, b_ in zip(Pi_, Qi_, A, B):
+        if b_ == B_n:
+            if abs(a_) >= abs(A_n) and B_n == 0:
+                delta_[0] += 1
+                delta_[-1] -= 1
+            elif B_n > 0:
+                s, t = 0, -1
+                if a_ > A_n:
+                    s = p
+                elif a_ > A_n:
+                    t = p + 1
+                delta_[s] += 1
+                delta_[t] -= 1
+        else:
+            if a_ * B_n >= b_ * A_n:
+                delta_[q + 1] -= 1
+                delta_[p] += 1
+            else:
+                delta_[p + 1] -= 1
+                delta_[q] += 1
+    ## 
+            if b_ > B_n:
+                delta_[0] += 1
+                delta_[-1] -= 1
+    ## compute the frequency
+    coverage_ = np.cumsum(delta_) / N
+    ## Consolidate intervals
+    intervals_ = list()
+    for level in levels:
+        indices_ = np.flatnonzero(coverage_ > level)
+        beg, end = [indices_[0]], [indices_[0]+1]
+        for j in indices_:
+            if end[-1] < j:
+                end[-1] -= 1
+                beg.append(j)
+                end.append(j + 1)
+            else:
+                end[-1] = max(end[-1], j + 1)
+        end[-1] -= 1
+        intervals_.append(breaks_[np.array([beg, end]).T])
+    return intervals_
+
+
 
 def CCR(A, B, levels):
     hi = confidence_region(*sided_CCR(A, B, A[-1:], B[-1:]), levels=levels / 2)
     lo = confidence_region(*sided_CCR(-A, -B, -A[-1:], -B[-1:]), levels=levels / 2)
     return intersect_(lo, hi)
-
