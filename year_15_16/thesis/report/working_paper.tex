@@ -1,4 +1,4 @@
-\documentclass[a4paper,14pt]{article}
+\documentclass[a4paper]{article}
 % \documentclass[a4paper,14pt]{extarticle}
 \usepackage[utf8]{inputenc}
 
@@ -38,19 +38,24 @@
 \label{sub:problem_statement}
 
 The Kernel Ridge Regression is formulated as the following problem:
-$$ $$
+% \begin{equation*}
+% \end{equation*}
 
-Mention the kernel trick
+Mention the kernel trick.
 
 The Kernel Ridge Regression for a given PD kernel $K:\Xcal\times \Xcal \to \Real$
 solves the following problem:
-$$ \|y - K_{XX}\beta\|^2 + \lambda \beta' K_{XX} \beta
-  \to \min_{\beta\in \Real^{n\times 1}}
-  \,, $$
+\begin{equation*}
+  \|y - K_{XX}\beta\|^2 + \lambda \beta' K_{XX} \beta
+    \to \min_{\beta\in \Real^{n\times 1}}
+    \,,
+\end{equation*}
 with $\|\cdot\|$ -- the euclidean norm, and $K_{XX}$ defined as in \ref{eq:gp_cond_dist}.
 Assuming $K_{XX}$ is invertible, elementary matrix algebra yields the following
 equation for the minimizer $\beta$:
-$$ (\lambda I_n + K_{XX}) \beta - y = 0 \,. $$
+\begin{equation*}
+  (\lambda I_n + K_{XX}) \beta - y = 0 \,.
+\end{equation*}
 
 % subsection problem_statement (end)
 
@@ -145,30 +150,38 @@ Gaussian. In particular, for any $n\geq1$ and any $X = (x_i)_{i=1}^n \in \Xcal$ 
 vector $f_X = (f(x_i))_{i=1}^n \in \Real^{n\times 1}$ has Gaussian distribution with
 mean $m_X = (m(x_i))_{i=1}^n$ and covariance matrix $K_{XX} = (\Kcal(x_i,x_j))_{ij}$ --
 the $n\times n$ Gram matrix of $\Kcal(\cdot,\cdot)$ evaluated at points $(x_i)_{i=1}^n$:
-$$ f_X \sim \Ncal_n(m_X, K_{XX}) \,. $$
+\begin{equation*}
+  f_X \sim \Ncal_n(m_X, K_{XX}) \,.
+\end{equation*}
 
 In this formulation the model \ref{eq:signal_model} represents the addition of an
 independent white noise process $(\epsilon_x)_{x\in \Xcal}$ with variance $\lambda$
 to $(f_x)_{x\in \Xcal} \sim GP(m(x), \Kcal(x,x'))$. Indeed, for any $n\geq1$ and
 any $X = (x_i)_{i=1}^n \in \Xcal$ the finite dimensional distribution of $(y_x)_{x\in\Xcal}$
 is $y_X\sim \Ncal_n(m_X, \lambda I_n + K_{XX})$, because
-$$ y_X
+\begin{equation*}
+  y_X
     = \begin{pmatrix} I_n & I_n \end{pmatrix}
     \begin{pmatrix} f_X \\ \epsilon_X \end{pmatrix}
-    \,, $$
+    \,,
+\end{equation*}
 -- a linear combination of $f$ and $\epsilon$ with joint distribution
-$$ \begin{pmatrix} f \\ \epsilon \end{pmatrix}
-  \sim \Ncal_{n+n}\begin{pmatrix}
-      \begin{pmatrix} m \\ 0 \end{pmatrix},
-      \begin{pmatrix}
-        K_{XX} & 0 \\
-        0 & \lambda I_n
+\begin{equation*}
+  \begin{pmatrix} f \\ \epsilon \end{pmatrix}
+    \sim \Ncal_{n+n}\begin{pmatrix}
+        \begin{pmatrix} m \\ 0 \end{pmatrix},
+        \begin{pmatrix}
+          K_{XX} & 0 \\
+          0 & \lambda I_n
+        \end{pmatrix}
       \end{pmatrix}
-    \end{pmatrix}
-  \,. $$
+    \,.
+\end{equation*}
 Therefore $(y_x)_{x\in\Xcal} \sim GP(m(x), \Kcal(x,x'))$ with $\Kcal$ given by a PD
 kernel
-$$ \Kcal(x,x') = \lambda \delta_{x,x'} + K(x,x') \,, $$
+\begin{equation*}
+  \Kcal(x,x') = \lambda \delta_{x,x'} + K(x,x') \,,
+\end{equation*}
 where $\delta_{x,x'}$ is the delta-function on $\Xcal\times \Xcal$.
 
 %% Conditional distribution
@@ -178,44 +191,56 @@ the model \ref{eq:signal_model}. In the Bayesian setting this means that it is n
 to get a conditional distribution of a test sample $y_{X^*} = (y_{x^*_j})_{j=1}^l$,
 with respect to the train sample $y_X = (y_{x_i})_{i=1}^n$. Gaussianity makes it
 especially easy to derive conditional distributions. Indeed, if
-$$ \begin{pmatrix}z_1 \\ z_2\end{pmatrix}
-  \sim \Ncal_{d_1+d_2}\Biggl(
-    \begin{pmatrix} \mu_1 \\ \mu_2 \end{pmatrix},
-    \begin{pmatrix}
-      \Sigma_{11} & \Sigma_{12} \\
-      \Sigma_{21} & \Sigma_{22}
-    \end{pmatrix}
-  \Biggr)
-  \,,$$
-then the conditional distribution of $z_1$ given $z_2$ is Gaussian with 
-$$ {z_1}_{|z_2}
-  \sim \Ncal_{d_1}\bigl(
-    \mu_1 + \Sigma_{12}\Sigma_{22}^{-1}(x_2-\mu_2),
-    \Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}
-  \bigr) \,,$$
+\begin{equation*}
+  \begin{pmatrix}z_1 \\ z_2\end{pmatrix}
+    \sim \Ncal_{d_1+d_2}\Biggl(
+      \begin{pmatrix} \mu_1 \\ \mu_2 \end{pmatrix},
+      \begin{pmatrix}
+        \Sigma_{11} & \Sigma_{12} \\
+        \Sigma_{21} & \Sigma_{22}
+      \end{pmatrix}
+    \Biggr)
+    \,,
+\end{equation*}
+then the conditional distribution of $z_1$ given $z_2$ is Gaussian with
+\begin{equation*}
+  {z_1}_{|z_2}
+    \sim \Ncal_{d_1}\bigl(
+      \mu_1 + \Sigma_{12}\Sigma_{22}^{-1}(x_2-\mu_2),
+      \Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}
+    \bigr)
+    \,,
+\end{equation*}
 provided the inverse of $\Sigma_{22}$ exits. Therefore the conditional distribution
 is given by
-$$ {y_{X^*}}_{y_X}
-  \sim \Ncal_l\Bigl(
-    m_{X^*} + K_{X^*X} Q_X \bigl(y_X - m_X\bigr),
-    \lambda K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}
-  \Bigr) \,, $$
+\begin{equation} \label{eq:cond_distr}
+  {y_{X^*}}_{y_X}
+    \sim \Ncal_l\Bigl(
+      m_{X^*} + K_{X^*X} Q_X \bigl(y_X - m_X\bigr),
+      \lambda K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}
+    \Bigr)
+    \,,
+\end{equation}
 where $Q_X = \bigl(K_{XX}\bigr)^{-1}$, since $(y_x)_{x\in\Xcal}$ is a GP and
-$$ \begin{pmatrix} y_X \\ y_{X^*} \end{pmatrix}
-  \sim \Ncal_{n+l}\begin{pmatrix}
-    \begin{pmatrix} m_X \\ m_{X^*} \end{pmatrix},
-    \begin{pmatrix}
-      K_{XX} & K_{XX^*} \\
-      K_{X^*X} & K_{X^*X^*}
+\begin{equation*}
+  \begin{pmatrix} y_X \\ y_{X^*} \end{pmatrix}
+    \sim \Ncal_{n+l}\begin{pmatrix}
+      \begin{pmatrix} m_X \\ m_{X^*} \end{pmatrix},
+      \begin{pmatrix}
+        K_{XX} & K_{XX^*} \\
+        K_{X^*X} & K_{X^*X^*}
+      \end{pmatrix}
     \end{pmatrix}
-  \end{pmatrix}
-  \,, $$
+    \,,
+\end{equation*}
 with $K_{XX^*} = (\Kcal(x_i, x^*_j))\in \Real^{n\times l}$.
 
 The Bayesian prediction of $y_{X^*}$ conditional on observing $y_X$ is given by
 the Maximum Posterior prediction (which in the Gaussian case coincides with the
 true Bayesian prediction $\ex\bigl(y_{X^*}\,|\, y_X\bigr)$):
-$$ \hat{y}_{y_X}(X^*) = m_{X^*} + K_{X^*X} Q_X \bigl(y_X - m_X\bigr) \,. $$
+\begin{equation*}
+  \hat{y}_{y_X}(X^*) = m_{X^*} + K_{X^*X} Q_X \bigl(y_X - m_X\bigr) \,.
+\end{equation*}
 
 The Gaussian Process Kernel Ridge Regression is usually formulated with $m=0$ and
 $\Kcal(x,x') = \sigma^2(\lambda \delta_{x,x'} + K(x,x'))$, for some PD kernel $K$,
@@ -255,20 +280,26 @@ the $i$-th unit vector.
 
 The ``in-sample'' NCF $A_{\text{in}}$ measures the absolute value of the regression
 residual and is given by:
-$$ A_{\text{in}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
-  = |y_i - \hat{y}_{|(X, y)}(x_i)| = |e_i' \hat{r}_{\text{in}}(X, y)|
-  \,, $$
+\begin{equation} \label{eq:ins_ncf}
+  A_{\text{in}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
+    = |y_i - \hat{y}_{|(X, y)}(x_i)| = |e_i' \hat{r}_{\text{in}}(X, y)|
+    \,,
+\end{equation}
 where $\hat{y}_{|(X, y)}(x_i)$ is the residual of the regression fit on the complete
 dataset $(X, y)$. The ``loo'' NCF is defined similarly, but uses loo-residuals for
 the task:
-$$ A_{\text{loo}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
-  = |y_i - \hat{y}_{|(X_{-i}, y_{-i})}(x_i)| = |e_i' \hat{r}_{\text{loo}}(X, y)|
-  \,. $$
+\begin{equation*}
+  A_{\text{loo}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
+    = |y_i - \hat{y}_{|(X_{-i}, y_{-i})}(x_i)| = |e_i' \hat{r}_{\text{loo}}(X, y)|
+    \,.
+\end{equation*}
 Note that both are interrelated using the formula:
-$$ A_{\text{loo}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
-  = \lambda^{-1} \diag(Q_X)^{-1}
-  A_{\text{in}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
-  \,. $$
+\begin{equation*}
+  A_{\text{loo}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
+    = \lambda^{-1} \diag(Q_X)^{-1}
+    A_{\text{in}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
+    \,.
+\end{equation*}
 Indeed, for all $i=1,\ldots,n$, the full sample residual of a fitted KRR is given
 by $\hat{r}_{\text{in}}(X, y) = (I_n - K_{XX} Q_X) y$. Since $Q_X$ is invertible,
 block matrix inversion yields the following expression: for all $i=1,\ldots, n$
@@ -287,7 +318,9 @@ block matrix inversion yields the following expression: for all $i=1,\ldots, n$
 where $K_{-i} = K_{X_{-i}}: \Xcal \mapsto \Real^{(n-1)\times1}$ (see eqn.~\ref{eq:gp_cond_dist})
 is the canonical map vector, $Q_{-i}$ is given by $(\lambda I_{n-1} + K_{X_{-i}X_{-i}})^{-1}$,
 and $\lambda m_i^{-1}$ is the KRR leverage of the $i$-th observation, with
-$$ m_i = \lambda + K(x_i, x_i) - K_{-i}(x_i)' Q_{-i} K_{-i}(x_i) \,. $$
+\begin{equation*}
+  m_i = \lambda + K(x_i, x_i) - K_{-i}(x_i)' Q_{-i} K_{-i}(x_i) \,.
+\end{equation*}
 This ``leverage'' is always within $[0,1]$, since $K$ is PD, and depends only on
 the input part, $X$, of the dataset. Furthermore, it can be shown that the main
 diagonal of $Q_X$ is given by $(m_i^{-1})_{i=1}^n$. Indeed, to see this apply the
@@ -296,18 +329,22 @@ columns.
 
 For the NCM $A$ the $1-\alpha$ conformal confidence interval for the $n$-th observation
 is given by
-$$ \Gamma_{X_{-n}, y_{-n}}^\alpha (x_n)
+\begin{equation} \label{eq:conf_ci}
+\Gamma_{X_{-n}, y_{-n}}^\alpha(x_n)
   = \bigl\{ z\in \Real \,:\, p_n\bigl((X, \tilde{y}_n^z)\bigr) \geq \alpha \bigr\}
-  \,, $$
+  \,,
+\end{equation}
 where $\tilde{y}_j^z = (y_{-j}, z)$ -- the augmented sample $y$, with the $j$-th
 value replaced by $z$. The ``conformal likelihood'' of the $j$-th observation in
 some sample $(X, y)$ is given by
-$$ p_j\bigl((X, y)\bigr)
-  = n^{-1} \bigl\lvert \bigl\{ i = 1,\ldots, n \, : \,
-      A\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
-      \geq A\bigl((X_{-j}, y_{-j}), (x_j, y_j)\bigr)
-    \bigr\} \bigr\rvert
-  \,. $$
+\begin{equation*}
+  p_j\bigl((X, y)\bigr)
+    = n^{-1} \bigl\lvert \bigl\{ i = 1,\ldots, n \, : \,
+        A\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
+        \geq A\bigl((X_{-j}, y_{-j}), (x_j, y_j)\bigr)
+      \bigr\} \bigr\rvert
+    \,.
+\end{equation*}
 Thus it is necessary to obtain a formula, describing dependency of the residuals on
 the augmentation of the $n$-th observation. The in-sample KRR residuals of the augmented
 dataset $(X, \tilde{y}_n^z)$ are given by
@@ -325,25 +362,70 @@ dataset $(X, \tilde{y}_n^z)$ are given by
        m_n^{-1} \bigl(z - K_{-n}(x_n)' Q_{-n} y_{-n} \bigr) \label{eq:krr_in_resid} \\
     &= \lambda \begin{pmatrix} Q_{-n} y_{-n} \\ 0 \end{pmatrix}
      - \lambda B_{-n}(x_n) K_{-n}(x_n)' Q_{-n} y_{-n}
-     + \lambda B_{-n}(x_n) z\,,
+     + \lambda B_{-n}(x_n) z  \nonumber\,,
 \end{align}
-Denoting by $B_{-n}(x_n)\in\Real^{n\times 1}$ the vector
-$$ B_{-n}(x_n) = \begin{pmatrix} - Q_{-n} K_{-n}(x_n) \\ 1 \end{pmatrix} m_n^{-1} \,, $$
-and by $A_{-n}(x_n)\in\Real^{n\times 1}$ the matrix
-$$ \begin{pmatrix} - Q_{-n} K_{-n}(x_n) \\ 1 \end{pmatrix} m_n^{-1} \,, $$
+Where the vector $B_{-n}(x_n)\in\Real^{n\times 1}$ is given by
+\begin{equation*}
+  B_{-n}(x_n)
+    = \begin{pmatrix} - Q_{-n} K_{-n}(x_n) \\ 1 \end{pmatrix} m_n^{-1}
+    \,.
+\end{equation*}
 
-This gives an expression ready for
-and the loo-residuals are given by
-\begin{align}
-  \hat{r}_{\text{loo}}(X, \tilde{y}_n^z)
-  &= \lambda^{-1} \diag(Q_X)^{-1} \hat{r}_{\text{in}}(X, \tilde{y}_n^z) \label{eq:krr_loo_resid} \,.
-\end{align}
+In general, the construction of the confidence region (\ref{eq:conf_ci}) requires
+swiping through all $y\in \Ycal$ that satisfy the significance level requirement,
+which is infeasible unless $\Ycal$ is finite. The construction for the NCF (\ref{eq:ins_ncf})
+for in-sample residuals in this particular problem relies on the representation
+of each residual as
+\begin{equation*}
+  \hat{r}_i^z
+    = e_i' \hat{r}_{\text{in}}(X, \tilde{y}_n^z)
+    = \lambda a_i + \lambda b_i z
+    \,,
+\end{equation*}
+with $a_i = e_i' A_{-n}\bigl((X, y), x_n\bigr)$ and
+\begin{equation*}
+  A_{-n}\bigl((X, y), x_n\bigr)
+    = \begin{pmatrix} Q_{-n} y_{-n} \\ 0 \end{pmatrix}
+      - B_{-n}(x_n) K_{-n}(x_n)' Q_{-n} y_{-n}
+    \,.
+\end{equation*}
 
+Since absolute values of the residuals are compared, it is possible to consistently
+manipulate the signs of each entry in $A$ and $B$ to ensure that $e_i'B\geq 0$ for
+all $i$. The regions $S_i = \{z\in\Real\,:\, |\hat{r}_i^z| \geq |\hat{r}_n^z|\}$, for
+$i=1,\ldots, n$, are either closed intervals, complements of open intervals,
+one-side closed half-rays in $\Real$, depending on the values of $A$ and $B$. In
+particular, with $p_i$ and $q_i$ denoting the values $-\frac{a_i+a_n}{b_i+b_n}$ and
+$\frac{a_i-a_n}{b_n-b_i}$, respectively (whenever each is defined), each region
+$S_i$ has one of the representations:
+\begin{enumerate}
+%% a picture of shifted and scaled x->|x| helps in derivation of this.
+  \item $b_i=b_n=0$: $S_i = \Real$ if $|a_i| \geq |a_n|$, or $S_i = \emptyset$
+  otherwise;
+  \item $b_n = b_i > 0$: $S_i$ is either $(-\infty, p_i]$ if $a_i < a_n$, $[p_i, +\infty)$ if
+  $a_i > a_n$, or $\Real$ otherwise;
+  \item $b_n > b_i \geq 0$: $S_i$ is either $[p_i, q_i]$ if $a_i b_n \geq a_n b_i$,
+  or $[q_i, p_i]$ otherwise;
+  \item $b_i > b_n \geq 0$: $S_i$ is $\Real\setminus (q_i, p_i)$ when $a_i b_n \geq a_n b_i$,
+  or $\Real\setminus (p_i, q_i)$ otherwise.
+\end{enumerate}
+Let $P$ and $Q$ be the sets of all well-defined $p_i$ and $q_i$ respectively, and let
+$(g_i)_{j=1}^{J+1}$ be an enumeration of $\{\pm\infty\}\cup P \cup Q$ in ascending
+order. Then the conformal confidence region $\Gamma_{X_{-n}, y_{-n}}^\alpha$ is
+constructed from intervals $G_j = [g_j, g_{j+1}] \cap \Real$:
+\begin{equation*}\label{eq:rrcm_conf_ci}
+  \Gamma_{X_{-n}, y_{-n}}^\alpha
+    = \bigcup_{j\,:\, N_j \geq \alpha n} G_j
+    \,,
+\end{equation*}
+where $N_j = |\{i\,:\,G_j \subseteq S_i\}|$ is the number of times $G_j$ is covered by
+any region $S_i$.
 
-\subsubsection{Regularity lemma} % (fold)
-\label{ssub:regularity_lemma}
-
-% subsubsection regularity_lemma (end)
+The worst-case complexity of this construction is $\mathcal{O}(n \log n)$: it is
+necessary to sort at most $2n$ distinct endpoints of $G_j$, then locate the values
+$p_i$ and $q_i$ associated with each region $S_i$ ($\mathcal{O}(n\log n)$), and
+finally in $\mathcal{O}(2n)$ time compute the coverage numbers $N_j$. The memory
+footprint is $\mathcal{O}(n)$.
 
 % subsection conformal_krr_interval (end)
 
@@ -352,9 +434,25 @@ and the loo-residuals are given by
 \section{Numerical study} % (fold)
 \label{sec:numerical_study}
 
+
+
 %% Mention that we are testing and working in the batch learning setting
 \subsection{1D setting} % (fold)
 \label{sub:1d_setting}
+
+Let $\Xcal =[0,1]$ be the space of inputs (the domain) and let the targets be real
+values. The general experiment setup for reconstruction confidence for some
+$f:\Xcal\mapsto\Real$ is as follows:
+\begin{itemize}
+    \item Produce a large sample of inputs $\tilde{X} = (x_i)_{i=1}^N\in \Xcal$
+    on a fine grid with $x_i = N^{-1} k$ for $k=0, \ldots, N$, and draw values
+    $\tilde{y}=(f(x_i))_{i=1}^N$;
+    \item Split $(\tilde{X}, \tilde{y})$ into non-overlapping train and test subsamples,
+    $(X, y) = (x_i, y_i)_{i=1}^n$ and $(X^*, y^*) = (x_i, y_i)_{i=n+1}^{n+m}$ respectively;
+    \item Compute the $\epsilon$-confidence intervals $(\Gamma^\epsilon_{(X, y)}(x))_{x\in X^*}$
+    for the test subsample;
+    \item Assess the validity and performance of the constructed confidence sets.
+\end{itemize}
 
 % subsection 1d_setting (end)
 
