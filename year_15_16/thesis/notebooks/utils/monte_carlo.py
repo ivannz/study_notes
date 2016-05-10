@@ -12,13 +12,13 @@ from .KRR import KRR_AB
 
 def run_ckrr_mc_experiment(gdp, levels, ccr_proc, nd=1, ng=1001,
                            n_replications=1, size=100,
-                           nugget=1e-6, use_loo=False,
+                           nugget=1e-6, theta0=1e-1, use_loo=False,
                            random_state=None):
     """One experiment. [0, 1]^d
     """
 ## Use RBF
     kernel = 'rbf'
-    gp = GaussianProcess(thetaL=1e-4, thetaU=1e4, beta0=0,
+    gp = GaussianProcess(beta0=0, theta0=theta0,
                          normalize=False, nugget=nugget,
                          corr='squared_exponential')
 
