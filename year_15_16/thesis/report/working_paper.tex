@@ -16,12 +16,16 @@
 
 \newcommand{\ex}{\mathop{\mathbb{E}}\nolimits}
 \newcommand{\pr}{\mathop{\mathbb{P}}\nolimits}
+\newcommand{\Hcal}{\mathcal{H}}
 \newcommand{\Ncal}{\mathcal{N}}
 \newcommand{\Kcal}{\mathcal{K}}
 \newcommand{\Xcal}{\mathcal{X}}
 \newcommand{\Ycal}{\mathcal{Y}}
 \newcommand{\Zcal}{\mathcal{Z}}
 \newcommand{\Real}{\mathbb{R}}
+\newcommand{\nil}{\mathbf{0}}
+\newcommand{\Lcal}{\mathcal{L}}
+\newcommand{\Cplx}{\mathbb{C}}
 \newcommand{\diag}{\mathop{\text{diag}}\nolimits}
 
 \title{Conformalized Kernel Ridge Regression}
@@ -43,6 +47,7 @@ The Kernel Ridge Regression is formulated as the following problem:
 % \end{equation*}
 
 Mention the kernel trick.
+Briefly say something about RKHS.
 
 The Kernel Ridge Regression for a given PD kernel $K:\Xcal\times \Xcal \to \Real$
 solves the following problem:
@@ -133,6 +138,133 @@ Regression.
 % subsection goals (end)
 
 % section introduction (end)
+
+\subsection{Kernel Ridge Regression} % (fold)
+\label{sub:kernel_ridge_regression}
+
+As stated in \cite{BurVovk2014} it would be interesting to generalize this result
+to the case of Kernel Ridge regression. However, first it a proper recap of what 
+kind of mathematical object an RKHS is seems appropriated.
+
+\subsubsection{RKHS} % (fold)
+\label{ssub:rkhs}
+
+A tuple $(\Hcal, \langle\cdot, \cdot\rangle)$ is an inner-product space over $\Real$
+if $\Hcal$ is a vector space over $\Real$, and $\langle\cdot, \cdot\rangle : \Hcal
+\times \Hcal \mapsto \Real$ is an inner product in $\Real$ -- a map linear in both
+arguments, symmetric, and possessing the following properties:
+\begin{enumerate}
+  \item $\langle f, f\rangle\geq 0$ for any $f\in \Hcal$;
+  \item $\langle f, f\rangle = 0$ if and only if $f = \nil_\Hcal$.
+\end{enumerate}
+Over the field of complex numbers $\Cplx$ the requirements of symmetry and bi-
+linearity are swapped with being Hermitian, and linear with respect to the first
+argument. In the following presentation all considered vector spaces are over the
+field of reals.
+
+A Hilbert space is an inner product space, which is complete with respect to the
+natural metric induced by the norm $ \|f\| = \sqrt{\langle f, f\rangle} $. A \textbf{R}eproducing
+\textbf{K}ernel \textbf{H}ilbert \textbf{S}pace is a complete inner-product vector
+space of maps $\Xcal \mapsto \Real$ over the field $\Real$, in which the evaluation
+functional defined by $\epsilon_x(f) = f(x)$ is $(\Hcal, \|\cdot\|) \mapsto (\Real, |\cdot|)$
+bounded for any $x\in \Xcal$ (in normed spaces bounded linearity is equivalent to
+continuity). Equivalently, an \textbf{RKHS} is a Hilbert space for which there exists
+a map $\phi:\Xcal\to\Hcal$, and a \textbf{P}ositive \textbf{D}efinite kernel function
+$K:\Xcal \times \Xcal \mapsto \Real$ such that \begin{enumerate}
+  \item $K(x,y) = \langle \phi(x), \phi(y) \rangle$ for all $x, y\in \Xcal$;
+  \item $g(x) = \langle g, K(x, \cdot)\rangle$ for all $x\in \Xcal$ and every
+  $g\in \Hcal$.
+\end{enumerate}
+A function $K:\Xcal \times \Xcal \mapsto \Real$ is positive definite if for any
+$n\geq1$, $(x_i)_{i=1}^n \in \Xcal$ and $\alpha \in \Real^{n\times 1}$
+$$ \alpha'K\alpha
+  = \sum_{i=1}^n \sum_{j=1}^n \alpha_j \alpha_i K(x_i, x_j)
+  \geq 0
+  \,, $$
+or, in other words the Gram matrix $K$ is positive semi-definite, where $K$ is an
+$n \times n$ matrix of $K(x_i, x_j)$. Note that unlike linear algebra, ``positive
+definite'' here permits such non-zero weights, for which the product is exactly zero.
+Positive definite kernels are also known as Mercer kernels, or covariance kernels.
+
+Finally, any \textbf{PD} kernel $K$ gives rise to a so called \textbf{canonical RKHS}
+associated with $K$ constructed by a standard metric-completion argument for a pre-Hilbert
+space (a non-complete inner-product space)
+$$ \Hcal_0
+  = \bigl\{
+    \sum_{i=1}^n \alpha_i K(x_i, \cdot)
+    \,:\, n\geq1, (x_i)_{i=1}^n \in \Xcal, (\alpha_i)_{i=1}^n\in \Real
+  \bigr\}
+  \,, $$
+with an inner-product $ \langle f, g \rangle = \sum_{i=1}^n \sum_{j=1}^m \alpha_i K(x_i, z_j) \beta_j $,
+where $f, g\in \Hcal_0$ with representations $f = \sum_{i=1}^n \alpha_i K(x_i, \cdot)$
+and $g = \sum_{j=1}^m \beta_j K(z_j, \cdot)$. In the completed RKHS $\Hcal = \bigl[\Hcal_0\bigr]$
+the map $\phi$ is given by the canonical map $x\mapsto K(x, \cdot)$ and $K$ is the
+reproducing kernel. The inner-prodcut is extended to $\Hcal$ by contonuity as a step
+in completion of $\Hcal_0$. It is worth noting, that the pre-Hilbert space $\Hcal_0$
+is by construction dense everywhere in $\Hcal$ with respect to the norm-mertic
+induced by the completed inner-product.
+
+% subsubsection rkhs (end)
+
+\subsubsection{Kernel methods} % (fold)
+\label{ssub:kernel_methods}
+
+Given a train sample $(x_i, y_i)_{i=1}^n \in X\times \Real$ a general kernel-based
+machine learning regularized loss minimization problem is to solve
+$$ \Lcal\bigl((x_i, y_i)_{i=1}^n, f\bigr)
+  + \lambda \Omega\bigl(\|f\|\bigr)
+  \to \min_{f\in \Hcal}\,, $$
+where $\Hcal$ is a Hilbert Space with Reproducing Kernel $K$, $\Lcal$ is a loss
+function which depends on $f$ through $(f(x_i))_{i=1}^n$, and $\Omega:\Real\mapsto\Real$
+is a monotone increasing function used for regularization. In this setting the Representer
+theorem states that the optimal solution is to be sought in a finite dimensional
+linear span of the canonical feature maps $\phi: x\mapsto K(x, \cdot)$ evaluated at
+the sample objects:
+$$ f^* \in \bigl\{ \beta'\Phi\,:\, \beta \in \Real^{n\times 1} \bigr\} \,, $$
+where $\Phi = \bigl(\phi(x_i)\bigr)_{i=1}^n \in \Hcal^{n\times 1}$.
+
+Another principle, the so called ``Kernel-trick'' states that whenever an ML algorithm
+could be reduced to a form, which depends on the training sample data only thorough
+inner-products between the objects (a or Gram matrix), then it is possible to construct
+another ML algorithm by simply replacing the products with an arbitrary \textbf{PD}
+kernel. It should be noted that care must be taken to ensure additional conditions
+on the input domain imposed by this ``trick'' are met.
+
+In particular, the \textbf{RR} solution in its dual form depends only on the Gram
+matrix if inter-object inner-products $X X'$ in the input domain, which is why it is
+possible to restate it as the Kernel \textbf{RR} problem: given a training sample
+$X = (x_i)_{i=1}^n\in\Xcal^{n\times 1}$ and $y\in\Real^{n\times 1}$
+$$ \|y - f\|^2 + a \|f\|^2 \to \min_{f \in \Hcal} \,, $$
+with $f \in \Real^{n\times 1}$ being a column-vector of $f$ evaluated at every input
+in $X$. Here $\Hcal$ is the canonical RKHS associated with a Mercer kernel $K$. Note
+that with slight abuse of notation the inner-products and norms over $\Hcal$ and
+$\Real^{n\times 1}$ are used without denoting which is which, since it is always
+clear from both the context and the type of the argument of the norm as a function.
+
+The Representer theorem states that the solution to this minimization is of the form
+$f = \Phi'\beta$, for $\Phi = (\phi(x_i))_{i=1}^n \in \Hcal^{n\times 1}$. By definition
+of the Gram matrix $K$ and due to its symmetry for any $j=1,\ldots,n$
+$$ f(x_j)
+  = \Phi(x_j)' \beta
+  = k_{x_j}' \beta
+  = (K e_j)' \beta
+  = e_j' K \beta
+  \,, $$
+where $k_x = \Phi(x) = (\phi(x_i)(y))_{i=1}^n \in \Real^{n\times 1}$ and $e_j$ is
+the $j$-th unit vector in $\Real^{n\times 1}$. Furthermore
+$$ \| f \|^2
+  = \sum_{i=1}^n\sum_{j=1}^n\beta_i\beta_j \langle\phi(x_i), \phi(x_j)\rangle
+  = \sum_{i=1}^n\sum_{j=1}^n\beta_i\beta_j K(x_i, x_j)
+  = \beta' K \beta \,. $$
+Thus the kernel Ridge Regression problem is reduced to the following finite-dimensional
+convex minimization problem:
+$$ \|y - K \beta \|^2 + \lambda \beta' K \beta \to \min_{\beta\in \Real^{n\times 1}} \,. $$
+The First order conditions imply that
+$$ \hat{\beta} = (aI_n + K)^{-1} y \,\text{ and }\, \hat{y}_x = k_x' \beta \,, $$
+-- the estimated weight vector and an optimal prediction at $x\in \Xcal$.
+
+% subsubsection kernel_methods (end)
+
 
 \section{Derivation} % (fold)
 \label{sec:derivation}
@@ -463,16 +595,34 @@ Ridge Regression residuals, and ultimately affects the efficiency (the width) of
 the resulting confidence regions. In this study we focus exclusively on the kernel
 ridge regression.
 
+We consider the \textbf{R}adial \textbf{B}asis \textbf{F}unction kernel $K$ for both
+the conformal KRR and the Gaussian Process Regression:
+\begin{equation*}
+  K(x,x')
+  = \mathop{\text{exp}}\bigl\{-\theta \|x-x' \|^2\bigr\}
+  \,,
+\end{equation*}
+with the precision parameter $\theta>0$, and defined over $\Xcal \subseteq \Real^{d\times 1}$.
+This kernel is widely used in practice, because it has very nice properties. In
+particular if $\Xcal$ is compact its canonical RKHS is universal, $\Hcal_K$ is dense
+in the set $C_0(\Xcal)$ of continuous bounded maps with respect to the uniform norm
+$\|\cdot\|_\infty$, see.~\cite{ref:rbf_universal}.
+% I. Steinwart. On the influence of the kernel on the consistency of support vector machines. Journal of Machine Learning Research, 2:67–93, 2001.
+
 The general experimental setup is as follows: \begin{enumerate}
   \item Generate a random train set $X = (x_i)_{i=1}^n\subset \Xcal$;
   \item Fix some test set inputs, $X^* = (x_i)_{i=n+1}^{n+m}$, lying on a regular
   grid in $\Xcal$ and put $X_{\text{pool}} = X \cup X^*$;
   \item Draw target values $y_x = f(x)$, $x\in X_{\text{pool}}$, from some
-  function $f:\Xcal \mapsto \Ycal$;
+  function $f: \Xcal \mapsto \Ycal$;
+  \item Fit a Gaussian Process Regression with $\mu=0$ to the train dataset
+  $(y_x)_{x\in X}$, to 
   \item For each $x^*\in X^*$ construct both the conformal and the Bayesian $\epsilon$-
   confidence intervals $\Gamma_{X, y}^\alpha(x^*)$;
   \item Assess the validity and performance of the constructed confidence sets.
 \end{enumerate}
+
+We use standard generic 1D an 2D test functions 
 
 %% Mention that we are testing and working in the batch learning setting
 \subsection{1D setting} % (fold)
