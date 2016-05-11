@@ -1,6 +1,6 @@
-\documentclass{ITaSconf}
+% \documentclass{ITaSconf}
 % \documentclass[a4paper]{article}
-% \documentclass[a4paper,14pt]{extarticle}
+\documentclass[a4paper,14pt]{extarticle}
 \usepackage[utf8]{inputenc}
 
 \usepackage{geometry}
@@ -13,9 +13,12 @@
 \usepackage{amsmath, amsfonts, amssymb, amsthm}
 \usepackage{mathptmx}
 \usepackage{algorithm2e}
+\usepackage{subcaption}
+\usepackage{caption}
 
 \newcommand{\ex}{\mathop{\mathbb{E}}\nolimits}
 \newcommand{\pr}{\mathop{\mathbb{P}}\nolimits}
+\newcommand{\Bcal}{\mathcal{B}}
 \newcommand{\Hcal}{\mathcal{H}}
 \newcommand{\Ncal}{\mathcal{N}}
 \newcommand{\Kcal}{\mathcal{K}}
@@ -261,7 +264,7 @@ convex minimization problem:
 $$ \|y - K \beta \|^2 + \lambda \beta' K \beta \to \min_{\beta\in \Real^{n\times 1}} \,. $$
 The First order conditions imply that
 $$ \hat{\beta} = (aI_n + K)^{-1} y \,\text{ and }\, \hat{y}_x = k_x' \beta \,, $$
--- the estimated weight vector and an optimal prediction at $x\in \Xcal$.
+-- the estimated weight vector and an optimal prediction at $x\in \Xcal$, respectively.
 
 % subsubsection kernel_methods (end)
 
@@ -408,22 +411,22 @@ quantile of $\Ncal(0, 1)$.
 \label{sub:conformal_krr_interval}
 
 Conformal Confidence Region (\ref{sec:conformal_prediction}) requires a non-conformity
-measure. We consider two versions of the NCF suggested in \cite{vovk2005} for the
+measure. We consider two versions of the NCM suggested in \cite{vovk2005} for the
 regression setting: an in-sample and a \textbf{l}eave-\textbf{o}ne-\textbf{o}ut version.
 To this end consider a sample $(X, y) = (x_i, y_{x_i})_{i=1}^n$, and for any $i=1\ldots, n$
 put $X = (X_{-i}, x_i)$, and $y = (y_{-i}, y_i)$. Let $e_i\in \Real^{n\times 1}$ be
 the $i$-th unit vector.
 
-The ``in-sample'' NCF $A_{\text{in}}$ measures the absolute value of the regression
+The ``in-sample'' NCM $A_{\text{in}}$ measures the absolute value of the regression
 residual and is given by:
 \begin{align}
   A_{\text{in}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
     &= |y_i - \hat{y}_{|(X, y)}(x_i)| \nonumber\\
-    &= |e_i' \hat{r}_{\text{in}}(X, y)| \label{eq:ins_ncf}
+    &= |e_i' \hat{r}_{\text{in}}(X, y)| \label{eq:ins_ncm}
     \,,
 \end{align}
 where $\hat{y}_{|(X, y)}(x_i)$ is the residual of the regression fit on the complete
-dataset $(X, y)$. The ``loo'' NCF is defined similarly, but uses loo-residuals for
+dataset $(X, y)$. The ``loo'' NCM is defined similarly, but uses loo-residuals for
 the task:
 \begin{align*}
   A_{\text{loo}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
@@ -512,7 +515,7 @@ Where the vector $B_{-n}(x_n)\in\Real^{n\times 1}$ is given by
 
 In general, the construction of the confidence region (\ref{eq:conf_ci}) requires
 swiping through all $y\in \Ycal$ that satisfy the significance level requirement,
-which is infeasible unless $\Ycal$ is finite. The construction for the NCF (\ref{eq:ins_ncf})
+which is infeasible unless $\Ycal$ is finite. The construction for the NCM (\ref{eq:ins_ncm})
 for in-sample residuals in this particular problem relies on the representation
 of each residual as
 \begin{equation*}
@@ -560,11 +563,11 @@ constructed from intervals $G_j = [g_j, g_{j+1}] \cap \Real$:
 where $N_j = |\{i\,:\,G_j \subseteq S_i\}|$ is the number of times $G_j$ is covered by
 any region $S_i$.
 
-The worst-case complexity of this construction is $\mathcal{O}(n \log n)$: it is
-necessary to sort at most $2n$ distinct endpoints of $G_j$, then locate the values
-$p_i$ and $q_i$ associated with each region $S_i$ ($\mathcal{O}(n\log n)$), and
-finally in at most $\mathcal{O}(2n)$ time compute the coverage numbers $N_j$. The
-memory footprint is $\mathcal{O}(n)$.
+For a single test point $x_n$ the worst-case complexity of this construction is
+$\mathcal{O}(n \log n)$: it is necessary to sort at most $2n$ distinct endpoints
+of $G_j$, then locate the values $p_i$ and $q_i$ associated with each region $S_i$
+($\mathcal{O}(n\log n)$), and finally in at most $\mathcal{O}(2n)$ time compute
+the coverage numbers $N_j$. The memory footprint is $\mathcal{O}(n)$.
 
 % subsection conformal_krr_interval (end)
 
@@ -595,8 +598,8 @@ Ridge Regression residuals, and ultimately affects the efficiency (the width) of
 the resulting confidence regions. In this study we focus exclusively on the kernel
 ridge regression.
 
-We consider the \textbf{R}adial \textbf{B}asis \textbf{F}unction kernel $K$ for both
-the conformal KRR and the Gaussian Process Regression:
+We consider the isotropic \textbf{R}adial \textbf{B}asis \textbf{F}unction kernel
+for both the Conformal Kernel Ridge regression and the Gaussian Process regression:
 \begin{equation*}
   K(x,x')
   = \mathop{\text{exp}}\bigl\{-\theta \|x-x' \|^2\bigr\}
@@ -609,30 +612,95 @@ in the set $C_0(\Xcal)$ of continuous bounded maps with respect to the uniform n
 $\|\cdot\|_\infty$, see.~\cite{ref:rbf_universal}.
 % I. Steinwart. On the influence of the kernel on the consistency of support vector machines. Journal of Machine Learning Research, 2:67–93, 2001.
 
-The general experimental setup is as follows: \begin{enumerate}
-  \item Generate a random train set $X = (x_i)_{i=1}^n\subset \Xcal$;
-  \item Fix some test set inputs, $X^* = (x_i)_{i=n+1}^{n+m}$, lying on a regular
-  grid in $\Xcal$ and put $X_{\text{pool}} = X \cup X^*$;
-  \item Draw target values $y_x = f(x)$, $x\in X_{\text{pool}}$, from some
-  function $f: \Xcal \mapsto \Ycal$;
-  \item Fit a Gaussian Process Regression with $\mu=0$ to the train dataset
-  $(y_x)_{x\in X}$, to 
-  \item For each $x^*\in X^*$ construct both the conformal and the Bayesian $\epsilon$-
-  confidence intervals $\Gamma_{X, y}^\alpha(x^*)$;
-  \item Assess the validity and performance of the constructed confidence sets.
+We study the effects of the kernel parameters and the choice of the conformal procedure
+by varying the following hyper-parameters: \begin{enumerate}
+  \item the precision of the RBF kernel $\theta$ is picked from $\{10^{-1}, 1, 10\}$,
+  since the input domain is the unit cube, for which $\sup_{x,x'\in[0,1]^d}\|x-x'\|^2 = d$;
+  \item the noise-to-signal ratio $\lambda \in\{10^{-k}\,:\,k=6, 4, 2, 0\}$, with
+  smaller values corresponding to the interpolation task, and the larger -- to filtering;
+  \item the size of the training sample $n$ is chosen from $25 2^k$, $k=0,\ldots, 8$ --
+  to study the effects the train sample size on the validity and efficiency;
+  \item the NCM ($A_{\text{in}}$ or $A_{\text{loo}}$).
 \end{enumerate}
 
-We use standard generic 1D an 2D test functions 
-
 %% Mention that we are testing and working in the batch learning setting
+
 \subsection{1D setting} % (fold)
 \label{sub:1d_setting}
 
+First, we assess the performance of the Bayesian and conformal confidence regions
+in the case of recovering nonlinear functions on one-dimensional domain, $\Xcal =
+[0, 1]$. The following functions are considered: a smooth function (``pressure2'',
+fig.~\ref{fig:1dfunc_pressure2}), a piecewise smooth (``f6'', fig.~\ref{fig:1dfunc_f6})
+and a step function (``heaviside'', fig.~\ref{fig:1dfunc_heaviside}).
+\begin{figure}[t, width=0.5\textwidth]
+  \centering
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=0.9\linewidth]{1d_func_f6}
+    % \caption{``f6''}
+    \caption{} \label{fig:1dfunc_f6}
+  \end{subfigure}~
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=0.9\linewidth]{1d_func_pressure2}
+    % \caption{``pressure2''}
+    \caption{} \label{fig:1dfunc_pressure2}
+  \end{subfigure}~
+  \begin{subfigure}[b]{0.3\linewidth}
+    \includegraphics[width=0.9\linewidth]{1d_func_heaviside}
+    % \caption{``heaviside''}
+    \caption{} \label{fig:1dfunc_heaviside}
+  \end{subfigure}
+  \caption{Typical profiles of studied 1D functions.}\label{fig:animals}
+\end{figure}
+In each experiment, we construct the confidence regions performance for the unobserved
+values on a $1$-d function on a common set of test inputs, $X^* \subset \Xcal$,
+given by $\{k N^{-1}\,:\,k=0,\ldots, N+1\}$ for $N=10^3$ -- a regular gird in $[0, 1]$.
+With $X^*$ fixed, we end up with the following experiment setup: for the given
+parameters $\lambda, \theta, n$ and the NCM $A$
+\begin{enumerate}
+  \item perform $L$ independent replications of the following steps: for $l=1,\ldots, L$
+  \begin{enumerate}
+    \item generate a random train set $X = (x_i)_{i=1}^n\sim \mathcal{U}(\Xcal)$ of
+    size $n$ and put $X_{\text{pool}} = X \cup X^*$;
+    \item draw target values $y_x = f(x)$, $x\in X_{\text{pool}}$, from some
+    function $f:\Xcal \mapsto \Ycal$;
+    \item fix an RBF kernel $K$ with precision $\theta$ and fit a Gaussian Process
+    Regression with $m(x) = 0$ to the train dataset $(y_x)_{x\in X}$ using kernel
+    $\Kcal = \sigma^2(\lambda \delta_{x,x'} + K(x,x'))$, where the amplitude of
+    the kernel $\sigma^2$ is also estimated;
+    \item for each $x^* \in X^*$ construct both the Bayesian region, $\Bcal_{X, y}^\alpha(x^*)$,
+    and the conformal $\epsilon$-confidence region, $\Gamma_{X, y}^\alpha(x^*)$ using
+    the KRR NCS $A$ with kernel $\Kcal$;
+    \item estimate the coverage rate $p_l(R) = |X^*|^{-1}\sum_{x\in X^*} 1_{y_x\in R_x}$
+    and the width of the convex hull $w_l(R) = \inf\{b-a\,:\,R \subseteq [a, b]\}$
+    for both confidence regions $R=\Bcal_{X, y}^\alpha$ and $R=\Gamma_{X, y}^\alpha$;
+  \end{enumerate}
+  \item assess the validity and the efficiency of the Bayesian and Conformal confidence
+  regions by comparing the sample statistics of the coverage rate and width.
+\end{enumerate}
+It is worth emphasizing that in this experiment the input train sample is drawn from
+the uniform distribution on $\Xcal$.
+
+In the first experiment we compare the validity of the confidence regions. The fig.~
+\ref{fig:1d_validity} depicts the dependence of the coverage rate upon the size of the
+train sample.
+
+In the second experiment we assess the efficiency of the Conformal Procedure by
+comparing the widths of the constructed regions $\Bcal$ and $\Gamma$. In picture
+\ref{fig:1d_efficiency}, 
+
+We make the following empirical conclusions based on the conditional numerical study
+in the $1$-d case: \begin{enumerate}
+  \item the choice of the NCM does not appear to affect the validity of the confidence
+  regions;
+  \item Bayesian confidence regions, based on the Gaussian Process regression, seem
+  to perform poorly relatively to the Conformal regions in non-gaussian cases;
+  
+\end{enumerate}
 % subsection 1d_setting (end)
 
 \subsection{2D setting} % (fold)
 \label{sub:2d_setting}
-%% Include 1-2 1D plots and 1 2D plot: whichever are prettier
 
 % subsection 2d_setting (end)
 
