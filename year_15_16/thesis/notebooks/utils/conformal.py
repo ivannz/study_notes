@@ -167,9 +167,58 @@ def RRCM(A, B, levels):
         intervals_.append(breaks_[np.array([beg, end]).T])
     return intervals_
 
-
-
 def CCR(A, B, levels):
     hi = confidence_region(*sided_CCR(A, B, A[-1:], B[-1:]), levels=levels / 2)
     lo = confidence_region(*sided_CCR(-A, -B, -A[-1:], -B[-1:]), levels=levels / 2)
     return intersect_(lo, hi)
+
+def CRR(A, B, levels):
+    A, B = A.copy(), B.copy()
+    N, A_n, B_n = A.shape[0], A[-1], B[-1]
+    ## compute P and Q
+    Q = (A - A_n) / (B_n - B)
+
+    breaks_ = np.unique(np.r_[Q, -np.inf, np.inf])
+    breaks_ = breaks_[~np.isnan(breaks_)]
+
+    ## locate the associated endpoints
+    Qi_ = np.searchsorted(breaks_, Q)
+    d_U_ = np.zeros(breaks_.shape[0] + 1, dtype=np.float)
+    d_L_ = np.zeros(breaks_.shape[0] + 1, dtype=np.float)
+    for q, a_, b_ in zip(Qi_, A, B):
+        if b_ == B_n:
+            if a_ >= A_n:
+                d_U_[0] += 1
+                d_U_[-1] -= 1
+            if a_ <= A_n:
+                d_L_[0] += 1
+                d_L_[-1] -= 1
+        elif b_ > B_n:
+            d_L_[0] += 1
+            d_L_[q+1] -= 1
+            d_U_[q] += 1
+            d_U_[-1] -= 1
+        else:
+            d_U_[0] += 1
+            d_U_[q+1] -= 1
+            d_L_[q] += 1
+            d_L_[-1] -= 1
+
+    ## compute the frequency
+    coverage_ = np.minimum(np.cumsum(d_U_), np.cumsum(d_L_)) / N
+
+    ## Consolidate intervals
+    intervals_ = list()
+    for level in levels:
+        indices_ = np.flatnonzero(coverage_ > level / 2)
+        beg, end = [indices_[0]], [indices_[0]+1]
+        for j in indices_:
+            if end[-1] < j:
+                end[-1] -= 1
+                beg.append(j)
+                end.append(j + 1)
+            else:
+                end[-1] = max(end[-1], j + 1)
+        end[-1] -= 1
+        intervals_.append(breaks_[np.array([beg, end]).T])
+    return intervals_

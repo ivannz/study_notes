@@ -48,7 +48,7 @@ from scipy.linalg.lapack import dtrtri
 
 from sklearn.metrics.pairwise import pairwise_kernels
 
-def KRR_AB(X, y, Z, forecast=True, nugget=1.0, loo=False, metric="rbf", **kwargs):
+def KRR_AB(X, y, Z, forecast=True, nugget=1.0, metric="rbf", **kwargs):
     """Compute the A, B vectors sufficient for regression CCR construction.
     A, B have shape [m, n+1].
     X [N, ...], y [N, M], Z [K, ...]
@@ -98,23 +98,25 @@ def KRR_AB(X, y, Z, forecast=True, nugget=1.0, loo=False, metric="rbf", **kwargs
     A = (- B[np.newaxis]) * y_z[:, np.newaxis]
     A[..., :-1, :] += Ci_y.T[..., np.newaxis]
     Ci_y /= diag_[:, np.newaxis]
+
     A, B = A.swapaxes(-2, -1), B.T
-    if not loo:
-        A *= nugget
-        B *= nugget
-    else:
-        # Kxz = Q_X K_XZ
-        Kxz *= -B[:, :-1].T ## NxK
-        # Kxz = (Q_X K_XZ)^2 / M_Z
-        Kxz += diag_[:, np.newaxis]
+    A_loo, B_loo = A.copy(), B.copy()
+
+    A *= nugget
+    B *= nugget
+
+    # Kxz = Q_X K_XZ
+    Kxz *= -B_loo[:, :-1].T ## NxK
+    # Kxz = (Q_X K_XZ)^2 / M_Z
+    Kxz += diag_[:, np.newaxis]
 ## `diag` contains the reciprocals of the leverages (up to `nugget` scaling)
-        A[..., :-1] /= Kxz.T
-        B[..., :-1] /= Kxz.T
-        A[..., -1] *= -neg_m[0]
-        B[..., -1] *= -neg_m[0]
+    A_loo[..., :-1] /= Kxz.T
+    B_loo[..., :-1] /= Kxz.T
+    A_loo[..., -1] *= -neg_m[0]
+    B_loo[..., -1] *= -neg_m[0]
     del Kxz
 ## return A, B, KzxQx, M and LOO-residuals: only M depends on sigma2.
-    return A, B, y_z.T, - neg_m.T, Ci_y
+    return A, B, y_z.T, - neg_m.T, Ci_y, A_loo, B_loo
 
 def KRR_loo(X, y, nugget=1.0, metric="rbf", **kwargs):
     """A dedicated procedure to compute the LOO-residuals over
@@ -135,3 +137,56 @@ def KRR_loo(X, y, nugget=1.0, metric="rbf", **kwargs):
     dtrtri(Kxx, overwrite_c=1, lower=1)
     diag_ = np.einsum("ji,ji->i", Kxx, Kxx, dtype=np.float128)
     return np.dot(Kxx.T, Ci_y) / diag_[:, np.newaxis]
+
+
+def get_AB(X, y, Z, kernel, nugget, use_loo=False, **kwargs):
+## Normalize the target vector
+    if y.ndim < 2:
+        y = y.reshape((-1, 1))
+## Obtain AB vectors for the regression CCR problem
+    Kxx = np.asfortranarray(kernel(X, **kwargs))
+    Kxx.flat[::Kxx.shape[0]+1] += nugget
+## Get the in-place lower triangular Cholesky decomposition (in-place works if
+##  the array is in fortran layout).
+    ## K_{xx} + a I_x = C C' ; K_{zx} Q_X y = (C^{-1} K_{xz})' (C^{-1} y)
+    cholesky(Kxx, lower=True, overwrite_a=True)
+    Ci_y = solve_triangular(Kxx, y.copy('F'), lower=True, overwrite_b=True)
+## Compute the border vector and the corner value
+    Kxz = np.asfortranarray(kernel(X, Z, **kwargs))
+    Kxz = solve_triangular(Kxx, Kxz, lower=True, overwrite_b=True)
+## Compute the KzxQx product and diagonalize M
+    neg_M = np.einsum("ji,ji->i", Kxz, Kxz) - np.diag(kernel(Z, **kwargs)) - nugget
+## Start preparing the A matrix:
+    y_z = np.dot(Ci_y.T, Kxz)
+    solve_triangular(Kxx, Kxz, lower=True, trans=1, overwrite_b=True)
+    solve_triangular(Kxx, Ci_y, lower=True, trans=1, overwrite_b=True)
+    # Ci_y = Q_X y; Kxz = Q_X K_XZ
+## Invert the Cholseky matrix and get the diagonal of L^{-1}' L^{-1}
+    dtrtri(Kxx, overwrite_c=1, lower=1)
+    diag_ = np.einsum("ji,ji->i", Kxx, Kxx)
+    del Kxx
+## Now compute the B vector
+    B = np.empty((Kxz.shape[0]+1, Kxz.shape[1]))
+    B[:-1] = Kxz
+    B[-1] = -1.0
+    B /= neg_M
+## Now it's A'turn: column-wise multiplication of B
+    A = - y_z[:, np.newaxis] * B
+    A[..., :-1, :] += Ci_y.T[..., np.newaxis]
+    A, B = A.swapaxes(-2, -1), B.T
+    if use_loo:
+        # Kxz = Q_X K_XZ
+        Kxz *= -B[:, :-1].T ## NxK
+        # Kxz = (Q_X K_XZ)^2 / M_Z
+        Kxz += diag_[:, np.newaxis]
+## `diag` contains the reciprocals of the leverages (up to `nugget` scaling)
+        A[..., :-1] /= Kxz.T
+        B[..., :-1] /= Kxz.T
+        A[..., -1] *= -neg_M
+        B[..., -1] *= -neg_M
+    else:
+        A *= nugget
+        B *= nugget
+    del Kxz
+## return A, B, KzxQx, M and LOO-residuals: only M depends on sigma2.
+    return A, B, y_z.T, - neg_M[:, np.newaxis], Ci_y
