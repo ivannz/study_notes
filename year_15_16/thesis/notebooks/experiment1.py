@@ -41,20 +41,17 @@ func1d_ = {fname_: fn_
            for fname_, fn_ in get_functions().iteritems() if fname_ in funcs_}
 
 ## Define the grid
-grid_ = ParameterGrid(dict(dgp=func1d_.values()[:1],
-                           size=[25, 50, 100, ],#200, 400, 600, 800],#, 1000, 1200, 1400, 1600,],
-                           nugget=[1e-6,],
-                           theta0=[1e+1,],
-                           use_loo=[False,],
-                           noise=[0.0,]))
+# grid_ = ParameterGrid(dict(dgp=func1d_.values()[:1],
+#                            size=[25, 50, 100, ],#200, 400, 600, 800],#, 1000, 1200, 1400, 1600,],
+#                            nugget=[1e-6,],
+#                            theta0=[1e+1,],
+#                            noise=[0.0,]))
 
-# grid_ = ParameterGrid(dict(dgp=func1d_.values(),
-#                            size=[25, 50, 100, 200, 400, 600, 800, 1000, 1200, 1400, 1600,],
-#                            nugget=[1e-6, 1e-2],
-#                            theta0=[1e-1, 1, 1e+1],
-#                            use_loo=[True, False],
-#                            noise=[0.0, 1e-1]))
-
+grid_ = ParameterGrid(dict(dgp=func1d_.values(),
+                           size=[25, 50, 100, 200, 400, 600, 800, 1000, 1200, 1400, 1600,],
+                           nugget=[1e-6, 1e-2],
+                           theta0=[1e-1, 1, 1e+1, "auto"],
+                           noise=[0.0, 1e-1]))
 
 ## Initialize
 scaler = StandardScaler(copy=True, with_mean=True, with_std=True)
@@ -94,7 +91,7 @@ for i_, par_ in enumerate(grid_):
     n_replications, replications = 20, list()
 
     dgp_, size_, noise_ = par_['dgp'], par_['size'], par_['noise']
-    nugget_, theta0_, use_loo_ = par_['nugget'], par_['theta0'], par_['use_loo']
+    nugget_, theta0_ = par_['nugget'], par_['theta0']
     tick_ = time.time()
     while n_replications > 0:
     ## START: one replication
@@ -119,7 +116,11 @@ for i_, par_ in enumerate(grid_):
 
     ## Fit a GPR
         gp_ = clone(gp)
-        gp_.theta0, gp_.nugget = theta0_, nugget_
+        gp_.nugget = nugget_
+        if isinstance(theta0_, float):
+            gp_.theta0 = theta0_
+        elif theta0_ == "auto":
+            gp_.thetaL, gp_.thetaU, gp_.theta0 = 1e-4, 1e4, float(size_)
         gp_.fit(X_train_, y_train_)
 
     ## Compute the A, B matrices
@@ -158,7 +159,7 @@ for i_, par_ in enumerate(grid_):
 
     ## Construct the CKRR confidence interval: CCR-sided
         loo_crr_hits_, loo_crr_width_ = _helper(y_test_, A_loo[0], B_loo, proc=CRR,
-                                                  levels=levels, parallel=parallel_)
+                                                levels=levels, parallel=parallel_)
         if yscl_.scale_ is not None:
             loo_crr_width_ *= yscl_.scale_
 
@@ -195,7 +196,7 @@ for i_, par_ in enumerate(grid_):
     b_cov_, rrcm_cov_, crr_cov_, loo_rrcm_cov_, loo_crr_cov_ = \
         [np.concatenate([rep_[j] for rep_ in replications], axis=0) for j in xrange(5)]
 
-    key_ = dgp_.__name__, noise_, use_loo_, theta0_, nugget_, size_
+    key_ = dgp_.__name__, noise_, theta0_, nugget_, size_
     experiment.append((key_, b_cov_, rrcm_cov_, crr_cov_, loo_rrcm_cov_, loo_crr_cov_))
 
 print _save(experiment, os.path.join(BASE_PATH, "exp1 "), gz=9)
