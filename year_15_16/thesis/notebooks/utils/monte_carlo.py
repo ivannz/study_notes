@@ -10,10 +10,10 @@ from sklearn.preprocessing import StandardScaler
 
 from .KRR import KRR_AB
 
-def run_ckrr_mc_experiment(gdp, levels, ccr_proc, nd=1, ng=1001,
+def run_ckrr_mc_experiment(dgp, levels, ccr_proc, nd=1, ng=1001,
                            n_replications=1, size=100,
                            nugget=1e-6, theta0=1e-1, use_loo=False,
-                           random_state=None):
+                           random_state=None, n_jobs=1, verbose=0):
     """One experiment. [0, 1]^d
     """
 ## Use RBF
@@ -33,7 +33,7 @@ def run_ckrr_mc_experiment(gdp, levels, ccr_proc, nd=1, ng=1001,
     z_a = norm.ppf(1 - .5 * levels)
 
 ## Initialize the parallel backend
-    parallel_ = Parallel(n_jobs=-1, verbose=1)
+    parallel_ = Parallel(n_jobs=n_jobs, verbose=verbose)
     c_proc = delayed(ccr_proc)
 
     replications = list()
@@ -45,7 +45,7 @@ def run_ckrr_mc_experiment(gdp, levels, ccr_proc, nd=1, ng=1001,
 
 ## Pool the inputs and produce targets
         XX = np.concatenate([X_test, X_train], axis=0)
-        yy = gdp(XX)
+        yy = dgp(XX)
         if yy.ndim == 1:
             yy = yy.reshape((-1, 1))
 
@@ -101,6 +101,7 @@ def run_ckrr_mc_experiment(gdp, levels, ccr_proc, nd=1, ng=1001,
 
 ## Compute the abs_error
         y_test_hat_ = y_scl_.inverse_transform(y_hat_)
+
         replications.append((y_test, y_test_hat_, b_width_, c_width_,
                              b_hits_.mean(axis=0, keepdims=True),
                              c_hits_.mean(axis=0, keepdims=True)))
