@@ -413,10 +413,11 @@ where $\delta_{x,x'}$ is the delta-function on $\Xcal\times \Xcal$.
 %% Conditional distribution
 The conformal procedure constructs confidence intervals for test observations $y_x$,
 contaminated by the additive noise $\epsilon_x$, as opposed to true values $f_x$ in
-the model \ref{eq:signal_model}. In the Bayesian setting this means that it is necessary
-to get a conditional distribution of a test sample $y_{X^*} = (y_{x^*_j})_{j=1}^l$,
-with respect to the train sample $y_X = (y_{x_i})_{i=1}^n$. Gaussianity makes it
-especially easy to derive conditional distributions. Indeed, if
+the model \ref{eq:signal_model} (see sec.~\ref{sec:conformal_prediction}). In the
+Bayesian setting this means that it is necessary to get a conditional distribution
+of observations in a test sample $y_{X^*} = (y_{x^*_j})_{j=1}^l$, with respect to
+the train sample $y_X = (y_{x_i})_{i=1}^n$. Gaussianity makes it especially easy
+to derive conditional distributions. Indeed, if
 \begin{equation*}
   \begin{pmatrix}z_1 \\ z_2\end{pmatrix}
     \sim \Ncal_{d_1+d_2}\Biggl(
@@ -625,14 +626,35 @@ if a conformity measure is used.
 \subsection{Confromalized ridge regression} % (fold)
 \label{sub:confromalized_ridge_regression}
 
-The problem of conformalized ridge regression (CRR) has been studied in \cite{BurVovk2014},
-where it has been shown that under assumptions of the bayesian ridge regression
-the conformal confidence region, eq.~\ref{eq:conf_pred_set}, for an NCM based on
-the ridge regression residuals is asymptotically efficient.
+Consider a sample $Z = (x_i, y_i)_{i=1}^n \in \Zcal$, with $\Xcal = \Real^{d\times 1}$
+and $\Ycal=\Real$. Let $X\in\Real^{n\times d}$ be the overall design matrix of $Z$
+and $y\in\Real^{n\times1}$ -- the target vector of the sample. Bayesian ridge regression
+(BRR) is a particular case of the kernel ridge regression with the kernel being
+the inner product in $\Real^{d\times1}$:
+\begin{equation*}
+  \Kcal(x,x') = \sigma^2(\lambda \delta_{x,x'} + \langle x,x'\rangle) \,.
+\end{equation*}
+Thus BRR assumes that $y = x'\beta + \epsilon_x$ for any $x\in\Xcal$ as well as
+the following:
+\begin{enumerate}
+  \item $\beta\sim\Ncal_d(0, \sigma^2 \lambda^{-1} I_p)$;
+  \item $\epsilon\sim \Ncal(0, \sigma^2)$ and iid for all $x\in \Real^{d\times 1}$;
+  \item $\beta$ and $\epsilon_x$ are independent.
+\end{enumerate}
+Assuming a known $\sigma^2$, equation~\ref{eq:gp_cond_dist} implies that the distribution
+of $y^*$ at $x^*$ conditional on the obseved sample is
+\begin{equation} \label{eq:brr_cond_dist}
+  {y_{x^*}}_{|y_X}
+    \sim \Ncal\bigl( x^*'(\lambda I_p + X'X)^{-1}X'y,
+      \sigma^2 (\lambda + x^*' (\lambda I_p + X'X)^{-1} x^* ) \bigr) \,.
+\end{equation}
 
-Let $\Xcal = \Real^{d\times 1}$ and $\Ycal=\Real$, and recall the RR problem. The
-conformal procedure in \cite{BurVovk2014} is constructed from a conformity measure
-defined over a sample $Z=(x_i, y_i)_{i=1}^n \in \Zcal$ as:
+The properties of conformalized ridge regression (CRR) have been studied in \cite{BurVovk2014},
+where it has been shown that under more genral assumptions (the Gaussianity of $\beta$
+is relaxed), the conformal confidence region, eq.~\ref{eq:conf_pred_set}, constructed
+with an NCM based on the ridge regression residuals is asymptotically efficient.
+
+The conformal procedure in \cite{BurVovk2014} is constructed from a conformity measure
 \begin{equation} \label{eq:crr_ncm}
   \eta_i = A(Z_{-i}, Z_i)
     = \bigl\lvert\{j\,:\, \hat{r}_j \geq \hat{r}_i \} \bigr\rvert \wedge
@@ -642,26 +664,25 @@ where $\hat{r} = \hat{r}_Z$ are the in-sample ridge regression residuals given b
 \begin{equation} \label{eq:rr_insample_resid}
   \hat{r}_Z = (I_n - X (\lambda I_p + X'X)^{-1} X') y \,,
 \end{equation}
-with $X\in\Real^{n\times d}$ being the overall design matrix of $Z$ and $y\in\Real^{n\times1}$
--- the target vector of the sample $Z$.
 
-In \cite{BurVovk2014} it was shown that for any $\epsilon\in(0,1)$ the confidence
+In the parper it was also shown that for any $\epsilon\in(0,1)$ the confidence
 region $\Gamma^\epsilon$ produced by CRR procedure for the conformity measure in
 eq.~\ref{eq:crr_ncm} is equivalent to the intersection of confidence sets yielded
 by conformal procedures with non-conformity measures given by $\eta_i = \hat{r}_i$
 and $\eta_i = -\hat{r}_i$ at significance levels $\frac{\epsilon}{2}$. Individually,
 these NCMs define a \textbf{upper} and \textbf{lower} CRR sets respectively.
 
+The main result of \cite{BurVovk2014} states that under relaxed BRR assumptions if
+a sequence $(x_n)_{n\geq1}\in\Xcal$ is iid with an existing and non-singular second
+moment matrix $\ex x_1x_1' \preceq 0$, then for all sufficiently large $n$ the CRR
+produces confidence regions that are intervals, and the difference between the upper
+and lower ends of the Bayesian confidence intreval and the conformal confidence
+intervals are asymptotically gaussian with zero mean.
 
-%% Say that RR can be made better by using the kernel trick
-The major drawback of this statement of the \textbf{RR} problem is that it does not
-provide any confidence intervals for these predictions. One possibility of remedying
-this is to introduce some distributional assumptions and project the \textbf{RR} problem
-into Bayesian framework.
-
-\noindent \textbf{WRITE HERE SOMETHING FROM THE 2014 PAPER.}
-
-
+Since ridge regression has a dual form solution, it is possible to apply the kernel
+trick to it to get a more powerful ML algorithm. The Bayesian confidence intervals
+have been derived in sec.~\ref{sec:bayesian_krr_confidence_interval}, so in the next
+section the construction of a conformal prediction procedure will be discussed.
 
 % subsection confromalized_ridge_regression (end)
 
@@ -813,13 +834,11 @@ the coverage numbers $N_j$. The memory footprint is $\mathcal{O}(n)$.
 \subsubsection{Kernel CRR} % (fold)
 \label{ssub:kernel_crr}
 Another possibility is to use the two-sided NCM proposed in \cite{BurVovk2014} and
-mentioned in sec.~\ref{sub:confromalized_ridge_regression}.
-
-Recall that, for any $\epsilon\in(0,1)$ the confidence region $\Gamma^\epsilon$
-output by CRR procedure for the NCM in eq.~\ref{eq:crr_ncm} at is equivalent to
-the intersection of confidence sets yielded by conformal procedures with NCM scores
-given by $\hat{r}_i^z$ (upper) and $-\hat{r}_i^z$ (lower) at significance level
-$\frac{\epsilon}{2}$.
+mentioned in sec.~\ref{sub:confromalized_ridge_regression}. Recall that, in order
+to construct a CRR confidence region for significance level $\epsilon$ (eq.~\ref{eq:crr_ncm}),
+it is necessary to intersect confidence sets yielded by conformal procedures with NCM
+scores given by $\hat{r}_i^z$ (upper) and $-\hat{r}_i^z$ (lower) at significance level
+$\frac{\epsilon}{2}$. In this section we present an efficient algorithm for constructing
 
 Confidence regions based on CRR, much like RRCM, admit two
 versions: either leave-one-out, or in-sample residuals.
