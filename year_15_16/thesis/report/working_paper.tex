@@ -1,6 +1,6 @@
-% \documentclass{ITaSconf}
+\documentclass{ITaSconf}
 % \documentclass[a4paper]{article}
-\documentclass[a4paper,14pt]{extarticle}
+% \documentclass[a4paper,14pt]{extarticle}
 
 \usepackage[utf8]{inputenc}
 
@@ -41,105 +41,116 @@
 % \tableofcontents
 % \clearpage
 
+
 \section{Introduction} % (fold)
 \label{sec:introduction}
 
-In general, regression problems are concerned with prediction of a continuous-valued
-attribute $y$ associated with an predetermined input sample $x$. This goal is achieved
-by accurate estimation of the conditional mean of the target distribution. However
-in certain practical tasks the point estimates of the predicted values are insufficient,
-and must be supplemented by a measure of predictive uncertainty. One possible solution
-is provided by introducing additional distributional assumption into the regression
-model.
-
-
-For example, on the space of target values $\Ycal$.
-For example, suppose one is provided with a train dataset $(X, y)$ of size $n\geq 1$,
-with the rows of the design matrix $X\in \Real^{n\times d}$ given by $x_i\in \Real^{d\times 1}$,
-and the vector of target values $y = (y_i)_{i=1}^n \in \Real^{n\times 1}$. The ordinary
-linear regression assumes that $\ex(y|x) = \beta'x$ for some $\beta\in \Real^{d\times1}$,
-which is equivalent to
-\begin{equation}\label{eq:signal_model}
-  y_i = \beta'x_i + \epsilon_i\,,
+Regression methods are concerned with studying pattern of dependence between the
+target variable $y$ and the input variable $x$ based on a finite train sample of 
+possibly noisy observations $(X, y)$ from $\Omega\times \Ycal \subseteq \Xcal\times\Real$.
+These methods postulate that there exits a stable unobserved relationship $y_x = f(x)$
+and observations of $y$ at any given $x\in\Omega$ are corrupted by additive noise:
+\begin{equation} \label{eq:signal_model}
+  y_x = f(x) + \xi_x \,,
 \end{equation}
-for iid zero-mean random variables $(\epsilon_i)_{i=1}^n$. The OLS estimate of $\beta$
-is $\hat{\beta} = (X'X)^{-1} X'y$
+with $\ex \xi_x = 0$ for all $x\in \Omega$. The estimated relation $\hat{f}$ of $f$
+is used to produce point predictions of $y$ at any $x$. However, without additional
+distributional assumptions regression methods do note readily yield any measure of
+uncertainty in the prediction.
 
-If furthermore $\epsilon_i
-\sim \Ncal(0, \sigma^2)$, then the predictive distribution of the target value $y*$
-at a test input sample $x^*$ is $y^* \sim \Ncal$
+\noindent \textbf{SOMETHING}
 
-If the train data were treated as a realization of some underlying Gaussian Process,
-then one readily recovers the predictive distribution of the unobserved 
-   given the data $(X, y)$
+In this study, we demonstrate the applicability of conformal prediction in the case
+of offline batch learning, and show that when model assumptions do hold, the conformal
+confidence sets of the kernel ridge regression do not perform worse than the prediction
+confidence intervals of the Gaussian Process Regression with the same kernel (Bayesian
+interpretation of the Kernel ridge regression).
 
-\subsection{Problem statement} % (fold)
-\label{sub:problem_statement}
+% section introduction (end)
 
-The following are a set of methods intended for regression in which the target value
-is expected to be a linear combination of the input variables. In mathematical notion,
-if $\hat{y}$ is the predicted value, then it is given by a linear combination of
-the input features.
+\section{Kernel ridge regression} % (fold)
+\label{sec:kernel_ridge_regression}
 
-Ridge regression addresses some of the problems of Ordinary Least Squares by imposing
-a penalty on the size of coefficients. The ridge coefficients minimize a penalized residual
-sum of squares,
+Suppose $\Xcal = \Real^{d\times 1}$. Ordinary least squares regression assumes that
+there exists $\beta\in \Real^{d\times 1}$ such that $f(x) = x'\beta$. If the underlying
+relationship is non-linear, the trained linear model will have high bias, i.e.
+it will make statistically non-negligible systematic errors in its predictions.
+However, the linear formulation does not limit the applicability of the ordinary
+regression, since by choosing a richer input-feature mapping $\phi: \Omega \mapsto
+\Real^{p\times 1}$ it is possible to cover the case of nonlinear target-observation
+relationships. The map $\phi$ defines a basis with respect to which the unknown
+underlying $f$ is approximated. For instance, the mapping $x\mapsto (\prod_{i=1}^d
+x_i^{m_i})_{m\in M}$, with integers $M=(m_i)_{i=1}^d\geq 0$ and $\sum_{i=1}^d m_i \leq p$,
+permits approximation of polynomial $f$.
 
-Kernel ridge regression (KRR) [M2012] combines Ridge Regression (linear least squares
-with l2-norm regularization) with the kernel trick. It thus learns a linear function
-in the feature space induced by the respective kernel and the data.
+In general, the larger the feature space (i.e. the more diverse ) the more expressive
+the regression model is and thus the wider the class of problems it is applicable
+to. However, more coefficients in the feature expansion of $f$ make the regression
+problem overdetermined and, thus prone to over-fitting. This increases the variance
+of the trained regression, thereby reducing it generalization ability. This can be
+remedied by restricting the set of functions available for approximation by regularizing,
+or shrinking the coefficients $\beta$ in the expansion.
 
 Given train-set observations $(x_i, y_i)_{i=1}^n \in \Real^{d\times 1}\times \Real$,
 with $x_i$ collected row-wise in a design matrix $X\in \Real^{n\times d}$, the target
 vector -- $y=(y_i)_{i=1}^n \in \Real^{n\times 1}$, and a regularization parameter
-$a > 0$, the sample-space \textbf{R}idge \textbf{R}egression problem solves this
-minimization problem
-$$ \Lcal(X, y, a)
-  = (y - X\beta - \one\beta_0)'(y - X\beta - \one\beta_0) + a\beta'\beta
-    \to \min_{\beta_0\in \Real, \beta\in\Real^{d\times 1}}
-  \,. $$
-In fact the intercept term is estimated with
-$$ \hat{\beta}_0 = \bar{y} - \bar{X} \hat{\beta} \,, $$
+$\lambda > 0$, the sample-space \textbf{R}idge \textbf{R}egression (RR) problem solves
+this minimization problem
+\begin{equation}
+  \| y - X\beta - \one\beta_0 \|^2 + \lambda \|\beta\|^2
+    \to \min_{\beta_0\in \Real, \beta \in \Real^{d\times 1}} \,,
+\end{equation}
+where $\one \in \Real^{n\times 1}$ is a vector of ones. Basically ridge regression
+is linear least squares regression with $L_2$-norm regularization.
+
+The intercept term is given by
+\begin{equation}
+  \hat{\beta}_0 = \bar{y} - \bar{X} \hat{\beta} \,,
+\end{equation}
 where $\bar{y}$ and $\bar{X}$ are the mean target and observation values respectively,
-and $\hat{\beta}$ solves the intercept-free Ridge regression problem run on centered
-observations and targets. Therefore int the following we omit the intercept term and
+and $\hat{\beta}$ solves the intercept-free ridge regression problem run on centered
+observations and targets. Therefore in the following we omit the intercept term and
 assume that the relevant columns in the design matrix have been dealt with, and both
 the design matrix and the targets have been centered.
 
-% сть различие между терминами: "приближение функций", "аппроксимация", "интерполяция", и "регрессия". Оно заключается в следующем.
-% Приближение функций. Дана функция u дискретного или непрерывного аргумента. Требуется найти функцию f из некоторого параметрическую семейства, например, среди алгебраических полиномов заданной степени. Параметры функции  f должны доставлять минимум некоторому функционалу, например,
-% \rho(u,f)=\left(\frac{1}{b-a}\int_a^b|f(x)-g(x)|^2dx\right)^{\frac{1}{2}}.
-% Термин аппроксимация — синоним термина "приближение функций". Чаще используется тогда, когда речь идет о заданной функции, как о функции дискретного аргумента. Здесь также требуется отыскать такую функцию f, которая проходит наиболее близко ко всем точкам заданной функции. При этом вводится понятие невязки — расстояния между точками непрерывной функции f и соответствующими точками функции u дискретного аргумента.
-% Интерполяция функций — частный случай задачи приближения, когда требуется, чтобы в определенных точках, называемых узлами интерполяции совпадали значения функции u и приближающей ее функции f. В более общем случае накладываются ограничения на значения некоторых производных f производных. То есть, дана функция u дискретного аргумента. Требуется отыскать такую функцию f, которая проходит через все точки u. При этом метрика обычно не используется, однако часто вводится понятие "гладкости" искомой функции.
-% Регрессия и классификация тесно связаны друг с другом. Термин алгоритм в классификации мог бы стать синонимом термина модель в регрессии, если бы алгоритм не оперировал с дискретным множеством ответов-классов, а модель — с непрерывно-определенной свободной переменной.
+Since this one is problem of convex optimization, there exists a unique solution
+given by 
+\begin{align*}
+  \hat{\beta}
+    &= (X'X + a I_p)^{-1} X' y \\
+    &= X' (a I_n + XX')^{-1} y \,,
+\end{align*}
+in the direct and the equivalent dual forms, respectively. Predictions on the test
+set $X^* = (x_i)_{i=n+1}^{n+m}\in \Real^{m\times d}$, given the train-set, are
+\begin{align*}
+  \hat{y}^*_{\vert(X,y), X^*} = X^* \hat{\beta}
+    &= X^* (X'X + a I_p)^{-1} X' y \\ 
+    &= X^* X' (a I_n + XX')^{-1} y \,,
+\end{align*}
+again in the direct and dual form, respectively.
 
+%% Say that RR can be made better by using the kernel trick
+The major drawback of this statement of the \textbf{RR} problem is that it does not
+provide any confidence intervals for these predictions. One possibility of remedying
+this is to introduce some distributional assumptions and project the \textbf{RR} problem
+into Bayesian framework.
 
-The Kernel Ridge Regression is formulated as the following problem:
-% \begin{equation*}
-% \end{equation*}
+Another principle, the so called ``Kernel-trick'' states that whenever an ML algorithm
+could be reduced to a form, which depends on the training sample data only thorough
+inner-products between the objects (a or Gram matrix), then it is possible to construct
+another ML algorithm by simply replacing the products with an arbitrary \textbf{PD}
+kernel. It should be noted that care must be taken to ensure additional conditions
+on the input domain imposed by this ``trick'' are met.
 
-Mention the kernel trick.
-Briefly say something about RKHS.
+In particular, the \textbf{RR} solution in its dual form depends only on the Gram
+matrix if inter-object inner-products $X X'$ in the input domain, which is why it is
+possible to restate it as the Kernel ridge regression (KRR) problem.
 
-The Kernel Ridge Regression for a given PD kernel $K:\Xcal\times \Xcal \to \Real$
-solves the following problem:
-\begin{equation*}
-  \|y - K_{XX}\beta\|^2 + \lambda \beta' K_{XX} \beta
-    \to \min_{\beta\in \Real^{n\times 1}}
-    \,,
-\end{equation*}
-with $\|\cdot\|$ -- the euclidean norm, and $K_{XX}$ defined as in \ref{eq:gp_cond_dist}.
-Assuming $K_{XX}$ is invertible, elementary matrix algebra yields the following
-equation for the minimizer $\beta$:
-\begin{equation*}
-  (\lambda I_n + K_{XX}) \beta - y = 0 \,.
-\end{equation*}
+\subsection{Kernel methods} % (fold)
+\label{sub:kernel_methods}
 
-% subsection problem_statement (end)
-
-
-\subsubsection{RKHS} % (fold)
-\label{ssub:rkhs}
+In this section we are going to give a brief recap of the foundations of kernel methods
+and their applications.
 
 A tuple $(\Hcal, \langle\cdot, \cdot\rangle)$ is an inner-product space over $\Real$
 if $\Hcal$ is a vector space over $\Real$, and $\langle\cdot, \cdot\rangle : \Hcal
@@ -175,177 +186,179 @@ $$ \alpha'K\alpha
   \,, $$
 or, in other words the Gram matrix $K$ is positive semi-definite, where $K$ is an
 $n \times n$ matrix of $K(x_i, x_j)$. Note that unlike linear algebra, ``positive
-definite'' here permits such non-zero weights, for which the product is exactly zero.
-Positive definite kernels are also known as Mercer kernels, or covariance kernels.
+definite'' here permits such non-zero weights, for which the product is exactly
+zero. Positive definite kernels are also known as Mercer kernels, or covariance
+kernels.
 
 Finally, any \textbf{PD} kernel $K$ gives rise to a so called \textbf{canonical RKHS}
 associated with $K$ constructed by a standard metric-completion argument for a pre-Hilbert
 space (a non-complete inner-product space)
-$$ \Hcal_0
+\begin{equation*}
+\Hcal_0
   = \bigl\{
     \sum_{i=1}^n \alpha_i K(x_i, \cdot)
     \,:\, n\geq1, (x_i)_{i=1}^n \in \Xcal, (\alpha_i)_{i=1}^n\in \Real
-  \bigr\}
-  \,, $$
-with an inner-product $ \langle f, g \rangle = \sum_{i=1}^n \sum_{j=1}^m \alpha_i K(x_i, z_j) \beta_j $,
+  \bigr\} \,,
+\end{equation*}
+with an inner-product 
+\begin{equation*}
+  \langle f, g \rangle = \sum_{i=1}^n \sum_{j=1}^m \alpha_i K(x_i, z_j) \beta_j \,,
+\end{equation*}
 where $f, g\in \Hcal_0$ with representations $f = \sum_{i=1}^n \alpha_i K(x_i, \cdot)$
 and $g = \sum_{j=1}^m \beta_j K(z_j, \cdot)$. In the completed RKHS $\Hcal = \bigl[\Hcal_0\bigr]$
-the map $\phi$ is given by the canonical map $x\mapsto K(x, \cdot)$ and $K$ is the
-reproducing kernel. The inner-prodcut is extended to $\Hcal$ by contonuity as a step
-in completion of $\Hcal_0$. It is worth noting, that the pre-Hilbert space $\Hcal_0$
-is by construction dense everywhere in $\Hcal$ with respect to the norm-mertic
-induced by the completed inner-product.
-
-% subsubsection rkhs (end)
-
-\subsubsection{Kernel methods} % (fold)
-\label{ssub:kernel_methods}
+the canonical feature map $\phi$ is given by the canonical map $x\mapsto K(x, \cdot)$
+and $K(\cdot, \cdot)$ is the reproducing kernel. The inner-product is extended to
+$\Hcal$ by continuity as a step in completion of $\Hcal_0$. It is worth noting, that
+the pre-Hilbert space $\Hcal_0$ is by construction dense everywhere in $\Hcal$ with
+respect to the metric induced by the completed inner-product.
 
 Given a train sample $(x_i, y_i)_{i=1}^n \in X\times \Real$ a general kernel-based
 machine learning regularized loss minimization problem is to solve
-$$ \Lcal\bigl((x_i, y_i)_{i=1}^n, f\bigr)
-  + \lambda \Omega\bigl(\|f\|\bigr)
-  \to \min_{f\in \Hcal}\,, $$
+\begin{equation}
+  \Lcal\bigl((x_i, y_i)_{i=1}^n, f\bigr)
+    + \lambda \Omega\bigl(\|f\|\bigr)
+    \to \min_{f\in \Hcal} \,,
+\end{equation}
 where $\Hcal$ is a Hilbert Space with Reproducing Kernel $K$, $\Lcal$ is a loss
 function which depends on $f$ through $(f(x_i))_{i=1}^n$, and $\Omega:\Real\mapsto\Real$
 is a monotone increasing function used for regularization. In this setting the Representer
-theorem states that the optimal solution is to be sought in a finite dimensional
-linear span of the canonical feature maps $\phi: x\mapsto K(x, \cdot)$ evaluated at
-the sample objects:
-$$ f^* \in \bigl\{ \beta'\Phi\,:\, \beta \in \Real^{n\times 1} \bigr\} \,, $$
+theorem, \cite{ref:rkhs_representer}, states that the optimal solution is to be sought
+in a finite dimensional linear span of the canonical feature maps $\phi: x\mapsto K(x, \cdot)$
+evaluated at the sample objects:
+\begin{equation*}
+  f^* \in \bigl\{ \beta'\Phi\,:\, \beta \in \Real^{n\times 1} \bigr\} \,,
+\end{equation*}
 where $\Phi = \bigl(\phi(x_i)\bigr)_{i=1}^n \in \Hcal^{n\times 1}$.
 
-Another principle, the so called ``Kernel-trick'' states that whenever an ML algorithm
-could be reduced to a form, which depends on the training sample data only thorough
-inner-products between the objects (a or Gram matrix), then it is possible to construct
-another ML algorithm by simply replacing the products with an arbitrary \textbf{PD}
-kernel. It should be noted that care must be taken to ensure additional conditions
-on the input domain imposed by this ``trick'' are met.
 
-In particular, the \textbf{RR} solution in its dual form depends only on the Gram
-matrix if inter-object inner-products $X X'$ in the input domain, which is why it is
-possible to restate it as the Kernel \textbf{RR} problem: given a training sample
-$X = (x_i)_{i=1}^n\in\Xcal^{n\times 1}$ and $y\in\Real^{n\times 1}$
-$$ \|y - f\|^2 + a \|f\|^2 \to \min_{f \in \Hcal} \,, $$
+Kernel ridge regression (KRR) combines ridge regression with the kernel trick, and
+learns a linear function in the feature space induced by the selected kernel and
+sample data. Given a training sample $X = (x_i)_{i=1}^n$, $X\in \Xcal^{n\times 1}$
+and $y \in \Real^{n\times 1}$, KRR solves the following problem
+\begin{equation*}
+  \|y - f\|^2 + \lambda \|f\|^2 \to \min_{f \in \Hcal} \,,
+\end{equation*}
 with $f \in \Real^{n\times 1}$ being a column-vector of $f$ evaluated at every input
-in $X$. Here $\Hcal$ is the canonical RKHS associated with a Mercer kernel $K$. Note
-that with slight abuse of notation the inner-products and norms over $\Hcal$ and
-$\Real^{n\times 1}$ are used without denoting which is which, since it is always
+in $X$. Here $\Hcal$ is the canonical RKHS associated with a Mercer-type kernel $K$.
+Note that with slight abuse of notation the inner-products and norms over $\Hcal$
+and $\Real^{n\times 1}$ are used without denoting which is which, since it is always
 clear from both the context and the type of the argument of the norm as a function.
 
 The Representer theorem states that the solution to this minimization is of the form
 $f = \Phi'\beta$, for $\Phi = (\phi(x_i))_{i=1}^n \in \Hcal^{n\times 1}$. By definition
 of the Gram matrix $K$ and due to its symmetry for any $j=1,\ldots,n$
-$$ f(x_j)
-  = \Phi(x_j)' \beta
-  = k_{x_j}' \beta
-  = (K e_j)' \beta
-  = e_j' K \beta
-  \,, $$
+\begin{equation*}
+  f(x_j)
+    = \Phi(x_j)' \beta
+    = k_{x_j}' \beta
+    = (K e_j)' \beta
+    = e_j' K \beta
+    \,,
+\end{equation*}
 where $k_x = \Phi(x) = (\phi(x_i)(y))_{i=1}^n \in \Real^{n\times 1}$ and $e_j$ is
 the $j$-th unit vector in $\Real^{n\times 1}$. Furthermore
-$$ \| f \|^2
-  = \sum_{i=1}^n\sum_{j=1}^n\beta_i\beta_j \langle\phi(x_i), \phi(x_j)\rangle
-  = \sum_{i=1}^n\sum_{j=1}^n\beta_i\beta_j K(x_i, x_j)
-  = \beta' K \beta \,. $$
-Thus the kernel Ridge Regression problem is reduced to the following finite-dimensional
+\begin{equation*}
+  \| f \|^2
+    = \sum_{i=1}^n\sum_{j=1}^n\beta_i\beta_j \langle\phi(x_i), \phi(x_j)\rangle
+    % = \sum_{i=1}^n\sum_{j=1}^n\beta_i\beta_j K(x_i, x_j)
+    = \beta' K \beta \,.
+\end{equation*}
+Thus the kernel ridge regression problem is reduced to the following finite-dimensional
 convex minimization problem:
 $$ \|y - K \beta \|^2 + \lambda \beta' K \beta \to \min_{\beta\in \Real^{n\times 1}} \,. $$
 The First order conditions imply that
 $$ \hat{\beta} = (aI_n + K)^{-1} y \,\text{ and }\, \hat{y}_x = k_x' \beta \,, $$
 -- the estimated weight vector and an optimal prediction at $x\in \Xcal$, respectively.
 
-% subsubsection kernel_methods (end)
+Consider a problem of estimating the prediction accuracy of a test sample $(X^*, y^*)$
+given a training sample $(X, y)$, where $X = (x_i)_{i=1}^n$, $y\in \Real^{n\times 1}$,
+$X^* = (x^*_j)_{j=1}^m = (x_i)_{i=n+1}^{n+m}$ and $y^*\in \Real^{m\times 1}$. 
+The out-of-train-sample prediction residuals are given by
+\begin{equation*}
+  y^* - \hat{y}^*_{|(X, y), X^*}
+    = y^* - K_{XX^*}' (\lambda I_n + K_{XX})^{-1} y
+    \,,
+\end{equation*}
+with $K_{XX^*} = (K_X(x^*_j))_{j=1}^m \in \Real{n\times m}$.
+Now an in-sample prediction based on the optimal weights over the pooled sample
+$(\tilde{X}, \tilde{y})$ given by $((X, X^*), (y, y^*))$. First, since the matrix
+$\lambda I_n + K_{XX}$ is always invertible for $\lambda > 0$, block-matrix inversion
+formula implies that $Q_{\tilde{X}} = (\lambda I_{n+m} + K_{\tilde{X}\tilde{X}})^{-1}$
+is given by:
+\begin{equation*}
+  % & = \begin{pmatrix}
+  %   \lambda I_n + K_{XX} & K_{XX^*} \\
+  %   K_{X^*X} & \lambda I_m + K_{X^*X^*}
+  % \end{pmatrix}^{-1} \\
+  \begin{pmatrix}
+    Q_X + Q_X K_{XX^*} M^{-1} K_{X^*X} Q_X & - Q_X K_{XX^*} M^{-1} \\
+    - M^{-1} K_{X^*X} Q_X & M^{-1}
+  \end{pmatrix}
+  \,,
+\end{equation*}
+where $Q_X = \bigl( \lambda I_n + K_{XX} \bigr)^{-1}$ and
+\begin{equation*}
+  M = \lambda I_m + K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*} \,.
+\end{equation*}
+Since $\lambda I_{n+m} + K_{\tilde{X}\tilde{X}}$ is an invertible positive definite
+matrix ($M\succeq 0$), its inverse is \textbf{PD} as well, whence $M$ is positive
+definite and invertible as well. If $H_{\tilde{X}} = K_{\tilde{X}\tilde{X}} Q_{\tilde{X}}$,
+then $I_{n+m} - H_{\tilde{X}} = \lambda Q_{\tilde{X}}$, whence
+\begin{align}
+  y^* - \hat{y}^*_{|(\tilde{X}, \tilde{y})}
+    &= \lambda \begin{pmatrix} 0\\ I_m \end{pmatrix} Q_{\tilde{X}}
+        \begin{pmatrix} y\\ y^* \end{pmatrix} \nonumber \\
+    % &= \lambda \begin{pmatrix} - M^{-1} K_{X^*X} Q_X & M^{-1} \end{pmatrix}
+    %   \begin{pmatrix} y\\ y^* \end{pmatrix} \\
+    &= \lambda M^{-1} \bigl( y^* - K_{X^*X} Q_X y \bigr) %\nonumber \\
+    % &= \lambda M^{-1} \bigl( y^* - \hat{y}^*_{|(X, y), X^*} \bigr)
+    \label{eq:holdout_resid}
+    \,.
+\end{align}
+It is possible to show that the matrix $K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}$ is also
+\textbf{PD}. Therefore, we have that $M \succeq \lambda I_m$ whence $\lambda M^{-1}
+\preceq I_m$, or that the matrix $M$ defines an expanding linear transformation $\Real^{n\times 1} \mapsto
+\Real^{n\times 1}$. This means that the out-of-sample residuals are generally larger
+than the corresponding in-sample ones.
 
+In particular, this enables fast computation of the leave-one-out residuals of the
+KRR, without refitting all the way. The full sample residuals of a fitted KRR are
+given by a vector $\hat{r}_{\text{in}}(X, y) = (I_n - K_{XX} Q_X) y$. Since $Q_X$
+is invertible, block matrix inversion yields the following expression: for all
+$i=1,\ldots, n$
+\begin{align}
+  e_i' \hat{r}_{\text{in}}(X, y)
+  % = \lambda e_i' P_{i:n} P_{i:n} Q_X P_{i:n} P_{i:n} y
+  % = \lambda e_n'
+  %   \begin{pmatrix}
+  %     Q_{-i} + Q_{-i} K_{-i}(x_n) m_i^{-1} K_{-i}(x_n)' Q_{-i} & - Q_{-i} K_{-i}(x_n) m_i^{-1} \\
+  %     - m_i^{-1} K_{-i}(x_n)' Q_{-i} & m_i^{-1} \\
+  %   \end{pmatrix}
+  %   \begin{pmatrix} y_{-i} \\ y_i \end{pmatrix} \\
+  &= \lambda m_i^{-1} \bigl(y_i - K_{-i}(x_i)' Q_{-i} y_{-i} \bigr) \nonumber \\
+  &= \lambda m_i^{-1} e_i' \hat{r}_{\text{loo}}(X, y) \label{eq:loo_resid} \,,
+\end{align}
+where $K_{-i} = K_{X_{-i}}: \Xcal \mapsto \Real^{(n-1)\times1}$ (see eqn.~\ref{eq:gp_cond_dist})
+is the canonical map vector, $Q_{-i}$ is given by $(\lambda I_{n-1} + K_{X_{-i}X_{-i}})^{-1}$,
+and $\lambda m_i^{-1}$ is the KRR leverage of the $i$-th observation, with
+\begin{equation*}
+  m_i = \lambda + K(x_i, x_i) - K_{-i}(x_i)' Q_{-i} K_{-i}(x_i) \,.
+\end{equation*}
+This ``leverage'' is always within $[0,1]$, since $K$ is PD, and depends only on
+the input part, $X$, of the dataset. Furthermore, it can be shown that the main
+diagonal of $Q_X$ is given by $(m_i^{-1})_{i=1}^n$. Indeed, to see this it is necessary
+to apply the block-inversion formula to the matrix $Q_X$ with symmetrically permuted
+rows and columns.
 
+% subsection kernel_ridge_regression (end)
 
-\subsection{Conformal prediction} % (fold)
-\label{sub:conformal_prediction}
+\subsection{Bayesian KRR confidence interval} % (fold)
+\label{sub:bayesian_krr_confidence_interval}
 
-Conformal prediction is a technique designed to yield a statistically valid measure
-of confidence for individual predictions made by a machine learning algorithm and
-to be applicable in both the supervised and unsupervised online learning settings.
-In the supervised case, let $\Zcal$ denote the object-target space $\Xcal \times \Ycal$.
-The core of this technique is a measurable map $A: \Zcal^+\times \Zcal \mapsto \Real$
--- a \textbf{N}on-\textbf{C}onformity \textbf{M}easure, which for a training sample
-$Z = (z_i)_{i=1}^n$ and a test object $z_*\in \Zcal$ returns a value $A(Z, z_*)$,
-which quantifies how much different $z_*$ is relative to a sample $Z$. A conformal
-predictor is a procedure, that takes in a sample $Z_{:n}=(z_i)_{i=1}^n\in\Zcal$,
-a test object $x_*\in\Xcal$, and a confidence level $\epsilon\in(0,1)$, and outputs
-a confidence set $\Gamma^\epsilon(Z, x_*) \subseteq Y$ for the corresponding target
-value $y_*$ (see algorithm~\ref{alg:conf_predictor}). The central idea is to compute
-an empirical estimate the p-value of a test object-target pair $(x_*, y_*)$ using
-some convenient \textbf{NCM} with respect to the reference sample $Z_{:n}$.
-
-\begin{algorithm}%[H]
-  \caption{Conformal predictor} \label{alg:conf_predictor}
-  \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
-  \Input{
-    $A$ -- \textbf{NCM}, $\epsilon \in (0,1)$ -- significance level, training sample
-    $Z_{:n}=(z_i)_{i=1}^n \in \Zcal^+$ and a test object $x_*\in \Xcal$.}
-  \Output{Confidence set $\Gamma^\epsilon$ for the test target $y_*$.}
-  \BlankLine
-  $\Gamma^\epsilon \leftarrow \emptyset$\;
-  \For{$y \in Y$}{
-    $z_{n+1} \leftarrow (x_*, y)$\;
-    \For{$i = 1,\ldots, n, n+1$}{
-      $Z_{-i} \leftarrow \bigl(z_j\bigr)_{j=1, j\neq i}^{n+1}$\;
-      $\eta_i \leftarrow A(Z_{-i}, z_i)$\;
-    }
-    $ p^y \leftarrow (n+1)^{-1} \bigl\lvert \{
-        i \,:\, \eta_i \geq \eta_{n+1}
-      \} \bigr\rvert $\;
-    \If{$p^y > \epsilon$}{
-      $\Gamma^\epsilon \leftarrow \Gamma^\epsilon \cup\{y\}$\;
-    }
-  }
-  Return $\Gamma^\epsilon$\;
-\end{algorithm}
-
-In \cite{Vovketal2005} is has been shown, that if a sequence $(z_n)_n{\geq1}$ is
-generated by an exchangeable distribution $P$, then the coverage probability of
-the prediction set $\Gamma^\epsilon$, yielded by procedure \ref{alg:conf_predictor},
-is at least $1-\epsilon$ and successive errors are independent in online learning
-and prediction setting. Thus the outlined procedure guarantees that unconditionally
-$$ \pr\bigl( y_* \notin \Gamma^\epsilon(Z_{:n}, x_*)\bigr) \leq \epsilon \,, $$
-where $\pr = P_{Z_{:n}, {z_*}}$, $(x_*, y_*)=z_*$, and $Z_{:n}$ denotes a sample of
-size $n$. In a special case, when $z_n$ are iid the measure is just the product measure
-$P_{z_1} \otimes \ldots \otimes P_{z_n} \otimes P_{z_*}$.
-
-In general, any real-valued jointly measurable \textbf{NCM} could be used, the only
-difference will be in the size of the predicted confidence set (efficiency) and its
-informativeness. Despite attractive theoretical guarantees, the procedure suffers
-from a significant drawback: in the general case it is very computationally inefficient,
-since it exhaustively searches over $\Ycal$ (generally infeasible in regression
-settings) and loops over all observations in the extended sample $Z_{:n}\cup\{z_*\}$
-to get the calibration set of $(\eta_i)_{i=1}^{n+1}$.
-
-% subsection conformal_prediction (end)
-
-\subsection{Goals} % (fold)
-\label{sub:goals}
-
-The goal of this paper is study to perform numerical a study of the validity of
-the conformal confidence intervals in the batch learning setting with Kernel Ridge
-Regression.
-
-% subsection goals (end)
-
-% section introduction (end)
-
-\section{Derivation} % (fold)
-\label{sec:derivation}
-In this section we derive the keys formulae, which are necessary for the construction
-of the studied confidence regions. The first half is concerned with the Bayesian 
-confidence regions, which arise if the kernel ridge regression is looked at from
-the perspective of a Gaussian Process. In the second half we describe the construction
-of confidence regions based on the conformal procedure alg.~\ref{alg:conf_predictor}.
-
-\subsection{Bayesian KRR interval} % (fold)
-\label{sub:bayesian_krr_interval}
-
-Confidence interval in the Bayesian setting can easily be obtained if the KRR
-problem is examined from a Gaussian Process point of view.
+It has been mentioned above that the Gaussian Process interpretation of the KRR
+readily yields predictive confidence regions. In this subsection we are going to
+derive the Bayesian confidence interval, against which the conformal confidence
+regions will be compared in the numerical study.
 
 %% Brief intro into Gaussian processes
 A random process $(f_x)_{x\in \Xcal} \sim GP(m(x), \Kcal(x,x'))$, with mean $m : \Xcal
@@ -474,68 +487,143 @@ confidence interval is thus given by
 where $\hat{y}_{y_X}(x^*) = K_X(x^*)' Q_X y_X$, and $z_\alpha$ is the $\alpha$
 quantile of $\Ncal(0, 1)$.
 
-% subsection bayesian_krr_interval (end)
+Gaussian interpretation of the Kernel Ridge Regression naturally enables adaptive
+estimation of parameters $\theta$ of the kernel $K$ by maximizing the joint likelihood
+of the train data $(X, y)$, given by the likelihood of the multivariate Gaussian
+distribution with zero mean and covariance $\sigma^2 (\lambda I_n + K_{XX}))$.
+\begin{equation} \label{eq:bkrr_likelihood}
+%% Write out the likelihood of the train sample.
+  \Lcal = \ldots
+  \,.
+\end{equation}
+With the explicit solution to the problem of finding the ``best'' $\hat{\beta}$ for
+some fixed kernel $K_\theta$, it is possible to gradually estimate the optimal parameters
+$\theta$ using alternating optimization algorithm, by minimizing \ref{eq:bkrr_likelihood}.
 
-\subsection{Conformal KRR interval} % (fold)
-\label{sub:conformal_krr_interval}
+Another alternative is to select the parameters based on the data that has not been
+used in fitting the conditional mean of the kernel ridge regression. One could use
+leave-one-out cross-validation and minimize the RMSE of the deleted residuals
+(eq.~\ref{eq:loo_resid}):
+\begin{equation}
+  \hat{\theta}
+    = \mathop{\text{argmin}}_{\theta \in\Theta}
+      n^{-1} \| \hat{r}_{\text{loo}}(X, y; \theta) \|^2
+    \,,
+\end{equation}
+where the dependence on $\theta$ is through the sample kernel Gram matrix $K_{XX}$.
+It is worth noting that the leave-one-out residuals are not affected by the scale
+$\sigma^2$ of the kernel $\Kcal = \sigma^2(\lambda \delta_{x,x'} + K(x, x'))$.
+Similarly to the case of predictive variances in \cite{pcw20005a7}, using leave-one-out
+cross-validation eliminates the bias inherent in estimates of the kernel parameters.
 
-% Consider a problem of estimating the prediction accuracy of a test sample $(X^*, y^*)$
-% given a training sample $(X, y)$, where $X = (x_i)_{i=1}^n$, $y\in \Real^{n\times 1}$,
-% $X^* = (x^*_j)_{j=1}^m = (x_i)_{i=n+1}^{n+m}$ and $y^*\in \Real^{m\times 1}$. 
-% The out-of-train-sample prediction residuals are given by
-% \begin{equation*}
-%   y^* - \hat{y}^*_{|(X, y), X^*}
-%     = y^* - K_{XX^*}' (\lambda I_n + K_{XX})^{-1} y
-%     \,,
-% \end{equation*}
-% with $K_{XX^*} = (K_X(x^*_j))_{j=1}^m \in \Real{n\times m}$.
-% Now an in-sample prediction based on the optimal weights over the pooled sample
-% $(\tilde{X}, \tilde{y})$ given by $((X, X^*), (y, y^*))$. First, since the matrix
-% $\lambda I_n + K_{XX}$ is always invertible for $\lambda > 0$, block-matrix inversion
-% formula implies:
-% \begin{align*}
-%   Q_{\tilde{X}}
-%     &% = \bigl( \lambda I_{n+m} + K_{\tilde{X}\tilde{X}} \bigr)^{-1}
-%     = \begin{pmatrix}
-%       \lambda I_n + K_{XX} & K_{XX^*} \\
-%       K_{X^*X} & \lambda I_m + K_{X^*X^*}
-%     \end{pmatrix}^{-1} \\
-%     &= \begin{pmatrix}
-%       Q_X + Q_X K_{XX^*} M^{-1} K_{X^*X} Q_X & - Q_X K_{XX^*} M^{-1} \\
-%       - M^{-1} K_{X^*X} Q_X & M^{-1}
-%     \end{pmatrix}
-%     \,,
-% \end{align*}
-% where $Q_X = \bigl( \lambda I_n + K_{XX} \bigr)^{-1}$ and
-% \begin{equation*}
-%   M = \lambda I_m + K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*} \,.
-% \end{equation*}
-% Since $\lambda I_{n+m} + K_{\tilde{X}\tilde{X}}$ is an invertible positive definite
-% matrix ($M\succeq 0$), its inverse is \textbf{PD} as well, whence $M$ is positive
-% definite and invertible as well. If $H_{\tilde{X}} = K_{\tilde{X}\tilde{X}} Q_{\tilde{X}}$,
-% then $I_{n+m} - H_{\tilde{X}} = \lambda Q_{\tilde{X}}$, whence
-% \begin{align*}
-%   y^* - \hat{y}^*_{|(\tilde{X}, \tilde{y})}
-%     &= \lambda \begin{pmatrix} 0\\ I_m \end{pmatrix} Q_{\tilde{X}}
-%         \begin{pmatrix} y\\ y^* \end{pmatrix} \\
-%     % &= \lambda \begin{pmatrix} - M^{-1} K_{X^*X} Q_X & M^{-1} \end{pmatrix}
-%     %   \begin{pmatrix} y\\ y^* \end{pmatrix} \\
-%     &= \lambda M^{-1} \bigl( y^* - K_{X^*X} Q_X y \bigr)
-%     = \lambda M^{-1} \bigl( y^* - \hat{y}^*_{|(X, y), X^*} \bigr)
-%     \,.
-% \end{align*}
-% It is possible to show that the matrix $K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}$ is also
-% \textbf{PD}. Therefore, we have that $M \succeq \lambda I_m$ whence $\lambda M^{-1}
-% \preceq I_m$, or that the matrix $M$ defines an expanding linear transformation $\Real^{n\times 1} \mapsto
-% \Real^{n\times 1}$. This means that the out-of-sample residuals are generally larger
-% than the corresponding in-sample ones.
+% subsection bayesian_krr_confidence_interval (end)
 
-Conformal Confidence Region (\ref{sub:conformal_prediction}) requires a non-conformity
-measure. We consider two versions of the NCM proposed in \cite{vovk2005}, chapter 2,
+% section kernel_ridge_regression (end)
+
+\section{Conformal prediction} % (fold)
+\label{sec:conformal_prediction}
+
+Conformal prediction is a distribution-free technique designed to yield a statistically
+valid confidence sets for predictions made by machine learning algorithms. The key
+advantage of the method is that it offers coverage probability guarantees under standard
+IID assumptions, even in cases when assumptions of the underlying prediction algorithm
+fail to be satisfied. The method was introduced in \cite{vovk2005} and is applicable
+in both the supervised and unsupervised online learning settings. In the following
+we consider supervised setting with $\Zcal$ denoting the object-target space $\Xcal \times \Ycal$.
+
+The nature of the underlying ML predictive algorithm is irrelevant to conformal
+prediction, as the core of the procedure is a measurable map $A: \Zcal^*\times \Zcal \mapsto \Real$,
+a \textbf{N}on-\textbf{C}onformity \textbf{M}easure, \textbf{NCM}, which for a training
+sample $Z_{:n}=(z_i)_{i=1}^n\in\Zcal$ and a test object $z_* \in \Zcal$ quantifies
+how much different $z_*$ is relative to the sample $Z_{:n}$.
+
+A conformal predictor over the NCM $A$ is a procedure, that for every sample $Z_{:n}$,
+a test object $x_{n+1} \in \Xcal$, and a confidence level $\epsilon\in(0,1)$, computes
+a confidence set $\Gamma_{Z+{:n}}^\epsilon(x^*)$ for the target value $y_{n+1}$ corresponding
+to $x_{n+1}$:
+\begin{equation} \label{eq:conf_pred_set}
+  \Gamma_{Z_{:n}}^\epsilon(x_{n+1})
+    = \bigl\{ y\in \Ycal \,:\, p_{Z_{:n}}(\tilde{z}^y_{n+1}) \geq \epsilon \bigr\} \,,
+\end{equation}
+where $\tilde{z}^y_{n+1} = (x_{n+1}, y)$ a synthetic test observation with target
+label $y$. The function $p:\Zcal^*\times (\Xcal\times \Ycal)\mapsto [0,1]$ is given
+by
+\begin{equation} \label{eq:conf_p_value}
+  p_{Z_{:n}}(\tilde{z})
+    = (n+1)^{-1} \bigl\lvert\{ i \,:\,
+      \eta_i^{\tilde{z}} \geq \eta_{n+1}^{\tilde{z}} \}\bigr\rvert \,,
+\end{equation}
+where $i=1,\ldots, n+1$, and $\eta_i^{\tilde{z}} = A(S^{\tilde{z}}_{-i}, S^{\tilde{z}}_i)$
+-- the degree of non-conformity of the $i$-th observation with respect to the augmented
+sample $S^{\tilde{z}} = (Z_{:n}, {\tilde{z}}^y_{n+1}) \in \Zcal^{n+1}$. For any $i$,
+$S^{\tilde{z}}_i$ is the $i$-th element of the sample, and $S^{\tilde{z}}_{-i}$ is the
+sample with the $i$-th observation omitted.
+
+A distribution $P$ on $\Zcal^n$ is called \textbf{exchangeable} if for any permutation
+$\sigma$ of ${1,\ldots,n}$ for any measurable $B\subseteq \Zcal^n$
+\begin{multline} \label{eq:exchangeability}
+  \pr\bigl(\{z\in\Zcal^n \,:\, (z_i)_{i=1}^n\in B\}\bigr)
+  = \\ \pr\bigl(\{z\in\Zcal^n \,:\, (z_{\sigma(i)})_{i=1}^n \in B\} \bigr)\,.
+\end{multline}
+Any product-measure on $\Zcal^n$ is exchangeable, and therefore exchangeability
+generalizes independence. A distribution $P$ on $\Zcal^\infty$ is exchangeable
+is all its finite distributions are exchangeable.
+
+In \cite{Vovketal2005}, chapter 2, is has been shown, that if a sequence of examples
+$(z_n)_{n \geq1}$ is generated by an exchangeable distribution $P$ on $\Zcal^\infty$,
+then the coverage probability of the prediction set $\Gamma^\epsilon$, yielded by
+the procedure \ref{eq:conf_pred_set} is at least $1-\epsilon$ and successive errors
+are independent in online learning and prediction setting. Thus the outlined procedure
+guarantees unconditional validity of the confidence region (eq.~\ref{eq:conf_pred_set}):
+for any $\epsilon \in (0,1)$, for any $n\geq1$ and any exchangeable distribution
+$P_n$ on $\Zcal^n$ one has
+\begin{equation} \label{eq:conservative_coverage}
+  \pr_{Z_{:n}\sim P_n} \bigl(
+    y_n \notin \Gamma^\epsilon_{Z_{:(n-1)}}(x_n)
+  \bigr) \leq \epsilon \,,
+\end{equation} 
+where $(x_n, y_n) = z_n$. In a special case, when $z_n$ are independent the measure
+$P_n$ is just the product measure $P_{z_1} \otimes \ldots \otimes P_{z_n}$.
+
+Intuitively, the event $y_n \notin \Gamma^\epsilon_{Z_{:(n-1)}}(x_n)$ is equivalent
+to $\eta_n$ being among the largest $\lfloor n\epsilon\rfloor$ values of $\eta_i = A(Z_{-i}, Z_i)$,
+which is equal to $\frac{\lfloor n\epsilon\rfloor}{n}$, due to exchangeability of
+$Z_{:n}$ (this heuristic argument assumes that all $\eta_i$ are distinct and that
+probability under $P_{:n}$ of any $(\eta_i)_{i=1}^n$ is positive, for a rigorous
+proof see \cite{vovk2005}, chapter 8).
+
+In general, any real-valued jointly measurable \textbf{NCM} could be used, the only
+difference will be in the size of the predicted confidence set (efficiency) and the
+computational complexity of the conformal procedure. In the general case, despite
+theoretical guarantees, computing eq.~\ref{eq:conf_pred_set} requires exhaustive
+search through the target space $\Ycal$. This complexity issue is not acute in typical
+classification settings, when $\Ycal$ is finite, but is infeasible in regression
+settings when $\Ycal$ is $\Real$. Furthermore, the inner eq.~\ref{eq:conf_p_value}
+requires looping over all observations in the augmented sample $S^{\tilde{z}}$.
+
+In regression setting for specific non-conformity measures it is possible to come
+up with efficient procedure for computing the confidence region (\ref{eq:conf_pred_set}),
+as demonstrated in \cite{vovk2005}, chapter 2, and sec.~\ref{sec:conformalized_krr}.
+
+% section conformal_prediction (end)
+
+\section{Conformalized kernel ridge regression} % (fold)
+\label{sec:conformalized_krr}
+
+In this section we describe the construction of confidence regions of the conformal
+procedure eq.~\ref{eq:conf_pred_set} for the case of the non-conformity measures
+based on kernel ridge regression.
+
+We consider two versions of the NCM proposed in \cite{vovk2005}, chapter 2,
 for the regression setting: an in-sample and a \textbf{l}eave-\textbf{o}ne-\textbf{o}ut
 version. To this end consider a sample $(X, y) = (x_i, y_{x_i})_{i=1}^n$, and for
 any $i=1\ldots, n$ put $X = (X_{-i}, x_i)$, and $y = (y_{-i}, y_i)$.
 Let $e_i\in \Real^{n\times 1}$ be the $i$-th unit vector.
+
+\subsection{Ridge Regression Confidence Machine} % (fold)
+\label{sub:ridge_regression_confidence_machine}
+Conformal Confidence Region (\ref{sub:conformal_prediction}) requires a non-conformity
+measure.
 
 The ``in-sample'' NCM $A_{\text{in}}$ measures the absolute value of the regression
 residual and is given by:
@@ -559,34 +647,9 @@ Note that both are interrelated using the formula:
   A_{\text{loo}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
     \\ = \lambda^{-1} \diag(Q_X)^{-1}
     A_{\text{in}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
-    \,.
+    \,,
 \end{multline*}
-Indeed, for all $i=1,\ldots,n$, the full sample residual of a fitted KRR is given
-by $\hat{r}_{\text{in}}(X, y) = (I_n - K_{XX} Q_X) y$. Since $Q_X$ is invertible,
-block matrix inversion yields the following expression: for all $i=1,\ldots, n$
-\begin{align}
-  e_i' \hat{r}_{\text{in}}(X, y)
-  % = \lambda e_i' P_{i:n} P_{i:n} Q_X P_{i:n} P_{i:n} y
-  % = \lambda e_n'
-  %   \begin{pmatrix}
-  %     Q_{-i} + Q_{-i} K_{-i}(x_n) m_i^{-1} K_{-i}(x_n)' Q_{-i} & - Q_{-i} K_{-i}(x_n) m_i^{-1} \\
-  %     - m_i^{-1} K_{-i}(x_n)' Q_{-i} & m_i^{-1} \\
-  %   \end{pmatrix}
-  %   \begin{pmatrix} y_{-i} \\ y_i \end{pmatrix} \\
-  &= \lambda m_i^{-1} \bigl(y_i - K_{-i}(x_i)' Q_{-i} y_{-i} \bigr) \nonumber \\
-  &= \lambda m_i^{-1} e_i' \hat{r}_{\text{loo}}(X, y) \label{eq:loo_resid} \,,
-\end{align}
-where $K_{-i} = K_{X_{-i}}: \Xcal \mapsto \Real^{(n-1)\times1}$ (see eqn.~\ref{eq:gp_cond_dist})
-is the canonical map vector, $Q_{-i}$ is given by $(\lambda I_{n-1} + K_{X_{-i}X_{-i}})^{-1}$,
-and $\lambda m_i^{-1}$ is the KRR leverage of the $i$-th observation, with
-\begin{equation*}
-  m_i = \lambda + K(x_i, x_i) - K_{-i}(x_i)' Q_{-i} K_{-i}(x_i) \,.
-\end{equation*}
-This ``leverage'' is always within $[0,1]$, since $K$ is PD, and depends only on
-the input part, $X$, of the dataset. Furthermore, it can be shown that the main
-diagonal of $Q_X$ is given by $(m_i^{-1})_{i=1}^n$. Indeed, to see this apply the
-block-inversion formula to the matrix $Q_X$ with symmetrically permuted rows and
-columns.
+based on eq.~\ref{eq:loo_resid}.
 
 For the NCM $A$ the $1-\alpha$ conformal confidence interval for the $n$-th observation
 is given by
@@ -675,7 +738,7 @@ Let $P$ and $Q$ be the sets of all well-defined $p_i$ and $q_i$ respectively, an
 $(g_i)_{j=1}^{J+1}$ be an enumeration of $\{\pm\infty\}\cup P \cup Q$ in ascending
 order. Then the conformal confidence region $\Gamma_{X_{-n}, y_{-n}}^\alpha(x_n)$ is
 constructed from intervals $G_j = [g_j, g_{j+1}] \cap \Real$:
-\begin{equation*}\label{eq:rrcm_conf_ci}
+\begin{equation*} \label{eq:rrcm_conf_ci}
   \Gamma_{X_{-n}, y_{-n}}^\alpha(x_n)
     = \bigcup_{j\,:\, N_j \geq \alpha n} G_j
     \,,
@@ -689,45 +752,22 @@ of $G_j$, then locate the values $p_i$ and $q_i$ associated with each region $S_
 ($\mathcal{O}(n\log n)$), and finally in at most $\mathcal{O}(2n)$ time compute
 the coverage numbers $N_j$. The memory footprint is $\mathcal{O}(n)$.
 
-% Another possibility is to use the NCM proposed in \cite{BurVovk2014}
+% subsection ridge_regression_confidence_machine (end)
 
-% subsection conformal_krr_interval (end)
+\subsection{Two sided} % (fold)
+\label{sub:two_sided}
+Another possibility is to use the NCM proposed in \cite{BurVovk2014}
 
-\subsection{Kernel parameter estimation} % (fold)
-\label{sub:kernel_parameter_estimation}
+% subsection two_sided (end)
 
-Gaussian interpretation of the Kernel Ridge Regression naturally enables adaptive
-estimation of the parameters $\theta$ of the kernel $K$ by maximizing the joint
-likelihood of the train data $(X, y)$, given by the likelihood of the multivariate
-Gaussian distribution with zero mean and covariance $\sigma^2 (\lambda I_n + K_{XX}))$.
+% \subsection{Kernel parameter estimation} % (fold)
+% \label{sub:kernel_parameter_estimation}
 
-%% Write out the likelihood of the train sample.
-%% 
+% The third option is to use a nonparametric method suggested in \cite{Nemirovsky1997}.
 
-Another alternative is to use leave-one-out cross-validation and minimize the RMSE
-of the deleted residuals (eq.~\ref{eq:loo_resid}). In this case, the ``optimal''
-parameters are given by
-$$ \hat{\theta}
-  = \mathop{\text{argmin}}_{\theta \in\Theta}
-    \|\hat{r}_{\text{loo}}(X, y; \theta)\|^2
-  \,,
-$$
-where the dependence on $\theta$ is through the sample kernel Gram matrix $K_{XX}$.
-It is worth noting that the leave-one-out residuals are not affected by the scale
-$\sigma^2$ of the kernel $\Kcal = \sigma^2(\lambda \delta_{x,x'} + K(x, x'))$.
+% % subsection kernel_parameter_estimation (end)
 
-The third option is to use a nonparametric method suggested in \cite{Nemirovsky1997}.
-
-As a result, the model of the predictive variance is effectively fitted on data that has not been used to fit the model of the predictive mean, where in principle no over-fitting can have occurred and so the bias in the predictive variance is eliminated. 
-
-Therefore any estimate of predictive variance based on leave-one-out cross-validation will also be greater than the estimate based on the output of a model trained on the entire dataset, thereby reducing, if not actually eliminating, the known conser- vative bias in the latter
-
-The use of leave-one-out cross-validation is shown to
-eliminate the bias inherent in estimates of the predictive variance.
-
-% subsection kernel_parameter_estimation (end)
-
-% section derivation (end)
+% section conformalized_krr (end)
 
 \section{Numerical study} % (fold)
 \label{sec:numerical_study}
@@ -817,7 +857,7 @@ and a step function (``heaviside'', fig.~\ref{fig:1dfunc_heaviside}).
     % \caption{``heaviside''}
     \caption{} \label{fig:1dfunc_heaviside}
   \end{subfigure}
-  \caption{Typical profiles of studied 1D functions.}\label{fig:animals}
+  \caption{Typical profiles of studied 1D functions.} \label{fig:1dfunc}
 \end{figure}
 In each experiment, we construct the confidence regions performance for the unobserved
 values on a $1$-d function on a common set of test inputs, $X^* \subset \Xcal$,
@@ -829,15 +869,15 @@ parameters $\lambda, \theta, n$ and the NCM $A$
   \begin{enumerate}
     \item generate a random train set $X = (x_i)_{i=1}^n\sim \mathcal{U}(\Xcal)$ of
     size $n$ and put $X_{\text{pool}} = X \cup X^*$;
-    \item draw target values $y_x = f(x)$, $x\in X_{\text{pool}}$, from some
-    function $f:\Xcal \mapsto \Ycal$;
+    \item draw target values $y_x = f(x)$, $x\in X_{\text{pool}}$ from some function
+    $f:\Xcal \mapsto \Ycal$;
     \item fix an RBF kernel $K$ with precision $\theta$ and fit a Gaussian Process
     Regression with $m(x) = 0$ to the train dataset $(y_x)_{x\in X}$ using kernel
     $\Kcal = \sigma^2(\lambda \delta_{x,x'} + K(x,x'))$, where the amplitude of
     the kernel $\sigma^2$ is also estimated;
-    \item for each $x^* \in X^*$ construct both the Bayesian region, $\Bcal_{X, y}^\alpha(x^*)$,
+    \item for each $x^* \in X^*$ construct both the Bayesian KRR region, $\Bcal_{X, y}^\alpha(x^*)$,
     and the conformal $\epsilon$-confidence region, $\Gamma_{X, y}^\alpha(x^*)$ using
-    the KRR NCS $A$ with kernel $\Kcal$;
+    the KRR NCM $A$ with kernel $\Kcal$;
     \item estimate the coverage rate $p_l(R) = |X^*|^{-1}\sum_{x\in X^*} 1_{y_x\in R_x}$
     and the width of the convex hull $w_l(R) = \inf\{b-a\,:\,R \subseteq [a, b]\}$
     for both confidence regions $R=\Bcal_{X, y}^\alpha$ and $R=\Gamma_{X, y}^\alpha$;
@@ -848,7 +888,20 @@ parameters $\lambda, \theta, n$ and the NCM $A$
 It is worth emphasizing that in this experiment the input train sample is drawn from
 the uniform distribution on $\Xcal$.
 
-In the first experiment we compare the validity of the confidence regions. The fig.~
+In the first experiment we compare the validity of the confidence regions on the
+test functions in fig.~\ref{fig:1dfunc}, but we present results for the function
+on fig.~\ref{fig:1dfunc_f6} only, because the conclusions are similar.
+
+The empirical study showed that the confidence region $\Bcal_{X, y}^\alpha$ is not
+valid in the non gaussian case of are not.
+
+in the noiseless case the choice of kernel parameters does not seem to 
+
+be wider than
+First it is wirth 
+
+
+The fig.~
 \ref{fig:1d_validity} depicts the dependence of the coverage rate upon the size of the
 train sample.
 
@@ -865,7 +918,7 @@ in the $1$-d case: \begin{enumerate}
 
 \end{enumerate}
 
-Gaussian Process interpretation of the KRR (\ref{sub:bayesian_krr_interval}) also
+Gaussian Process interpretation of the KRR (\ref{sub:bayesian_krr_confidence_interval}) also
 permits adaptive selection of the precision parameter $\theta$ of the RBF kernel
 by maximizing the joint likelihood of the training data $(X, y)$. This options has
 also been investigates, but yielded conclusions which are qualitatively identical
