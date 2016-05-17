@@ -15,7 +15,8 @@ from scipy.stats import norm
 from joblib import Parallel, delayed
 
 from utils.state import _save
-from utils.functions_1d import get_functions
+from utils.functions import gaussian
+
 from utils.conformal import RRCM, CRR
 from utils.KRR import KRR_AB
 
@@ -28,40 +29,30 @@ def mkdirifnot(path):
         os.mkdir(path)
     return path
 
-BASE_PATH = mkdirifnot(os.path.join(".", "exp1_noise"))
+BASE_PATH = mkdirifnot(os.path.join(".", "exp4"))
 
 ## The levels and the random state
 # random_state = np.random.RandomState(0x0BADA550)
 # random_state = np.random.RandomState(0xB14FCA33)
-random_state = np.random.RandomState(0x900D0BAD)
+# random_state = np.random.RandomState(0x1337BACE)
+# random_state = np.random.RandomState(0xCAFFE14E)
+random_state = np.random.RandomState(0X5CA1AB1E)
 
 levels = np.asanyarray([0.01, 0.05, 0.10, 0.25])[::-1]
 
-## Select the functions
-# func1d_ = get_functions()
-funcs_ = ["f6", "pressure2", "heaviside"]
-func1d_ = {fname_: fn_
-           for fname_, fn_ in get_functions().iteritems() if fname_ in funcs_}
 
 ## Define the grid
-# grid_ = ParameterGrid(dict(dgp=func1d_.values()[:1],
-#                            size=[25, 50, 100, ],#200, 400, 600, 800],#, 1000, 1200, 1400, 1600,],
-#                            nugget=[1e-6,],
-#                            theta0=[1e+1,],
-#                            noise=[0.0,]))
-
-grid_ = ParameterGrid(dict(dgp=func1d_.values(),
-                           size=[25, 50, 100, 200, 400, 600, 800, 1000, 1200, 1400, 1600,],
-                           nugget=[1e-6, 1e-2],
+grid_ = ParameterGrid(dict(dgp=[gaussian,],
+                           # size=[25, 50, 100, 200, 400, 600, 800, 1000, 1200, 1400, 1600,],
+                           size=[150, 1500,],
+                           nugget=[1e-6, 1e-2,],
                            theta0=[1e-1, 1, 1e+1, "auto"],
-                           noise=[1e-1,]))
-                           # noise=[0.0, 1e-2, 1e-1,]))
+                           noise=[1e-6,]))
 
 ## Initialize
 scaler = StandardScaler(copy=True, with_mean=True, with_std=True)
 gp = GaussianProcess(beta0=0, normalize=False, corr='squared_exponential')
 kernel = 'rbf' # 'laplacian'
-
 
 n_jobs, verbose = -1, 0
 parallel_ = Parallel(n_jobs=n_jobs, verbose=verbose)
@@ -85,34 +76,38 @@ def _helper(y, A, B, proc=RRCM, levels=levels, parallel=None, n_jobs=1, verbose=
     return hits_, width_
 
 
-## Run: experiment #1
-X_test = np.linspace(0, 1, num=1001).reshape((-1, 1))
+## Run: experiment #3
+nd = 2
+mesh_ = np.meshgrid(*nd*[np.linspace(-1, 1, num=51)])
+X_test = np.concatenate([ax_.reshape((-1, 1)) for ax_ in mesh_], axis=1)
 test_ = np.s_[:X_test.shape[0]]
+## Draw f(x)
+XX_train = 2*random_state.uniform(size=(10000, nd)) - 1
+XX = np.concatenate([X_test, XX_train], axis=0)
+yy = gaussian(XX, scale=1.0, nugget=1e-6, metric=kernel,
+              gamma=2.0, random_state=random_state)
+if yy.ndim == 1:
+    yy = yy.reshape((-1, 1))
+
+## Split the pooled sample
+yy_train, y_test = np.delete(yy, test_, axis=0), yy[test_].copy()
+del XX, yy
 
 experiment, batch_, dumps_ = list(), 1, list()
 for i_, par_ in enumerate(grid_):
     print i_, par_
-    # n_replications, replications = 1, list()
     n_replications, replications = 20, list()
 
     dgp_, size_, noise_ = par_['dgp'], par_['size'], par_['noise']
     nugget_, theta0_ = par_['nugget'], par_['theta0']
+
     tick_ = time.time()
     while n_replications > 0:
     ## START: one replication
     ## Draw random train sample
-        X_train = random_state.uniform(size=(size_, 1))
-
-    ## Draw f(x)
-        XX = np.concatenate([X_test, X_train], axis=0)
-        yy = dgp_(XX)
-        if yy.ndim == 1:
-            yy = yy.reshape((-1, 1))
-        if noise_ > 0:
-            yy += random_state.normal(size=yy.shape) * noise_
-
-    ## Split the pooled sample
-        y_train, y_test = np.delete(yy, test_, axis=0), yy[test_]
+        train_ = random_state.choice(range(XX_train.shape[0]),
+                                     size=size_, replace=False)
+        X_train, y_train = XX_train[train_], yy_train[train_]
 
     ## Standardize the sample
         Xscl_, yscl_ = clone(scaler).fit(X_train), clone(scaler).fit(y_train)
@@ -206,12 +201,12 @@ for i_, par_ in enumerate(grid_):
     experiment.append((key_,) + result_)
 
     if len(experiment) >= 25:
-        basename_ = os.path.join(BASE_PATH, "exp1_%04d"%(batch_,))
+        basename_ = os.path.join(BASE_PATH, "exp4_%04d"%(batch_,))
         dumps_.append(_save(experiment, basename_, gz=9))
         experiment, batch_ = list(), batch_ + 1
 
 if len(experiment) > 0:
-    basename_ = os.path.join(BASE_PATH, "exp1_%04d"%(batch_,))
+    basename_ = os.path.join(BASE_PATH, "exp4_%04d"%(batch_,))
     dumps_.append(_save(experiment, basename_, gz=9))
 
 # y_test, y_test_hat_, b_cov_, b_width_, rrcm_cov_, rrcm_width_, crr_cov_, \
