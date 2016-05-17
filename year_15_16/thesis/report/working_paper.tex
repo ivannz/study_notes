@@ -564,8 +564,9 @@ by
 where $i=1,\ldots, n+1$, and $\eta_i^{\tilde{z}} = A(S^{\tilde{z}}_{-i}, S^{\tilde{z}}_i)$
 -- the degree of non-conformity of the $i$-th observation with respect to the augmented
 sample $S^{\tilde{z}} = (Z_{:n}, {\tilde{z}}^y_{n+1}) \in \Zcal^{n+1}$. For any $i$,
-$S^{\tilde{z}}_i$ is the $i$-th element of the sample, and $S^{\tilde{z}}_{-i}$ is the
-sample with the $i$-th observation omitted.
+$S^{\tilde{z}}_i$ is the $i$-th element of the sample, and $S^{\tilde{z}}_{-i}$ is
+the sample with the $i$-th observation omitted. Intuitively, the p-value (eq.~\ref{eq:conf_p_value})
+measures the likelihood of $\tilde{z}$ based on its non-conformity, or with $Z_{:n}$.
 
 A distribution $P$ on $\Zcal^n$ is called \textbf{exchangeable} if for any permutation
 $\sigma$ of ${1,\ldots,n}$ for any measurable $B\subseteq \Zcal^n$
@@ -608,20 +609,49 @@ search through the target space $\Ycal$. This complexity issue is not acute in t
 classification settings, when $\Ycal$ is finite, but is infeasible in regression
 settings when $\Ycal$ is $\Real$. Furthermore, the inner eq.~\ref{eq:conf_p_value}
 requires looping over all observations in the augmented sample $S^{\tilde{z}}$.
-
 In regression setting for specific non-conformity measures it is possible to come
 up with efficient procedure for computing the confidence region (\ref{eq:conf_pred_set}),
 as demonstrated in \cite{vovk2005}, chapter 2, and sec.~\ref{sub:conformalized_krr}.
+
+It should be note, that a conformal prediction procedure can also be constructed
+based on ``conformity measures'', as opposed to ``non-conformity measures''. As
+the name suggests conformity measures quantify the similarity of a test object to
+the train sample. Both approaches yield equivalent guarantees and are almost identically
+constructed: the ``$\geq$'' sign must be switched to ``$\leq$'' in eq.~\ref{eq:conf_p_value}
+if a conformity measure is used.
 
 % section conformal_prediction (end)
 
 \subsection{Confromalized ridge regression} % (fold)
 \label{sub:confromalized_ridge_regression}
 
-The problem of confromalized ridge regression (CRR) has been studied in \cite{BurVovk2014},
+The problem of conformalized ridge regression (CRR) has been studied in \cite{BurVovk2014},
 where it has been shown that under assumptions of the bayesian ridge regression
 the conformal confidence region, eq.~\ref{eq:conf_pred_set}, for an NCM based on
-the ridge regression residuals is asymptotically efficient:
+the ridge regression residuals is asymptotically efficient.
+
+Let $\Xcal = \Real^{d\times 1}$ and $\Ycal=\Real$, and recall the RR problem. The
+conformal procedure in \cite{BurVovk2014} is constructed from a conformity measure
+defined over a sample $Z=(x_i, y_i)_{i=1}^n \in \Zcal$ as:
+\begin{equation} \label{eq:crr_ncm}
+  \eta_i = A(Z_{-i}, Z_i)
+    = \bigl\lvert\{j\,:\, \hat{r}_j \geq \hat{r}_i \} \bigr\rvert \wedge
+      \bigl\lvert\{j\,:\, \hat{r}_j \leq \hat{r}_i \} \bigr\rvert \,,
+\end{equation}
+where $\hat{r} = \hat{r}_Z$ are the in-sample ridge regression residuals given by
+\begin{equation} \label{eq:rr_insample_resid}
+  \hat{r}_Z = (I_n - X (\lambda I_p + X'X)^{-1} X') y \,,
+\end{equation}
+with $X\in\Real^{n\times d}$ being the overall design matrix of $Z$ and $y\in\Real^{n\times1}$
+-- the target vector of the sample $Z$.
+
+In \cite{BurVovk2014} it was shown that for any $\epsilon\in(0,1)$ the confidence
+region $\Gamma^\epsilon$ produced by CRR procedure for the conformity measure in
+eq.~\ref{eq:crr_ncm} is equivalent to the intersection of confidence sets yielded
+by conformal procedures with non-conformity measures given by $\eta_i = \hat{r}_i$
+and $\eta_i = -\hat{r}_i$ at significance levels $\frac{\epsilon}{2}$. Individually,
+these NCMs define a \textbf{upper} and \textbf{lower} CRR sets respectively.
+
 
 %% Say that RR can be made better by using the kernel trick
 The major drawback of this statement of the \textbf{RR} problem is that it does not
@@ -630,6 +660,8 @@ this is to introduce some distributional assumptions and project the \textbf{RR}
 into Bayesian framework.
 
 \noindent \textbf{WRITE HERE SOMETHING FROM THE 2014 PAPER.}
+
+
 
 % subsection confromalized_ridge_regression (end)
 
@@ -648,8 +680,6 @@ Let $e_i\in \Real^{n\times 1}$ be the $i$-th unit vector.
 
 \subsubsection{Ridge Regression Confidence Machine} % (fold)
 \label{ssub:ridge_regression_confidence_machine}
-Conformal Confidence Region (\ref{sub:conformal_prediction}) requires a non-conformity
-measure.
 
 The ``in-sample'' NCM $A_{\text{in}}$ measures the absolute value of the regression
 residual and is given by:
@@ -769,8 +799,8 @@ constructed from intervals $G_j = [g_j, g_{j+1}] \cap \Real$:
     = \bigcup_{j\,:\, N_j \geq \alpha n} G_j
     \,,
 \end{equation*}
-where $N_j = |\{i\,:\,G_j \subseteq S_i\}|$ is the number of times $G_j$ is covered by
-any region $S_i$.
+where $N_j = |\{i\,:\,G_j \subseteq S_i\}|$ is the number of times $G_j$ is covered
+by any region $S_i$.
 
 For a single test point $x_n$ the worst-case complexity of this construction is
 $\mathcal{O}(n \log n)$: it is necessary to sort at most $2n$ distinct endpoints
@@ -780,11 +810,21 @@ the coverage numbers $N_j$. The memory footprint is $\mathcal{O}(n)$.
 
 % subsubsection ridge_regression_confidence_machine (end)
 
-\subsubsection{Two sided} % (fold)
-\label{ssub:two_sided}
-Another possibility is to use the NCM proposed in \cite{BurVovk2014}
+\subsubsection{Kernel CRR} % (fold)
+\label{ssub:kernel_crr}
+Another possibility is to use the two-sided NCM proposed in \cite{BurVovk2014} and
+mentioned in sec.~\ref{sub:confromalized_ridge_regression}.
 
-% subsubsection two_sided (end)
+Recall that, for any $\epsilon\in(0,1)$ the confidence region $\Gamma^\epsilon$
+output by CRR procedure for the NCM in eq.~\ref{eq:crr_ncm} at is equivalent to
+the intersection of confidence sets yielded by conformal procedures with NCM scores
+given by $\hat{r}_i^z$ (upper) and $-\hat{r}_i^z$ (lower) at significance level
+$\frac{\epsilon}{2}$.
+
+Confidence regions based on CRR, much like RRCM, admit two
+versions: either leave-one-out, or in-sample residuals.
+
+% subsubsection kernel_crr (end)
 
 % \subsection{Kernel parameter estimation} % (fold)
 % \label{sub:kernel_parameter_estimation}
@@ -810,9 +850,10 @@ We primarily test the conformalized KRR predictions in cases when the input spac
 $\Xcal$ is a unit cube in either $\Real$ or $\Real^2$. The rationale for this is
 that since conformal procedure is oblivious to the structure of the input dataset,
 there is no reason for its validity to deteriorate with increasing dimensionality
-of $\Xcal$. Indeed, in alg.~\ref{alg:conf_predictor} the input data from $\Xcal$
-in the training and the test sets are fed into the NCM $A$, which, in general, can
-be an arbitrary computable function, and never ``leak'' into the procedure itself.
+of $\Xcal$. Indeed, the conformal confidence region eq.~\ref{eq:conf_pred_set} the
+input data from $\Xcal$ in the training and the test sets are fed into the NCM $A$,
+which, in general, can be an arbitrary computable function, and never ``leak'' into
+the procedure itself.
 
 The dimensionality of the input data impacts the performance of the procedure only
 through the choice of $A$, which in our case is the absolute value of the Kernel
@@ -831,7 +872,7 @@ with the precision parameter $\theta>0$, and defined over $\Xcal \subseteq \Real
 This kernel is widely used in practice, because it has very nice properties. In
 particular if $\Xcal$ is compact its canonical RKHS is universal, $\Hcal_K$ is dense
 in the set $C_0(\Xcal)$ of continuous bounded maps with respect to the uniform norm
-$\|\cdot\|_\infty$, see.~\cite{ref:rbf_universal}.
+$\|\cdot\|_\infty$, see.~\cite{rbf_universal}.
 % I. Steinwart. On the influence of the kernel on the consistency of support vector machines. Journal of Machine Learning Research, 2:67–93, 2001.
 
 % Another example of a universal kernel is the Laplacian kernel 
