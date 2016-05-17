@@ -122,29 +122,26 @@ given by
 \end{align*}
 in the direct and the equivalent dual forms, respectively. Predictions on the test
 set $X^* = (x_i)_{i=n+1}^{n+m}\in \Real^{m\times d}$, given the train-set, are
-\begin{align*}
+\begin{align}
   \hat{y}^*_{\vert(X,y), X^*} = X^* \hat{\beta}
-    &= X^* (X'X + a I_p)^{-1} X' y \\ 
-    &= X^* X' (a I_n + XX')^{-1} y \,,
-\end{align*}
+    &= X^* (X'X + a I_p)^{-1} X' y \nonumber \\ 
+    &= X^* X' (a I_n + XX')^{-1} y \label{eq:rr_dual_sol}\,,
+\end{align}
 again in the direct and dual form, respectively.
 
-%% Say that RR can be made better by using the kernel trick
-The major drawback of this statement of the \textbf{RR} problem is that it does not
-provide any confidence intervals for these predictions. One possibility of remedying
-this is to introduce some distributional assumptions and project the \textbf{RR} problem
-into Bayesian framework.
+The so called ``Kernel-trick'', \cite{kernel_trick}, generalizes any ML algorithm,
+provided it could be reduced to a form, which depends on the training sample data
+only thorough inner-products, or equivalents, between the objects (the sample Gram
+matrix). The generalization is done by replacing the products with the products of
+the feature maps $\langle\phi(x_i),\phi(x_j)\rangle$ in some RKHS $\Hcal$, or, equivalently,
+by the gram matrix of some Mercer-type kernel (see sec.~\ref{sub:kernel_methods}).
+It should be noted that care must be taken to ensure additional conditions on the
+input domain imposed by this ``trick'' are met.
 
-Another principle, the so called ``Kernel-trick'' states that whenever an ML algorithm
-could be reduced to a form, which depends on the training sample data only thorough
-inner-products between the objects (a or Gram matrix), then it is possible to construct
-another ML algorithm by simply replacing the products with an arbitrary \textbf{PD}
-kernel. It should be noted that care must be taken to ensure additional conditions
-on the input domain imposed by this ``trick'' are met.
-
-In particular, the \textbf{RR} solution in its dual form depends only on the Gram
-matrix if inter-object inner-products $X X'$ in the input domain, which is why it is
-possible to restate it as the Kernel ridge regression (KRR) problem.
+For instance, the \textbf{RR} prediction in its dual form, eq.~\ref{eq:rr_dual_sol},
+depends only on the Gram matrix if inter-object inner-products $X X'$ in the input
+domain, which is why it is possible to restate it as the Kernel ridge regression (KRR)
+problem.
 
 \subsection{Kernel methods} % (fold)
 \label{sub:kernel_methods}
@@ -180,10 +177,12 @@ $K:\Xcal \times \Xcal \mapsto \Real$ such that \begin{enumerate}
 \end{enumerate}
 A function $K:\Xcal \times \Xcal \mapsto \Real$ is positive definite if for any
 $n\geq1$, $(x_i)_{i=1}^n \in \Xcal$ and $\alpha \in \Real^{n\times 1}$
-$$ \alpha'K\alpha
-  = \sum_{i=1}^n \sum_{j=1}^n \alpha_j \alpha_i K(x_i, x_j)
-  \geq 0
-  \,, $$
+\begin{equation*}
+  \alpha'K\alpha
+    = \sum_{i=1}^n \sum_{j=1}^n \alpha_j \alpha_i K(x_i, x_j)
+    \geq 0
+    \,,
+\end{equation*}
 or, in other words the Gram matrix $K$ is positive semi-definite, where $K$ is an
 $n \times n$ matrix of $K(x_i, x_j)$. Note that unlike linear algebra, ``positive
 definite'' here permits such non-zero weights, for which the product is exactly
@@ -230,7 +229,6 @@ evaluated at the sample objects:
 \end{equation*}
 where $\Phi = \bigl(\phi(x_i)\bigr)_{i=1}^n \in \Hcal^{n\times 1}$.
 
-
 Kernel ridge regression (KRR) combines ridge regression with the kernel trick, and
 learns a linear function in the feature space induced by the selected kernel and
 sample data. Given a training sample $X = (x_i)_{i=1}^n$, $X\in \Xcal^{n\times 1}$
@@ -265,9 +263,14 @@ the $j$-th unit vector in $\Real^{n\times 1}$. Furthermore
 \end{equation*}
 Thus the kernel ridge regression problem is reduced to the following finite-dimensional
 convex minimization problem:
-$$ \|y - K \beta \|^2 + \lambda \beta' K \beta \to \min_{\beta\in \Real^{n\times 1}} \,. $$
+\begin{equation*}
+  \|y - K \beta \|^2 + \lambda \beta' K \beta
+    \to \min_{\beta\in \Real^{n\times 1}} \,.
+\end{equation*}
 The First order conditions imply that
-$$ \hat{\beta} = (aI_n + K)^{-1} y \,\text{ and }\, \hat{y}_x = k_x' \beta \,, $$
+\begin{equation*}
+  \hat{\beta} = (aI_n + K)^{-1} y \,\text{ and }\, \hat{y}_x = k_x' \beta \,,
+\end{equation*}
 -- the estimated weight vector and an optimal prediction at $x\in \Xcal$, respectively.
 
 Consider a problem of estimating the prediction accuracy of a test sample $(X^*, y^*)$
@@ -317,15 +320,21 @@ then $I_{n+m} - H_{\tilde{X}} = \lambda Q_{\tilde{X}}$, whence
 \end{align}
 It is possible to show that the matrix $K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}$ is also
 \textbf{PD}. Therefore, we have that $M \succeq \lambda I_m$ whence $\lambda M^{-1}
-\preceq I_m$, or that the matrix $M$ defines an expanding linear transformation $\Real^{n\times 1} \mapsto
-\Real^{n\times 1}$. This means that the out-of-sample residuals are generally larger
-than the corresponding in-sample ones.
+\preceq I_m$, or that the matrix $M$ defines an expanding linear transformation
+$\Real^{n\times 1} \mapsto \Real^{n\times 1}$. This shows that the out-of-sample
+residuals are generally larger than the corresponding in-sample ones.
 
-In particular, this enables fast computation of the leave-one-out residuals of the
-KRR, without refitting all the way. The full sample residuals of a fitted KRR are
-given by a vector $\hat{r}_{\text{in}}(X, y) = (I_n - K_{XX} Q_X) y$. Since $Q_X$
-is invertible, block matrix inversion yields the following expression: for all
-$i=1,\ldots, n$
+In particular, eq.~\ref{eq:holdout_resid} enables fast computation of the leave-one-out
+residuals of the KRR, without refitting all the way. The full sample residuals of a
+fitted KRR are given by a vector $\hat{r}_{\text{in}}(X, y) = (I_n - K_{XX} Q_X) y$,
+and the $i$-th, $i=1,\ldots, n$, leave-one-out residual the train sample is
+\begin{equation}
+  e_i' \hat{r}_{\text{loo}}(X, y)
+  = y_i - K_{-i}(x_i)' Q_{-i} y_{-i} \,,
+\end{equation}
+where $K_{-i} = K_{X_{-i}}: \Xcal \mapsto \Real^{(n-1)\times1}$ is the canonical map
+vector, and $Q_{-i}$ is given by $(\lambda I_{n-1} + K_{X_{-i}X_{-i}})^{-1}$.
+Therefor, from eq.~\ref{eq:holdout_resid} it follows that
 \begin{align}
   e_i' \hat{r}_{\text{in}}(X, y)
   % = \lambda e_i' P_{i:n} P_{i:n} Q_X P_{i:n} P_{i:n} y
@@ -338,17 +347,16 @@ $i=1,\ldots, n$
   &= \lambda m_i^{-1} \bigl(y_i - K_{-i}(x_i)' Q_{-i} y_{-i} \bigr) \nonumber \\
   &= \lambda m_i^{-1} e_i' \hat{r}_{\text{loo}}(X, y) \label{eq:loo_resid} \,,
 \end{align}
-where $K_{-i} = K_{X_{-i}}: \Xcal \mapsto \Real^{(n-1)\times1}$ (see eqn.~\ref{eq:gp_cond_dist})
-is the canonical map vector, $Q_{-i}$ is given by $(\lambda I_{n-1} + K_{X_{-i}X_{-i}})^{-1}$,
-and $\lambda m_i^{-1}$ is the KRR leverage of the $i$-th observation, with
+where $\lambda m_i^{-1}$ is the KRR analogue of the LS ``leverage'' score of the
+$i$-th observation, with
 \begin{equation*}
   m_i = \lambda + K(x_i, x_i) - K_{-i}(x_i)' Q_{-i} K_{-i}(x_i) \,.
 \end{equation*}
-This ``leverage'' is always within $[0,1]$, since $K$ is PD, and depends only on
-the input part, $X$, of the dataset. Furthermore, it can be shown that the main
-diagonal of $Q_X$ is given by $(m_i^{-1})_{i=1}^n$. Indeed, to see this it is necessary
-to apply the block-inversion formula to the matrix $Q_X$ with symmetrically permuted
-rows and columns.
+The main diagonal of the KRR hat matrix $H_X$ is given by $(\lambda m_i^{-1})_{i=1}^n$,
+as can be easily seen by applying the block-inversion formula to the matrix $Q_X$
+with symmetrically permuted rows and columns. This ``leverage'' depends only on the
+input part, $X$, of the dataset and is always within $[0, 1]$, since the kernel $K$
+is \textbf{PD} (see argument after eq.~\ref{eq:holdout_resid}).
 
 % subsection kernel_ridge_regression (end)
 
@@ -603,12 +611,30 @@ requires looping over all observations in the augmented sample $S^{\tilde{z}}$.
 
 In regression setting for specific non-conformity measures it is possible to come
 up with efficient procedure for computing the confidence region (\ref{eq:conf_pred_set}),
-as demonstrated in \cite{vovk2005}, chapter 2, and sec.~\ref{sec:conformalized_krr}.
+as demonstrated in \cite{vovk2005}, chapter 2, and sec.~\ref{sub:conformalized_krr}.
 
 % section conformal_prediction (end)
 
-\section{Conformalized kernel ridge regression} % (fold)
-\label{sec:conformalized_krr}
+\subsection{Confromalized ridge regression} % (fold)
+\label{sub:confromalized_ridge_regression}
+
+The problem of confromalized ridge regression (CRR) has been studied in \cite{BurVovk2014},
+where it has been shown that under assumptions of the bayesian ridge regression
+the conformal confidence region, eq.~\ref{eq:conf_pred_set}, for an NCM based on
+the ridge regression residuals is asymptotically efficient:
+
+%% Say that RR can be made better by using the kernel trick
+The major drawback of this statement of the \textbf{RR} problem is that it does not
+provide any confidence intervals for these predictions. One possibility of remedying
+this is to introduce some distributional assumptions and project the \textbf{RR} problem
+into Bayesian framework.
+
+\noindent \textbf{WRITE HERE SOMETHING FROM THE 2014 PAPER.}
+
+% subsection confromalized_ridge_regression (end)
+
+\subsection{Conformalized kernel ridge regression} % (fold)
+\label{sub:conformalized_krr}
 
 In this section we describe the construction of confidence regions of the conformal
 procedure eq.~\ref{eq:conf_pred_set} for the case of the non-conformity measures
@@ -620,8 +646,8 @@ version. To this end consider a sample $(X, y) = (x_i, y_{x_i})_{i=1}^n$, and fo
 any $i=1\ldots, n$ put $X = (X_{-i}, x_i)$, and $y = (y_{-i}, y_i)$.
 Let $e_i\in \Real^{n\times 1}$ be the $i$-th unit vector.
 
-\subsection{Ridge Regression Confidence Machine} % (fold)
-\label{sub:ridge_regression_confidence_machine}
+\subsubsection{Ridge Regression Confidence Machine} % (fold)
+\label{ssub:ridge_regression_confidence_machine}
 Conformal Confidence Region (\ref{sub:conformal_prediction}) requires a non-conformity
 measure.
 
@@ -752,13 +778,13 @@ of $G_j$, then locate the values $p_i$ and $q_i$ associated with each region $S_
 ($\mathcal{O}(n\log n)$), and finally in at most $\mathcal{O}(2n)$ time compute
 the coverage numbers $N_j$. The memory footprint is $\mathcal{O}(n)$.
 
-% subsection ridge_regression_confidence_machine (end)
+% subsubsection ridge_regression_confidence_machine (end)
 
-\subsection{Two sided} % (fold)
-\label{sub:two_sided}
+\subsubsection{Two sided} % (fold)
+\label{ssub:two_sided}
 Another possibility is to use the NCM proposed in \cite{BurVovk2014}
 
-% subsection two_sided (end)
+% subsubsection two_sided (end)
 
 % \subsection{Kernel parameter estimation} % (fold)
 % \label{sub:kernel_parameter_estimation}
@@ -767,7 +793,7 @@ Another possibility is to use the NCM proposed in \cite{BurVovk2014}
 
 % % subsection kernel_parameter_estimation (end)
 
-% section conformalized_krr (end)
+% subsection conformalized_krr (end)
 
 \section{Numerical study} % (fold)
 \label{sec:numerical_study}
