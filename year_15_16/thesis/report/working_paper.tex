@@ -392,7 +392,7 @@ is $y_X\sim \Ncal_n(m_X, \lambda I_n + K_{XX})$, because
     \begin{pmatrix} f_X \\ \epsilon_X \end{pmatrix}
     \,,
 \end{equation*}
--- a linear combination of $f$ and $\epsilon$ with joint distribution
+-- a linear combination of $f_X$ and $\epsilon_X$ with joint distribution
 \begin{equation*}
   \begin{pmatrix} f \\ \epsilon \end{pmatrix}
     \sim \Ncal_{n+n}\begin{pmatrix}
@@ -471,48 +471,31 @@ true Bayesian prediction $\ex\bigl(y_{X^*}\,|\, y_X\bigr)$):
   \hat{y}_{y_X}(X^*) = m_{X^*} + K_{X^*X} Q_X \bigl(y_X - m_X\bigr) \,.
 \end{equation*}
 
-The Gaussian Process Kernel Ridge Regression is usually formulated with $m=0$ and
-$\Kcal(x,x') = \sigma^2(\lambda \delta_{x,x'} + K(x,x'))$, for some PD kernel $K$,
-whence the distribution of an observation at a test object $x^*\in \Xcal$, conditional
-on the train data $y_X$ is
-\begin{equation} \label{eq:gp_cond_dist}
-{y_{x^*}}_{|y_X}
-  \sim \Ncal\bigl( \hat{y}_{y_X}(x^*), \sigma^2 \sigma_K^2(x^*) \bigr) \,,
+Gaussian process regression (Kriging) posits that the observed data is drawn from
+$GP(m(x), \Kcal(x, x'))$ with
+\begin{equation} \label{eq:krig_kernel}
+  \Kcal(x,x') = \sigma^2( \lambda \delta_{x, x'} + K(x, x') ) \,,
 \end{equation}
-with $\hat{y}_{y_X}(x^*) = K_X(x^*)' Q_X y_X$, and
-\begin{equation*}
-  \sigma_K^2(x^*)
-    = \lambda + K(x^*, x^*) - K_X(x^*)' Q_X K_X(x^*) \,,
-\end{equation*}
-where $Q_X = \bigl(\lambda I_n + K_{XX}\bigr)^{-1}$, $K_{XX} = (K(x_i,x_j))_{ij}$,
-and $K_X = (K(x_i, \cdot))_{i=1}^n: \Xcal \mapsto \Real^{n\times1}$. The $1-\alpha$
-confidence interval is thus given by
-\begin{equation} \label{eq:gp_conf_int}
-\Gamma^\alpha_{y_X}(x^*)
-  = \hat{y}_{y_X}(x^*)
-  + \sigma \sqrt{\sigma_K^2(x^*)}
-  \times [z_{\frac{\alpha}{2}}, z_{1-\frac{\alpha}{2}}]
-  \,,
-\end{equation}
-where $\hat{y}_{y_X}(x^*) = K_X(x^*)' Q_X y_X$, and $z_\alpha$ is the $\alpha$
-quantile of $\Ncal(0, 1)$.
-
-Gaussian interpretation of the Kernel Ridge Regression naturally enables adaptive
-estimation of parameters $\theta$ of the kernel $K$ by maximizing the joint likelihood
-of the train data $(X, y)$, given by the likelihood of the multivariate Gaussian
-distribution with zero mean and covariance $\sigma^2 (\lambda I_n + K_{XX}))$.
-\begin{equation} \label{eq:bkrr_likelihood}
-%% Write out the log-likelihood of the train sample.
+for a PD kernel $K$, and $m(x) = \Phi(x)'\beta$, where $\Phi: \Xcal\mapsto \Real^{d\times 1}$
+is the regression feature map. This model naturally enables adaptive estimation of
+parameters of the kernel $K$ by maximizing the joint likelihood of the train data
+$(X, y)$:
+\begin{align} \label{eq:bkrr_likelihood}
   \Lcal
-    = -\frac{n}{2}\log 2\pi
-    - \frac{1}{2}\log \sigma^2
-    - \frac{1}{2}\log \lvert \lambda I_n + K_{XX} \rvert
-    - \frac{1}{2\sigma^2} y' (\lambda I_n + K_{XX})^{-1} y
-    \,.
+    &= -\frac{n}{2} \log 2\pi
+    - \frac{n}{2}\log \sigma^2
+    - \frac{1}{2}\log \lvert R_X \rvert \nonumber\\
+    &- \frac{1}{2\sigma^2} (y - F\beta)' R_X^{-1} (y - F\beta)
+    \,,
+\end{align}
+where $R_X = \lambda I_n + K_{XX}$, and $F \in\Real^{n\times d}$ is the design matrix
+of $X$ under $\Phi$. The optimal $\beta$ is given by the generalized least squares
+solution
+\begin{equation}
+  \hat{\beta} = (F'R_X^{-1}F)^{-1}F'R_X^{-1}y \,.
 \end{equation}
-With the explicit solution to the problem of finding the ``best'' $\hat{\beta}$ for
-some fixed kernel $K_\theta$, it is possible to gradually estimate the optimal parameters
-$\theta$ using alternating optimization algorithm, by minimizing \ref{eq:bkrr_likelihood}.
+Minimization of \ref{eq:bkrr_likelihood} by alternating between kernel parameter
+and $\beta$ steps, it is possible to gradually estimate the optimal parameters.
 
 Another alternative is to select the parameters based on the data that has not been
 used in fitting the conditional mean of the kernel ridge regression. One could use
@@ -529,6 +512,30 @@ It is worth noting that the leave-one-out residuals are not affected by the scal
 $\sigma^2$ of the kernel $\Kcal = \sigma^2(\lambda \delta_{x,x'} + K(x, x'))$.
 Similarly to the case of predictive variances in \cite{pcw20005a7}, using leave-one-out
 cross-validation eliminates the bias inherent in estimates of the kernel parameters.
+
+Bayesian kernel ridge regression confidence interval for an observed values $y_{x^*}$
+at $x^*\in \Xcal$ can be obtained from eq.~\ref{eq:cond_distr} by fixing $\beta = 0$.
+Indeed, the distribution of $y_{x^*}$, conditional on the train data $y_X$, is
+\begin{equation} \label{eq:gp_cond_dist}
+{y_{x^*}}_{|y_X}
+  \sim \Ncal\bigl( \hat{y}_{y_X}(x^*), \sigma^2 \sigma_K^2(x^*) \bigr) \,,
+\end{equation}
+with $\hat{y}_{y_X}(x^*) = K_X(x^*)' Q_X y_X$, and
+\begin{equation*}
+  \sigma_K^2(x^*)
+    = \lambda + K(x^*, x^*) - K_X(x^*)' Q_X K_X(x^*) \,,
+\end{equation*}
+where $Q_X = \bigl(\lambda I_n + K_{XX}\bigr)^{-1}$, $K_{XX} = (K(x_i,x_j))_{ij}$,
+and $K_X = (K(x_i, \cdot))_{i=1}^n: \Xcal \mapsto \Real^{n\times1}$. Thus, the $1 - \alpha$
+confidence interval is thus given by
+\begin{equation} \label{eq:gp_conf_int}
+\Gamma^\alpha_{y_X}(x^*)
+  = \hat{y}_{y_X}(x^*)
+  + \sigma \sqrt{\sigma_K^2(x^*)}
+  \times [z_{\frac{\alpha}{2}}, z_{1-\frac{\alpha}{2}}]
+  \,,
+\end{equation}
+where $z_\gamma$ is the $\gamma$ quantile of $\Ncal(0, 1)$.
 
 % subsection bayesian_krr_confidence_interval (end)
 
@@ -552,12 +559,12 @@ sample $Z_{:n}=(z_i)_{i=1}^n\in\Zcal$ and a test object $z_* \in \Zcal$ quantifi
 how much different $z_*$ is relative to the sample $Z_{:n}$.
 
 A conformal predictor over the NCM $A$ is a procedure, that for every sample $Z_{:n}$,
-a test object $x_{n+1} \in \Xcal$, and a confidence level $\epsilon\in(0,1)$, computes
-a confidence set $\Gamma_{Z+{:n}}^\epsilon(x^*)$ for the target value $y_{n+1}$ corresponding
+a test object $x_{n+1} \in \Xcal$, and a confidence level $\alpha\in(0,1)$, computes
+a confidence set $\Gamma_{Z+{:n}}^\alpha(x^*)$ for the target value $y_{n+1}$ corresponding
 to $x_{n+1}$:
 \begin{equation} \label{eq:conf_pred_set}
-  \Gamma_{Z_{:n}}^\epsilon(x_{n+1})
-    = \bigl\{ y\in \Ycal \,:\, p_{Z_{:n}}(\tilde{z}^y_{n+1}) \geq \epsilon \bigr\} \,,
+  \Gamma_{Z_{:n}}^\alpha(x_{n+1})
+    = \bigl\{ y\in \Ycal \,:\, p_{Z_{:n}}(\tilde{z}^y_{n+1}) \geq \alpha \bigr\} \,,
 \end{equation}
 where $\tilde{z}^y_{n+1} = (x_{n+1}, y)$ a synthetic test observation with target
 label $y$. The function $p:\Zcal^*\times (\Xcal\times \Ycal)\mapsto [0,1]$ is given
@@ -586,23 +593,23 @@ is all its finite distributions are exchangeable.
 
 In \cite{Vovketal2005}, chapter 2, is has been shown, that if a sequence of examples
 $(z_n)_{n \geq1}$ is generated by an exchangeable distribution $P$ on $\Zcal^\infty$,
-then the coverage probability of the prediction set $\Gamma^\epsilon$, yielded by
-the procedure \ref{eq:conf_pred_set} is at least $1-\epsilon$ and successive errors
+then the coverage probability of the prediction set $\Gamma^\alpha$, yielded by
+the procedure \ref{eq:conf_pred_set} is at least $1-\alpha$ and successive errors
 are independent in online learning and prediction setting. Thus the outlined procedure
 guarantees unconditional validity of the confidence region (eq.~\ref{eq:conf_pred_set}):
-for any $\epsilon \in (0,1)$, for any $n\geq1$ and any exchangeable distribution
+for any $\alpha \in (0,1)$, for any $n\geq1$ and any exchangeable distribution
 $P_n$ on $\Zcal^n$ one has
 \begin{equation} \label{eq:conservative_coverage}
   \pr_{Z_{:n}\sim P_n} \bigl(
-    y_n \notin \Gamma^\epsilon_{Z_{:(n-1)}}(x_n)
-  \bigr) \leq \epsilon \,,
+    y_n \notin \Gamma^\alpha_{Z_{:(n-1)}}(x_n)
+  \bigr) \leq \alpha \,,
 \end{equation} 
 where $(x_n, y_n) = z_n$. In a special case, when $z_n$ are independent the measure
 $P_n$ is just the product measure $P_{z_1} \otimes \ldots \otimes P_{z_n}$.
 
-Intuitively, the event $y_n \notin \Gamma^\epsilon_{Z_{:(n-1)}}(x_n)$ is equivalent
-to $\eta_n$ being among the largest $\lfloor n\epsilon\rfloor$ values of $\eta_i = A(Z_{-i}, Z_i)$,
-which is equal to $\frac{\lfloor n\epsilon\rfloor}{n}$, due to exchangeability of
+Intuitively, the event $y_n \notin \Gamma^\alpha_{Z_{:(n-1)}}(x_n)$ is equivalent
+to $\eta_n$ being among the largest $\lfloor n\alpha\rfloor$ values of $\eta_i = A(Z_{-i}, Z_i)$,
+which is equal to $\frac{\lfloor n\alpha\rfloor}{n}$, due to exchangeability of
 $Z_{:n}$ (this heuristic argument assumes that all $\eta_i$ are distinct and that
 probability under $P_{:n}$ of any $(\eta_i)_{i=1}^n$ is positive, for a rigorous
 proof see \cite{vovk2005}, chapter 8).
@@ -643,19 +650,19 @@ Thus BRR assumes that $y = x'\beta + \epsilon_x$ for any $x\in\Xcal$ as well as
 the following:
 \begin{enumerate}
   \item $\beta\sim\Ncal_d(0, \sigma^2 \lambda^{-1} I_p)$;
-  \item $\epsilon\sim \Ncal(0, \sigma^2)$ and iid for all $x\in \Real^{d\times 1}$;
+  \item $\epsilon_x\sim \Ncal(0, \sigma^2)$ and iid for all $x\in \Real^{d\times 1}$;
   \item $\beta$ and $\epsilon_x$ are independent.
 \end{enumerate}
 Assuming a known $\sigma^2$, equation~\ref{eq:gp_cond_dist} implies that the distribution
-of $y^*$ at $x^*$ conditional on the obseved sample is
+of $y^*$ at $x^*$ conditional on the observed sample is
 \begin{equation} \label{eq:brr_cond_dist}
   {y_{x^*}}_{|y_X}
-    \sim \Ncal\bigl( x^*'(\lambda I_p + X'X)^{-1}X'y,
-      \sigma^2 (\lambda + x^*' (\lambda I_p + X'X)^{-1} x^* ) \bigr) \,.
+    \sim \Ncal\bigl( {x^*}'(\lambda I_p + X'X)^{-1}X'y,
+      \sigma^2 (\lambda + {x^*}' (\lambda I_p + X'X)^{-1} x^* ) \bigr) \,.
 \end{equation}
 
 The properties of conformalized ridge regression (CRR) have been studied in \cite{BurVovk2014},
-where it has been shown that under more genral assumptions (the Gaussianity of $\beta$
+where it has been shown that under more general assumptions (the Gaussianity of $\beta$
 is relaxed), the conformal confidence region, eq.~\ref{eq:conf_pred_set}, constructed
 with an NCM based on the ridge regression residuals is asymptotically efficient.
 
@@ -670,19 +677,19 @@ where $\hat{r} = \hat{r}_Z$ are the in-sample ridge regression residuals given b
   \hat{r}_Z = (I_n - X (\lambda I_p + X'X)^{-1} X') y \,,
 \end{equation}
 
-In the parper it was also shown that for any $\epsilon\in(0,1)$ the confidence
-region $\Gamma^\epsilon$ produced by CRR procedure for the conformity measure in
+In the paper it was also shown that for any $\alpha\in(0,1)$ the confidence
+region $\Gamma^\alpha$ produced by CRR procedure for the conformity measure in
 eq.~\ref{eq:crr_ncm} is equivalent to the intersection of confidence sets yielded
 by conformal procedures with non-conformity measures given by $\eta_i = \hat{r}_i$
-and $\eta_i = -\hat{r}_i$ at significance levels $\frac{\epsilon}{2}$. Individually,
+and $\eta_i = -\hat{r}_i$ at significance levels $\frac{\alpha}{2}$. Individually,
 these NCMs define a \textbf{upper} and \textbf{lower} CRR sets respectively.
 
 The main result of \cite{BurVovk2014} states that under relaxed BRR assumptions if
 a sequence $(x_n)_{n\geq1}\in\Xcal$ is iid with an existing and non-singular second
 moment matrix $\ex x_1x_1' \preceq 0$, then for all sufficiently large $n$ the CRR
 produces confidence regions that are intervals, and the difference between the upper
-and lower ends of the Bayesian confidence intreval and the conformal confidence
-intervals are asymptotically gaussian with zero mean.
+and lower ends of the Bayesian confidence interval and the conformal confidence
+intervals are asymptotically Gaussian with zero mean.
 
 Since ridge regression has a dual form solution, it is possible to apply the kernel
 trick to it to get a more powerful ML algorithm. The Bayesian confidence intervals
@@ -716,8 +723,8 @@ residual and is given by:
     \,,
 \end{align}
 where $\hat{y}_{|(X, y)}(x_i)$ is the residual of the regression fit on the complete
-dataset $(X, y)$. The ``loo'' NCM is defined similarly, but uses loo-residuals for
-the task:
+dataset $(X, y)$. The ``loo'' NCM is defined similarly, but uses ``loo''-residuals
+for the task:
 \begin{align*}
   A_{\text{loo}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
     &= |y_i - \hat{y}_{|(X_{-i}, y_{-i})}(x_i)| \\
@@ -841,14 +848,14 @@ coverage numbers $N^m_j$ can be computed in at most $\BigO(n)$ time.
 \label{ssub:kernel_crr}
 Another possibility is to use the two-sided NCM proposed in \cite{BurVovk2014} and
 mentioned in sec.~\ref{sub:conformalized_ridge_regression}. Recall that, in order
-to construct a CRR confidence region for significance level $\epsilon$ (eq.~\ref{eq:crr_ncm}),
+to construct a CRR confidence region for significance level $\alpha$ (eq.~\ref{eq:crr_ncm}),
 it is necessary to intersect confidence sets yielded by conformal procedures with NCM
 scores given by $\hat{r}_i^z$ (upper) and $-\hat{r}_i^z$ (lower) at significance level
-$\frac{\epsilon}{2}$. Confidence regions based on CRR, much like RRCM, can use any kind
+$\frac{\alpha}{2}$. Confidence regions based on CRR, much like RRCM, can use any kind
 of residual: leave-one-out, or in-sample. In this section we present an efficient
 algorithm for constructing this confidence region.
 
-For the upper CRR consdier the regions $U_i = \{z\in\Real\,:\, \hat{r}_i^z \geq \hat{r}_n^z\}$,
+For the upper CRR consider the regions $U_i = \{z\in\Real\,:\, \hat{r}_i^z \geq \hat{r}_n^z\}$,
 $i=1,\ldots, n$ are either empty, full $\Real$ or one-side closed half-rays. Since
 $\hat{r}_i^z = \lambda c_i + \lambda b_i z$, $U_i$ takes one of the following forms:
 \begin{enumerate}
@@ -857,11 +864,11 @@ $\hat{r}_i^z = \lambda c_i + \lambda b_i z$, $U_i$ takes one of the following fo
   $U_i = (-\infty, q_i]$ otherwise;
 \end{enumerate}
 with $q_i = \frac{c_i-c_n}{b_n-b_i}$. The forms of regions $L_i$ for the lower CRR
-are computed similarly, but with the signs of $c_i$ and $b_i$ fliped for each $i=1, \ldots, n$.
+are computed similarly, but with the signs of $c_i$ and $b_i$ flipped for each $i=1, \ldots, n$.
 
-Each confidence region is build similarly to the kernel RRCM region eq.~\ref{eq:rrcm_conf_ci}
-in sec.~\ref{ssub:ridge_regression_confidence_machine}. The final the Kernel CRR
-confidence set is:
+Both upper and lower confidence regions are built similarly to the kernel RRCM region
+eq.~\ref{eq:rrcm_conf_ci} in sec.~\ref{ssub:ridge_regression_confidence_machine}. The
+final the Kernel CRR confidence set is:
 \begin{equation} \label{eq:crr_conf_ci}
   \Gamma_{X_{-n}, y_{-n}}^\alpha(x_n)
     = \Gamma_{X_{-n}, y_{-n}}^{\alpha,\text{u}}(x_n)
@@ -870,7 +877,7 @@ confidence set is:
 \end{equation}
 This intersection can be computed efficiently in $\BigO(n \log{} n)$, since the regions
 are built form sets anchored at a finite set $Q$ with at most $n+2$ values. Therefore,
-the CRR cofidence set for a fixed significance level $\alpha$ has $\BigO(n\log{} n)$
+the CRR confidence set for a fixed significance level $\alpha$ has $\BigO(n\log{} n)$
 complexity.
 
 % subsubsection kernel_crr (end)
@@ -891,37 +898,33 @@ Validity of conformal predictors in the online learning setting has been shown i
 \cite{vovk2005}, chapter 2, however, no result of this kind is known in the batch
 learning setting. Our experiments aim to evaluate the empirical performance of the
 conformal prediction in this setting: with dedicated train and test datasets. In
-this section we conduct a set of experiments to examine the validity of the confidence
-intervals produced by the conformal Kernel Ridge Regression and compare its efficiency
-to the Bayesian confidence intervals.
+this section we conduct a set of experiments to examine the validity of the regions,
+produced by the conformal Kernel Ridge Regression and compare its efficiency to
+the Bayesian confidence intervals.
 
 We primarily test the conformalized KRR predictions in cases when the input space
-$\Xcal$ is a unit cube in either $\Real$ or $\Real^2$. The rationale for this is
-that since conformal procedure is oblivious to the structure of the input dataset,
-there is no reason for its validity to deteriorate with increasing dimensionality
-of $\Xcal$. Indeed, the conformal confidence region eq.~\ref{eq:conf_pred_set} the
-input data from $\Xcal$ in the training and the test sets are fed into the NCM $A$,
-which, in general, can be an arbitrary computable function, and never ``leak'' into
-the procedure itself.
-
-The dimensionality of the input data impacts the performance of the procedure only
-through the choice of $A$, which in our case is the absolute value of the Kernel
-Ridge Regression residuals, and ultimately affects the efficiency (the width) of
-the resulting confidence regions. In this study we focus exclusively on the kernel
-ridge regression.
+$\Xcal$ is a compact set in $\Real^{d\times 1}$ for either $d=1$ or $d=2$. The rationale
+for this is that since conformal procedure is oblivious to the structure of the
+input dataset, there is no reason for its validity to deteriorate with increasing
+dimensionality of $\Xcal$. Indeed, the conformal confidence region eq.~\ref{eq:conf_pred_set}
+the input data from $\Xcal$ in the training and the test sets are fed into the NCM
+$A$, which, in general, can be an arbitrary computable function, and never ``leak''
+into the procedure itself. The dimensionality of the input data, however, may impact
+the efficiency (the width) of the resulting confidence region. And our experiments,
+to a certain extent, assess their effect.
 
 We consider the isotropic \textbf{R}adial \textbf{B}asis \textbf{F}unction kernel
-for both the Conformal Kernel Ridge regression and the Gaussian Process regression:
+for both the Conformal Kernel ridge regression and the Gaussian Process Regression.
+The RNF kernel over $\Xcal$ is given by
 \begin{equation*}
   K(x,x')
   = \mathop{\text{exp}}\bigl\{-\theta \|x - x'\|^2\bigr\}
   \,,
 \end{equation*}
-with the precision parameter $\theta>0$, and defined over $\Xcal \subseteq \Real^{d\times 1}$.
-This kernel is widely used in practice, because it has very nice properties. In
-particular if $\Xcal$ is compact its canonical RKHS is universal, $\Hcal_K$ is dense
-in the set $C_0(\Xcal)$ of continuous bounded maps with respect to the uniform norm
-$\|\cdot\|_\infty$, see.~\cite{rbf_universal}.
+where $\theta>0$ is the precision parameter. This kernel is widely used in practice,
+because it has very nice properties. In particular, if $\Xcal$ is compact its canonical
+RKHS is universal: $\Hcal_K$ is dense in the set $C_0(\Xcal)$ of continuous bounded
+maps with respect to the uniform norm $\|\cdot\|_\infty$, see.~\cite{rbf_universal}.
 % I. Steinwart. On the influence of the kernel on the consistency of support vector machines. Journal of Machine Learning Research, 2:67–93, 2001.
 
 % Another example of a universal kernel is the Laplacian kernel 
@@ -935,18 +938,57 @@ $\|\cdot\|_\infty$, see.~\cite{rbf_universal}.
 % Its spectral density is the Cauchy
 % density, as opposed to the Gaussian density in the case of RBF. The
 
+\subsection{Setup} % (fold)
+\label{sub:setup}
+
 We study the effects of the kernel parameters and the choice of the conformal procedure
 by varying the following hyper-parameters: \begin{enumerate}
   \item the precision of the RBF kernel $\theta$ is picked from $\{10^{-1}, 1, 10\}$,
   since the input domain is the unit cube, for which $\sup_{x,x'\in[0,1]^d}\|x-x'\|^2 = d$;
   \item the noise-to-signal ratio $\lambda \in\{10^{-k}\,:\,k=6, 4, 2, 0\}$, with
   smaller values corresponding to the interpolation task, and the larger -- to filtering;
-  \item the size of the training sample $n$ is chosen from $25 2^k$, $k=0,\ldots, 8$ --
-  to study the effects the train sample size on the validity and efficiency;
-  \item the NCM ($A_{\text{in}}$ or $A_{\text{loo}}$).
+  \item the effect of the train sample size $n$: small $n \in \{ 25, 50, 100\}$,
+  moderate-to-large $n \in \{200 k\,:\, k=1, \ldots, 8 \}$, -- to study the effects
+  the train sample size has on validity and efficiency;
+  \item the NCM $A$ for the confidence region: either the RRCM, or the CRR;
+  \item the residual $\hat{r}$: either $\hat{r}_{\text{in}}$, or $\hat{r}_{\text{loo}}$;
 \end{enumerate}
 
-%% Mention that we are testing and working in the batch learning setting
+For a given test function $f:\Xcal \mapsto \Real$ on some compact domain $\Xcal$
+each experiment for $n, \theta, \lambda, A$ and $\hat{r}$ consists of the following
+steps:
+\begin{enumerate}
+  \item The test inputs, $X^*$, are given by a grid with constant spacing in $\Xcal$;
+  \item Train inputs, $X$, are sampled from a uniform distribution over $\Xcal$;
+  \item For all $x\in X_{\text{pool}} = X \cup X^*$, draw target values $y_x = f(x)$
+  from the data generation process;
+  \item perform $L$ independent replications of the following steps: for $l=1,\ldots, L$
+  \begin{enumerate}
+    \item draw an independent random sample of size $n$ without replacement from
+    the full train set $\tilde{T} = (x, y_x)_{x\in X}$;
+    \item center the training sample;
+    \item fix an RBF kernel $K$ with the specified precision $\theta$ and fit a
+    Gaussian Process regression with $m(x) = 0$ to the train dataset $\tilde{T}$
+    using the kernel $\Kcal = \sigma^2( \lambda \delta_{x,x'} + K(x,x') )$, where
+    the values $\lambda > 0$ is specified and the amplitude $\sigma^2$ is estimated;
+    \item for each $x^* \in X^*$ construct, the Bayesian KRR region, $\Bcal_l^\alpha(x^*)$,
+    and the conformal confidence regions, $\Gamma_l^\alpha(x^*; A, \hat{r})$ using the
+    specified NCM $A$, the residuals $\hat{r}$, and the kernel $\Kcal$ (using the estimated
+    $\sigma^2$);
+    \item for the centered test data estimate the coverage rate and the width of
+    the convex hull of the region: $p_l(R) = |X^*|^{-1}\sum_{x\in X^*} 1_{y_x\in R_x}$,
+    and $w_l(R) = \inf\{b-a\,:\,R \subseteq [a, b]\}$, where $R$ is a confidence
+    region;
+  \end{enumerate}
+\end{enumerate}
+For the $1$-D case the domain $\Xcal$ is $[0,1]$ and the test input set is given by
+$\{k N^{-1}\,:\,k=0,\ldots, N+1\}$ for $N=1000$. In $2$-D case we consider functions
+defined on $\Xcal=[-1,1]^2$, and use $X^* = \{k N^{-1}\,:\,k=0,\ldots, N+1\}^2$
+for $N=50$ as the test set.
+
+%% What is the estimate of \sigma^2
+
+% subsection setup (end)
 
 \subsection{1D setting} % (fold)
 \label{sub:1d_setting}
@@ -975,34 +1017,6 @@ and a step function (``heaviside'', fig.~\ref{fig:1dfunc_heaviside}).
   \end{subfigure}
   \caption{Typical profiles of studied 1D functions.} \label{fig:1dfunc}
 \end{figure}
-In each experiment, we construct the confidence regions performance for the unobserved
-values on a $1$-d function on a common set of test inputs, $X^* \subset \Xcal$,
-given by $\{k N^{-1}\,:\,k=0,\ldots, N+1\}$ for $N=10^3$ -- a regular gird in $[0, 1]$.
-With $X^*$ fixed, we end up with the following experiment setup: for the given
-parameters $\lambda, \theta, n$ and the NCM $A$
-\begin{enumerate}
-  \item perform $L$ independent replications of the following steps: for $l=1,\ldots, L$
-  \begin{enumerate}
-    \item generate a random train set $X = (x_i)_{i=1}^n\sim \mathcal{U}(\Xcal)$ of
-    size $n$ and put $X_{\text{pool}} = X \cup X^*$;
-    \item draw target values $y_x = f(x)$, $x\in X_{\text{pool}}$ from some function
-    $f:\Xcal \mapsto \Ycal$;
-    \item fix an RBF kernel $K$ with precision $\theta$ and fit a Gaussian Process
-    Regression with $m(x) = 0$ to the train dataset $(y_x)_{x\in X}$ using kernel
-    $\Kcal = \sigma^2(\lambda \delta_{x,x'} + K(x,x'))$, where the amplitude of
-    the kernel $\sigma^2$ is also estimated;
-    \item for each $x^* \in X^*$ construct both the Bayesian KRR region, $\Bcal_{X, y}^\alpha(x^*)$,
-    and the conformal $\epsilon$-confidence region, $\Gamma_{X, y}^\alpha(x^*)$ using
-    the KRR NCM $A$ with kernel $\Kcal$;
-    \item estimate the coverage rate $p_l(R) = |X^*|^{-1}\sum_{x\in X^*} 1_{y_x\in R_x}$
-    and the width of the convex hull $w_l(R) = \inf\{b-a\,:\,R \subseteq [a, b]\}$
-    for both confidence regions $R=\Bcal_{X, y}^\alpha$ and $R=\Gamma_{X, y}^\alpha$;
-  \end{enumerate}
-  \item assess the validity and the efficiency of the Bayesian and Conformal confidence
-  regions by comparing the sample statistics of the coverage rate and width.
-\end{enumerate}
-It is worth emphasizing that in this experiment the input train sample is drawn from
-the uniform distribution on $\Xcal$.
 
 In the first experiment we compare the validity of the confidence regions on the
 test functions in fig.~\ref{fig:1dfunc}, but we present results for the function
