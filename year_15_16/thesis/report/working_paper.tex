@@ -23,6 +23,7 @@
 \newcommand{\Hcal}{\mathcal{H}}
 \newcommand{\Ncal}{\mathcal{N}}
 \newcommand{\Kcal}{\mathcal{K}}
+\newcommand{\BigO}{\mathcal{O}}
 \newcommand{\Xcal}{\mathcal{X}}
 \newcommand{\Ycal}{\mathcal{Y}}
 \newcommand{\Zcal}{\mathcal{Z}}
@@ -501,9 +502,13 @@ estimation of parameters $\theta$ of the kernel $K$ by maximizing the joint like
 of the train data $(X, y)$, given by the likelihood of the multivariate Gaussian
 distribution with zero mean and covariance $\sigma^2 (\lambda I_n + K_{XX}))$.
 \begin{equation} \label{eq:bkrr_likelihood}
-%% Write out the likelihood of the train sample.
-  \Lcal = \ldots
-  \,.
+%% Write out the log-likelihood of the train sample.
+  \Lcal
+    = -\frac{n}{2}\log 2\pi
+    - \frac{1}{2}\log \sigma^2
+    - \frac{1}{2}\log \lvert \lambda I_n + K_{XX} \rvert
+    - \frac{1}{2\sigma^2} y' (\lambda I_n + K_{XX})^{-1} y
+    \,.
 \end{equation}
 With the explicit solution to the problem of finding the ``best'' $\hat{\beta}$ for
 some fixed kernel $K_\theta$, it is possible to gradually estimate the optimal parameters
@@ -624,7 +629,7 @@ if a conformity measure is used.
 % section conformal_prediction (end)
 
 \subsection{Confromalized ridge regression} % (fold)
-\label{sub:confromalized_ridge_regression}
+\label{sub:conformalized_ridge_regression}
 
 Consider a sample $Z = (x_i, y_i)_{i=1}^n \in \Zcal$, with $\Xcal = \Real^{d\times 1}$
 and $\Ycal=\Real$. Let $X\in\Real^{n\times d}$ be the overall design matrix of $Z$
@@ -684,7 +689,7 @@ trick to it to get a more powerful ML algorithm. The Bayesian confidence interva
 have been derived in sec.~\ref{sec:bayesian_krr_confidence_interval}, so in the next
 section the construction of a conformal prediction procedure will be discussed.
 
-% subsection confromalized_ridge_regression (end)
+% subsection conformalized_ridge_regression (end)
 
 \subsection{Conformalized kernel ridge regression} % (fold)
 \label{sub:conformalized_krr}
@@ -693,14 +698,14 @@ In this section we describe the construction of confidence regions of the confor
 procedure eq.~\ref{eq:conf_pred_set} for the case of the non-conformity measures
 based on kernel ridge regression.
 
+\subsubsection{Ridge Regression Confidence Machine} % (fold)
+\label{ssub:ridge_regression_confidence_machine}
+
 We consider two versions of the NCM proposed in \cite{vovk2005}, chapter 2,
 for the regression setting: an in-sample and a \textbf{l}eave-\textbf{o}ne-\textbf{o}ut
 version. To this end consider a sample $(X, y) = (x_i, y_{x_i})_{i=1}^n$, and for
 any $i=1\ldots, n$ put $X = (X_{-i}, x_i)$, and $y = (y_{-i}, y_i)$.
 Let $e_i\in \Real^{n\times 1}$ be the $i$-th unit vector.
-
-\subsubsection{Ridge Regression Confidence Machine} % (fold)
-\label{ssub:ridge_regression_confidence_machine}
 
 The ``in-sample'' NCM $A_{\text{in}}$ measures the absolute value of the regression
 residual and is given by:
@@ -774,14 +779,14 @@ Where the vector $B_{-n}(x_n)\in\Real^{n\times 1}$ is given by
 \end{equation*}
 
 In general, the construction of the confidence region (\ref{eq:conf_ci}) requires
-swiping through all $y\in \Ycal$ that satisfy the significance level requirement,
+searching through all $y\in \Ycal$ that satisfy the significance level requirement,
 which is infeasible unless $\Ycal$ is finite. The construction for the NCM (\ref{eq:ins_ncm})
 for in-sample residuals in this particular problem relies on the representation
 of each residual as
 \begin{equation*}
   \hat{r}_i^z
     = e_i' \hat{r}_{\text{in}}(X, \tilde{y}_n^z)
-    = \lambda a_i + \lambda b_i z
+    = \lambda c_i + \lambda b_i z
     \,,
 \end{equation*}
 with $c_i = e_i' C_{-n}\bigl((X, y), x_n\bigr)$ and
@@ -811,37 +816,62 @@ $S_i$ has one of the representations:
   \item $b_i > b_n \geq 0$: $S_i$ is $\Real\setminus (q_i, p_i)$ when $c_i b_n \geq c_n b_i$,
   or $\Real\setminus (p_i, q_i)$ otherwise.
 \end{enumerate}
-Let $P$ and $Q$ be the sets of all well-defined $p_i$ and $q_i$ respectively, and let
-$(g_i)_{j=1}^{J+1}$ be an enumeration of $\{\pm\infty\}\cup P \cup Q$ in ascending
-order. Then the conformal confidence region $\Gamma_{X_{-n}, y_{-n}}^\alpha(x_n)$ is
-constructed from intervals $G_j = [g_j, g_{j+1}] \cap \Real$:
-\begin{equation*} \label{eq:rrcm_conf_ci}
+Let $P$ and $Q$ be the sets of all well-defined $p_i$ and $q_i$ respectively, and
+let $(g_j)_{j=0}^{J+1}$ enumerate distinct values of $\{\pm\infty\} \cup P \cup Q$,
+so that $g_j < g_{j+1}$ for all $j$. Then the confidence region is a closed subset
+of $\Real$ constructed from sets $G^m_j = [g_j, g_{j+m}]\cap \Real$ for $m=0, 1$:
+\begin{equation} \label{eq:rrcm_conf_ci}
   \Gamma_{X_{-n}, y_{-n}}^\alpha(x_n)
-    = \bigcup_{j\,:\, N_j \geq \alpha n} G_j
+    = \bigcup_{m\in\{0,1\}} \bigcup_{j\,:\, N^m_j \geq n \alpha} G^m_j
     \,,
-\end{equation*}
-where $N_j = |\{i\,:\,G_j \subseteq S_i\}|$ is the number of times $G_j$ is covered
-by any region $S_i$.
+\end{equation}
+where $N^m_j = |\{i \,:\, G^m_j \subseteq S_i\}|$ is the coverage frequency of $G^m_j$.
+In general, the resulting confidence set might contain isolated singletons $G^0_j$.
 
-For a single test point $x_n$ the worst-case complexity of this construction is
-$\mathcal{O}(n \log n)$: it is necessary to sort at most $2n$ distinct endpoints
+This set, can be constructed efficiently in $\BigO(n \log{} n)$ time with $\BigO(n)$
+memory footprint. Indeed, it is necessary to sort at most $J\leq 2n$ distinct endpoints
 of $G_j$, then locate the values $p_i$ and $q_i$ associated with each region $S_i$
-($\mathcal{O}(n\log n)$), and finally in at most $\mathcal{O}(2n)$ time compute
-the coverage numbers $N_j$. The memory footprint is $\mathcal{O}(n)$.
+($\BigO(n \log{} n)$). Then, since the building blocks $G^m_j$ of $\Gamma^\alpha$
+are either singletons ($m=0$), or intervals made up from adjacent singletons ($m=1$),
+coverage numbers $N^m_j$ can be computed in at most $\BigO(n)$ time.
 
 % subsubsection ridge_regression_confidence_machine (end)
 
 \subsubsection{Kernel CRR} % (fold)
 \label{ssub:kernel_crr}
 Another possibility is to use the two-sided NCM proposed in \cite{BurVovk2014} and
-mentioned in sec.~\ref{sub:confromalized_ridge_regression}. Recall that, in order
+mentioned in sec.~\ref{sub:conformalized_ridge_regression}. Recall that, in order
 to construct a CRR confidence region for significance level $\epsilon$ (eq.~\ref{eq:crr_ncm}),
 it is necessary to intersect confidence sets yielded by conformal procedures with NCM
 scores given by $\hat{r}_i^z$ (upper) and $-\hat{r}_i^z$ (lower) at significance level
-$\frac{\epsilon}{2}$. In this section we present an efficient algorithm for constructing
+$\frac{\epsilon}{2}$. Confidence regions based on CRR, much like RRCM, can use any kind
+of residual: leave-one-out, or in-sample. In this section we present an efficient
+algorithm for constructing this confidence region.
 
-Confidence regions based on CRR, much like RRCM, admit two
-versions: either leave-one-out, or in-sample residuals.
+For the upper CRR consdier the regions $U_i = \{z\in\Real\,:\, \hat{r}_i^z \geq \hat{r}_n^z\}$,
+$i=1,\ldots, n$ are either empty, full $\Real$ or one-side closed half-rays. Since
+$\hat{r}_i^z = \lambda c_i + \lambda b_i z$, $U_i$ takes one of the following forms:
+\begin{enumerate}
+  \item $b_i=b_n$: $U_i = \Real$ if $c_i\geq c_n$, and $\emptyset$ otherwise;
+  \item $b_i\neq b_n$: $U_i = [q_i, +\infty)$ if $b_i>b_n$, or
+  $U_i = (-\infty, q_i]$ otherwise;
+\end{enumerate}
+with $q_i = \frac{c_i-c_n}{b_n-b_i}$. The forms of regions $L_i$ for the lower CRR
+are computed similarly, but with the signs of $c_i$ and $b_i$ fliped for each $i=1, \ldots, n$.
+
+Each confidence region is build similarly to the kernel RRCM region eq.~\ref{eq:rrcm_conf_ci}
+in sec.~\ref{ssub:ridge_regression_confidence_machine}. The final the Kernel CRR
+confidence set is:
+\begin{equation} \label{eq:crr_conf_ci}
+  \Gamma_{X_{-n}, y_{-n}}^\alpha(x_n)
+    = \Gamma_{X_{-n}, y_{-n}}^{\alpha,\text{u}}(x_n)
+    \cap \Gamma_{X_{-n}, y_{-n}}^{\alpha,\text{l}}(x_n)
+    \,.
+\end{equation}
+This intersection can be computed efficiently in $\BigO(n \log{} n)$, since the regions
+are built form sets anchored at a finite set $Q$ with at most $n+2$ values. Therefore,
+the CRR cofidence set for a fixed significance level $\alpha$ has $\BigO(n\log{} n)$
+complexity.
 
 % subsubsection kernel_crr (end)
 
@@ -858,12 +888,12 @@ versions: either leave-one-out, or in-sample residuals.
 \label{sec:numerical_study}
 
 Validity of conformal predictors in the online learning setting has been shown in
-\cite{vovk2005}, however, no result of this kind is known in the batch learning setting.
-Our experiments aim to evaluate the empirical performance of the conformal prediction
-in this setting: with dedicated train and test datasets. In this section we conduct
-a set of experiments to examine the validity of the confidence intervals produced
-by the conformal Kernel Ridge Regression and compare its efficiency to the Bayesian
-confidence intervals.
+\cite{vovk2005}, chapter 2, however, no result of this kind is known in the batch
+learning setting. Our experiments aim to evaluate the empirical performance of the
+conformal prediction in this setting: with dedicated train and test datasets. In
+this section we conduct a set of experiments to examine the validity of the confidence
+intervals produced by the conformal Kernel Ridge Regression and compare its efficiency
+to the Bayesian confidence intervals.
 
 We primarily test the conformalized KRR predictions in cases when the input space
 $\Xcal$ is a unit cube in either $\Real$ or $\Real^2$. The rationale for this is
