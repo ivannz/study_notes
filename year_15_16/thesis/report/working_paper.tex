@@ -509,9 +509,9 @@ leave-one-out cross-validation and minimize the RMSE of the deleted residuals
 \end{equation}
 where the dependence on $\theta$ is through the sample kernel Gram matrix $K_{XX}$.
 It is worth noting that the leave-one-out residuals are not affected by the scale
-$\sigma^2$ of the kernel $\Kcal = \sigma^2(\lambda \delta_{x,x'} + K(x, x'))$.
-Similarly to the case of predictive variances in \cite{pcw20005a7}, using leave-one-out
-cross-validation eliminates the bias inherent in estimates of the kernel parameters.
+$\sigma^2$ of the kernel $\Kcal$ (eq.~\ref{eq:krig_kernel}). Similarly to the case
+of predictive variances in \cite{pcw20005a7}, using leave-one-out cross-validation
+eliminates the bias inherent in estimates of the kernel parameters.
 
 Bayesian kernel ridge regression confidence interval for an observed values $y_{x^*}$
 at $x^*\in \Xcal$ can be obtained from eq.~\ref{eq:cond_distr} by fixing $\beta = 0$.
@@ -962,19 +962,18 @@ steps:
   \item Train inputs, $X$, are sampled from a uniform distribution over $\Xcal$;
   \item For all $x\in X_{\text{pool}} = X \cup X^*$, draw target values $y_x = f(x)$
   from the data generation process;
+  \item let $\tilde{T} = (x, y_x)_{x\in X}$;
   \item perform $L$ independent replications of the following steps: for $l=1,\ldots, L$
   \begin{enumerate}
-    \item draw an independent random sample of size $n$ without replacement from
-    the full train set $\tilde{T} = (x, y_x)_{x\in X}$;
+    \item draw an independent random sample of size $n$ without replacement from $\tilde{T}$;
     \item center the training sample;
-    \item fix an RBF kernel $K$ with the specified precision $\theta$ and fit a
-    Gaussian Process regression with $m(x) = 0$ to the train dataset $\tilde{T}$
-    using the kernel $\Kcal = \sigma^2( \lambda \delta_{x,x'} + K(x,x') )$, where
-    the values $\lambda > 0$ is specified and the amplitude $\sigma^2$ is estimated;
+    \item fit a Gaussian Process regression with $\beta = 0$ and $\Kcal$ given by
+    eq.~\ref{eq:krig_kernel} for the RBF kernel $K$ with the specified precision
+    $\theta$ with fixed $\lambda > 0$;
     \item for each $x^* \in X^*$ construct, the Bayesian KRR region, $\Bcal_l^\alpha(x^*)$,
-    and the conformal confidence regions, $\Gamma_l^\alpha(x^*; A, \hat{r})$ using the
-    specified NCM $A$, the residuals $\hat{r}$, and the kernel $\Kcal$ (using the estimated
-    $\sigma^2$);
+    and the conformal confidence regions, $\Gamma_l^\alpha(x^*; A, \hat{r})$ using
+    the specified NCM $A$, the residuals $\hat{r}$, and the kernel $\Kcal$ (with
+    estimated $\sigma^2$);
     \item for the centered test data estimate the coverage rate and the width of
     the convex hull of the region: $p_l(R) = |X^*|^{-1}\sum_{x\in X^*} 1_{y_x\in R_x}$,
     and $w_l(R) = \inf\{b-a\,:\,R \subseteq [a, b]\}$, where $R$ is a confidence
