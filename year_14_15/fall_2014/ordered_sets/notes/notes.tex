@@ -104,7 +104,7 @@ A poset is a pair $(P,\leq)$, where $P$ is a non-empty set and $\leq$ is a parti
 \subsection{The convering relation} % (fold)
 \label{sub:the_convering_relation}
 
-Let $(P,\leq)$ be a poset and $x, y\in P$. We say that $x$ is \textbf{covered by} $y$, $x\prec y$ if $x\leq y$, $x\neq y$ and there is not $z\in P$ with $z\neq x, y$ such that $x \leq z \leq y$.
+Let $(P,\leq)$ be a poset and $x, y\in P$. We say that $x$ is \textbf{covered by} $y$, $x\prec y$ if $x\leq y$, $x\neq y$ and there is no $z\in P$ with $z\neq x, y$ such that $x \leq z \leq y$.
 
 % \noindent\textbf{Theorem} \hfill \\
 \begin{prop} If $P$ is finite then $x<y$ is equivalent to $\exists \brac{z_k}_{k=0}^m\in P$ with $x = z_0\prec z_1\prec \ldots \prec z_m = y$.
@@ -244,7 +244,7 @@ $\Leftarrow$ Let $(L,\diamond)$ be an algebraic semi-lattice with join semantics
 	
 Straightforward application of the basic properties of $\diamond$ imply that $\trianglelefteq$ is reflexive (idempotence), anti-symmetric (commutativity) and transitive (associativity).
 
-Furthermore, if $x,y\in L$, then $x,y\trianglelefteq x\diamond y$ by definition of the partial order $\trianglelefteq$. If $a\in L$ is any other element such that $x,y\trianglelefteq a$, then by definition \[x = x \diamond a\,\text{ and }\, y = y\diamond a\] By commutativity and associativity of $\diamond$, it must be true that \[(a\diamond x) \diamond y = x\diamond y = x\diamond (a\diamond y)\] whence $x\diamond y\trianglelefteq a$. Thus $(L,\trianglelefteq)$ is a poset with a well-defined pairwise supremum operation.
+Furthermore, if $x,y\in L$, then $x,y\trianglelefteq x\diamond y$ by definition of the partial order $\trianglelefteq$. If $a\in L$ is any other element such that $x,y\trianglelefteq a$, then by definition \[a = x \diamond a\,\text{ and }\, a = y\diamond a\] By commutativity and associativity of $\diamond$, it must be true that \[(x\diamond y)\diamond a = (a\diamond x) \diamond y = a\diamond y = a\] whence $x\diamond y\trianglelefteq a$. Thus $(L,\trianglelefteq)$ is a poset with a well-defined pairwise supremum operation.
 
 \end{proof}
 
