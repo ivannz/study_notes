@@ -491,9 +491,9 @@ $(X, y)$:
 where $R_X = \lambda I_n + K_{XX}$, and $F \in\Real^{n\times d}$ is the design matrix
 of $X$ under $\Phi$. The optimal $\beta$ is given by the generalized least squares
 solution
-\begin{equation}
-  \hat{\beta} = (F'R_X^{-1}F)^{-1}F'R_X^{-1}y \,.
-\end{equation}
+\begin{equation*}
+  \hat{\beta} = (F'R_X^{-1}F)^{-1} F'R_X^{-1} y \,.
+\end{equation*}
 Minimization of \ref{eq:bkrr_likelihood} by alternating between kernel parameter
 and $\beta$ steps, it is possible to gradually estimate the optimal parameters.
 
@@ -966,7 +966,6 @@ steps:
   \item perform $L$ independent replications of the following steps: for $l=1,\ldots, L$
   \begin{enumerate}
     \item draw an independent random sample of size $n$ without replacement from $\tilde{T}$;
-    \item center the training sample;
     \item fit a Gaussian Process regression with $\beta = 0$ and $\Kcal$ given by
     eq.~\ref{eq:krig_kernel} for the RBF kernel $K$ with the specified precision
     $\theta$ with fixed $\lambda > 0$;
@@ -974,8 +973,8 @@ steps:
     and the conformal confidence regions, $\Gamma_l^\alpha(x^*; A, \hat{r})$ using
     the specified NCM $A$, the residuals $\hat{r}$, and the kernel $\Kcal$ (with
     estimated $\sigma^2$);
-    \item for the centered test data estimate the coverage rate and the width of
-    the convex hull of the region: $p_l(R) = |X^*|^{-1}\sum_{x\in X^*} 1_{y_x\in R_x}$,
+    \item estimate the coverage rate and the width of the convex hull of the region
+    over the test sample $X^*$: $p_l(R) = |X^*|^{-1}\sum_{x\in X^*} 1_{y_x\in R_x}$,
     and $w_l(R) = \inf\{b-a\,:\,R \subseteq [a, b]\}$, where $R$ is a confidence
     region;
   \end{enumerate}
@@ -989,8 +988,8 @@ for $N=50$ as the test set.
 
 % subsection setup (end)
 
-\subsection{1D setting} % (fold)
-\label{sub:1d_setting}
+\subsection{Results} % (fold)
+\label{sub:results}
 
 First, we assess the performance of the Bayesian and conformal confidence regions
 in the case of recovering nonlinear functions on one-dimensional domain, $\Xcal =
@@ -1066,12 +1065,7 @@ by maximizing the joint likelihood of the training data $(X, y)$. This options h
 also been investigates, but yielded conclusions which are qualitatively identical
 to the ones summarized above.
 
-% subsection 1d_setting (end)
-
-\subsection{2D setting} % (fold)
-\label{sub:2d_setting}
-
-% subsection 2d_setting (end)
+% subsection results (end)
 
 % section numerical_study (end)
 
@@ -1079,6 +1073,14 @@ to the ones summarized above.
 \label{sec:conclusion_and_further_work}
 
 % section conclusion_and_further_work (end)
+
+\clearpage
+
+\selectlanguage{english}
+
+% \bibliographystyle{amsplain}
+\bibliographystyle{ugost2008ls}
+\bibliography{references}
 
 \end{document}
 
