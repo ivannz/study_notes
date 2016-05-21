@@ -661,12 +661,12 @@ of $y^*$ at $x^*$ conditional on the observed sample is
       \sigma^2 (\lambda + {x^*}' (\lambda I_p + X'X)^{-1} x^* ) \bigr) \,.
 \end{equation}
 
-The properties of conformalized ridge regression (CRR) have been studied in \cite{BurVovk2014},
+The properties of conformalized ridge regression (CRR) have been studied in \cite{burnaevV14},
 where it has been shown that under more general assumptions (the Gaussianity of $\beta$
 is relaxed), the conformal confidence region, eq.~\ref{eq:conf_pred_set}, constructed
 with an NCM based on the ridge regression residuals is asymptotically efficient.
 
-The conformal procedure in \cite{BurVovk2014} is constructed from a conformity measure
+The conformal procedure in \cite{burnaevV14} is constructed from a conformity measure
 \begin{equation} \label{eq:crr_ncm}
   \eta_i = A(Z_{-i}, Z_i)
     = \bigl\lvert\{j\,:\, \hat{r}_j \geq \hat{r}_i \} \bigr\rvert \wedge
@@ -684,7 +684,7 @@ by conformal procedures with non-conformity measures given by $\eta_i = \hat{r}_
 and $\eta_i = -\hat{r}_i$ at significance levels $\frac{\alpha}{2}$. Individually,
 these NCMs define a \textbf{upper} and \textbf{lower} CRR sets respectively.
 
-The main result of \cite{BurVovk2014} states that under relaxed BRR assumptions if
+The main result of \cite{burnaevV14} states that under relaxed BRR assumptions if
 a sequence $(x_n)_{n\geq1}\in\Xcal$ is iid with an existing and non-singular second
 moment matrix $\ex x_1x_1' \preceq 0$, then for all sufficiently large $n$ the CRR
 produces confidence regions that are intervals, and the difference between the upper
@@ -846,7 +846,7 @@ coverage numbers $N^m_j$ can be computed in at most $\BigO(n)$ time.
 
 \subsubsection{Kernel CRR} % (fold)
 \label{ssub:kernel_crr}
-Another possibility is to use the two-sided NCM proposed in \cite{BurVovk2014} and
+Another possibility is to use the two-sided NCM proposed in \cite{burnaevV14} and
 mentioned in sec.~\ref{sub:conformalized_ridge_regression}. Recall that, in order
 to construct a CRR confidence region for significance level $\alpha$ (eq.~\ref{eq:crr_ncm}),
 it is necessary to intersect confidence sets yielded by conformal procedures with NCM
@@ -1017,7 +1017,7 @@ and a step function (``heaviside'', fig.~\ref{fig:1dfunc_heaviside}).
 \end{figure}
 
 Typical confidence bands are displayed at fig.~\ref{fig:typical_heaviside} for the
-heaviside function. In \cite{BurVovk2014} it was proven in the case of ridge regression
+heaviside function. In \cite{burnaevV14} it was proven in the case of ridge regression
 that the conformal confidence region is an interval centered around the predicted
 value $\hat{y}_{(X,y)}(x^*)$. The confidence regions of all conformal procedures
 are very close.
@@ -1074,9 +1074,7 @@ to the ones summarized above.
 
 % section conclusion_and_further_work (end)
 
-\clearpage
-
-\selectlanguage{english}
+% \clearpage
 
 % \bibliographystyle{amsplain}
 \bibliographystyle{ugost2008ls}
