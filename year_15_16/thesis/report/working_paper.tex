@@ -1017,6 +1017,19 @@ and a step function (``heaviside'', fig.~\ref{fig:1dfunc_heaviside}).
   \caption{Typical profiles of studied 1D functions.} \label{fig:1dfunc}
 \end{figure}
 
+Typical confidence bands are displayed at fig.~\ref{fig:typical_heaviside} for the
+heaviside function. In \cite{BurVovk2014} it was proven in the case of ridge regression
+that the conformal confidence region is an interval centered around the predicted
+value $\hat{y}_{(X,y)}(x^*)$. The confidence regions of all conformal procedures
+are very close.
+
+Convergence in Fig.~\ref{fig:asy1d} is typical to all conducted experiments, and
+gives empirical support to the conjecture that conformal intervals are asymptotically
+conservative in batch learning setting. Convergence can also e observed in $2$-D
+setting as shown on fig.~\ref{fig:asy2d} for a <<function>> with kernel parameters
+<<$\Theta$>>.
+
+Fig.~\ref{fig:typical_1d_f6} shows a typical confidence region for 
 In the first experiment we compare the validity of the confidence regions on the
 test functions in fig.~\ref{fig:1dfunc}, but we present results for the function
 on fig.~\ref{fig:1dfunc_f6} only, because the conclusions are similar.
