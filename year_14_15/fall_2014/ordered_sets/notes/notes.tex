@@ -358,11 +358,11 @@ $\Leftarrow$ Conversely, if $p\leq \psi(q)$ then by \textbf{(AMON)} $\phi\brac{\
 \end{proof}
 
 % \noindent \textbf{Theorem} \hfill \\
-\begin{prop} If $(\phi,\psi)$ is a Galois connection, then $\phi = \phi\circ \phi\circ \phi$ and $\phi = \phi\circ \phi\circ \phi$.
+\begin{prop} If $(\phi,\psi)$ is a Galois connection, then $\phi = \phi\circ \psi\circ \phi$ and $\psi = \psi\circ \phi\circ \psi$.
 \end{prop}
 
 \begin{proof}
-Indeed, for any $p\in P$ \textbf{(CLOSURE)} implies that $p\leq \psi\brac{\phi(p)}$, whence by \textbf{(AMON)} $\phi{\psi\brac{\phi(p)}}\leq \phi(p)$. However, \textbf{(CLOUSRE)} also implies that $\phi(p)\leq \phi\brac{\psi\brac{\phi(p)}}$. The second equality is show analogously.
+Indeed, for any $p\in P$ \textbf{(CLOS)} implies that $p\leq \psi\brac{\phi(p)}$, whence by \textbf{(AMON)} $\phi\brac{\psi\brac{\phi(p)}}\leq \phi(p)$. However, \textbf{(CLOS)} also implies that $\phi(p)\leq \phi\brac{\psi\brac{\phi(p)}}$, for $q=\phi(p)$. Finally, anti-symmetry of $\leq$ yields the result. The second equality is shown analogously.
 \end{proof}
 
 % \noindent \textbf{Theorem} \hfill \\
@@ -929,7 +929,7 @@ Therefore the task of mining functional dependencies in many-valued contexts can
 
 Scale context of an attribute $m\in M$ is $\mathbb{S}_m\defn \brac{W_m, G_m, I_m}$ defined as $m(G) \subseteq W_m$ and $I_m\defn \obj{ \induc{(g,w)}\,(g,m,w)\in I }$.
 
-THIS SECTION ID POORLY WRITTEN!!!
+THIS SECTION IS POORLY WRITTEN!!!
 
 % subsection context_transformation (end)
 
