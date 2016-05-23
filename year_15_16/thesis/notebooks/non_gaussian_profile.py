@@ -60,7 +60,7 @@ true_nugget = [1e-6, 1e-1,]
 test_functions = [f6, heaviside, pressure2]
 
 grid_ = ParameterGrid(dict(func=test_functions,
-                           size=[200, 1200,],
+                           size=[50, 200,],
                            nugget=true_nugget,
                            noise=true_nugget,
                            theta0=[1e+2, "auto"]))

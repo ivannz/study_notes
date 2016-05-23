@@ -57,7 +57,7 @@ def _helper(y, A, B, proc=RRCM, levels=levels, parallel=None, n_jobs=1, verbose=
 ## Define the grid
 true_theta = 100.0
 true_nugget = [1e-6, 1e-1,]
-grid_ = ParameterGrid(dict(size=[200, 1200,],
+grid_ = ParameterGrid(dict(size=[50, 200,],
                            nugget=true_nugget,
                            theta0=[1e+2, "auto"]))
 ## Initialize
