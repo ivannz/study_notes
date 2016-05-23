@@ -58,11 +58,9 @@ def _helper(y, A, B, proc=RRCM, levels=levels, parallel=None, n_jobs=1, verbose=
 
 true_nugget = [1e-6, 1e-1,]
 test_functions = [f6, heaviside, pressure2]
+sizes = [50, 200,]
 
-grid_ = ParameterGrid(dict(func=test_functions,
-                           size=[50, 200,],
-                           nugget=true_nugget,
-                           noise=true_nugget,
+grid_ = ParameterGrid(dict(nugget=true_nugget,
                            theta0=[1e+2, "auto"]))
 ## Initialize
 kernel = 'rbf' # 'laplacian'
@@ -73,91 +71,88 @@ XX_test = np.linspace(0, 1, num=501).reshape((-1, 1))
 test_ = np.s_[:XX_test.shape[0]]
 
 experiment, batch_, dumps_ = list(), 1, list()
-for i_, par_ in enumerate(grid_):
-    print i_, par_
-    size_, nugget_, theta0_ = par_['size'], par_['nugget'], par_['theta0']
-    func_, noise_ = par_['func'], par_['noise']
+for func_ in test_functions:
+    for size_ in sizes:
+        XX_train = np.linspace(0.05, 0.95, num=size_ + 1).reshape((-1, 1))
+        XX = np.concatenate([XX_test, XX_train], axis=0)
 
-    tick_ = time.time()
-    n_replications, replications = 1, list()
-    while n_replications > 0:
-        ## Draw random train sample
-        X = random_state.uniform(size=(size_, 1))
+        for noise_ in true_nugget:
+            yy = func_(XX)
+            if yy.ndim == 1:
+                yy = yy.reshape((-1, 1))
 
-        ## Draw f(x)
-        XX = np.concatenate([XX_test, X], axis=0)
-        yy = func_(XX)
-        if yy.ndim == 1:
-            yy = yy.reshape((-1, 1))
+            if noise_ > 0:
+                yy += random_state.normal(size=yy.shape) * noise_
 
-        if noise_ > 0:
-            yy += random_state.normal(size=yy.shape) * noise_
+            ## Split the pooled sample
+            yy_train, yy_test = np.delete(yy, test_, axis=0), yy[test_].copy()
 
-        ## Split the pooled sample
-        y, y_test = np.delete(yy, test_, axis=0), yy[test_]
+            for i_, par_ in enumerate(grid_):
+                nugget_, theta0_ = par_['nugget'], par_['theta0']
+                key_ = func_.__name__, noise_, theta0_, nugget_, size_
+                print i_, key_
 
-        ## Fit a GPR
-        gp_ = clone(gp)
-        gp_.nugget = nugget_
-        if isinstance(theta0_, float):
-            gp_.theta0 = theta0_
-        elif theta0_ == "auto":
-            gp_.thetaL, gp_.thetaU, gp_.theta0 = 1.0, 1e4, float(size_)
-        gp_.fit(X, y)
+                tick_ = time.time()
+                ## Fit a GPR
+                gp_ = clone(gp)
+                gp_.nugget = nugget_
+                if isinstance(theta0_, float):
+                    gp_.theta0 = theta0_
+                elif theta0_ == "auto":
+                    gp_.thetaL, gp_.thetaU, gp_.theta0 = 1.0, 1e4, float(size_)
+                gp_.fit(XX_train, yy_train)
 
-        ## Compute the A, B matrices
-        A, B, y_hat_, MM, loo_, A_loo, B_loo = \
-            KRR_AB(X, y, XX_test, forecast=True,
-                   nugget=gp_.nugget, metric=kernel, gamma=gp_.theta_[0])
-        del loo_
+                ## Compute the A, B matrices
+                A, B, y_hat_, MM, loo_, A_loo, B_loo = \
+                    KRR_AB(XX_train, yy_train, XX_test, forecast=True,
+                           nugget=gp_.nugget, metric=kernel, gamma=gp_.theta_[0])
+                del loo_
 
-        ## Construct the CKRR confidence interval: RRCM
-        rrcm_hits_, rrcm_width_, rrcm_bounds_ = \
-            _helper(y_test, A[0], B, proc=RRCM,
-                    levels=levels, parallel=parallel_)
+                ## Construct the CKRR confidence interval: RRCM
+                rrcm_hits_, rrcm_width_, rrcm_bounds_ = \
+                    _helper(yy_test, A[0], B, proc=RRCM,
+                            levels=levels, parallel=parallel_)
 
-        ## Construct the CKRR confidence interval: CCR-sided
-        crr_hits_, crr_width_, crr_bounds_ = \
-            _helper(y_test, A[0], B, proc=CRR,
-                    levels=levels, parallel=parallel_)
+                ## Construct the CKRR confidence interval: CCR-sided
+                crr_hits_, crr_width_, crr_bounds_ = \
+                    _helper(yy_test, A[0], B, proc=CRR,
+                            levels=levels, parallel=parallel_)
 
-        ## Construct the CKRR confidence interval: RRCM
-        loo_rrcm_hits_, loo_rrcm_width_, loo_rrcm_bounds_ = \
-            _helper(y_test, A_loo[0], B_loo, proc=RRCM,
-                    levels=levels, parallel=parallel_)
+                ## Construct the CKRR confidence interval: RRCM
+                loo_rrcm_hits_, loo_rrcm_width_, loo_rrcm_bounds_ = \
+                    _helper(yy_test, A_loo[0], B_loo, proc=RRCM,
+                            levels=levels, parallel=parallel_)
 
-        ## Construct the CKRR confidence interval: CCR-sided
-        loo_crr_hits_, loo_crr_width_, loo_crr_bounds_ = \
-            _helper(y_test, A_loo[0], B_loo, proc=CRR,
-                    levels=levels, parallel=parallel_)
+                ## Construct the CKRR confidence interval: CCR-sided
+                loo_crr_hits_, loo_crr_width_, loo_crr_bounds_ = \
+                    _helper(yy_test, A_loo[0], B_loo, proc=CRR,
+                            levels=levels, parallel=parallel_)
 
-        ## Construct the GPR forecast interval
-        z_a = norm.ppf(1 - .5 * levels)
-        half_width_ = np.sqrt(MM * gp_.sigma2) * z_a[np.newaxis]
-        bf_bounds_ = np.stack([y_hat_ - half_width_, y_hat_ + half_width_], axis=-1)
-        bf_width_ = bf_bounds_[..., 1] - bf_bounds_[..., 0]
-        bf_hits_ = ((bf_bounds_[..., 0] <= y_test)
-                    & (y_test <= bf_bounds_[..., 1])).astype(float)
+                ## Construct the GPR forecast interval
+                z_a = norm.ppf(1 - .5 * levels)
+                half_width_ = np.sqrt(MM * gp_.sigma2) * z_a[np.newaxis]
+                bf_bounds_ = np.stack([y_hat_ - half_width_, y_hat_ + half_width_], axis=-1)
+                bf_width_ = bf_bounds_[..., 1] - bf_bounds_[..., 0]
+                bf_hits_ = ((bf_bounds_[..., 0] <= yy_test)
+                            & (yy_test <= bf_bounds_[..., 1])).astype(float)
 
-        ## Construct the GPR prediction interval
-        half_width_ = np.sqrt((MM - gp_.nugget) * gp_.sigma2) * z_a[np.newaxis]
-        bp_bounds_ = np.stack([y_hat_ - half_width_, y_hat_ + half_width_], axis=-1)
-        bp_width_ = bp_bounds_[..., 1] - bp_bounds_[..., 0]
-        bp_hits_ = ((bp_bounds_[..., 0] <= y_test)
-                    & (y_test <= bp_bounds_[..., 1])).astype(float)
+                ## Construct the GPR prediction interval
+                half_width_ = np.sqrt((MM - gp_.nugget) * gp_.sigma2) * z_a[np.newaxis]
+                bp_bounds_ = np.stack([y_hat_ - half_width_, y_hat_ + half_width_], axis=-1)
+                bp_width_ = bp_bounds_[..., 1] - bp_bounds_[..., 0]
+                bp_hits_ = ((bp_bounds_[..., 0] <= yy_test)
+                            & (yy_test <= bp_bounds_[..., 1])).astype(float)
 
-        n_replications -= 1
-        replications.append((y_test[:, 0], y_hat_[:, 0],
-                             bp_bounds_, bf_bounds_,
-                             rrcm_bounds_, crr_bounds_,
-                             loo_rrcm_bounds_, loo_crr_bounds_,))
+                replication = (yy_test[:, 0], y_hat_[:, 0],
+                               bp_bounds_, bf_bounds_,
+                               rrcm_bounds_, crr_bounds_,
+                               loo_rrcm_bounds_, loo_crr_bounds_,)
 
-    tock_ = time.time()
-    print "%0.3fsec"%(tock_-tick_,)
+                tock_ = time.time()
+                print "%0.3fsec"%(tock_-tick_,)
 
-    key_ = func_.__name__, noise_, theta0_, nugget_, size_
-    result_ = tuple(np.stack([rep_[j] for rep_ in replications], axis=-1) for j in xrange(8))
-    experiment.append((key_,) + result_)
+                result_ = tuple(rep_ for rep_ in replication)
+                experiment.append((key_,) + result_)
 
 basename_ = os.path.join(BASE_PATH, "prof_nongauss_%04d"%(batch_,))
 dumps_.append(_save(experiment, basename_, gz=9))

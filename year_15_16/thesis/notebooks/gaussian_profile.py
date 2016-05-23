@@ -57,8 +57,9 @@ def _helper(y, A, B, proc=RRCM, levels=levels, parallel=None, n_jobs=1, verbose=
 ## Define the grid
 true_theta = 100.0
 true_nugget = [1e-6, 1e-1,]
-grid_ = ParameterGrid(dict(size=[50, 200,],
-                           nugget=true_nugget,
+sizes = [50, 200,]
+
+grid_ = ParameterGrid(dict(nugget=true_nugget,
                            theta0=[1e+2, "auto"]))
 ## Initialize
 kernel = 'rbf' # 'laplacian'
@@ -66,31 +67,28 @@ gp = GaussianProcess(beta0=0, normalize=False, corr='squared_exponential')
 
 # Generate input
 XX_test = np.linspace(0, 1, num=501).reshape((-1, 1))
-XX_train = random_state.uniform(size=(10000, 1))
-XX = np.concatenate([XX_test, XX_train], axis=0)
 test_ = np.s_[:XX_test.shape[0]]
 
 experiment, batch_, dumps_ = list(), 1, list()
-for noise_ in true_nugget:
-    yy = gaussian(XX, scale=1.0, nugget=noise_, metric=kernel,
-                  gamma=true_theta, random_state=random_state)
-    if yy.ndim == 1:
-        yy = yy.reshape((-1, 1))
+for size_ in sizes:
+    XX_train = np.linspace(0.05, 0.95, num=size_ + 1).reshape((-1, 1))
+    XX = np.concatenate([XX_test, XX_train], axis=0)
 
-    ## Split the pooled sample
-    yy_train, yy_test = np.delete(yy, test_, axis=0), yy[test_].copy()
-    for i_, par_ in enumerate(grid_):
-        print i_, par_
-        size_, nugget_, theta0_ = par_['size'], par_['nugget'], par_['theta0']
+    for noise_ in true_nugget:
+        yy = gaussian(XX, scale=1.0, nugget=noise_, metric=kernel,
+                      gamma=true_theta, random_state=random_state)
+        if yy.ndim == 1:
+            yy = yy.reshape((-1, 1))
 
-        tick_ = time.time()
-        n_replications, replications = 1, list()
-        while n_replications > 0:
-            ## Draw random train sample
-            train_ = random_state.choice(range(XX_train.shape[0]),
-                                         size=size_, replace=False)
-            X, y = XX_train[train_], yy_train[train_]
+        ## Split the pooled sample
+        yy_train, yy_test = np.delete(yy, test_, axis=0), yy[test_].copy()
 
+        for i_, par_ in enumerate(grid_):
+            nugget_, theta0_ = par_['nugget'], par_['theta0']
+            key_ = "gaussian", noise_, theta0_, nugget_, size_
+            print i_, key_
+
+            tick_ = time.time()
             ## Fit a GPR
             gp_ = clone(gp)
             gp_.nugget = nugget_
@@ -98,11 +96,11 @@ for noise_ in true_nugget:
                 gp_.theta0 = theta0_
             elif theta0_ == "auto":
                 gp_.thetaL, gp_.thetaU, gp_.theta0 = 1.0, 1e4, float(size_)
-            gp_.fit(X, y)
+            gp_.fit(XX_train, yy_train)
 
             ## Compute the A, B matrices
             A, B, y_hat_, MM, loo_, A_loo, B_loo = \
-                KRR_AB(X, y, XX_test, forecast=True,
+                KRR_AB(XX_train, yy_train, XX_test, forecast=True,
                        nugget=gp_.nugget, metric=kernel, gamma=gp_.theta_[0])
             del loo_
 
@@ -141,17 +139,16 @@ for noise_ in true_nugget:
             bp_hits_ = ((bp_bounds_[..., 0] <= yy_test)
                         & (yy_test <= bp_bounds_[..., 1])).astype(float)
 
-            n_replications -= 1
-            replications.append((yy_test[:, 0], y_hat_[:, 0],
-                                 bp_bounds_, bf_bounds_,
-                                 rrcm_bounds_, crr_bounds_,
-                                 loo_rrcm_bounds_, loo_crr_bounds_,))
-        tock_ = time.time()
-        print "%0.3fsec"%(tock_-tick_,)
+            replication = (yy_test[:, 0], y_hat_[:, 0],
+                           bp_bounds_, bf_bounds_,
+                           rrcm_bounds_, crr_bounds_,
+                           loo_rrcm_bounds_, loo_crr_bounds_,)
 
-        key_ = "gaussian", noise_, theta0_, nugget_, size_
-        result_ = tuple(np.stack([rep_[j] for rep_ in replications], axis=-1) for j in xrange(8))
-        experiment.append((key_,) + result_)
+            tock_ = time.time()
+            print "%0.3fsec"%(tock_-tick_,)
+
+            result_ = tuple(rep_ for rep_ in replication)
+            experiment.append((key_,) + result_)
 
 basename_ = os.path.join(BASE_PATH, "prof_gauss%04d"%(batch_,))
 dumps_.append(_save(experiment, basename_, gz=9))
