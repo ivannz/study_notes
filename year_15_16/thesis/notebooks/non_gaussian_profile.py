@@ -63,8 +63,10 @@ sizes = [50, 200,]
 grid_ = ParameterGrid(dict(nugget=true_nugget,
                            theta0=[1e+2, "auto"]))
 ## Initialize
-kernel = 'rbf' # 'laplacian'
+kernel = 'rbf'
 gp = GaussianProcess(beta0=0, normalize=False, corr='squared_exponential')
+# kernel = 'laplacian'
+# gp = GaussianProcess(beta0=0, normalize=False, corr='absolute_exponential')
 
 # Generate input
 XX_test = np.linspace(0, 1, num=501).reshape((-1, 1))
