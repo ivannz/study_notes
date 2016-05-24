@@ -1098,12 +1098,12 @@ $\|x_n\|^2\to \infty$ ($n$-fixed) the vector $B_{-n}$ in (eq.~\ref{eq:krr_in_res
 approaches the $n$-th unit vector $e_n$, since for the RBF kernel the vector
 $\|K_{-n}(x_n)\|^2\to 0$. Since the RBF kernel is bounded, the value $m_n$ (eq.~\ref{eq:krr_leverage})
 is a bounded function of $x_n$, which, in turn, implies that eventually all RRCM
-regions $S_i$ assume the form of closed intervals $[-|q_i|, |q_i|]$, where
-$q_i = m_n e_i'Q_{-n}y_{-n} + o(\|x_n\|^2)$, $i \neq n$. The same is true for the
-CRR procedure. Therefore, the conformal procedure essentially reverts to a constant
--size confidence region, determined by the  $n^{-1}\lfloor n(1-\alpha)\rfloor$-th
-order statistic of $(|q_i|)_{i=1}^n$. Analogous effects can be observed for the
-Gaussian Process confidence interval (eq.~\ref{eq:gp_conf_int}). % In fact, this is
+regions $S_i$ assume the form of closed intervals $[-|q_i|, |q_i|]$, where $q_i =
+m_n (e_i'Q_{-n}y_{-n}) + o(\|x_n\|^2)$, $i \neq n$. The same is true for the CRR
+procedure. Therefore, the conformal procedure essentially reverts to a constant-size
+confidence region, determined by the  $n^{-1}\lfloor n(1-\alpha)\rfloor$-th order
+statistic of $(|q_i|)_{i=1}^n$. Analogous effects can be observed for the Gaussian
+Process confidence interval (eq.~\ref{eq:gp_conf_int}). % In fact, this is
 % true for any stationary kernel on $\Real^{d\times 1})$.
 \begin{figure}%[b, width=0.5\textwidth]
   \centering
