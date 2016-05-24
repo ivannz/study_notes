@@ -16,6 +16,7 @@
 \usepackage{algorithm2e}
 \usepackage{subcaption}
 \usepackage{caption}
+\usepackage{float}
 
 \newcommand{\ex}{\mathop{\mathbb{E}}\nolimits}
 \newcommand{\pr}{\mathop{\mathbb{P}}\nolimits}
@@ -35,7 +36,7 @@
 \newcommand{\diag}{\mathop{\text{diag}}\nolimits}
 
 \title{Conformalized Kernel Ridge Regression}
-\author{Burnaev, E. V., Nazarov, I. N.}
+\author{Nazarov, I. N., Burnaev, E. V.}
 
 \begin{document}
 \maketitle
@@ -268,10 +269,10 @@ convex minimization problem:
   \|y - K \beta \|^2 + \lambda \beta' K \beta
     \to \min_{\beta\in \Real^{n\times 1}} \,.
 \end{equation*}
-The First order conditions imply that
-\begin{equation*}
-  \hat{\beta} = (aI_n + K)^{-1} y \,\text{ and }\, \hat{y}_x = k_x' \beta \,,
-\end{equation*}
+The first order conditions imply that
+\begin{equation} \label{eq:krr_approx}
+  \hat{\beta} = (\lambda I_n + K)^{-1} y \,\text{ and }\, \hat{y}_x = k_x' \beta \,,
+\end{equation}
 -- the estimated weight vector and an optimal prediction at $x\in \Xcal$, respectively.
 
 Consider a problem of estimating the prediction accuracy of a test sample $(X^*, y^*)$
@@ -1037,50 +1038,91 @@ and ``GPR-f'' -- for the observed value. Recall that the non-parametric vanilla
 conformal procedures yield predictions for the observed values $y_x$ only. That
 is why in the following we are going to focus on the ``GPR-f'' confidence intervals,
 and the ``GPR-p'' band is presented for illustrative purposes only.
-\begin{figure}[t, width=0.5\textwidth]
+\begin{figure}%[t, width=0.5\textwidth]
   \centering
-  \begin{subfigure}[b]{\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_gaussian_0,1_0,1_100_5p-GPR_50.png}
-    \caption{Sample path with $\gamma=10^{-1}$.} \label{fig:gauss_1d_prof_gpr_high}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_gaussian_1e-06_0,1_100_5p-GPR_50.png}
-    \caption{Sample path with $\gamma=10^{-6}$.} \label{fig:gauss_1d_prof_gpr_low}
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/profile/gaussian/0.1_0.1/50/profile_gaussian_0,1_0,1_100_5p-GPR_50.pdf}
+    %{images/profile/profile_gaussian_0,1_0,1_100_5p-GPR_50.png}
+    % \caption{Sample path with $\gamma=10^{-1}$.} \label{fig:gauss_1d_prof_gpr_high}
+  \end{subfigure}~
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/profile/gaussian/1e-06_0.1/50/profile_gaussian_1e-06_0,1_100_5p-GPR_50.pdf}
+    %{images/profile/profile_gaussian_1e-06_0,1_100_5p-GPR_50.png}
+    % \caption{Sample path with $\gamma=10^{-6}$.} \label{fig:gauss_1d_prof_gpr_low}
   \end{subfigure}
   \caption{A sample path of a $1$-d Gaussian Process on $\Xcal$ ($y_x$,  $\hat{y}_x$),
-  and the forecast and prediction confidence bands (GPR-f and GPR-p, respectively).}
+  and the forecast and prediction confidence bands (GPR-f and GPR-p, respectively).
+  \textit{Left:} a sample path with $\gamma=10^{-1}$; \textit{right:} $\gamma=10^{-6}$.}
   \label{fig:gauss_1d_prof_gpr}
 \end{figure}
-Obliviously, on the provided illustration (fig.~\ref{fig:gauss_1d_prof_gpr_low}) the
-confidence bands on are too wide, whereas the bands in fig.~\ref{fig:gauss_1d_prof_gpr_high}
-seem to have better coverage rate. Figure~\ref{fig:gauss_1d_prof_conf} shows sample
-conformal confidence bands in the same setting. Near the endpoints of the $[0,1]$, the
-confidence regions dramatically increase their size, reflecting increasing uncertainty.
-\begin{figure}[b, width=0.5\textwidth]
+
+On the provided illustration (fig.~\ref{fig:gauss_1d_prof_gpr}) the confidence bands
+on are too wide in the negligible noise case, whereas the bands in seem to have better
+coverage rate due to higher noise. Figure~\ref{fig:gauss_1d_prof_conf} shows sample
+conformal confidence bands in the same setting. Near the endpoints of the $[0,1]$,
+the confidence regions dramatically increase their size, reflecting increasing uncertainty.
+\begin{figure}%[b, width=0.5\textwidth]
   \centering
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_gaussian_0,1_0,1_100_5p-CRR_50.png}
-    \caption{CRR, $\gamma=10^{-1}$.}
-    \label{fig:gauss_1d_prof_conf_high_crr}
-  \end{subfigure}\
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/profile/gaussian/0.1_0.1/50/profile_gaussian_0,1_0,1_100_5p-RRCM_50.pdf}
+    %{images/profile/profile_gaussian_0,1_0,1_100_5p-CRR_50.png}
+    % \caption{$\gamma = 10^{-1}$, $\lambda = 10^{-1}$}
+    % \label{fig:gauss_1d_prof_conf_high_crr}
+  \end{subfigure}~
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_gaussian_0,1_0,1_100_5p-RRCM_50.png}
-    \caption{RRCM, $\gamma=10^{-1}$.}
-    \label{fig:gauss_1d_prof_conf_high_crr}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/profile/gaussian/1e-06_0.1/50/profile_gaussian_1e-06_0,1_100_5p-RRCM_50.pdf}
+    %{images/profile/profile_gaussian_0,1_0,1_100_5p-RRCM_50.png}
+    % \caption{$\gamma = 10^{-6}$, $\lambda = 10^{-1}$}
+    % \label{fig:gauss_1d_prof_conf_high_crr}
+  \end{subfigure}\\
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/profile/gaussian/0.1_1e-06/200/profile_gaussian_0,1_1e-06_100_5p-RRCM_200.pdf}
+    %{images/profile/profile_gaussian_1e-06_0,1_100_5p-CRR_50.png}
+    % \caption{$\gamma = 10^{-1}$, $\lambda = 10^{-6}$}
+    % \label{fig:gauss_1d_prof_conf_low_crr}
+  \end{subfigure}~
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/profile/gaussian/1e-06_1e-06/200/profile_gaussian_1e-06_1e-06_100_5p-RRCM_200.pdf}
+    %{images/profile/profile_gaussian_1e-06_0,1_100_5p-RRCM_50.png}
+    % \caption{$\gamma = 10^{-6}$, $\lambda = 10^{-6}$}
+    % \label{fig:gauss_1d_prof_conf_low_rrcm}
   \end{subfigure}
-  \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_gaussian_1e-06_0,1_100_5p-CRR_50.png}
-    \caption{CRR, $\gamma=10^{-6}$.}
-    \label{fig:gauss_1d_prof_conf_low_crr}
-  \end{subfigure}\
-  \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_gaussian_1e-06_0,1_100_5p-RRCM_50.png}
-    \caption{RRCM, $\gamma=10^{-6}$.}
-    \label{fig:gauss_1d_prof_conf_low_rrcm}
-  \end{subfigure}
-  \caption{Sample CCR (eq.~\ref{eq:crr_conf_ci}) and RRCM (eq.~\ref{eq:rrcm_conf_ci})
-  confidence bands.}
+  \caption{Sample RRCM confidence bands (eq.~\ref{eq:rrcm_conf_ci}).}
   \label{fig:gauss_1d_prof_conf}
+\end{figure}
+
+In can be argued theoretically, that confidence regions for any observation $x_n$
+sufficiently far away from the bulk of the training dataset have constant size,
+determined only by the train sample (fig.~\ref{fig:limit_1d_ci_size}). Indeed, as
+$\|x_n\|^2\to \infty$ ($n$-fixed) the vector $B_{-n}$ in (eq.~\ref{eq:krr_in_resid_B})
+approaches the $n$-th unit vector $e_n$, since for the RBF kernel the vector
+$\|K_{-n}(x_n)\|^2\to 0$. Since the RBF kernel is bounded, the value $m_n$ (eq.~\ref{eq:krr_leverage})
+is a bounded function of $x_n$, which, in turn, implies that eventually all RRCM
+regions $S_i$ assume the form of closed intervals $[-|q_i|, |q_i|]$, where
+$q_i = m_n e_i'Q_{-n}y_{-n} + o(\|x_n\|^2)$, $i \neq n$. The same is true for the
+CRR procedure. Therefore, the conformal procedure essentially reverts to a constant
+-size confidence region, determined by the  $n^{-1}\lfloor n(1-\alpha)\rfloor$-th
+order statistic of $(|q_i|)_{i=1}^n$. Analogous effects can be observed for the
+Gaussian Process confidence interval (eq.~\ref{eq:gp_conf_int}). % In fact, this is
+% true for any stationary kernel on $\Real^{d\times 1})$.
+\begin{figure}%[b, width=0.5\textwidth]
+  \centering
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/profile/profile_gaussian_1e-06_0,1_100_1p-RRCM_200.pdf}
+  \end{subfigure}\
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/profile/profile_heaviside_1e-06_0,1_100_1p-RRCM_200.pdf}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/profile/profile_gaussian_1e-06_0,1_100_1p-GPR_200.pdf}
+  \end{subfigure}\
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/profile/profile_heaviside_1e-06_0,1_100_1p-GPR_200.pdf}
+  \end{subfigure}
+  \caption{Limiting behaviour of RRCM (\textit{top row}) and GPR (\textit{bottom row})
+  confidence regions for a sample path of a Gaussian process (\textit{left column}) and
+  the Heaviside function (\textit{right column}).}
+  \label{fig:limit_1d_ci_size}
 \end{figure}
 
 Now let's assess the performance of the confidence regions in fully-Gaussian setting.
@@ -1088,56 +1130,73 @@ For each tuple of experimental hyper-parameters carry put the experiment, as des
 in sec.~\ref{sub:setup}: we generate a large sample path of the Gaussian process
 with RBF kernel with fixed precision $\theta_0=10^2$, and then average across $L=25$
 resamplings of the train dataset to eliminate possible input sample side-effects.
+In each experiment we measure the average ratio of the mean squared error of the
+test prediction $\hat{y}_x$ to the test varaince of the observed $y_x$, in order
+to monitor the quality of the fit.
 
 Firstly, we consider the case when the $\theta$ hyper-parameter is exactly equal
 to $\theta_0$. The performance of Bayesian confidence intervals for increasing training
-sample sizes in the case of known high noise- to-signal ratio ($\lambda=\gamma=10^{-1}$)
-is presented in fig.~\ref{fig:gauss_1d_asy_gpr_high_width}, whereas the coverage and
-the sizes of conformal confidence intervals are depicted at fig.~\ref{fig:gauss_1d_asy_conf_high}
+sample sizes in the case of known high noise-to-signal ratio ($\lambda=\gamma=10^{-1}$)
+is presented in fig.~\ref{fig:gauss_1d_asy_gpr_high_width}, whereas the coverage
+rates and sizes of conformal confidence intervals are depicted at fig.~\ref{fig:gauss_1d_asy_conf_high}
 and fig.~\ref{fig:gauss_1d_asy_conf_high_width}, respectively.
-\begin{figure}[b, width=0.5\textwidth]
+\begin{figure}%[b, width=0.5\textwidth]
   \centering
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/GPR-f/coverage_gaussian_0,1_0,1_100_GPR-f.png}
-  \end{subfigure}\
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/gaussian_0,1_0,1_100_ratio.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/gaussian_0,1_0,1_100_ratio.png}
+  \end{subfigure}\\
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/GPR-f/coverage_gaussian_0,1_0,1_100_GPR-f.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/GPR-f/coverage_gaussian_0,1_0,1_100_GPR-f.png}
+  \end{subfigure}~
   \begin{subfigure}[b]{0.475\linewidth}
     \includegraphics[width=0.9\linewidth]{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/GPR-f/width_gaussian_0,1_0,1_100_GPR-f.png}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/GPR-f/width_gaussian_0,1_0,1_100_GPR-f.png}
   \end{subfigure}
   \caption{Asymptotic coverage rate and width of the GPR confidence interval in the fully
   Gaussian case.}
   \label{fig:gauss_1d_asy_gpr_high_width}
 \end{figure}
-\begin{figure}[b, width=0.5\textwidth]
+\begin{figure}%[b, width=0.5\textwidth]
   \centering
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/coverage_gaussian_0,1_0,1_100_RRCM.png}
-  \end{subfigure}\
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM/coverage_gaussian_0,1_0,1_100_RRCM.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/coverage_gaussian_0,1_0,1_100_RRCM.png}
+  \end{subfigure}~
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/coverage_gaussian_0,1_0,1_100_RRCM-loo.png}
-  \end{subfigure}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM-loo/coverage_gaussian_0,1_0,1_100_RRCM-loo.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/coverage_gaussian_0,1_0,1_100_RRCM-loo.png}
+  \end{subfigure}\\
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/coverage_gaussian_0,1_0,1_100_CRR.png}
-  \end{subfigure}\
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR/coverage_gaussian_0,1_0,1_100_CRR.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/coverage_gaussian_0,1_0,1_100_CRR.png}
+  \end{subfigure}~
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/coverage_gaussian_0,1_0,1_100_CRR-loo.png}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR-loo/coverage_gaussian_0,1_0,1_100_CRR-loo.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/coverage_gaussian_0,1_0,1_100_CRR-loo.png}
   \end{subfigure}
   \caption{Asymptotic coverage rate of the conformal procedure in the fully Gaussian
   case.}
   \label{fig:gauss_1d_asy_conf_high}
 \end{figure}
-\begin{figure}[b, width=0.5\textwidth]
+\begin{figure}%[b, width=0.5\textwidth]
   \centering
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/width_gaussian_0,1_0,1_100_RRCM.png}
-  \end{subfigure}\
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/width/RRCM/width_gaussian_0,1_0,1_100_RRCM.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/width_gaussian_0,1_0,1_100_RRCM.png}
+  \end{subfigure}~
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/width_gaussian_0,1_0,1_100_RRCM-loo.png}
-  \end{subfigure}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/width/RRCM-loo/width_gaussian_0,1_0,1_100_RRCM-loo.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/width_gaussian_0,1_0,1_100_RRCM-loo.png}
+  \end{subfigure}\\
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/width_gaussian_0,1_0,1_100_CRR.png}
-  \end{subfigure}\
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/width/CRR/width_gaussian_0,1_0,1_100_CRR.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/width_gaussian_0,1_0,1_100_CRR.png}
+  \end{subfigure}~
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/width_gaussian_0,1_0,1_100_CRR-loo.png}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/width/CRR-loo/width_gaussian_0,1_0,1_100_CRR-loo.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/0.1_0.1/width_gaussian_0,1_0,1_100_CRR-loo.png}
   \end{subfigure}
   \caption{Asymptotic width rate of the conformal confidence intervals in the fully
   Gaussian case. Legend: upward triangles indicate the $5\%$ sample quantile across
@@ -1147,50 +1206,185 @@ and fig.~\ref{fig:gauss_1d_asy_conf_high_width}, respectively.
   in fig.~\ref{fig:gauss_1d_asy_gpr_high_width}}
   \label{fig:gauss_1d_asy_conf_high_width}
 \end{figure}
-Expectedly the GPR confidence intervals indeed uphold their theoretical guarantees.
-The illustrations clearly support that the conjectured asymptotic conservative validity
-of the conformal confidence regions for all NCMs and residual types as well as their
-asymptotic efficiency.
+From this particualr expeerimentin this setting, can be conlcued that there is evidence
+in favour of the conjectured asymptotic conservative validity of the conformal
+confidence regions for all considered NCMs and residual types as well as their
+asymptotic efficiency. As expected, the GPR confidence predictions uphold their
+theoretical guarantees in this case.
 
+In the second experiment in this batch, we conduct an experiment for negligible
+noise-to-signal ratio, fig.\ref{fig:gauss_1d_asy_conf_low}.
 Both the conformal and Bayesian confidence sets seem to be too large for exact
 coverage, but still offer conservative validity guarantees. The reason for this,
-% is that there is not enough variability in the observations, to 
-
-Semi- and non- Gaussian $1$-d settings, fig.~\ref{fig:non_gauss_1d_prof_gpr}.
-\begin{figure}[t, width=0.5\textwidth]
+is, judging by the $mse/var$ ratio, the fact that an almost perfect fit was achieved
+for samples larger than $n\geq100$. By construction, both GPR and CKRR confidence
+intervals incorporate the regularization level $\lambda$, which, first of all,
+regularizes the resulting confidence regions, and, second, renders them more
+conservative in the case with negligible noise, (see the right column row at
+fig.~\ref{fig:gauss_1d_prof_conf}).
+\begin{figure}%[b, width=0.5\textwidth]
   \centering
-  \begin{subfigure}[b]{\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_heaviside_0,1_0,1_100_10p-GPR_50.png}
-    \caption{Sample path with $\gamma=10^{-1}$.} \label{fig:non_gauss_1d_prof_gpr_high}
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/1e-06_1e-06/gaussian_1e-06_1e-06_100_ratio.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/1e-06_1e-06/gaussian_1e-06_1e-06_100_ratio.png}
+  \end{subfigure}~
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/GPR-f/coverage_gaussian_1e-06_1e-06_100_GPR-f.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/GPR-f/coverage_gaussian_1e-06_1e-06_100_GPR-f.png}
   \end{subfigure}\\
-  \begin{subfigure}[b]{\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_heaviside_1e-06_1e-06_100_10p-GPR_50.png}
-    \caption{Sample path with $\gamma=10^{-6}$.} \label{fig:non_gauss_1d_prof_gpr_low}
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/RRCM/coverage_gaussian_1e-06_1e-06_100_RRCM.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/1e-06_1e-06/coverage_gaussian_1e-06_1e-06_100_RRCM.png}
+  \end{subfigure}~
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/RRCM-loo/coverage_gaussian_1e-06_1e-06_100_RRCM-loo.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/1e-06_1e-06/coverage_gaussian_1e-06_1e-06_100_RRCM-loo.png}
+  \end{subfigure}\\
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/CRR/coverage_gaussian_1e-06_1e-06_100_CRR.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/1e-06_1e-06/coverage_gaussian_1e-06_1e-06_100_CRR.png}
+  \end{subfigure}~
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/CRR-loo/coverage_gaussian_1e-06_1e-06_100_CRR-loo.pdf}
+    %{images/output/exp_1d/gaussian/correct_theta/noise_eq_lambda/1e-06_1e-06/coverage_gaussian_1e-06_1e-06_100_CRR-loo.png}
+  \end{subfigure}
+  \caption{Asymptotic coverage rate of the conformal procedure in the fully Gaussian
+  case $\lambda=\gamma=10^{-6}$).}
+  \label{fig:gauss_1d_asy_conf_low}
+\end{figure}
+
+In the third experiment (fig.~\ref{fig:gauss_1d_asy_gpr_neq}), we check the performance
+of the confidence regions in the case when the $\lambda \neq\gamma$, to see how mild
+misspecification affects both the Bayesian and the conformal predictions. The asymptotic
+coverage rate plots for the CKRR intervals exhibit identical pattern as at fig.~\ref{fig:gauss_1d_asy_conf_high},
+are not reproduced.
+\begin{figure}%[b, width=0.5\textwidth]
+  \centering
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/GPR-f/coverage_gaussian_0,1_1e-06_100_GPR-f.pdf}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/GPR-f/coverage_gaussian_1e-06_0,1_100_GPR-f.pdf}
+  \end{subfigure}\\
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/RRCM/coverage_gaussian_0,1_1e-06_100_RRCM.pdf}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/RRCM/coverage_gaussian_1e-06_0,1_100_RRCM.pdf}
+  \end{subfigure}
+  \caption{GPR (\title{top}) and RRCM (\title{bottom}) confidence inteval coverage
+  rate dynamics for the case of mismatched parameters in the fully Gaussian setting.}
+  \label{fig:gauss_1d_asy_gpr_neq}
+\end{figure}
+
+Figure~\ref{fig:gauss_1d_asy_cov_mis_eq_auto} shows the results of the fourth experiment,
+in which either $\theta\neq \theta_0$ is fixed, or automatically selected using the GPR
+ML estimate (maximizing eq.~\ref{eq:bkrr_likelihood}). The results for $\lambda=\gamma=10^{-1}$
+are mostly similar to the first experiment: both GPR and CKRR confidence intervals seem
+have comparable validity and performance. It is worth noting, however, that in the case
+when the kernel in KRR is imprecise ($\theta << \theta_0$), thre resulting KRR estimate
+(eq.~\ref{eq:krr_approx}) the more smoothed, and thus biased, which is why the coverage
+of rate of all confidence intervals might be slightly off (fig.~\ref{fig:gauss_1d_asy_cov_mis_eq}).
+\begin{figure}%[b, width=0.5\textwidth]
+  \centering
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM/coverage_gaussian_0,1_0,1_auto_RRCM.pdf}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM-loo/coverage_gaussian_0,1_0,1_auto_RRCM-loo.pdf}
+  \end{subfigure}\\
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR/coverage_gaussian_0,1_0,1_auto_CRR.pdf}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR-loo/coverage_gaussian_0,1_0,1_auto_CRR-loo.pdf}
+  \end{subfigure}
+  \caption{GPR (\title{left column}) and RRCM (\title{right columns}) confidence
+  inteval coverage rate dynamics for the case of ML estimate of $\theta$ in the
+  fully Gaussian setting.}
+  \label{fig:gauss_1d_asy_cov_mis_eq_auto}
+\end{figure}
+\begin{figure}%[b, width=0.5\textwidth]
+  \centering
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM/coverage_gaussian_0,1_0,1_10_RRCM.pdf}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM-loo/coverage_gaussian_0,1_0,1_10_RRCM-loo.pdf}
+  \end{subfigure}\\
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR/coverage_gaussian_0,1_0,1_10_CRR.pdf}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR-loo/coverage_gaussian_0,1_0,1_10_CRR-loo.pdf}
+  \end{subfigure}
+  \caption{GPR (\title{left column}) and RRCM (\title{right columns}) confidence
+  inteval coverage rate dynamics for the case of $\theta << \theta_0$ in the fully
+  Gaussian setting.}
+  \label{fig:gauss_1d_asy_cov_mis_eq}
+\end{figure}
+\begin{figure}%[b, width=0.5\textwidth]
+  \centering
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/width/GPR-f/width_gaussian_0,1_0,1_10_GPR-f.pdf}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/width/RRCM/width_gaussian_0,1_0,1_10_RRCM.pdf}
+  \end{subfigure}\\
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/width/GPR-f/width_gaussian_0,1_0,1_auto_GPR-f.pdf}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/width/RRCM/width_gaussian_0,1_0,1_auto_RRCM.pdf}
+  \end{subfigure}
+  \caption{GPR (\title{left column}) and RRCM (\title{right columns}) confidence
+  inteval coverage rate dynamics for the case of $\theta\neq \theta_0$ in the fully
+  Gaussian setting.}
+  \label{fig:gauss_1d_asy_mis_eq}
+\end{figure}
+
+Semi- and non- Gaussian $1$-d settings, fig.~\ref{fig:non_gauss_1d_prof_gpr}. 
+\begin{figure}%[t, width=0.5\textwidth]
+  \centering
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/profile/heaviside/0.1_0.1/50/profile_heaviside_0,1_0,1_100_10p-GPR_50.pdf}
+    %{images/profile/profile_heaviside_0,1_0,1_100_10p-GPR_50.png}
+    \caption{$\gamma=10^{-1}$} \label{fig:non_gauss_1d_prof_gpr_high}
+  \end{subfigure}~
+  \begin{subfigure}[b]{0.475\linewidth}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/profile/heaviside/1e-06_1e-06/50/profile_heaviside_1e-06_1e-06_100_10p-GPR_50.pdf}
+    %{images/profile/profile_heaviside_1e-06_1e-06_100_10p-GPR_50.png}
+    \caption{$\gamma=10^{-6}$} \label{fig:non_gauss_1d_prof_gpr_low}
   \end{subfigure}
   \caption{A sample path of $f(x)+\gamma \epsilon_x$, for $\epsilon_x\sim \Ncal(0,1)$.}
   \label{fig:non_gauss_1d_prof_gpr}
 \end{figure}
 
-Sample confidence intervals in the current setting are provided in fig.~\ref{fig:non_gauss_1d_prof_conf}.
-\begin{figure}[b, width=0.5\textwidth]
+Sample confidence intervals in the current non-Gaussian setting are provided in
+fig.~\ref{fig:non_gauss_1d_prof_conf}.
+\begin{figure}%[b, width=0.5\textwidth]
   \centering
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_heaviside_0,1_0,1_100_10p-CRR_50.png}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/profile/heaviside/0.1_0.1/50/profile_heaviside_0,1_0,1_100_10p-CRR_50.pdf}
+    %{images/profile/profile_heaviside_0,1_0,1_100_10p-CRR_50.png}
     \caption{CRR, $\gamma=10^{-1}$.}
     \label{fig:non_gauss_1d_prof_conf_high_crr}
   \end{subfigure}\
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_heaviside_0,1_0,1_100_10p-RRCM_50.png}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/profile/heaviside/0.1_0.1/50/profile_heaviside_0,1_0,1_100_10p-RRCM_50.pdf}
+    %{images/profile/profile_heaviside_0,1_0,1_100_10p-RRCM_50.png}
     \caption{RRCM, $\gamma=10^{-1}$.}
     \label{fig:non_gauss_1d_prof_conf_high_crr}
   \end{subfigure}
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_heaviside_1e-06_1e-06_100_10p-CRR_50.png}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/profile/heaviside/1e-06_1e-06/50/profile_heaviside_1e-06_1e-06_100_10p-CRR_50.pdf}
+    %{images/profile/profile_heaviside_1e-06_1e-06_100_10p-CRR_50.png}
     \caption{CRR, $\gamma=10^{-6}$.}
     \label{fig:non_gauss_1d_prof_conf_low_crr}
   \end{subfigure}\
   \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_heaviside_1e-06_1e-06_100_10p-RRCM_50.png}
+    \includegraphics[width=0.9\linewidth]{images/output_pdf/profile/heaviside/1e-06_1e-06/50/profile_heaviside_1e-06_1e-06_100_10p-RRCM_50.pdf}
+    %{images/profile/profile_heaviside_1e-06_1e-06_100_10p-RRCM_50.png}
     \caption{RRCM, $\gamma=10^{-6}$.}
     \label{fig:non_gauss_1d_prof_conf_low_rrcm}
   \end{subfigure}
@@ -1218,74 +1412,11 @@ Sample confidence intervals in the current setting are provided in fig.~\ref{fig
 %%%% gaussian case with exact paramters
 %%%% non-gaussian case
 
-In can be argued theoretically, that confidence regions for any observation $x_n$
-sufficiently far away from the bulk of the training dataset have constant size,
-determined only by the train sample (fig.~\ref{fig:limit_1d_ci_size}). Indeed, as
-$\|x_n\|^2\to \infty$ ($n$-fixed) the vector $B_{-n}$ in (eq.~\ref{eq:krr_in_resid_B})
-approaches the $n$-th unit vector $e_n$, since for the RBF kernel the vector
-$\|K_{-n}(x_n)\|^2\to 0$. Since the RBF kernel is bounded, the value $m_n$ (eq.~\ref{eq:krr_leverage})
-is a bounded function of $x_n$, which, in turn, implies that eventually all RRCM
-regions $S_i$ assume the form of closed intervals $[-|q_i|, |q_i|]$, where
-$q_i = m_n e_i'Q_{-n}y_{-n} + o(\|x_n\|^2)$, $i \neq n$. The same is true for the
-CRR procedure. Therefore, the conformal procedure essentially reverts to a constant
--size confidence region, determined by the  $n^{-1}\lfloor n(1-\alpha)\rfloor$-th
-order statistic of $(|q_i|)_{i=1}^n$. Analogous effects can be observed for the
-Gaussian Process confidence interval (eq.~\ref{eq:gp_conf_int}). % In fact, this is
-% true for any stationary kernel on $\Real^{d\times 1})$.
-\begin{figure}[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_gaussian_1e-06_0,1_100_1p-RRCM_200.pdf}
-  \end{subfigure}\
-  \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_heaviside_1e-06_0,1_100_1p-RRCM_200.pdf}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_gaussian_1e-06_0,1_100_1p-GPR_200.pdf}
-  \end{subfigure}\
-  \begin{subfigure}[b]{0.475\linewidth}
-    \includegraphics[width=0.9\linewidth]{images/profile/profile_heaviside_1e-06_0,1_100_1p-GPR_200.pdf}
-  \end{subfigure}
-  \caption{Limiting behaviour of RRCM (\textit{top row}) and GPR (\textit{bottom row})
-  confidence regions for a sample path of a Gaussian process (\textit{left column}) and
-  the Heaviside function (\textit{right column}).}
-  \label{fig:limit_1d_ci_size}
-\end{figure}
-
-
-Typical confidence bands are displayed at fig.~\ref{fig:typical_heaviside} for the
-heaviside function. In \cite{burnaevV14} it was proven in the case of ridge regression
-that the conformal confidence region is an interval centered around the predicted
-value $\hat{y}_{(X,y)}(x^*)$. The confidence regions of all conformal procedures
-are very close.
-
 Convergence in Fig.~\ref{fig:asy1d} is typical to all conducted experiments, and
 gives empirical support to the conjecture that conformal intervals are asymptotically
 conservative in batch learning setting. Convergence can also e observed in $2$-D
 setting as shown on fig.~\ref{fig:asy2d} for a <<function>> with kernel parameters
 <<$\Theta$>>.
-
-Fig.~\ref{fig:typical_1d_f6} shows a typical confidence region for 
-In the first experiment we compare the validity of the confidence regions on the
-test functions in fig.~\ref{fig:1dfunc}, but we present results for the function
-on fig.~\ref{fig:1dfunc_f6} only, because the conclusions are similar.
-
-The empirical study showed that the confidence region $\Bcal_{X, y}^\alpha$ is not
-valid in the non gaussian case of are not.
-
-in the noiseless case the choice of kernel parameters does not seem to 
-
-be wider than
-First it is wirth 
-
-
-The fig.~
-\ref{fig:1d_validity} depicts the dependence of the coverage rate upon the size of the
-train sample.
-
-In the second experiment we assess the efficiency of the Conformal Procedure by
-comparing the widths of the constructed regions $\Bcal$ and $\Gamma$. In picture
-\ref{fig:1d_efficiency}, 
 
 We make the following empirical conclusions based on the conditional numerical study
 in the $1$-d case: \begin{enumerate}
@@ -1296,11 +1427,11 @@ in the $1$-d case: \begin{enumerate}
 
 \end{enumerate}
 
-Gaussian Process interpretation of the KRR (\ref{sub:bayesian_krr_confidence_interval}) also
-permits adaptive selection of the precision parameter $\theta$ of the RBF kernel
-by maximizing the joint likelihood of the training data $(X, y)$. This options has
-also been investigates, but yielded conclusions which are qualitatively identical
-to the ones summarized above.
+% Gaussian Process interpretation of the KRR (\ref{sub:bayesian_krr_confidence_interval}) also
+% permits adaptive selection of the precision parameter $\theta$ of the RBF kernel
+% by maximizing the joint likelihood of the training data $(X, y)$. This options has
+% also been investigates, but yielded conclusions which are qualitatively identical
+% to the ones summarized above.
 
 % subsection results (end)
 
@@ -1308,6 +1439,23 @@ to the ones summarized above.
 
 \section{Conclusion and further work} % (fold)
 \label{sec:conclusion_and_further_work}
+
+In the non-gaussian experiments we found empirical evidence sugge that the GPR confidence
+region is not valid when the noise gaussianity assumptions fail to hold. Identical
+experiments on the conformal procedures demonstrated that indeed, theres is empirical
+evidence supporting the conjectured conservative validity in the batch setting.
+At the same time, confidence intervals of the conformalized kernel ridge regression
+seem to perform not worse than the confidence rgions of the Gaussian Process regression,
+when the Gaussianity assumptions hold.
+
+Further work on the validity of conformal prrocedures in batch setting, with application
+to anomaly detection, inculdes: \begin{itemize}
+  \item establishing theoretical foundations for the proposed conjectures for the KRR
+  with RBF kernel, or isolating special cases when it holds, and studying the cases
+  when it fails;
+  \item obtaining a generalization to the asymptotic efficiency result in \cite{burnaevV14},
+  in for a kernel ridge regression with genreal kernels.
+\end{itemize}
 
 % section conclusion_and_further_work (end)
 
