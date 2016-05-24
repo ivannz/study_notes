@@ -1,5 +1,5 @@
-% \documentclass[a4paper]{article}
-\documentclass[a4paper,14pt]{extarticle}
+\documentclass[a4paper]{article}
+% \documentclass[a4paper,14pt]{extarticle}
 \usepackage[utf8]{inputenc}
 
 
@@ -531,7 +531,7 @@ description and the algorithm. This is due to the duality of the concept lattice
     Return $\mathtt{concepts}$\;
 \end{algorithm}
 The recursion depth is no larger than $|G|$, and it is possible to make it into an
-iterative algorithm by explicitly stroing the recursion tree, fig.~\ref{fig:cbo_tree}.
+iterative algorithm by explicitly storing the recursion tree, fig.~\ref{fig:cbo_tree}.
 The complexity of this algorithm is output-dependent and given by:
 \begin{description}
     \item[time complexity:] $\mathcal{O}(|\mathcal{B}(K)|\cdot |G|^2 \cdot |M|)$;
@@ -818,7 +818,7 @@ Furthermore if $S \cap F =\emptyset$ then
 $$ c(S\cup F) = \frac{|S| c(S) + |F| c(F)}{|S|+|F|} \,. $$
 
 Suppose $S_1, S_2\in \pi$ and $S_1\neq S_2$. Let $\pi'$ be a coarser partition with
-clusters $S_1$ and $S_2$ merged into one $S' = S_1\cup S_2$. The change in the Ward
+clusters $S_1$ and $S_2$ merged into one $S = S_1\cup S_2$. The change in the Ward
 criterion $\delta(\pi',\pi) = W(\pi') - W(\pi)$ is given by
 \begin{align*}
     \delta(\pi',\pi)
