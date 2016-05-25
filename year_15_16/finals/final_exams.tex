@@ -95,13 +95,14 @@ and take the sum of all ranks of the $Y$ sample in the pooled to get the Wilcoxo
 statistic: $ W = \sum_{j=1}^{n_2} \rho^z_{n_1+j} $. Now, in the extreme case, if
 all $Y$ is to the right of $X$ in the ordered pooled sample, then $W_{\text{min}}
 = n_2 (n_2+1)\frac{1}{2}$. In another extreme case, when $Y$ is to the right of $X$,
-we have $W_{\text{max}} = n_2(n_2 + 2n_1 + 1) \frac{1}{2}$.
+we have $W_{\text{max}} = n_2(n_2 + 2n_1 + 1) \frac{1}{2}$. These extremes are simply
+the sums of $(i)_{i=1}^{n_2}$ and $(n_1+i)_{i=1}^{n_2}$ respectively.
 
 In any case under the null hypothesis it is true that $ \ex W = \frac{n_2 (n_2 + n_1 + 1)}{2}$,
 and the Wilcoxon statistic is symmetric around its mean: for all $c\in \mathbb{R}$
 $$ \pr(W - \ex W \leq c) = \pr(W - \ex W \geq -c) \,, $$
 and for sufficiently large $n_k$ we have the limiting Gaussianity:
-$$ \frac{W - \ex W}{\sqrt{\sigma^2_W}} \sin \Ncal(0, 1) \,, $$
+$$ \frac{W - \ex W}{\sqrt{\sigma^2_W}} \sim \Ncal(0, 1) \,, $$
 where 
 $$ \sigma^2_W = \frac{n_1 n_2 (n_1+n_2+1)}{12} \,. $$
 For samples with ties it is necessary to adjust the variance
@@ -279,8 +280,8 @@ such that $u_0=a$ and $u_n=b$. Since $R\subseteq M$, $(a,b)\in M$ by transitivit
 \begin{figure}
     \centering
     \includegraphics[width=0.35\textwidth]{hasse.png}
-    \label{fig:hasse}
     \caption{a hasse diagram.}
+    \label{fig:hasse}
 \end{figure}
 
 Algebraically a semi-lattice is pair $(L, \diamond)$ such that $\diamond: L\times L \to L$
@@ -307,8 +308,8 @@ A lattice is modular iff its Hasse diagram contains no pentagons (fig.~\ref{fig:
 \begin{figure}
     \centering
     \includegraphics[width=0.35\textwidth]{pents_and_diamonds.png}
-    \label{fig:lattice_pen_di}
     \caption{Pentagrams and diamonds.}
+    \label{fig:lattice_pen_di}
 \end{figure}
 
 \hfill\\\noindent\textbf{Q:}\rus{Соответствие Галуа, задаваемое бинарным отношением. Оператор
@@ -370,10 +371,13 @@ dependence $X\mapsto Y$. For example, fig.~\ref{fig:multivalued}:
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{multivalued.png}
-    \label{fig:multivalued}
     \caption{A context and a multivalued context.}
+    \label{fig:multivalued}
 \end{figure}
 For further details on the multivalued contexts see \textbf{p.~24-25} of the notes.
+
+THe final note is that we need implications in order to perform propositional calculus
+in the model of the context.
 
 \hfill\\\textbf{Q:}\rus{Ассоциативные правила как метод майнинга данных. Поддержка
 и достоверность ассоциативных правил. Базис ассоциативных правил и его связь с диаграммой
@@ -468,8 +472,8 @@ in alg.~\ref{alg:maximal_flach}. It generates the maximally frequent itemset fro
 \begin{figure}
     \centering
     \includegraphics[width=0.25\textwidth]{assoc_rules_sublattice.png}
-    \label{fig:assoc_rules_lattice}
     \caption{When grown with respect to $M$, the frequent itemset frontier
+    \label{fig:assoc_rules_lattice}
     exands from $(F', F)$.}
 \end{figure}
 
@@ -553,8 +557,8 @@ Intelligence 14.2-3 (2002): 189-216.)
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{cbo_tree.png}
-    \label{fig:cbo_tree}
     \caption{Extent-based CbO recursion tree.}
+    \label{fig:cbo_tree}
 \end{figure}
 
 % section ordered_sets (end)
@@ -753,6 +757,72 @@ C4.5). Методы оценки качества. Скользящий конт
 Силуэт кластеризации (silhouette).}
 
 \hfill\\\textbf{A:}
+Clustering is an unsupervised machinela learning technique concerned with finding
+dense groups (clusters) of similar objects, so that ``the similarity of objects
+within a cluster'' is maximized, while similarity between clusters is minimized.
+All clustring problems are formulated in termas of a set of objects and a concept
+of distance, or ``dissimilarity'', between objects.
+
+$k$-means clustering is set up in euclidean space $\Xcal = \Real^{d\times1}$, with
+dissimilarity defined as the $L^2$ distance. Clustering is carried out iteratively
+by alternating between two steps: cluster assignment and centroid update. It is a
+limiting case of a gaussian mixture EM algorithm. Indeed, if we suppose, that
+$p(x) = \sum_{k=1}^K \pi_k\phi(x;\mu_k, \Sigma_k)$, for $\Sigma_k = \epsilon I_d$,
+then the E-step in the case of $\epsilon\to 0+$ reduces to $q_{ij} = q(Z_i=j)
+= 1_{j=j_i^*}$, for $j_i^* = \argmin_{j=1}^K \|x_i - \mu_j\|^2$. The M-step
+computes
+$$ \mu_j
+    = (\sum_{i=1}^n q_{ij})^{-1} \sum_{i=1}^n q_{ij} x_i
+    = |C_j|^{-1} \sum_{i\in C_j} x_i
+    \,, $$
+and updates $\pi_j = n^{-1} |C_j|$, for $C_j = \{i=1,\ldots, n\,:\, q_{ij}=1\}$.
+In an unliikely case when a point is equidistant from all centroids, the vector
+$(q_{ij})_{j=1}^K$ coincides with the prior vector $(\pi_j)_{j=1}^K$.
+
+The objective functional, that measures the overall quality of clustering is defined
+as the sum of within cluster sums of squared distances:
+$$ L = \sum_{j=1}^K \sum_{i=1}^n 1_{C_j}(i) \|x_i - \mu_j \|^2 \,. $$
+
+Significant drawbacks of $k$-means is that it is guaranteed to converge to a partition
+that is only a local minimum of $L$, and the chosen partition is greatly affected
+by initialization of the $k$-means iterative procedure. Basically for a fixed $K$
+it is necessary to redo clustering a couple of times dof different starting centroids
+and choose the best partition in the end.
+
+$k$-medioids: here instead of using centroids, that are cluster averages, we define
+the centroid as a point, and restrict it to be an element of the training sample.
+(Is it a laplacian mixture model?).
+
+Another generalization of $k$-means clustering is fuzzy clustering, which computes
+cluster affinities as sum-normalized reciproclas of distances ($d^{-\frac{2}{p-1}}$
+to $k$-means centroids.
+
+\paragraph{Selecting the number of clusters $K$} % (fold)
+\label{par:selecting_the_number_of_clusters_k}
+
+One method is to keep track of the value of $L_K$ at the optimal $K$-partition averaged
+over different random initializations (also anomalous cluster initialiazations could
+be averaged over). The optimal number of clusters is selected as the largest $K$,
+such that beyond it the following decreases slowly:
+$$ D_K = \frac{L_K-L_{K+1}}{L_{K-1}-L_K} \,. $$
+
+Quality of clustering can also be measured using the so-called silhouette of cluster:
+a map $s: \{1,\ldots, n\} \mapsto \Real$ defined as 
+$$ s_j(i)
+    = \frac{\min_{k\neq j} b_k(i) - b_j(i)}{\max\{\min_{k\neq j} b_k(i), b_j(i)\}}
+    \,, $$
+where $b_k(i) = N_k^{-1} \sum_{j\in C_k, j\neq i} d(x_i, x_j)$, and $N_k = |C_k|$ for
+$k\neq j$, and $N_k = |C_k| - 1$ otherwise. The silhouette value is a measure of
+how similar an object is to its own cluster (cohesion) compared to other clusters
+(separation). Witihn one cluster $j$ the slhouette is maximal for points in the
+centre of the cluster. The silhouette ranges from $-1$ to $1$, where a high value
+indicates that the object is well matched to its own cluster and poorly matched
+to neighboring clusters. If most objects have a high value, then the clustering
+configuration is appropriate, and the clustering is tight. If many points have a
+low or negative value, then the clustering configuration may have too many or too
+few clusters.
+
+% paragraph selecting_the_number_of_clusters_k (end)
 
 \hfill\\\textbf{Q:}\rus{Задача кластеризации. Иерархическая кластеризация. Подходы
 AGNES (AGglomerative NESting) и DIANA (DIvisive ANAlysis).}
@@ -852,7 +922,7 @@ See a similar question in sec.\ref{sec:ordered_sets}.
 сходства по пользователям и на основе сходства по признакам. Меры сходства. Меры
 качества рекомендаций: средняя абсолютная ошибка (MAE), точность и полнота.}
 
-\hfill\\\textbf{A:}
+\hfill\\\textbf{A:} \textbf{MISSING}
 
 \hfill\\\textbf{Q:}\rus{Кластеризация на графах. Спектральная кластеризация. Спектральная
 кластеризация двудольного графа и бикластеризация (на примере объектно-признаковой
@@ -994,8 +1064,8 @@ technique (see fig.~\ref{fig:recursive_split}).
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{recursive_split.png}
-    \label{fig:recursive_split}
     \caption{The recursion tree for the successive splitting of some graph.}
+    \label{fig:recursive_split}
 \end{figure}
 
 Other optimality criteria can be applied in graph clustering: \begin{description}
@@ -1009,6 +1079,31 @@ Other optimality criteria can be applied in graph clustering: \begin{description
     with $s\in \{-1,1\}^V$, $s's = |V|$ and $m$ -- the number of edges.
 \end{description}
 Since the modularity metric is maximized, we seek the eigenvector with the largest eigenvalue.
+
+\paragraph{Clustering of bipartite graphs} % (fold)
+\label{par:clustering_of_bipartite_graphs}
+
+Bipartite grpahs are a special type of graph $B=(U, W, I)$, with $I \subseteq U\times
+W$ and $U\cap W = \emptyset$. In order to apply cpectral clustring, one first creates
+another graph $G=(V, E)$, with $V=U\uplus W$ (it is convenient to fix the order of
+vetrices), and edges $E$, defined by
+$$ E = \{ \{a, b\}\,:\, (a,b) \in I \} \,. $$
+Thus its adjacency matrix becomes:
+$$ A_G = \begin{pmatrix} 0 & A_B \\ A_B' & 0 \end{pmatrix}\,. $$
+Then to this graph one applies the needed spectral clustering technique.
+
+A useful observation is that
+$$ A_G'A_G = \begin{pmatrix} A_B A_B' & 0 \\ 0 & A_B' A_B \end{pmatrix}\,, $$
+which means that its left singular vectors $V$ ($A_G = U\Sigma V'$), which coincide
+with the right ones, since $A_G$ is symmetric, are composed of two components:
+the first ``half'' corresponds to left singular vectors of $A_B$, and the second
+-- to its right singular vectors (eigenvectors of $A_B' A_B$). Thus in order to
+perform spectral clustering one needs to compute the SVD of the original matrix
+$A_B$ and then stack the left- and right- singluar corresponding to the smame singular
+value atop one another to get the required Fiddler vector (in the cut minimization
+problems).
+
+% paragraph clustering_of_bipartite_graphs (end)
 
 \hfill\\\textbf{Q:}\rus{Предмет и задачи машинного обучения и разработки (майнинга)
 данных. Таксономия методов. Примеры задач.}
