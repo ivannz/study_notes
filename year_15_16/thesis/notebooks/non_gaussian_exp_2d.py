@@ -20,7 +20,7 @@ from utils.conformal import RRCM, CRR
 from utils.KRR import KRR_AB
 
 np.seterr(all="ignore")
-BASE_PATH = os.path.join(".", "exp_nongauss_2d")
+BASE_PATH = os.path.join(".", "exp_nongauss_2d_25")
 if not os.path.exists(BASE_PATH):
     os.mkdir(BASE_PATH)
 
@@ -70,7 +70,7 @@ gp = GaussianProcess(beta0=0, normalize=False, corr='squared_exponential')
 
 # Generate input
 nd = 2
-mesh_ = np.meshgrid(*nd*[np.linspace(0, 1, num=51)])
+mesh_ = np.meshgrid(*nd*[np.linspace(-1, 1, num=51)])
 XX_test = np.concatenate([ax_.reshape((-1, 1)) for ax_ in mesh_], axis=1)
 test_ = np.s_[:XX_test.shape[0]]
 
