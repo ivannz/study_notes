@@ -8,6 +8,7 @@
 \usepackage{fullpage}
 
 \usepackage[mathcal]{euscript}
+\usepackage{booktabs}
 
 \usepackage{graphicx, url}
 
@@ -55,12 +56,46 @@ and observations of $y$ at any given $x\in\Omega$ are corrupted by additive nois
 \begin{equation} \label{eq:signal_model}
   y_x = f(x) + \xi_x \,,
 \end{equation}
-with $\ex \xi_x = 0$ for all $x\in \Omega$. The estimated relation $\hat{f}$ of $f$
-is used to produce point predictions of $y$ at any $x$. However, without additional
-distributional assumptions regression methods do note readily yield any measure of
-uncertainty in the prediction.
+with $\ex \xi_x = 0$ for all $x\in \Omega$. Regression methods allow one to construct
+an estimate $\hat{f}$ of the true relation $f$, which can be used to produce point
+predictions at any $x$.
 
-\noindent \textbf{SOMETHING}
+In many applied situations, like anomaly detection in telemetry of some equipment,
+or online filtering of potentially interesting events, it is necessary not only
+to make optimal predictions with respect to some loss, but also to be able to quantify
+the degree of confidence in the generated prediction. Standard regression methods,
+however, do not readily provide the user with such performance metric, and additional
+probabilistic assumptions regarding the observation model (eq.~\ref{eq:signal_model})
+are required to get a posterior probability measure for unobserved data given the
+training data via the Bayesian probabilistic derivation methods.
+For example, in the ordinary least squares regression with fixed design the assumption
+that the noise observations is Gaussian readily yields the posterior distribution of
+the target variable at new test points: if $X\in \Real^{n\times d}$, and $y\in\Real{n\times1}$
+is the observed training sample, then at a new $x_0\Real^{d\times 1}$
+\begin{equation}
+  y_{x_0} - x_0'\hat{\beta} \sim \Ncal(0, \sigma^2(1 + x_0'(X'X)^{-1} x_0)) \,,
+\end{equation}
+for the OLS estimate $\hat{\beta} = (X'X)^{-1} X'y$ and assuming known variance $\sigma^2$.
+If the variance is is estimated form the training data and the final distribution,
+which can be used to measure confidence in unobserved target at $x_0$ is
+\begin{equation*}
+  \frac{y_{x_0} - x_0'\hat{\beta}}{\sqrt{\hat{s}^2 (1 + x_0'(X'X)^{-1} x_0)}}
+    \sim t_{n-d} \,,
+\end{equation*}
+where $t_{n-d}$ is the Student-t distribution with $n-d$ degrees of freedom, and
+$\hat{s}^2 = (n-d)^{-1}\|y-X\hat{\beta}\|^2$ is the estimate of the noise variance.
+
+The distributional assumptions used to derive this distribution are too restrictive:
+even though the additive effect of many uncontrollable factors is usually quite
+faithfully modeled by a Gaussian distribution (according to the CLT), still it is
+desirable to have distribution-free method that measures confidence of predictions
+of a machine learning algorithm, fares well in general, yet does not loose too much
+performance when Gaussianity assumptions are satisfied.
+
+One such method is ``conformal prediction'' -- a model-free approach developed in
+\cite{vovk2005} for online learning setting, that under the standard independence
+assumption constructs a set in the space of targets, that contains yet unobserved
+target $y_{x_0}$ with a pre-specified confidence level.
 
 In this study, we demonstrate the applicability of conformal prediction in the case
 of offline batch learning, and show that when model assumptions do hold, the conformal
@@ -119,15 +154,15 @@ Since this one is problem of convex optimization, there exists a unique solution
 given by 
 \begin{align*}
   \hat{\beta}
-    &= (X'X + a I_p)^{-1} X' y \\
-    &= X' (a I_n + XX')^{-1} y \,,
+    &= (X'X + \lambda I_p)^{-1} X' y \\
+    &= X' (\lambda I_n + XX')^{-1} y \,,
 \end{align*}
 in the direct and the equivalent dual forms, respectively. Predictions on the test
 set $X^* = (x_i)_{i=n+1}^{n+m}\in \Real^{m\times d}$, given the train-set, are
 \begin{align}
   \hat{y}^*_{\vert(X,y), X^*} = X^* \hat{\beta}
-    &= X^* (X'X + a I_p)^{-1} X' y \nonumber \\ 
-    &= X^* X' (a I_n + XX')^{-1} y \label{eq:rr_dual_sol}\,,
+    &= X^* (X'X + \lambda I_p)^{-1} X' y \nonumber \\ 
+    &= X^* X' (\lambda I_n + XX')^{-1} y \label{eq:rr_dual_sol}\,,
 \end{align}
 again in the direct and dual form, respectively.
 
@@ -915,10 +950,9 @@ into the procedure itself. The dimensionality of the input data, however, may im
 the efficiency (the width) of the resulting confidence region. And our experiments,
 to a certain extent, assess their effect.
 
-We consider the isotropic \textbf{R}adial \textbf{B}asis \textbf{F}unction kernel
-for both the Conformal Kernel ridge regression and the Gaussian Process Regression.
-The RNF kernel over $\Xcal$ is given by
-\begin{equation} \label{eq:rbf}
+We consider the isotropic Gaussian kernel for both the Conformal Kernel ridge regression
+and the Gaussian Process Regression:
+\begin{equation} \label{eq:gauss_kenrel}
   K(x,x')
   = \mathop{\text{exp}}\bigl\{-\theta \|x - x'\|^2\bigr\}
   \,,
@@ -934,10 +968,10 @@ maps with respect to the uniform norm $\|\cdot\|_\infty$, see.~\cite{steinwart20
 %   = \mathop{\text{exp}}\bigl\{-\theta \|x - x'\|_1\bigr\}
 %   \,,
 % \end{equation*}
-% where $\|\cdot\|_1$ is the $L_1$ norm on $\Xcal$. In contrast to the RBF, the Laplacian
+% where $\|\cdot\|_1$ is the $L_1$ norm on $\Xcal$. In contrast to the Gaussian, the Laplacian
 % kernel 
 % Its spectral density is the Cauchy
-% density, as opposed to the Gaussian density in the case of RBF. The
+% density, as opposed to the Gaussian density in the case of Gaussian kernel. The
 
 \subsection{Setup} % (fold)
 \label{sub:setup}
@@ -981,8 +1015,9 @@ hyper-parameters: \begin{enumerate}
   \item the noise-to-signal (regularization) ratio $\lambda$ in the kernel ridge
   regression is chosen from two regimes: high $\lambda = 10^{-1}$ (smoothing), and
   low $\lambda=10^{-6}$ (interpolation);
-  \item the precision of the RBF kernel $\theta$ is picked from $\{10, 10^2, 10^3\}$,
-  since the input domain is the unit cube, for which $\sup_{x,x'\in[0,1]^d}\|x-x'\|^2 = d$;
+  \item the precision of the isotropic Gaussain kernel $\theta$ is picked from
+  $\{10, 10^2, 10^3\}$, since the input domain is the unit cube, for which
+  $\sup_{x,x'\in[0,1]^d}\|x-x'\|^2 = d$;
   \item the fixed $\theta$ or its MLE estimate ($\theta$ that minimizes \ref{eq:bkrr_likelihood};
 \end{enumerate}
 For a given test function $f:\Xcal \mapsto \Real$ on some compact domain $\Xcal$
@@ -998,7 +1033,7 @@ steps:
   \begin{enumerate}
     \item draw an independent random sample of size $n$ without replacement from $\tilde{T}$;
     \item fit a Gaussian Process regression with $\beta = 0$ and $\Kcal$ given by
-    eq.~\ref{eq:krig_kernel} for the RBF kernel $K$ with the specified precision
+    eq.~\ref{eq:krig_kernel} for the Gaussian kernel $K$ with the specified precision
     $\theta$ with fixed $\lambda > 0$;
     \item for each $x^* \in X^*$ construct, the Bayesian KRR region, $\Bcal_l^\alpha(x^*)$,
     and the conformal confidence regions, $\Gamma_l^\alpha(x^*; A, \hat{r})$ using
@@ -1015,6 +1050,11 @@ $\{k N^{-1}\,:\,k=0,\ldots, N+1\}$ for $N=1000$. In $2$-D case we consider funct
 defined on $\Xcal=[-1,1]^2$, and use $X^* = \{k N^{-1}\,:\,k=0,\ldots, N+1\}^2$
 for $N=50$ as the test set.
 
+To measure the quality of fit of the kernel ridge regression for each KRR set of
+hyper-parameters, we compute the ratio of the root mean squared error to the standard
+derivation on the test set (``RMSE-std'' on the plot the results section). This
+reflects how well the KRR predictions fares against the constant prediction.
+
 %% What is the estimate of \sigma^2
 
 % subsection setup (end)
@@ -1025,7 +1065,7 @@ for $N=50$ as the test set.
 We begin with the examination of the fully-Gaussian setup with $\Xcal = [0, 1]$.
 To illustrate the constructed confidence regions, we generated a sample path of
 the $1$-d Gaussian process with $y_x\sim GP(0, \gamma \delta_{x,x'} + K_{x,x'})$
-for the RBF kernel (eq.~\ref{eq:rbf}) on a regular grid $G=\{500^{-1} k \,:\, k=0,
+for the Gaussian kernel (eq.~\ref{eq:gauss_kenrel}) on a regular grid $G=\{500^{-1} k \,:\, k=0,
 \ldots, 500\}$, and then use its sub-grid of size $51$ with stepping $0.9\cdot 20^{-1}$
 in $[0.05, 0.95]$ for training the Kernel Ridge regression and constructing the
 confidence regions. The training sample was deliberately chosen to highlight the
@@ -1048,13 +1088,13 @@ In can be argued theoretically, that confidence regions for any observation $x_n
 sufficiently far away from the bulk of the training dataset have constant size,
 determined only by the train sample (fig.~\ref{fig:limit_1d_ci_size}). Indeed, as
 $\|x_n\|^2\to \infty$ ($n$-fixed) the vector $B_{-n}$ in (eq.~\ref{eq:krr_in_resid_B})
-approaches the $n$-th unit vector $e_n$, since for the RBF kernel the vector
-$\|K_{-n}(x_n)\|^2\to 0$. Since the RBF kernel is bounded, the value $m_n$ (eq.~
-\ref{eq:krr_leverage}) is a bounded function of $x_n$, which, in turn, implies that
-eventually all RRCM regions $S_i$ assume the form of closed intervals $[-|q_i|, |q_i|]$,
-where $q_i = m_n (e_i'Q_{-n}y_{-n}) + o(\|x_n\|^2)$, $i \neq n$. The same is true
-for the CRR procedure. Therefore, the conformal procedure essentially reverts to
-a constant-size confidence region, determined by the  $n^{-1}\lfloor n(1-\alpha)\rfloor$-th
+approaches the $n$-th unit vector $e_n$, since for the Gaussian kernel the vector
+$\|K_{-n}(x_n)\|^2\to 0$. Since the kernel is bounded, the value $m_n$ (eq.~\ref{eq:krr_leverage})
+is a bounded function of $x_n$, which, in turn, implies that eventually all RRCM
+regions $S_i$ assume the form of closed intervals $[-|q_i|, |q_i|]$, where
+$q_i = m_n (e_i'Q_{-n}y_{-n}) + o(\|x_n\|^2)$, $i \neq n$. The same is true for
+the CRR procedure. Therefore, the conformal procedure essentially reverts to a
+constant-size confidence region, determined by the  $n^{-1}\lfloor n(1-\alpha)\rfloor$-th
 order statistic of $(|q_i|)_{i=1}^n$. Analogous effects can be observed for the
 Gaussian Process confidence interval (eq.~\ref{eq:gp_conf_int}).
 % Is this true for any stationary kernel on $\Real^{d\times 1})$? Bochner's theorem, maybe?
@@ -1243,7 +1283,7 @@ those of other columns in fig.~\ref{fig:gaussian_1d_low_noise_width_arb}.
   \subref{fig:gaussian_1d_low_noise_c3}~--~$(\hat{\theta}_\text{ML}, 10^{-6})$,
   \subref{fig:gaussian_1d_low_noise_c4}~--~$(\hat{\theta}_\text{ML}, 10^{-1})$.
   Rows from \textit{top} to \textit{bottom}: ``GPR-f'', ``RRCM'', ``RRCM-loo'',
-  ``CRR'', ``CRR-loo'', and the last depicting ``mse-var'' ratio.}
+  ``CRR'', ``CRR-loo'', and the last depicting ``RMSE-std'' ratio.}
   \label{fig:gaussian_1d_low_noise}
 \end{figure}
 
@@ -1525,12 +1565,13 @@ In contrast to the fully Gaussian setting, the GPR confidence intervals are not
 consistently conservative. As is evident from coverage rate dynamics for both functions,
 for relatively high regularization $\lambda=10^{-1}$ the GPR region fails to show
 conservative validity in a consistent manner, despite quite faithful approximation
-by the KRR as demonstrated by the MSE-var ratio. At the same time conformal procedures,
-e.g. RRCM, show no significant departures from claimed validity.
+by the KRR as demonstrated by the ``RMSE-std'' ratio. At the same time conformal
+procedures, e.g. RRCM, show no significant departures from claimed validity.
 
 The main conclusion we can draw from the case on negligible noise is that at least
-for the RBF kernel the conformal confidence intervals seem to perform reasonably well
-both in terms of validity in a non-Gaussian setting and efficiency in Gaussian setting.
+for the Gaussian kernel the conformal confidence intervals seem to perform reasonably
+well both in terms of validity in a non-Gaussian setting and efficiency in Gaussian
+setting.
 
 \begin{figure}%[b, width=0.5\textwidth]
   \centering
@@ -1758,7 +1799,7 @@ both in terms of validity in a non-Gaussian setting and efficiency in Gaussian s
     \includegraphics[width=0.95\linewidth]{images/output_pdf/exp_1d/f6/1e-06_0.1/f6_1e-06_0,1_auto_ratio.pdf}
     \caption{} \label{fig:f6_1d_low_noise_c4}
   \end{subfigure}%
-  \caption{Coverage dynamics and MSE-to-var ratio for the ``f6'' function.}
+  \caption{Coverage dynamics and ``RMSE-std'' ratio for the ``f6'' function.}
   \label{fig:f6_1d_low_noise}
 \end{figure}
 
@@ -1804,7 +1845,7 @@ both in terms of validity in a non-Gaussian setting and efficiency in Gaussian s
     \includegraphics[width=0.95\linewidth]{images/output_pdf/exp_1d/f6/1e-06_0.1/f6_1e-06_0,1_1000_ratio.pdf}
     \caption{} \label{fig:f6_1d_low_noise_arb_c4}
   \end{subfigure}%
-  \caption{Coverage dynamics and MSE-to-var ratio for the ``f6'' function (see
+  \caption{Coverage dynamics and ``RMSE-std'' ratio for the ``f6'' function (see
   the description of fig.~\ref{fig:f6_1d_low_noise}).}
   \label{fig:f6_1d_low_noise_arb}
 \end{figure}
@@ -1825,7 +1866,7 @@ regions, but for sufficiently large train samples $n$ the width of the latter gr
 shrinks to that of the Bayesian interval (fig.~\ref{fig:gaussian_1d_high_noise_width_c1}
 and~\ref{fig:gaussian_1d_high_noise_width_c2}. Thus, in this setting, as in the
 previous one, we found evidence supporting the conjectured properties of conformal
-procedures over KRR with RBF kernel.
+procedures over KRR with the Gaussian kernel.
 
 In the setting, when the kernel precision $\theta$ no equal to the theoretical $\theta_0$,
 but is either estimated with the MLE $\hat{\theta}_\text{MLE}$, provided by the GPR
@@ -1833,9 +1874,9 @@ likelihood, eq.~\ref{eq:bkrr_likelihood}, (fig.~\ref{fig:gaussian_1d_high_noise_
 and~\ref{fig:gaussian_1d_high_noise_c4}), or too low $\theta=10$ (fig.~\ref{fig:gaussian_1d_high_noise_arb_c1}
 and~\ref{fig:gaussian_1d_high_noise_arb_c1}), or too high $\theta=10^3$ (fig.~\ref{fig:gaussian_1d_high_noise_arb_c3}
 and~\ref{fig:gaussian_1d_high_noise_arb_c4}) we arrive at similar conclusions: confidence
-intervals constructed with an NCM based on KRR with RBF kernel provide at least conservatively
-the required level of validity regardless of the parameters ($\theta$, $\lambda$)
-at the core of the non-conformity measure.
+intervals constructed with an NCM based on KRR with kernel eq.~\ref{eq:gauss_kenrel}
+provide at least conservatively the required level of validity regardless of the
+parameters ($\theta$, $\lambda$) at the core of the non-conformity measure.
 
 From this particular experiment in this setting, can be concluded that there is evidence
 in favor of the conjectured asymptotic conservative validity of the conformal confidence
@@ -1928,7 +1969,7 @@ this case.
   \subref{fig:gaussian_1d_high_noise_c3}~--~$(\hat{\theta}_\text{ML}, 10^{-6})$,
   \subref{fig:gaussian_1d_high_noise_c4}~--~$(\hat{\theta}_\text{ML}, 10^{-1})$.
   Rows from \textit{top} to \textit{bottom}: ``GPR-f'', ``RRCM'', ``RRCM-loo'',
-  ``CRR'', ``CRR-loo'', and the last depicting ``mse-var'' ratio.}
+  ``CRR'', ``CRR-loo'', and the last depicting ``RMSE-std'' ratio.}
   \label{fig:gaussian_1d_high_noise}
 \end{figure}
 
@@ -2417,7 +2458,7 @@ following conclusions:
     \includegraphics[width=0.95\linewidth]{images/output_pdf/exp_1d/f6/0.1_0.1/f6_0,1_0,1_auto_ratio.pdf}
     \caption{} \label{fig:f6_1d_high_noise_c4}
   \end{subfigure}%
-  \caption{Coverage dynamics and MSE-to-var ratio for the ``f6'' function.}
+  \caption{Coverage dynamics and ``RMSE-std'' ratio for the ``f6'' function.}
   \label{fig:f6_1d_high_noise}
 \end{figure}
 
@@ -2463,7 +2504,7 @@ following conclusions:
     \includegraphics[width=0.95\linewidth]{images/output_pdf/exp_1d/f6/0.1_0.1/f6_0,1_0,1_1000_ratio.pdf}
     \caption{} \label{fig:f6_1d_high_noise_arb_c4}
   \end{subfigure}%
-  \caption{Coverage dynamics and MSE-to-var ratio for the ``f6'' function (see
+  \caption{Coverage dynamics and ``RMSE-std'' ratio for the ``f6'' function (see
   the description of fig.~\ref{fig:f6_1d_high_noise}).}
   \label{fig:f6_1d_high_noise_arb}
 \end{figure}
@@ -2492,6 +2533,208 @@ following conclusions:
 
 % subsection results_1_d (end)
 
+\subsection{Results: $2$-d} % (fold)
+\label{sub:results_2_d}
+
+In this section we study the performance in the $2$-d setting. We begin by testing
+the conformal procedure in a Gaussian process setting, where the Bayesian GPR intervals
+are provably correct: we compare the validity and assess the efficiency. We test
+the effects of using ML estimate of the kernel precision parameter $\theta$ and
+fixing it to deliberately large or small values. Finally, we use specific test functions,
+fig.~\ref{fig:nongauss_2d_f2_profile} and~\ref{fig:nongauss_2d_f5_profile}, observations
+of which are contaminated by moderate Gaussian noise.
+
+For the first part we generated realizations of a $GP(0, K(x,x'))$ process on $\Xcal=[0,1]^2$
+with kernel defined in eq.~\ref{eq:gauss_kenrel} and precision $\theta_0 = 10^2$.
+The typical sample path is depicted in fig.~\ref{fig:gauss_2d_profile}. As in the
+$1$-d experiments we synthesized one sample path of $GP$ and then for each set of
+hyper-parameters, excluding $\gamma$, we drew $L=25$ random samples from $\Xcal$
+to average the effects of random sampling on the KRR and the derived confidence regions.
+The goodness-of-fit ratios are presented in table~\ref{tab:gaussian_2d_rmse_std}.
+For the true precision $\theta=\theta_0$ and small sample $n=150$ we see overfitting
+in the case of high noise in the observations ($\gamma$) and low regularization
+parameter ($\lambda$).
+
+Table~\ref{tab:gaussian_2d_cov_gpr} shows the error rates ($y\notin\Bcal$) of the GPR
+confidence intervals. Columns 1 and 4 show that the regions are approximately valid
+in the cases when the KRR parameters are set to the true values used to generate
+the data and with larger train sample the coverage improves. As in the $1$-d case
+the intervals are more conservative for the case of low noise in the data $\gamma=10^{-6}$
+and high regularization $\lambda=10^{-1}$. Table~\ref{tab:gaussian_2d_cov_gpr_neq}
+show that in current setting, the validity of the GPR confidence intervals is sensitive
+to misspecification of the kernel precision.
+
+\begin{table}
+  \centering
+  \caption{Goodness of fit of the KRR of the simulated $2$-d Gaussian process.}
+  \label{tab:gaussian_2d_rmse_std}
+  \begin{tabular}{ll||rr|rr}
+  \toprule
+       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
+       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
+  $n$ & $\theta$ &          &          &          &          \\
+  \midrule
+  $150$  & $10^2$ &    \textbf{0.404} &    0.465 &    1.874 &    \textbf{0.503} \\
+       & $\hat{\theta}_\text{ML}$ &    0.404 &    0.469 &    0.707 &    0.499 \\\cline{2-6}
+       & $10^1$ &    1.606 &    0.795 &    2.010 &    0.774 \\
+       & $10^3$ &    0.783 &    0.795 &    0.799 &    0.798 \\%\cline{2-6}
+  \midrule
+  $1500$ & $10^2$ &    \textbf{0.004} &    0.081 &    0.677 &    \textbf{0.291} \\
+       & $\hat{\theta}_\text{ML}$ &    0.005 &    0.056 &    0.706 &    0.291 \\\cline{2-6}
+       & $10^1$ &    0.342 &    0.640 &    0.373 &    0.606 \\
+       & $10^3$ &    0.144 &    0.188 &    2.239 &    0.377 \\%\cline{2-6}
+  \bottomrule
+  \end{tabular}
+\end{table}
+\begin{table}
+\centering
+  \caption{The empirical error rate ($\%$) of the GPR confidence interval for the
+  simulated $2$-d Gaussian process.}
+  \label{tab:gaussian_2d_cov_gpr}
+  \begin{tabular}{lll||rr|rr}
+  \toprule
+       &      & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{3-3}
+       &      & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{3-3}
+  $n$ & $\theta$ & $\alpha(\%)$ &          &          &          &          \\
+  \midrule
+  $150$  & $10^2$ & $1$ &     1.3 &     0.7 &    14.6 &     0.8 \\
+       &      & $5$ &     6.7 &     3.2 &    20.1 &     4.2 \\
+       &      & $10$ &    12.8 &     6.1 &    24.3 &     8.9 \\
+       &      & $25$ &    28.9 &    15.9 &    33.5 &    23.3 \\\cline{2-7}
+       & $\hat{\theta}_\text{ML}$ & $1$ &     0.8 &     0.7 &     3.2 &     0.7 \\
+       &      & $5$ &     4.8 &     3.1 &     6.5 &     4.0 \\
+       &      & $10$ &    10.0 &     6.3 &    10.2 &     8.6 \\
+       &      & $25$ &    25.1 &    16.5 &    22.2 &    23.2 \\
+  \midrule
+  $1500$ & $10^2$ & $1$ &     0.9 &     0.1 &     4.1 &     0.7 \\
+       &      & $5$ &     4.5 &     0.5 &    12.0 &     4.4 \\
+       &      & $10$ &     9.2 &     1.0 &    19.2 &     9.3 \\
+       &      & $25$ &    23.8 &     3.3 &    36.1 &    24.5 \\\cline{2-7}
+       & $\hat{\theta}_\text{ML}$ & $1$ &     0.8 &     0.1 &     2.3 &     0.8 \\
+       &      & $5$ &     4.4 &     0.5 &     4.9 &     4.5 \\
+       &      & $10$ &     9.0 &     0.9 &     8.0 &     9.4 \\
+       &      & $25$ &    23.6 &     2.3 &    18.9 &    24.7 \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+\begin{table}
+  \centering
+  \caption{The empirical error rate ($\%$) of the GPR confidence interval for the
+  simulated $2$-d Gaussian process for misspecified $\theta$.}
+  \label{tab:gaussian_2d_cov_gpr_neq}
+  \begin{tabular}{lll||rr|rr}
+  \toprule
+       &      & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{3-3}
+       &      & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{3-3}
+  $n$ & $\theta$ & $\alpha(\%)$ &          &          &          &          \\
+  \midrule
+  $150$  & $10^1$ & $1$ &      7.2 &      1.9 &      6.6 &      1.7 \\
+       &      & $5$ &     15.1 &      6.2 &     15.6 &      6.2 \\
+       &      & $10$ &     21.6 &     10.7 &     23.1 &     11.6 \\
+       &      & $25$ &     36.7 &     24.3 &     39.8 &     26.2 \\\cline{2-7}
+       & $10^3$ & $1$ &      1.4 &      1.4 &      1.5 &      0.7 \\
+       &      & $5$ &      5.4 &      5.3 &      4.5 &      3.7 \\
+       &      & $10$ &      8.9 &      8.8 &      8.1 &      7.4 \\
+       &      & $25$ &     18.6 &     18.6 &     20.8 &     20.6 \\
+  \midrule
+  $1500$ & $10^1$ & $1$ &      1.6 &      0.6 &      1.0 &      0.6 \\
+       &      & $5$ &      5.3 &      4.2 &      5.2 &      3.7 \\
+       &      & $10$ &      9.6 &      8.6 &     10.4 &      8.2 \\
+       &      & $25$ &     22.5 &     23.4 &     26.3 &     22.6 \\\cline{2-7}
+       & $10^3$ & $1$ &      0.4 &      0.4 &      9.1 &      1.1 \\
+       &      & $5$ &      1.2 &      1.2 &     13.1 &      4.9 \\
+       &      & $10$ &      2.0 &      2.0 &     16.1 &      9.6 \\
+       &      & $25$ &      4.7 &      4.5 &     24.0 &     24.0 \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+
+In contrast to the GPR confidence intervals, the conformal region show remarkable
+insensitivity to both the goodness of fit and the parameter misspecification
+as demonstrated in table.~\ref{tab:gaussian_2d_cov_conf}, where we show the maximal
+absolute deviation of the interval error rate from the stated rate $\alpha$
+across all studied significance levels (eq.~\ref{eq:mad_alpha}).
+\begin{equation} \label{eq:mad_alpha}
+  \mathtt{MAD}(\Gamma, A; \Theta)
+  = \max_{\alpha\in A}\Bigl\lvert
+    m^{-1}\#\{j\,:\, y^*_j\notin \Gamma^\alpha_n(x^*_j; \Theta)\} - \alpha
+  \Bigr\rvert
+    \,,
+\end{equation}
+where $\Theta$ is the vector of hyper-parameters of the experiment (excluding $\gamma$),
+$A = \{1\%, 5\%, 10\%, 25\%\}$, $(x^*_j, y^*_j)_{j=1}^m$ -- the test sample, and
+$\Gamma$ is the conformal confidence region.
+
+Conclusions regarding the conformal procedure in the $2$-d Gaussian setting are
+similar to the respective $1$-d setting. In the case of low observation noise (interpolation
+case) the intervals have more coverage for the same reasons: the procedure itself
+allows for some uncertainty due to flexibility of the KRR with the Gaussian kernel.
+
+\begin{table}
+  \centering
+  \caption{The maximal absolute deviation $\mathtt{MAD}(\Gamma, A; \Theta)$ ($\%$)
+  of the empirical error rate from the theoretical significance level of the GPR
+  confidence interval for the simulated $2$-d Gaussian process.}
+  \label{tab:gaussian_2d_cov_conf}
+  \begin{tabular}{ll||rrrr|rrrr}
+  \toprule
+       & $n$ &    $150$  &          &          &          &     $1500$ &          &          &          \\\cline{2-2}
+       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
+       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
+  type & $\theta$ &          &          &          &          &          &          &          &          \\
+  \midrule
+  RRCM & $10^1$ &      1.5 &      0.7 &      1.6 &      1.1 &      0.3 &      0.2 &      0.8 &      0.4 \\
+       & $10^2$ &      1.3 &      1.0 &      1.9 &      0.5 &      1.7 &      1.3 &      1.1 &      0.7 \\
+       & $10^3$ &      1.4 &      0.5 &      1.5 &      0.9 &      1.1 &      2.6 &      1.2 &      0.5 \\
+       & $\hat{\theta}_\text{ML}$ &      0.8 &      0.9 &      0.6 &      1.5 &      1.7 &      2.2 &      0.1 &      0.5 \\
+  \midrule
+  RRCM-loo & $10^1$ &      1.6 &      0.7 &      2.1 &      1.4 &      1.3 &      0.3 &      2.0 &      0.4 \\
+       & $10^2$ &      0.9 &      0.3 &      1.1 &      1.2 &      2.4 &      1.7 &      2.0 &      0.4 \\
+       & $10^3$ &      1.1 &      0.5 &      0.7 &      1.1 &      2.9 &      2.6 &      0.1 &      0.6 \\
+       & $\hat{\theta}_\text{ML}$ &      1.1 &      0.7 &      1.2 &      0.5 &      2.6 &      2.6 &      0.8 &      0.6 \\
+  \midrule
+  CRR & $10^1$ &      2.4 &      1.2 &      2.3 &      1.0 &      0.3 &      0.1 &      0.8 &      0.3 \\
+       & $10^2$ &      1.9 &      1.4 &      2.5 &      1.1 &      1.6 &      1.2 &      1.2 &      0.8 \\
+       & $10^3$ &      1.0 &      1.2 &      2.0 &      2.1 &      0.8 &      2.2 &      1.3 &      0.5 \\
+       & $\hat{\theta}_\text{ML}$ &      1.3 &      1.0 &      1.3 &      1.9 &      1.8 &      2.1 &      0.1 &      0.4 \\
+  \midrule
+  CRR-loo & $10^1$ &      1.0 &      1.0 &      1.4 &      1.0 &      1.2 &      0.3 &      2.0 &      0.2 \\
+       & $10^2$ &      1.0 &      1.2 &      1.0 &      1.0 &      2.4 &      1.7 &      2.1 &      0.5 \\
+       & $10^3$ &      1.1 &      1.0 &      1.0 &      1.6 &      2.6 &      2.4 &      0.3 &      0.5 \\
+       & $\hat{\theta}_\text{ML}$ &      1.0 &      1.0 &      1.7 &      1.4 &      2.6 &      2.4 &      0.8 &      0.6 \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+
+We proceed to the non-Gaussian case. The test functions we use for this are plotted
+in fig.~\ref{fig:nonggauus_2d_f2_profile} and~\ref{fig:nonggauus_2d_f5_profile}.
+
+\begin{table}
+  \centering
+  \caption{  .}
+  \label{tab:nongaussian_2d_gpr_fit}
+  \begin{tabular}{ll||rrrr|rrrr}
+  \toprule
+       & $f(\cdot)$ &       ``f2'' &          &          &          &       ``f5'' &          &          &          \\\cline{2-2}
+       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
+       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
+  $n$ & $\theta$ &          &          &          &          &          &          &          &          \\
+  \midrule
+  $150$  & $10^1$ &     0.45 &     0.43 &     4.67 &     0.65 &     7.15 &     0.61 &     6.19 &     0.68 \\
+       & $10^2$ &     1.75 &     1.83 &     1.81 &     1.70 &     1.35 &     1.49 &     1.42 &     1.39 \\
+       & $10^3$ &     3.21 &     3.24 &     2.92 &     2.93 &     2.52 &     2.51 &     2.40 &     2.41 \\
+       & $\hat{\theta}_\text{ML}$ &     0.37 &     0.44 &     1.67 &     0.72 &     1.04 &     0.67 &     1.28 &     0.70 \\
+  \midrule
+  $1500$ & $10^1$ &     0.06 &     0.19 &     0.56 &     0.49 &     0.39 &     0.43 &     0.51 &     0.51 \\
+       & $10^2$ &     0.05 &     0.14 &     5.57 &     0.54 &     2.03 &     0.32 &     4.16 &     0.47 \\
+       & $10^3$ &     1.66 &     1.78 &     1.68 &     1.63 &     1.33 &     1.38 &     1.38 &     1.36 \\
+       & $\hat{\theta}_\text{ML}$ &     0.02 &     0.09 &     1.97 &     0.48 &     0.67 &     0.32 &     1.25 &     0.46 \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+
+% subsection results_2_d (end)
+
 % section numerical_study (end)
 
 \section{Conclusion and further work} % (fold)
@@ -2507,9 +2750,9 @@ when the Gaussianity assumptions hold.
 
 Further work on the validity of conformal procedures in batch setting, with application
 to anomaly detection, includes: \begin{itemize}
-  \item establishing theoretical foundations for the proposed conjectures for the KRR
-  with RBF kernel, or isolating special cases when it holds, and studying the cases
-  when it fails;
+  \item establishing theoretical foundations for the proposed conjectures for the
+  KRR with Gaussian kernel, or isolating special cases when it holds, and studying
+  the cases when it fails;
   \item obtaining a generalization to the asymptotic efficiency result in \cite{burnaevV14},
   in for a kernel ridge regression with general kernels.
 \end{itemize}
