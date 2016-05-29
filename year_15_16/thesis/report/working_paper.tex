@@ -44,7 +44,6 @@
 % \tableofcontents
 % \clearpage
 
-
 \section{Introduction} % (fold)
 \label{sec:introduction}
 
@@ -2536,7 +2535,7 @@ following conclusions:
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{images/output_pdf/exp_1d/f6/0.1_0.1/width/RRCM/width_f6_0,1_0,1_auto_RRCM.pdf}
-    \caption{} \label{fig:f6_1d_high_noise_width_c1}
+    \caption{} \label{fig:f6_1d_high_noise_width_c2}
   \end{subfigure}
   \caption{Width dynamics of the KRR and GPR confidence sets for the ML estimate
   of $\theta$ for the values of the ``f6'' test function, distorted by gaussian noise
@@ -2554,8 +2553,22 @@ the conformal procedure in a Gaussian process setting, where the Bayesian GPR in
 are provably correct: we compare the validity and assess the efficiency. We test
 the effects of using ML estimate of the kernel precision parameter $\theta$ and
 fixing it to deliberately large or small values. Finally, we use specific test functions,
-fig.~\ref{fig:nongauss_2d_f2_profile} and~\ref{fig:nongauss_2d_f5_profile}, observations
-of which are contaminated by moderate Gaussian noise.
+fig.~\ref{fig:nongauss_2d_profile}, observations of which are contaminated by moderate
+Gaussian noise.
+
+\begin{figure}%[t, width=0.5\textwidth]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=\linewidth]{images/output_pdf/exp_2d/f2/0.1_1e-06/1500/profile/f2_0,1_1e-06_1000_test.pdf}
+  \end{subfigure}%~
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=\linewidth]{images/output_pdf/exp_2d/f5/0.1_1e-06/1500/profile/f5_0,1_1e-06_1000_test.pdf}
+  \end{subfigure}
+  \caption{A sample path of a $2$-d non-Gaussian function, contanimated by moderate
+  independent $\Ncal(0, \gamma)$ noise. Function: \textit{left:} ``f2''; \textit{right:}
+  ``f5''.}
+  \label{fig:nongauss_2d_profile}
+\end{figure}
 
 For the first part we generated realizations of a $GP(0, K(x,x'))$ process on $\Xcal=[0,1]^2$
 with kernel defined in eq.~\ref{eq:gauss_kenrel} and precision $\theta_0 = 10^2$.
@@ -2568,18 +2581,36 @@ For the true precision $\theta=\theta_0$ and small sample $n=150$ we see overfit
 in the case of high noise in the observations ($\gamma$) and low regularization
 parameter ($\lambda$).
 
-Table~\ref{tab:gaussian_2d_cov_gpr} shows the error rates ($y\notin\Bcal$) of the GPR
-confidence intervals. Columns 1 and 4 show that the regions are approximately valid
-in the cases when the KRR parameters are set to the true values used to generate
-the data and with larger train sample the coverage improves. As in the $1$-d case
-the intervals are more conservative for the case of low noise in the data $\gamma=10^{-6}$
-and high regularization $\lambda=10^{-1}$. Table~\ref{tab:gaussian_2d_cov_gpr_neq}
-show that in current setting, the validity of the GPR confidence intervals is sensitive
+\begin{figure}%[t, width=0.5\textwidth]
+  \centering
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=\linewidth]{images/output_pdf/exp_2d/gaussian/1e-06_1e-06/1500/profile/gaussian_1e-06_1e-06_1000_test.pdf}
+  \end{subfigure}%~
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=\linewidth]{images/output_pdf/exp_2d/gaussian/0.1_1e-06/1500/profile/gaussian_0,1_1e-06_1000_test.pdf}
+  \end{subfigure}
+  \caption{A sample path of a $2$-d Gaussian process with kernel $\gamma \delta_{x,x'} + K(x,x')$:
+  \textit{left:} $\gamma=10^{-6}$; \textit{right:} $\gamma=10^{-1}$.}
+  \label{fig:gauss_2d_profile}
+\end{figure}
+
+Table~\ref{tab:gaussian_2d_cov_gpr} shows the error rates ($y^*\notin\Bcal(x^*)$) of
+the GPR confidence intervals on a fixed test sample, the inputs $X^*\subseteq \Xcal$
+of which are given by
+\begin{equation*}
+  X^* = \bigl\{(N^{-1} i, N^{-1} j)\,:\,i,j=0\ldots, N\bigr\} \,,
+\end{equation*}
+for $N=50$. Columns 1 and 4 show that the regions are approximately valid in the
+cases when the KRR parameters are set to the true values used to generate the data
+and with larger train sample the coverage improves. As in the $1$-d case the intervals
+are more conservative for the case of low noise in the data $\gamma=10^{-6}$ and
+high regularization $\lambda=10^{-1}$. Table~\ref{tab:gaussian_2d_cov_gpr_neq} show
+that in current setting, the validity of the GPR confidence intervals is sensitive
 to misspecification of the kernel precision.
 
 \begin{table}
   \centering
-  \caption{Goodness of fit of the KRR of the simulated $2$-d Gaussian process.}
+  \caption{Goodness of fit of the KRR of simulated $2$-d Gaussian process.}
   \label{tab:gaussian_2d_rmse_std}
   \begin{tabular}{ll||rr|rr}
   \toprule
@@ -2601,8 +2632,8 @@ to misspecification of the kernel precision.
 \end{table}
 \begin{table}
 \centering
-  \caption{The empirical error rate ($\%$) of the GPR confidence interval for the
-  simulated $2$-d Gaussian process.}
+  \caption{The empirical error rate ($\%$) of the GPR confidence interval for simulated
+  $2$-d Gaussian process.}
   \label{tab:gaussian_2d_cov_gpr}
   \begin{tabular}{lll||rr|rr}
   \toprule
@@ -2632,8 +2663,8 @@ to misspecification of the kernel precision.
 \end{table}
 \begin{table}
   \centering
-  \caption{The empirical error rate ($\%$) of the GPR confidence interval for the
-  simulated $2$-d Gaussian process for misspecified $\theta$.}
+  \caption{The empirical error rate ($\%$) of the GPR confidence interval for simulated
+  $2$-d Gaussian process for misspecified $\theta$.}
   \label{tab:gaussian_2d_cov_gpr_neq}
   \begin{tabular}{lll||rr|rr}
   \toprule
@@ -2670,12 +2701,12 @@ across all studied significance levels (eq.~\ref{eq:mad_alpha}).
 \begin{equation} \label{eq:mad_alpha}
   \mathtt{MAD}(\Gamma, A; \Theta)
   = \max_{\alpha\in A}\Bigl\lvert
-    m^{-1}\#\{j\,:\, y^*_j\notin \Gamma^\alpha_n(x^*_j; \Theta)\} - \alpha
+    m^{-1}\#\{j\,:\, y^*_j\notin \Gamma^\alpha_n(X^*_j; \Theta)\} - \alpha
   \Bigr\rvert
     \,,
 \end{equation}
 where $\Theta$ is the vector of hyper-parameters of the experiment (excluding $\gamma$),
-$A = \{1\%, 5\%, 10\%, 25\%\}$, $(x^*_j, y^*_j)_{j=1}^m$ -- the test sample, and
+$A = \{1\%, 5\%, 10\%, 25\%\}$, $(X^*_j, y^*_j)_{j=1}^{|X^*|}$ -- the test sample, and
 $\Gamma$ is the conformal confidence region.
 
 Conclusions regarding the conformal procedure in the $2$-d Gaussian setting are
@@ -2686,8 +2717,8 @@ allows for some uncertainty due to flexibility of the KRR with the Gaussian kern
 \begin{table}
   \centering
   \caption{The maximal absolute deviation $\mathtt{MAD}(\Gamma, A; \Theta)$ ($\%$)
-  of the empirical error rate from the theoretical significance level of the GPR
-  confidence interval for the simulated $2$-d Gaussian process.}
+  of the empirical error rate from the theoretical significance level of conformal
+  confidence regions for simulated $2$-d Gaussian process.}
   \label{tab:gaussian_2d_cov_conf}
   \begin{tabular}{ll||rrrr|rrrr}
   \toprule
@@ -2719,12 +2750,20 @@ allows for some uncertainty due to flexibility of the KRR with the Gaussian kern
   \end{tabular}
 \end{table}
 
-We proceed to the non-Gaussian case. The test functions we use for this are plotted
-in fig.~\ref{fig:nonggauus_2d_f2_profile} and~\ref{fig:nonggauus_2d_f5_profile}.
-
+We proceed to the non-Gaussian case, with sample paths of the test functions with
+domain $\Xcal=[-1,1]^2$ and plotted fig.~\ref{fig:nongauss_2d_profile} (p.~\pageref{fig:nongauss_2d_profile}).
+Table~\ref{tab:nongaussian_2d_gpr_fit} shows the goodness-of-fit on the test sample
+of the KRR for various hyper-parameters. Except for obvious overfitting in the case
+of $\theta=10^3$ for $n=150$ and occasionally for low regularization $\lambda=10^{-6}$,
+the overall fit is adequate. The input of the test sample in question is $X^*\subseteq \Xcal$
+constructed as
+\begin{equation*}
+  X^* = \bigl\{(\frac{2}{N} i, \frac{2}{N} j)\,:\,i,j = -\frac{N}{2}, \ldots, \frac{N}{2}\bigr\} \,,
+\end{equation*}
+for $N=50$.
 \begin{table}
   \centering
-  \caption{  .}
+  \caption{``RMSE-std'' ratio averaged across $L=25$ replications of the train sample choice.}
   \label{tab:nongaussian_2d_gpr_fit}
   \begin{tabular}{ll||rrrr|rrrr}
   \toprule
@@ -2733,18 +2772,217 @@ in fig.~\ref{fig:nonggauus_2d_f2_profile} and~\ref{fig:nonggauus_2d_f5_profile}.
        & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
   $n$ & $\theta$ &          &          &          &          &          &          &          &          \\
   \midrule
-  $150$  & $10^1$ &     0.45 &     0.43 &     4.67 &     0.65 &     7.15 &     0.61 &     6.19 &     0.68 \\
-       & $10^2$ &     1.75 &     1.83 &     1.81 &     1.70 &     1.35 &     1.49 &     1.42 &     1.39 \\
-       & $10^3$ &     3.21 &     3.24 &     2.92 &     2.93 &     2.52 &     2.51 &     2.40 &     2.41 \\
-       & $\hat{\theta}_\text{ML}$ &     0.37 &     0.44 &     1.67 &     0.72 &     1.04 &     0.67 &     1.28 &     0.70 \\
+  $150$  & $10^1$ &     0.23 &     0.18 &     2.81 &     0.34 &     4.09 &     0.47 &     3.47 &     0.50 \\
+       & $10^2$ &     0.55 &     0.57 &     0.68 &     0.62 &     0.75 &     0.76 &     0.80 &     0.76 \\
+       & $10^3$ &     1.00 &     1.01 &     1.00 &     1.01 &     1.18 &     1.19 &     1.18 &     1.19 \\
+       & $\hat{\theta}_\text{ML}$ &     0.14 &     0.20 &     0.66 &     0.38 &     0.65 &     0.48 &     0.73 &     0.50 \\
   \midrule
-  $1500$ & $10^1$ &     0.06 &     0.19 &     0.56 &     0.49 &     0.39 &     0.43 &     0.51 &     0.51 \\
-       & $10^2$ &     0.05 &     0.14 &     5.57 &     0.54 &     2.03 &     0.32 &     4.16 &     0.47 \\
-       & $10^3$ &     1.66 &     1.78 &     1.68 &     1.63 &     1.33 &     1.38 &     1.38 &     1.36 \\
-       & $\hat{\theta}_\text{ML}$ &     0.02 &     0.09 &     1.97 &     0.48 &     0.67 &     0.32 &     1.25 &     0.46 \\
+  $1500$ & $10^1$ &     0.02 &     0.07 &     0.31 &     0.26 &     0.31 &     0.34 &     0.36 &     0.37 \\
+       & $10^2$ &     0.02 &     0.05 &     3.11 &     0.29 &     1.67 &     0.27 &     2.54 &     0.31 \\
+       & $10^3$ &     0.53 &     0.56 &     0.71 &     0.60 &     0.66 &     0.70 &     0.72 &     0.70 \\
+       & $\hat{\theta}_\text{ML}$ &     0.01 &     0.03 &     0.72 &     0.26 &     0.46 &     0.27 &     0.67 &     0.31 \\
   \bottomrule
   \end{tabular}
 \end{table}
+
+Tables~\ref{tab:nongaussian_f2_2d_cov_gpr} and~\ref{tab:nongaussian_f5_2d_cov_gpr}
+show the empirical error rate of the GPR Bayesian confidence interval on a fixed
+test sample. For large train size $n$ the ML estimate of the kernel precision parameter
+$\theta$ yields conservatively valid GPR prediction confidence regions for both
+``f2'' and ``f5'' test functions. Note that for ``f2'' test function with high noise
+$\gamma=10^{-1}$ the empirical error rate of GPR confidence intervals for the ML
+estimate of $\theta$ becomes closer to the requires significance level. This is
+due to the smoothness of the used function. In contrast, the ``f5'' function is
+discontinuous, and thus cannot be approximated well (as seen in tab.~\ref{tab:nongaussian_2d_gpr_fit}).
+Therefore, the GPR confidence intervals are more conservative for large $n$.
+\begin{table}
+  \centering
+  \caption{The empirical error rate ($\%$) of the GPR confidence interval for the
+  ``f2'' test function.}
+  \label{tab:nongaussian_f2_2d_cov_gpr}
+  \begin{tabular}{lll||rr|rr}
+  \toprule
+       &      & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{3-3}
+       &      & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{3-3}
+  $n$ & $\theta$ & $\alpha(\%)$ &          &          &          &          \\
+  \midrule
+  150  & $10^1$ & $1\%$ &     12.2 &      1.9 &     20.8 &      1.6 \\
+       &      & $5\%$ &     16.9 &      3.0 &     29.7 &      4.8 \\
+       &      & $10\%$ &     20.6 &      3.8 &     35.9 &      8.9 \\
+       &      & $25\%$ &     29.6 &      5.5 &     48.5 &     22.4 \\\cline{2-7}
+       & $10^2$ & $1\%$ &      0.3 &      0.2 &      2.8 &      0.2 \\
+       &      & $5\%$ &      2.3 &      2.2 &      5.0 &      2.2 \\
+       &      & $10\%$ &      4.6 &      4.8 &      7.9 &      5.2 \\
+       &      & $25\%$ &     14.1 &     13.7 &     17.6 &     16.7 \\\cline{2-7}
+       & $10^3$ & $1\%$ &      0.0 &      0.0 &      0.2 &      0.1 \\
+       &      & $5\%$ &      4.1 &      4.4 &      4.1 &      3.8 \\
+       &      & $10\%$ &     10.3 &     10.7 &     10.1 &      9.8 \\
+       &      & $25\%$ &     26.1 &     26.5 &     25.9 &     25.5 \\\cline{2-7}
+       & $\hat{\theta}_\text{ML}$ & $1\%$ &      5.1 &      1.9 &      4.1 &      2.3 \\
+       &      & $5\%$ &      7.1 &      3.0 &      7.1 &      5.3 \\
+       &      & $10\%$ &      8.7 &      3.9 &     10.5 &      9.1 \\
+       &      & $25\%$ &     13.1 &      6.2 &     21.6 &     21.4 \\
+  \midrule
+  1500 & $10^1$ & $1\%$ &      2.3 &      1.9 &      2.2 &      1.1 \\
+       &      & $5\%$ &      3.2 &      3.0 &      7.9 &      4.9 \\
+       &      & $10\%$ &      4.0 &      3.7 &     13.8 &      9.7 \\
+       &      & $25\%$ &      5.8 &      5.6 &     29.9 &     24.3 \\\cline{2-7}
+       & $10^2$ & $1\%$ &      0.3 &      0.0 &     19.1 &      1.3 \\
+       &      & $5\%$ &      0.6 &      0.1 &     28.6 &      5.9 \\
+       &      & $10\%$ &      0.9 &      0.2 &     35.0 &     11.1 \\
+       &      & $25\%$ &      2.6 &      1.2 &     48.3 &     26.5 \\\cline{2-7}
+       & $10^3$ & $1\%$ &      0.1 &      0.1 &      2.4 &      0.1 \\
+       &      & $5\%$ &      1.9 &      2.1 &      4.0 &      1.9 \\
+       &      & $10\%$ &      4.1 &      4.5 &      6.0 &      5.0 \\
+       &      & $25\%$ &     12.9 &     13.4 &     13.9 &     16.4 \\\cline{2-7}
+       & $\hat{\theta}_\text{ML}$ & $1\%$ &      3.4 &      0.6 &      2.0 &      1.1 \\
+       &      & $5\%$ &      4.4 &      1.1 &      3.9 &      5.1 \\
+       &      & $10\%$ &      5.2 &      1.4 &      6.9 &     10.0 \\
+       &      & $25\%$ &      7.1 &      2.4 &     18.1 &     24.9 \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+\begin{table}
+  \centering
+  \caption{The empirical error rate ($\%$) of the GPR confidence interval for the
+  ``f5'' test function.}
+  \label{tab:nongaussian_f5_2d_cov_gpr}
+  \begin{tabular}{lll||rr|rr}
+  \toprule
+       &      & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{3-3}
+       &      & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{3-3}
+  $n$ & $\theta$ & $\alpha(\%)$ &          &          &          &          \\
+  \midrule
+  150  & $10^1$ & $1\%$ &     19.2 &      4.2 &     23.8 &      4.1 \\
+       &      & $5\%$ &     25.7 &      7.2 &     32.6 &      7.5 \\
+       &      & $10\%$ &     30.4 &      9.7 &     38.8 &     10.1 \\
+       &      & $25\%$ &     40.9 &     15.4 &     51.4 &     17.3 \\\cline{2-7}
+       & $10^2$ & $1\%$ &      1.6 &      0.8 &      2.4 &      0.8 \\
+       &      & $5\%$ &      3.9 &      2.9 &      5.1 &      2.9 \\
+       &      & $10\%$ &      6.4 &      5.9 &      7.9 &      5.5 \\
+       &      & $25\%$ &     15.4 &     15.8 &     17.8 &     15.7 \\\cline{2-7}
+       & $10^3$ & $1\%$ &      0.0 &      0.0 &      0.1 &      0.0 \\
+       &      & $5\%$ &      2.2 &      2.0 &      2.3 &      2.6 \\
+       &      & $10\%$ &      7.7 &      7.4 &      7.6 &      8.2 \\
+       &      & $25\%$ &     26.3 &     25.7 &     26.3 &     27.2 \\\cline{2-7}
+       & $\hat{\theta}_\text{ML}$ & $1\%$ &      5.1 &      4.5 &      5.0 &      3.8 \\
+       &      & $5\%$ &      8.0 &      7.7 &      8.5 &      7.2 \\
+       &      & $10\%$ &     10.7 &     10.3 &     12.0 &     10.0 \\
+       &      & $25\%$ &     18.4 &     16.6 &     22.6 &     17.0 \\
+  \midrule
+  1500 & $10^1$ & $1\%$ &      4.5 &      4.1 &      3.8 &      3.7 \\
+       &      & $5\%$ &      6.9 &      6.9 &      6.3 &      6.5 \\
+       &      & $10\%$ &      8.7 &      9.2 &      8.4 &      8.7 \\
+       &      & $25\%$ &     12.9 &     13.9 &     15.4 &     14.4 \\\cline{2-7}
+       & $10^2$ & $1\%$ &     10.2 &      3.2 &     15.7 &      2.7 \\
+       &      & $5\%$ &     13.8 &      4.7 &     23.9 &      4.3 \\
+       &      & $10\%$ &     16.4 &      5.9 &     30.0 &      5.9 \\
+       &      & $25\%$ &     22.2 &      8.7 &     42.7 &     12.3 \\\cline{2-7}
+       & $10^3$ & $1\%$ &      0.6 &      0.4 &      1.6 &      0.4 \\
+       &      & $5\%$ &      2.0 &      2.3 &      3.3 &      2.0 \\
+       &      & $10\%$ &      4.4 &      4.8 &      5.7 &      4.6 \\
+       &      & $25\%$ &     13.3 &     13.9 &     14.9 &     14.0 \\\cline{2-7}
+       & $\hat{\theta}_\text{ML}$ & $1\%$ &      3.2 &      3.7 &      2.5 &      3.3 \\
+       &      & $5\%$ &      4.6 &      5.7 &      4.4 &      5.4 \\
+       &      & $10\%$ &      5.9 &      7.1 &      6.6 &      7.0 \\
+       &      & $25\%$ &      9.7 &     10.2 &     15.3 &     12.6 \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+
+The performance of the conformal confidence predictions are summarized in tables~\ref{tab:nongaussian_f2_2d_cov_conf}
+and~\ref{tab:nongaussian_f5_2d_cov_conf} using the MAD metric introduced earlier.
+Overall the error rates do not sway too far from the stated levels, and the conformal
+procedure yields intervals less sensitive to the hyper-parameters related to the KRR,
+which is expected, since the conservative validity of the conformal prediction should
+not be affected by the internals of the used NCM.
+
+\begin{table}
+  \centering
+  \caption{The maximal absolute deviation $\mathtt{MAD}(\Gamma, A; \Theta)$ ($\%$)
+  of the empirical error rate from the theoretical significance level of conformal
+  confidence regions for the ``f2'' test function.}
+  \label{tab:nongaussian_f2_2d_cov_conf}
+  \begin{tabular}{ll||rrrr|rrrr}
+  \toprule
+       & $n$ &     $150$  &          &          &          &     $1500$ &          &          &          \\\cline{2-2}
+       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
+       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
+  type & $\theta$ &          &          &          &          &          &          &          &          \\
+  \midrule
+  CRR & $10^1$ &      1.9 &      1.3 &      2.0 &      1.6 &      1.0 &      1.3 &      1.2 &      0.2 \\
+       & $10^2$ &      1.1 &      1.0 &      1.9 &      2.9 &      0.7 &      2.7 &      1.4 &      0.6 \\
+       & $10^3$ &      1.4 &      1.2 &      1.1 &      1.0 &      0.3 &      1.1 &      1.0 &      0.1 \\
+       & $\hat{\theta}_\text{ML}$ &      2.4 &      1.0 &      3.4 &      1.0 &      1.4 &      2.2 &      0.6 &      0.5 \\
+  \midrule
+  CRR-loo & $10^1$ &      1.0 &      1.4 &      1.0 &      1.4 &      0.8 &      1.4 &      1.3 &      0.2 \\
+       & $10^2$ &      1.0 &      1.0 &      1.4 &      1.0 &      3.0 &      3.2 &      1.9 &      0.5 \\
+       & $10^3$ &      1.5 &      1.3 &      1.2 &      1.1 &      1.0 &      1.0 &      0.2 &      0.2 \\
+       & $\hat{\theta}_\text{ML}$ &      1.4 &      1.0 &      1.2 &      1.5 &      2.6 &      2.6 &      0.5 &      0.2 \\
+  \midrule
+  RRCM & $10^1$ &      1.2 &      0.9 &      1.3 &      1.0 &      0.9 &      1.4 &      1.2 &      0.2 \\
+       & $10^2$ &      1.3 &      1.5 &      1.5 &      2.4 &      0.7 &      2.6 &      1.3 &      0.6 \\
+       & $10^3$ &      1.9 &      0.9 &      0.4 &      0.6 &      0.4 &      0.5 &      0.9 &      0.3 \\
+       & $\hat{\theta}_\text{ML}$ &      1.7 &      0.8 &      2.9 &      1.2 &      1.3 &      2.3 &      0.8 &      0.4 \\
+  \midrule
+  RRCM-loo & $10^1$ &      1.5 &      0.5 &      0.4 &      1.0 &      0.8 &      1.6 &      1.2 &      0.3 \\
+       & $10^2$ &      0.8 &      0.5 &      0.7 &      0.5 &      3.0 &      3.2 &      2.0 &      0.6 \\
+       & $10^3$ &      1.9 &      0.8 &      0.7 &      0.9 &      0.9 &      0.6 &      0.2 &      0.2 \\
+       & $\hat{\theta}_\text{ML}$ &      0.6 &      1.4 &      1.0 &      2.1 &      2.6 &      2.6 &      0.7 &      0.1 \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}
+  \centering
+  \caption{The maximal absolute deviation $\mathtt{MAD}(\Gamma, A; \Theta)$ ($\%$)
+  of the empirical error rate from the theoretical significance level of conformal
+  confidence regions for the ``f5'' test function.}
+  \label{tab:nongaussian_f5_2d_cov_conf}
+  \begin{tabular}{ll||rrrr|rrrr}
+  \toprule
+       & $n$ &     $150$  &          &          &          &     $1500$ &          &          &          \\\cline{2-2}
+       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
+       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
+  type & $\theta$ &          &          &          &          &          &          &          &          \\
+  \midrule
+  CRR & $10^1$ &      2.3 &      2.5 &      1.0 &      1.6 &      1.2 &      0.6 &      1.3 &      0.8 \\
+       & $10^2$ &      1.0 &      1.0 &      1.0 &      1.0 &      1.1 &      1.3 &      1.2 &      0.4 \\
+       & $10^3$ &      1.0 &      1.1 &      1.3 &      1.1 &      0.2 &      0.8 &      0.6 &      0.3 \\
+       & $\hat{\theta}_\text{ML}$ &      2.4 &      1.0 &      1.1 &      1.4 &      0.3 &      0.3 &      1.0 &      0.8 \\
+  \midrule
+  CRR-loo & $10^1$ &      2.2 &      1.4 &      1.0 &      1.0 &      0.1 &      0.5 &      0.6 &      0.5 \\
+       & $10^2$ &      1.0 &      1.0 &      1.0 &      1.2 &      0.3 &      1.8 &      1.7 &      1.2 \\
+       & $10^3$ &      1.0 &      1.2 &      1.4 &      1.0 &      0.4 &      0.8 &      0.3 &      0.5 \\
+       & $\hat{\theta}_\text{ML}$ &      1.0 &      1.0 &      1.0 &      1.0 &      1.0 &      0.9 &      0.1 &      0.3 \\
+  \midrule
+  RRCM & $10^1$ &      1.8 &      1.7 &      0.3 &      1.2 &      1.2 &      0.6 &      1.2 &      0.7 \\
+       & $10^2$ &      0.8 &      0.6 &      1.4 &      0.6 &      1.0 &      1.6 &      1.1 &      0.3 \\
+       & $10^3$ &      0.5 &      1.1 &      0.3 &      0.3 &      0.2 &      1.0 &      0.5 &      0.5 \\
+       & $\hat{\theta}_\text{ML}$ &      1.6 &      0.5 &      0.5 &      0.8 &      0.4 &      0.5 &      0.9 &      0.8 \\
+  \midrule
+  RRCM-loo & $10^1$ &      1.5 &      0.5 &      0.6 &      0.3 &      0.2 &      0.5 &      0.6 &      0.5 \\
+       & $10^2$ &      1.4 &      1.1 &      1.3 &      0.6 &      0.3 &      2.1 &      1.6 &      1.1 \\
+       & $10^3$ &      0.2 &      1.1 &      0.5 &      1.1 &      0.8 &      1.3 &      0.4 &      0.6 \\
+       & $\hat{\theta}_\text{ML}$ &      1.5 &      0.5 &      2.0 &      0.4 &      0.9 &      1.0 &      0.3 &      0.2 \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+
+Based on the empirical evidence from the $2$-d experiments we arrive at similar
+conclusions: \begin{itemize}
+  \item the Gaussian Process Regression offers conservatively valid confidence regions
+  in the Gaussian case, provided the hyper-parameters are not severely misspecified;
+  \item in the non-Gaussian case experimental results regarding the validity of the
+  GPR confidence sets are less favourable;
+  \item there is empirical evidence in favour of conformal predictions based on
+  the kernel ridge regression with Gaussian kernel being asymptotically valid in
+  the offline setting;
+  \item numerical experiments support the  conjecture that conformal procedures
+  are insensitive to the choice of the core NCM: the hyper-parameters of the KRR
+  weakly affected the validity of the regions (as measure by MAD metric) in contrast
+  to the GPR confidence prediction.
+\end{itemize}
 
 % subsection results_2_d (end)
 
@@ -2753,12 +2991,17 @@ in fig.~\ref{fig:nonggauus_2d_f2_profile} and~\ref{fig:nonggauus_2d_f5_profile}.
 \section{Conclusion and further work} % (fold)
 \label{sec:conclusion_and_further_work}
 
-In the non-Gaussian experiments we found empirical evidence suggest that the GPR confidence
-region is not valid when the noise Gaussianity assumptions fail to hold. Identical
-experiments on the conformal procedures demonstrated that indeed, theres is empirical
-evidence supporting the conjectured conservative validity in the batch setting.
-At the same time, confidence intervals of the conformalized kernel ridge regression
-seem to perform not worse than the confidence regions of the Gaussian Process regression,
+In conclusion we summarize the results obtained in section~\ref{sec:numerical_study},
+and outline future research on the applicability of the conformal procedures based
+on KRR in batch learning setting.
+
+In the non-Gaussian experiments we found empirical evidence suggesting that the GPR
+confidence regions are not consistently valid if the Gaussianity assumptions fail
+to hold, or if the KRR hyper-parameters are misspecified. Identical experiments on
+the conformal procedures demonstrated that indeed, there is empirical evidence in
+support of the conjectured conservative validity in the batch setting. At the same
+time, confidence intervals of the conformalized kernel ridge regression seem to
+perform not worse than the confidence regions of the Gaussian Process regression,
 when the Gaussianity assumptions hold.
 
 Further work on the validity of conformal procedures in batch setting, with application
@@ -2771,31 +3014,6 @@ to anomaly detection, includes: \begin{itemize}
 \end{itemize}
 
 % section conclusion_and_further_work (end)
-
-\clearpage
-
-\section{Figures} % (fold)
-\label{sec:figures}
-
-, since due to
-continuity of $A\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)$ as a function of $y_n$,
-the ordering of $\eta_i^{\tilde{z}}$ in a non degenerate case (with no ties), remains
-unchanged 
-
-
-$\eta_i^{\tilde{z}} = A(S^{\tilde{z}}_{-i}, S^{\tilde{z}}_i)$
-
-The plots show that no matter the what the parameters are, in the gaussian case all
-for procedures show almost identical coverage and width convergence.
-
-%% incorrect \theta, correct low \lambda and \gamma
-%% incorrect \theta, incorrect \lambda and \gamma
-%% non-Gaussian correct high \lambda and \gamma
-%% non-Gaussian correct low \lambda and \gamma
-%% non-Gaussian incorrect \lambda and \gamma
-
-
-% section figures (end)
 
 % \bibliographystyle{amsplain}
 \bibliographystyle{ugost2008ls}
