@@ -51,6 +51,11 @@ def sided_CCR(A_i, B_i, A_n, B_n):
     coverage /= N
     return breaks, coverage
 
+def CCR(A, B, levels):
+    hi = confidence_region(*sided_CCR(A, B, A[-1:], B[-1:]), levels=levels / 2)
+    lo = confidence_region(*sided_CCR(-A, -B, -A[-1:], -B[-1:]), levels=levels / 2)
+    return intersect_(lo, hi)
+
 def absolute_CCR(A_i, B_i, A_n, B_n):
     N = A_i.shape[0]
     if B_n == 0:
@@ -110,11 +115,11 @@ def absolute_CCR(A_i, B_i, A_n, B_n):
 ## compute the frequency
     return breaks, coverage / N
 
-def RRCM(A, B, levels):
+def RRCM(A, B, levels, n=-1):
     A, B = A.copy(), B.copy()
     A[B < 0] *= -1
     B[B < 0] *= -1
-    N, A_n, B_n = A.shape[0], A[-1], B[-1]
+    N, A_n, B_n = A.shape[0], A[n], B[n]
     
     ## compute P and Q
     P, Q = - (A + A_n) / (B + B_n), (A - A_n) / (B_n - B)
@@ -124,7 +129,7 @@ def RRCM(A, B, levels):
 
     ## locate the associated endpoints
     Pi_, Qi_ = np.searchsorted(breaks_, P), np.searchsorted(breaks_, Q)
-    delta_ = np.zeros(breaks_.shape[0] + 1, dtype=np.float)
+    delta_ = np.zeros(breaks_.shape[0] + 1, dtype=np.int)
     for p, q, a_, b_ in zip(Pi_, Qi_, A, B):
         if b_ == B_n:
             if abs(a_) >= abs(A_n) and B_n == 0:
@@ -150,7 +155,7 @@ def RRCM(A, B, levels):
                 delta_[0] += 1
                 delta_[-1] -= 1
     ## compute the frequency
-    coverage_ = np.cumsum(delta_) / N
+    coverage_ = np.cumsum(delta_, dtype=np.float) / N
     ## Consolidate intervals
     intervals_ = list()
     for level in levels:
@@ -167,14 +172,9 @@ def RRCM(A, B, levels):
         intervals_.append(breaks_[np.array([beg, end]).T])
     return intervals_
 
-def CCR(A, B, levels):
-    hi = confidence_region(*sided_CCR(A, B, A[-1:], B[-1:]), levels=levels / 2)
-    lo = confidence_region(*sided_CCR(-A, -B, -A[-1:], -B[-1:]), levels=levels / 2)
-    return intersect_(lo, hi)
-
-def CRR(A, B, levels):
+def CRR(A, B, levels, n=-1):
     A, B = A.copy(), B.copy()
-    N, A_n, B_n = A.shape[0], A[-1], B[-1]
+    N, A_n, B_n = A.shape[0], A[n], B[n]
     ## compute P and Q
     Q = (A - A_n) / (B_n - B)
 
@@ -183,8 +183,8 @@ def CRR(A, B, levels):
 
     ## locate the associated endpoints
     Qi_ = np.searchsorted(breaks_, Q)
-    d_U_ = np.zeros(breaks_.shape[0] + 1, dtype=np.float)
-    d_L_ = np.zeros(breaks_.shape[0] + 1, dtype=np.float)
+    d_U_ = np.zeros(breaks_.shape[0] + 1, dtype=np.int)
+    d_L_ = np.zeros(breaks_.shape[0] + 1, dtype=np.int)
     for q, a_, b_ in zip(Qi_, A, B):
         if b_ == B_n:
             if a_ >= A_n:
@@ -205,7 +205,8 @@ def CRR(A, B, levels):
             d_L_[-1] -= 1
 
     ## compute the frequency
-    coverage_ = np.minimum(np.cumsum(d_U_), np.cumsum(d_L_)) / N
+    coverage_ = np.minimum(np.cumsum(d_U_, dtype=np.float),
+                           np.cumsum(d_L_, dtype=np.float)) / N
 
     ## Consolidate intervals
     intervals_ = list()
