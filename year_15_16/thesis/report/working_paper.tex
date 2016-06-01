@@ -56,7 +56,6 @@
 \newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
 \newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
 
-
 \title{Conformalized Kernel Ridge Regression}
 \author{Nazarov, I. N., Burnaev, E. V.}
 
@@ -72,6 +71,7 @@
 \def\bbloct{Oct.}
 \def\bblnov{Nov.}
 \def\bbldec{Dec.}
+
 \begin{document}
 
 \thispagestyle{empty}
@@ -79,25 +79,25 @@
 \begin{center}
 \textsc{Правительство Российской Федерации}\\[0.2cm]
 \textsc{Федеральное государственное автономное образовательное учреждение высшего
-профессионального образования \\ «Национальный исследовательский университет
+профессионального образования \\ «Национальный исследовательский университет \\
 «Высшая школа экономики»}\\[0.7cm]
 Факультет Коспьютерных наук \\[0.2cm]
 Напрвление Науки о данных \\[0.2cm]
 Кафедра Теории моделирования сложных систем\\[1.6cm]
-\textsc{Выпускная квалификационная работа бакалавра }\\[0.7cm]
+\textsc{Выпускная квалификационная работа магистра }\\[0.7cm]
 на тему\\[0.7cm]
 \begin{large}
-\textsc{\textbf{Коды цифровых отпечатков пальцев для мультимедийного контента}}
+\textsc{\textbf{Пименение конформных процедур с многомерных линейных моделях и детектировании аномалий}}
 \end{large}
 \end{center}
 \vspace{2.5cm}
 \begin{center}
-Выполнила студентка группы м14НоД ТМСС \\
-Егорова Елена Евгеньевна\\
+Выполнил студент группы м14НоД ИССА \\
+Назаров Иван Николаевич\\
 \vspace{1.5cm}
 Научный руководитель: \\
-д.ф-м.н., профессор\\
-Кабатянский Григорий Анатольевич\\
+к.ф-м.н., доцент\\
+Бурнаев Евгений Владимирович\\
 \vspace{1.5cm}
 г. Москва, 2016
 \end{center}
@@ -108,15 +108,16 @@
 \selectlanguage{russian}
 \section*{Аннотация}
 
+В настоящей работе рассматривается вопрос сравниваются байесовские доверительные интервалы и конформные процедуры
 
-\textbf{Ключевые слова:} 
+\textbf{Ключевые слова:} конформные процедуры, ядерные методы, гребневая регрессия,
+доверительныне множества, консервативаня валидность;
 
 \selectlanguage{english}
 \section*{Abstract}
 
-
-
-\textbf{Key words:} 
+\textbf{Key words:} conformal prediction, kernel methods, ridge regression,
+confidence sets, conservative validity;
 \newpage
 
 \selectlanguage{english}
@@ -696,12 +697,13 @@ is \textbf{PD} (see argument after eq.~\ref{eq:holdout_resid}).
 \subsection{Bayesian interpretation} % (fold)
 \label{sub:bayesian_interpretation_of_krr}
 
-It has been mentioned above that the Gaussian Process interpretation of the KRR
-readily yields predictive confidence regions. In this subsection we are going to
-derive the Bayesian confidence interval, against which the conformal confidence
-regions will be compared in the numerical study.
+Kernel ridge regression as a problem of fitting some scattered data can be viewed
+from the stochastic Gaussian process, or kriging, perspective, \cite{rasmussen2006}.
+As we will see in this subsection, this approach to KRR readily yields predictive
+Bayesian confidence intervals, to which in the numerical study (sec.~\ref{sec:numerical_study})
+the conformal confidence regions (sec.~\ref{sec:conformalized_krr}) will be compared
+to.
 
-%% Brief intro into Gaussian processes
 A random process $(f_x)_{x\in \Xcal} \sim GP(m(x), \Kcal(x,x'))$, with mean $m : \Xcal
 \mapsto \Real$ and \textbf{PD} function $\Kcal : \Xcal \times \Xcal \mapsto \Real$
 is a Gaussian Process if all its finite dimensional distributions are multivariate
@@ -743,7 +745,6 @@ kernel
 \end{equation*}
 where $\delta_{x,x'}$ is the delta-function on $\Xcal\times \Xcal$.
 
-%% Conditional distribution
 The conformal procedure constructs confidence intervals for test observations $y_x$,
 contaminated by the additive noise $\epsilon_x$, as opposed to true values $f_x$ in
 the model \ref{eq:signal_model} (see sec.~\ref{sec:conformal_prediction}). In the
