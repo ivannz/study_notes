@@ -407,9 +407,9 @@ for $\text{erf}(c) = \frac{2}{\sqrt{\pi}} \int_0^c e^{-x^2} dx$ and $N_T$ is the
 normalization constant $\mu$ times the root means squared $l_x$ score on the train
 dataset.
 
-Another possible approaches to endowing LOF with probabilistic scores would be to
-use either the empirical distribution of its scores on the train dataset, or conformal
-anomaly detection procedures to assign calibrated probability of abnormality, \cite{Laxhammar2014}.
+Other possible approaches to endowing LOF with probabilistic scores include using
+the empirical distribution of the scores over the train dataset, or applying conformal
+anomaly detection procedures to assign calibrated probabilities, \cite{Laxhammar2014}.
 
 % paragraph anomaly_detection_based_on_distance_similarity (end)
 
@@ -713,10 +713,11 @@ then $I_{n+m} - H_{\tilde{X}} = \lambda Q_{\tilde{X}}$, whence
     \,.
 \end{align}
 It is possible to show that the matrix $K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}$ is also
-\textbf{PD}. Therefore, we have that $M \succeq \lambda I_m$ whence $\lambda M^{-1}
-\preceq I_m$, or that the matrix $M$ defines an expanding linear transformation
-$\Real^{n\times 1} \mapsto \Real^{n\times 1}$. This shows that the out-of-sample
-residuals are generally larger than the corresponding in-sample ones.
+\textbf{PD}. Therefore, we have that $M \succeq \lambda I_m$, whence $\lambda M^{-1}
+\preceq I_m$. This means that the matrix $M^{-1}$ defines a non-expanding (in terms
+of the Euclidean norm) linear transformation $\Real^{n\times 1} \mapsto \Real^{n\times 1}$.
+This shows that the out-of-sample residuals are generally larger than the corresponding
+in-sample ones.
 
 In particular, eq.~\ref{eq:holdout_resid} enables fast computation of the leave-one-out
 residuals of the KRR, without refitting all the way. The full sample residuals of a
