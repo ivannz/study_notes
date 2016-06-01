@@ -17,8 +17,8 @@
 \usepackage{geometry}
 \geometry{top=2cm} % отступ сверху
 \geometry{bottom=2cm} % отступ снизу
-\geometry{left=3.5cm} % отступ справа
-\geometry{right=2cm}
+\geometry{left=3.5cm}
+\geometry{right=2cm} % отступ справа
 
 % \usepackage{fullpage}
 \usepackage[square,numbers,sort&compress]{natbib}
@@ -56,8 +56,6 @@
 \newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
 \newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
 
-\title{Conformalized Kernel Ridge Regression}
-\author{Nazarov, I. N., Burnaev, E. V.}
 
 \def\bbljan{Jan.}
 \def\bblfeb{Feb.}
@@ -72,59 +70,121 @@
 \def\bblnov{Nov.}
 \def\bbldec{Dec.}
 
+% \title{Conformalized Kernel Ridge Regression}
+% \author{Nazarov, I. N., Burnaev, E. V.}
+
 \begin{document}
 
-\thispagestyle{empty}
-\selectlanguage{russian}
-\begin{center}
-\textsc{Правительство Российской Федерации}\\[0.2cm]
-\textsc{Федеральное государственное автономное образовательное учреждение высшего
-профессионального образования \\ «Национальный исследовательский университет \\
-«Высшая школа экономики»}\\[0.7cm]
-Факультет Коспьютерных наук \\[0.2cm]
-Напрвление Науки о данных \\[0.2cm]
-Кафедра Теории моделирования сложных систем\\[1.6cm]
-\textsc{Выпускная квалификационная работа магистра }\\[0.7cm]
-на тему\\[0.7cm]
-\begin{large}
-\textsc{\textbf{Пименение конформных процедур с многомерных линейных моделях и детектировании аномалий}}
-\end{large}
-\end{center}
-\vspace{2.5cm}
-\begin{center}
-Выполнил студент группы м14НоД ИССА \\
-Назаров Иван Николаевич\\
-\vspace{1.5cm}
-Научный руководитель: \\
-к.ф-м.н., доцент\\
-Бурнаев Евгений Владимирович\\
-\vspace{1.5cm}
-г. Москва, 2016
-\end{center}
-\newpage
+\begin{titlepage}
+    \selectlanguage{russian}
+    \thispagestyle{empty}
+    \vbox to \textheight {
+        \renewcommand{\baselinestretch}{1}\selectfont
+        \begin{center}
+            \textbf{%\Large
+            Правительство Российской Федерации\\[0.2cm]
+            Федеральное государственное автономное образовательное учреждение 
+            высшего профессионального образования\\%[0.5cm]
+            Национальный Исследовательский Университет\\%[0.5cm]
+            <<Высшая Школа Экономики>>}\\[0.7cm]
+
+	        \textbf{%\Large
+	        	Факультет Компьютерных Наук\\[0.2cm]
+	            Магистерская программа Науки о Данных\\[0.2cm]
+	            кафедра Интеллектуальные Системы и Структурный Анализ\\[2.0cm]}
+
+            {\large \bfseries ВЫПУСКНАЯ КВАЛИФИКАЦИОННАЯ РАБОТА}\\[0.5cm]
+            на тему\\[1.0cm]
+            {\large \bfseries <<Применение конформных процедур в многомерных линейных моделях и детектировании аномалий>>}\\[0.5cm]
+        \end{center}
+        %\end{center}
+
+        \vspace{3.0cm}
+
+        \begin{flushright}
+            Выполнил студент группы м14НоД ИССА\\
+            Назаров Иван Николаевич\\[2.0cm]
+            Научный руководитель\\
+            к.ф-м.н., доцент\\
+			Бурнаев Евгений Владимирович\\[3cm]
+        \end{flushright}
+
+        \vspace{2.0cm}
+
+        \vfill
+        \begin{center}
+            Москва, 2016\\[3.0cm]
+            % \includegraphics{hsecmyk}\\[1cm]
+        \end{center}
+    }
+\end{titlepage}
+\clearpage
+
 \selectlanguage{english}
-\tableofcontents
-\newpage
+\begin{titlepage}
+    \selectlanguage{english}
+    \thispagestyle{empty}
+    \vbox to \textheight {
+        \renewcommand{\baselinestretch}{1}\selectfont
+        \begin{center}
+            {%\Large
+            Government of Russian Federation\\[0.2cm]
+            Federal State Autonomous Educational Institution of Higher Professional Education\\
+            National Research University\\
+            ``Higher School of Economics''}\\[0.7cm]
+
+            {%\Large
+            Faculty of Computer Science\\[0.2cm] 
+            Master's programme in Data Science\\[0.2cm]
+            Department of Intelligent Systems and Structural Analysis\\[2.0cm]}
+            
+            \textbf{\large \bfseries MASTER THESIS}\\[0.5cm]
+            on\\[1.0cm]
+            {\large \bfseries ``Conformal procedures in multivariate linear models and anomaly detection'' }\\[0.5cm]
+        \end{center}
+
+        \vspace{3.0cm}
+
+        \begin{flushright}
+        	Student of group \rus{м14НоД ИССА} \\
+            Ivan Nazarov\\[2.0cm]
+            Scientific Advisor\\
+            Evgeniy Brunaev\\[3cm]
+        \end{flushright}
+
+        \vspace{2.0cm}
+
+        \vfill
+        \begin{center}
+            Moscow, 2016\\[3.0cm]
+            % \includegraphics{hsecmyk}\\[1cm]
+        \end{center}
+    }
+\end{titlepage}
+
+\clearpage
 \selectlanguage{russian}
 \section*{Аннотация}
 
-В настоящей работе рассматривается вопрос сравниваются байесовские доверительные интервалы и конформные процедуры
+В настоящей работе сравниваются байесовские доверительные интервалы и конформные процедуры.
 
-\textbf{Ключевые слова:} конформные процедуры, ядерные методы, гребневая регрессия,
+\hfill\\\hfill\\
+\noindent\textbf{Ключевые слова:} конформные процедуры, ядерные методы, гребневая регрессия,
 доверительныне множества, консервативаня валидность;
 
 \selectlanguage{english}
 \section*{Abstract}
 
-\textbf{Key words:} conformal prediction, kernel methods, ridge regression,
+\hfill\\\hfill\\
+\noindent\textbf{Keywords:} conformal prediction, kernel methods, ridge regression,
 confidence sets, conservative validity;
-\newpage
 
+\clearpage
 \selectlanguage{english}
+\tableofcontents
 
-% \maketitle
-% \tableofcontents
-% \clearpage
+\clearpage
+\selectlanguage{english}
 
 \section{Introduction} % (fold)
 \label{sec:introduction}
@@ -170,11 +230,12 @@ The distributional assumptions used to derive this distribution are too restrict
 even though the additive effect of many uncontrollable factors is usually quite
 faithfully modeled by a Gaussian distribution (according to the CLT), still it is
 desirable to have distribution-free method that measures confidence of predictions
-of a machine learning algorithm, fares well in general, yet does not loose too much
-performance when Gaussianity assumptions are satisfied. Such a non-parametric method
-could be beneficial in anomaly detection, since KRR allows general curve fitting
-and interpolation, by modeling the dependence of the target on the input features,
-and provide the user with a model-free data-driven measure of predictive confidence.
+of a machine learning algorithm, and works well in practice, yet does not loose too
+much performance when Gaussianity assumptions are satisfied. Such a non-parametric
+method coupled with such a powerful curve fitting and interpolation technique, as
+the kernel ridge regression (KRR) could be beneficial in anomaly detection: it models
+the dependence of a target varaible on the input features, and provides the user with
+a model-free data-driven measure of predictive confidence at each new input.
 
 One such method is ``conformal prediction'' -- a model-free approach developed in
 \cite{vovk2005} for online learning setting, that under the standard independence
@@ -184,7 +245,7 @@ target $y_{x_0}$ with a pre-specified confidence level.
 In this study, we provide empirical evidence supporting the applicability of conformal
 prediction in the offline batch learning setting. We report evidence showing that when
 model assumptions do hold, the conformal confidence sets, constructed with the Kernel
-Ridge Regression (KRR) do not perform worse than the prediction confidence intervals
+Ridge Regression do not perform worse than the prediction confidence intervals
 of the Gaussian Process Regression (GPR) with the same kernel, being a Bayesian
 interpretation of the KRR. The obtained empirical results validate the applicability
 of conformal methods to anomaly detection in supervised learning setting.
@@ -346,9 +407,9 @@ for $\text{erf}(c) = \frac{2}{\sqrt{\pi}} \int_0^c e^{-x^2} dx$ and $N_T$ is the
 normalization constant $\mu$ times the root means squared $l_x$ score on the train
 dataset.
 
-Another approach to make LOF more report outlier probabilities would be to use the
-empirical distribution of its scores on the train dataset to convert test scores
-into outlier probability with respect to the train sample.
+Another possible approaches to endowing LOF with probabilistic scores would be to
+use either the empirical distribution of its scores on the train dataset, or conformal
+anomaly detection procedures to assign calibrated probability of abnormality, \cite{Laxhammar2014}.
 
 % paragraph anomaly_detection_based_on_distance_similarity (end)
 
@@ -428,8 +489,8 @@ or shrinking the coefficients $\beta$ in the expansion.
 Given train-set observations $(x_i, y_i)_{i=1}^n \in \Real^{d\times 1}\times \Real$,
 with $x_i$ collected row-wise in a design matrix $X\in \Real^{n\times d}$, the target
 vector -- $y=(y_i)_{i=1}^n \in \Real^{n\times 1}$, and a regularization parameter
-$\lambda > 0$, the sample-space \textbf{R}idge \textbf{R}egression (RR) problem solves
-this minimization problem
+$\lambda > 0$, the sample-space Ridge Regression (RR) problem solves this minimization
+problem
 \begin{equation}
   \| y - X\beta - \one\beta_0 \|^2 + \lambda \|\beta\|^2
     \to \min_{\beta_0\in \Real, \beta \in \Real^{d\times 1}} \,,
@@ -472,10 +533,9 @@ by the gram matrix of some Mercer-type kernel (see sec.~\ref{sub:kernel_methods}
 It should be noted that care must be taken to ensure additional conditions on the
 input domain imposed by this ``trick'' are met.
 
-For instance, the \textbf{RR} prediction in its dual form, eq.~\ref{eq:rr_dual_sol},
-depends only on the Gram matrix if inter-object inner-products $X X'$ in the input
-domain, which is why it is possible to restate it as the Kernel ridge regression (KRR)
-problem.
+For instance, the RR prediction in its dual form, eq.~\ref{eq:rr_dual_sol}, depends
+only on the Gram matrix if inter-object inner-products $X X'$ in the input domain,
+which is why it is possible to restate it as the kernel ridge regression problem.
 
 \subsection{Kernel methods} % (fold)
 \label{sub:kernel_methods}
@@ -563,10 +623,10 @@ evaluated at the sample objects:
 \end{equation*}
 where $\Phi = \bigl(\phi(x_i)\bigr)_{i=1}^n \in \Hcal^{n\times 1}$.
 
-Kernel ridge regression (KRR) combines ridge regression with the kernel trick, and
-learns a linear function in the feature space induced by the selected kernel and
-sample data. Given a training sample $X = (x_i)_{i=1}^n$, $X\in \Xcal^{n\times 1}$
-and $y \in \Real^{n\times 1}$, KRR solves the following problem
+Kernel ridge regression combines ridge regression with the kernel trick, and learns
+a linear function in the feature space induced by the selected kernel and sample
+data. Given a training sample $X = (x_i)_{i=1}^n$, $X\in \Xcal^{n\times 1}$ and
+$y \in \Real^{n\times 1}$, KRR solves the following problem
 \begin{equation*}
   \|y - f\|^2 + \lambda \|f\|^2 \to \min_{f \in \Hcal} \,,
 \end{equation*}
@@ -804,8 +864,8 @@ true Bayesian prediction $\ex\bigl(y_{X^*}\,|\, y_X\bigr)$):
   \hat{y}_{y_X}(X^*) = m_{X^*} + K_{X^*X} Q_X \bigl(y_X - m_X\bigr) \,.
 \end{equation*}
 
-Gaussian process regression (Kriging) posits that the observed data is drawn from
-$GP(m(x), \Kcal(x, x'))$ with
+Gaussian process regression (GPR), also known as ``Kriging'', posits that the observed
+data is drawn from $GP(m(x), \Kcal(x, x'))$ with
 \begin{equation} \label{eq:krig_kernel}
   \Kcal(x,x') = \sigma^2( \lambda \delta_{x, x'} + K(x, x') ) \,,
 \end{equation}
@@ -982,8 +1042,8 @@ for the ordinary ridge regression.
 
 Consider a sample $Z = (x_i, y_i)_{i=1}^n \in \Zcal$, with $\Xcal = \Real^{d\times 1}$
 and $\Ycal=\Real$. Let $X\in\Real^{n\times d}$ be the overall design matrix of $Z$
-and $y\in\Real^{n\times1}$ -- the target vector of the sample. Bayesian ridge regression
-(BRR) is a particular case of the kernel ridge regression with the kernel being
+and $y\in\Real^{n\times1}$ -- the target vector of the sample. Bayesian Ridge Regression
+(BRR) is a particular case of the Gaussian Process Regression with the kernel being
 the inner product in $\Real^{d\times1}$:
 \begin{equation*}
   \Kcal(x,x') = \sigma^2(\lambda \delta_{x,x'} + \langle x,x'\rangle) \,.
@@ -1004,7 +1064,7 @@ of $y^*$ at $x^*$ conditional on the observed sample is
     \,.
 \end{align}
 
-The properties of conformalized ridge regression (CRR) have been studied in \cite{burnaevV14},
+The properties of Conformalized Ridge Regression (CRR) have been studied in \cite{burnaevV14},
 where it has been shown that under more general assumptions (the Gaussianity of $\beta$
 is relaxed), the conformal confidence region, eq.~\ref{eq:conf_pred_set}, constructed
 with an NCM based on the ridge regression residuals is asymptotically efficient.
@@ -1025,7 +1085,8 @@ region $\Gamma^\alpha$ produced by CRR procedure for the conformity measure in
 eq.~\ref{eq:crr_ncm} is equivalent to the intersection of confidence sets yielded
 by conformal procedures with non-conformity measures given by $\eta_i = \hat{r}_i$
 and $\eta_i = -\hat{r}_i$ at significance levels $\frac{\alpha}{2}$. Individually,
-these NCMs define a \textbf{upper} and \textbf{lower} CRR sets respectively.
+these NCMs define a \textbf{upper} and \textbf{lower} CRR sets respectively, and
+together constitute a ``two-sided'' conformal procedure.
 
 The main result of \cite{burnaevV14} states that under relaxed BRR assumptions if
 a sequence $(x_n)_{n\geq1}\in\Xcal$ is iid with an existing and non-singular second
@@ -1037,8 +1098,11 @@ intervals are asymptotically Gaussian with zero mean.
 Since ridge regression has a dual form solution, it is possible to apply the kernel
 trick to it to get a more powerful ML algorithm. The posterior distribution for the
 GPR confidence intervals has been derived in sec.~\ref{sub:bayesian_interpretation_of_krr},
-so in the next section the construction of a conformal prediction procedure will be
-discussed.
+so in the next section the construction of conformal prediction procedures will be
+discussed. Two methods in particular: in sec.~\ref{sub:ridge_regression_confidence_machine}
+we consider the orginal ridge regression approach from \cite{vovk2005}, and in
+sec.~\ref{sub:kernel_crr} a ``two-sided'' version, which is more amenable to theoretical
+analysis, \cite{burnaevV14}.
 
 % subsection conformalized_ridge_regression (end)
 
@@ -1046,14 +1110,16 @@ discussed.
 \label{sub:ridge_regression_confidence_machine}
 
 In this and the following sections we derive the formulae required for conformal
-confidence prediction based on the KRR NCM, and provide details of a computationally
-efficient procedure, that actually builds confidence regions for applications.
+confidence prediction based on the KRR non-conformity measure, and provide details
+of a computationally efficient procedure, that actually builds confidence regions
+for applications.
 
-We consider two versions of the NCM proposed in \cite{vovk2005}, chapter 2,
-for the regression setting: an in-sample and a \textbf{l}eave-\textbf{o}ne-\textbf{o}ut
-version. To this end consider a sample $(X, y) = (x_i, y_{x_i})_{i=1}^n$, and for
-any $i=1\ldots, n$ put $X = (X_{-i}, x_i)$, and $y = (y_{-i}, y_i)$.
-Let $e_i\in \Real^{n\times 1}$ be the $i$-th unit vector.
+We consider two versions of the NCM for the Ridge Regression Confidence Machine
+(RRCM),proposed in \cite{vovk2005}, chapter 2, for the regression setting: an in-sample
+and a \textbf{l}eave-\textbf{o}ne-\textbf{o}ut version. For this purpose consider
+a sample $(X, y) = (x_i, y_{x_i})_{i=1}^n$, and for any $i=1\ldots, n$ put $X =
+(X_{-i}, x_i)$, and $y = (y_{-i}, y_i)$. Let $e_i\in \Real^{n\times 1}$ be the $i$-th
+unit vector.
 
 The ``in-sample'' NCM $A_{\text{in}}$ measures the absolute value of the regression
 residual and is given by:
@@ -1185,10 +1251,10 @@ coverage numbers $N^m_j$ can be computed in at most $\BigO(n)$ time.
 
 % subsection ridge_regression_confidence_machine (end)
 
-\subsection{Kernel CRR confidence predictor} % (fold)
+\subsection{Kernel two-sided confidence predictor} % (fold)
 \label{sub:kernel_crr}
-Another possibility is to use the two-sided NCM proposed in \cite{burnaevV14} and
-mentioned in sec.~\ref{sub:conformalized_ridge_regression}. Recall that, in order
+Another possibility is to use the two-sided procedure proposed in \cite{burnaevV14}
+and mentioned in sec.~\ref{sub:conformalized_ridge_regression}. Recall that, in order
 to construct a CRR confidence region for significance level $\alpha$ (eq.~\ref{eq:crr_ncm}),
 it is necessary to intersect confidence sets yielded by conformal procedures with NCM
 scores given by $\hat{r}_i^z$ (upper) and $-\hat{r}_i^z$ (lower) at significance level
@@ -2152,8 +2218,8 @@ study the effects of a moderate noise-to-signal $\gamma=10^{-1}$ ratio, relative
 to the variability of the studied test functions.
 
 Firstly, we consider the case when the $\theta$ hyper-parameter is exactly equal
-to $\theta_0$. In this setting the sample GPR and CKRR confidence bands are depicted
-in fig.~\ref{fig:gauss_1d_prof_conf}, and fig.~\ref{fig:gauss_1d_prof_gpr}.
+to $\theta_0$. In this setting the sample GPR and KRR RRCM confidence bands are
+depicted in fig.~\ref{fig:gauss_1d_prof_conf}, and fig.~\ref{fig:gauss_1d_prof_gpr}.
 Qualitatively there is no difference to the negligible nose case, except in the current
 setting the band are wider do to higher observation noise. Despite the overall worse
 fit, however, both conformal and Bayesian confidence regions show approximately correct
@@ -3154,7 +3220,7 @@ and~\ref{tab:nongaussian_f5_2d_cov_conf} using the MAD metric introduced earlier
 Overall the error rates do not sway too far from the stated levels, and the conformal
 procedure yields intervals less sensitive to the hyper-parameters related to the KRR,
 which is expected, since the conservative validity of the conformal prediction should
-not be affected by the internals of the used NCM.
+not be affected by the internals of the used non-conformity measure.
 
 \begin{table}
   \centering
@@ -3252,7 +3318,7 @@ conclusions: \begin{itemize}
 
 In conclusion we summarize the results obtained in section~\ref{sec:numerical_study},
 and outline future research on the applicability of the conformal procedures based
-on KRR in batch learning setting.
+on the kernel ridge regression in batch learning setting.
 
 In the non-Gaussian experiments we found empirical evidence suggesting that the GPR
 confidence regions are not consistently valid if the Gaussianity assumptions fail
@@ -3266,8 +3332,8 @@ when the Gaussianity assumptions hold.
 Further work on the validity of conformal procedures in batch setting, with application
 to anomaly detection, includes: \begin{itemize}
   \item establishing theoretical foundations for the proposed conjectures for the
-  KRR with Gaussian kernel, or isolating special cases when it holds, and studying
-  the cases when it fails;
+  kernel ridge regression with Gaussian kernel, or isolating special cases when it
+  holds, and studying the cases when it fails;
   \item obtaining a generalization to the asymptotic efficiency result in \cite{burnaevV14},
   in for a kernel ridge regression with general kernels.
 \end{itemize}
@@ -3275,6 +3341,7 @@ to anomaly detection, includes: \begin{itemize}
 % section conclusion_and_further_work (end)
 
 % \bibliographystyle{amsplain}
+\clearpage
 \bibliographystyle{ugost2008ls}
 \bibliography{references}
 
