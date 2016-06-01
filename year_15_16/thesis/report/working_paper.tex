@@ -462,7 +462,7 @@ set $X^* = (x_i)_{i=n+1}^{n+m}\in \Real^{m\times d}$, given the train-set, are
 \end{align}
 again in the direct and dual form, respectively.
 
-The so called ``Kernel-trick'', \cite{kernel_trick}, generalizes any ML algorithm,
+The so called ``Kernel-trick'', \cite{scholkopf2002}, generalizes any ML algorithm,
 provided it could be reduced to a form, which depends on the training sample data
 only thorough inner-products, or equivalents, between the objects (the sample Gram
 matrix). The generalization is done by replacing the products with the products of
@@ -554,8 +554,8 @@ machine learning regularized loss minimization problem is to solve
 where $\Hcal$ is a Hilbert Space with Reproducing Kernel $K$, $\Lcal$ is a loss
 function which depends on $f$ through $(f(x_i))_{i=1}^n$, and $\Omega:\Real\mapsto\Real$
 is a monotone increasing function used for regularization. In this setting the Representer
-theorem, \cite{ref:rkhs_representer}, states that the optimal solution is to be sought
-in a finite dimensional linear span of the canonical feature maps $\phi: x\mapsto K(x, \cdot)$
+theorem, \cite{scholkopf2002}, states that the optimal solution is to be sought in a
+finite dimensional linear span of the canonical feature maps $\phi: x\mapsto K(x, \cdot)$
 evaluated at the sample objects:
 \begin{equation*}
   f^* \in \bigl\{ \beta'\Phi\,:\, \beta \in \Real^{n\times 1} \bigr\} \,,
@@ -1207,7 +1207,7 @@ with $q_i = \frac{c_i-c_n}{b_n-b_i}$. The forms of regions $L_i$ for the lower C
 are computed similarly, but with the signs of $c_i$ and $b_i$ flipped for each $i=1, \ldots, n$.
 
 Both upper and lower confidence regions are built similarly to the kernel RRCM region
-eq.~\ref{eq:rrcm_conf_ci} in sec.~\ref{ssub:ridge_regression_confidence_machine}. The
+eq.~\ref{eq:rrcm_conf_ci} in sec.~\ref{sub:ridge_regression_confidence_machine}. The
 final the Kernel CRR confidence set is:
 \begin{equation} \label{eq:crr_conf_ci}
   \Gamma_{X_{-n}, y_{-n}}^\alpha(x_n)
