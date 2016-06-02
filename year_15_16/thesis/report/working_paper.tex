@@ -90,8 +90,8 @@
 
 	        \textbf{%\Large
 	        	Факультет Компьютерных Наук\\[0.2cm]
-	            Магистерская программа Науки о Данных\\[0.2cm]
-	            кафедра Интеллектуальные Системы и Структурный Анализ\\[2.0cm]}
+	            Магистерская программа <<Науки о Данных>>\\[0.2cm]
+	            кафедра <<Технологии Моделирования Сложных Систем>>\\[2.0cm]}
 
             {\large \bfseries ВЫПУСКНАЯ КВАЛИФИКАЦИОННАЯ РАБОТА}\\[0.5cm]
             на тему\\[1.0cm]
@@ -102,7 +102,7 @@
         \vspace{3.0cm}
 
         \begin{flushright}
-            Выполнил студент группы м14НоД ИССА\\
+            Студент группы м14НоД ИССА\\
             Назаров Иван Николаевич\\[2.0cm]
             Научный руководитель\\
             к.ф-м.н., доцент\\
@@ -136,7 +136,7 @@
             {%\Large
             Faculty of Computer Science\\[0.2cm] 
             Master's programme in Data Science\\[0.2cm]
-            Department of Intelligent Systems and Structural Analysis\\[2.0cm]}
+            Department of ``Technologies of Modeling of Complex Systems''\\[2.0cm]}
             
             \textbf{\large \bfseries MASTER THESIS}\\[0.5cm]
             on\\[1.0cm]
@@ -174,6 +174,7 @@
 
 \selectlanguage{english}
 \section*{Abstract}
+The problem of detecting anomalies  is extremely important in applications.
 
 \hfill\\\hfill\\
 \noindent\textbf{Keywords:} conformal prediction, kernel methods, ridge regression,
@@ -189,11 +190,48 @@ confidence sets, conservative validity;
 \section{Introduction} % (fold)
 \label{sec:introduction}
 
-Regression methods are concerned with studying pattern of dependence between the
-target variable $y$ and the input variable $x$ based on a finite train sample of 
-possibly noisy observations $(X, y)$ from $\Omega\times \Ycal \subseteq \Xcal\times\Real$.
-These methods postulate that there exits a stable unobserved relationship $y_x = f(x)$
-and observations of $y$ at any given $x\in\Omega$ are corrupted by additive noise:
+Anomaly detection is concerned with identifying observations in new incoming test
+data, which diverge in a some sense from the previously seen data. The central idea,
+common to all methods in this field, is to infer from the provided sample data some
+notion of ``normal'' data, and based on that, derive a notion of ``anomalous'' data.
+By definition, the volume of positive, ``normal'', observations overwhelms the amount
+of negative, ``anomaluos'', examples.
+
+Methods of anomaly detection are widespread in applied fields, which deal with complex
+multi-component systems, that generate enormous volumes of telemetry and other data.
+For example, breast cancer detection based on mammography screening data \cite{tarassenko1995}
+and other fields of medical diagnostics \cite{quinn2007,clifton2011}, detection of
+failures and breakdown in complex industrial systems \cite{tarassenko2009}, on-site
+structure monitoring \cite{surace2010}, intrusion detection and anti-fraud solutions
+in bank and mobile network operators \cite{patcha2007,jyothsna2011}, et c. The complexity
+of modern multi-component systems stems from practical difficulty of recovering the
+complete picture of interactions between the constituent parts. As a result, there
+is a large number of ``anomalous'' regimes of operation, some of which may not be
+known in advance, and that render standard multiclass classification solutions inapplicable.
+One way of resolving this issue of incomplete information is to employ anomaly detection
+methods, that ``learns'' what the ``normal'' mode is by using the overwhelming volume
+of positive examples. Such methods check the patterns in the test observations against
+the ``learnt'' notion of ``normality'' by estimating their degree of abnormality.
+Such measure, which may have probabilistic interpretation, is compared to a decision
+threshold, and the test examples are classified as anomalous if the threshold is
+exceeded.
+
+In many applied situations, like anomaly detection in telemetry of some equipment,
+online filtering and monitoring of potentially interesting events, or power grid
+load balancing, it is necessary not only to make optimal predictions with respect
+to some loss, but also to be able to quantify the degree of confidence in the obtained
+forecasts. At the same time it is necessary to take into consideration exogenous
+variables, that in certain ways affect the object of study. Anomaly detection techniques
+based on predictive modeling are concerned with applying regression and classification
+methods to model the data, and based on the learnt conditional model, decide if the
+new data is normal or not.
+
+To recap, standard regression methods are concerned with studying pattern of dependence
+between the target variable $y$ and the input variable $x$ based on a finite train
+sample of  possibly noisy observations $(X, y)$ from $\Omega\times \Ycal \subseteq
+\Xcal\times\Real$. These methods postulate that there exits a stable unobserved relationship
+$y_x = f(x)$ and observations of $y$ at any given $x\in\Omega$ are corrupted by
+additive noise:
 \begin{equation} \label{eq:signal_model}
   y_x = f(x) + \xi_x \,,
 \end{equation}
@@ -201,17 +239,16 @@ with $\ex \xi_x = 0$ for all $x\in \Omega$. Regression methods allow one to cons
 an estimate $\hat{f}$ of the true relation $f$, which can be used to produce point
 predictions at any $x$.
 
-In many applied situations, like anomaly detection in telemetry of some equipment,
-or online filtering and monitoring of potentially interesting events, it is necessary
-not only to make optimal predictions with respect to some loss, but also to be able
-to quantify the degree of confidence in the generated prediction. Standard regression
-methods, however, do not readily provide the user with such performance metric, and
-additional probabilistic assumptions regarding the observation model (eq.~\ref{eq:signal_model})
-are required to get a posterior probability measure for unobserved data given the
-training data via the Bayesian probabilistic derivation methods.
+These methods, however, do not readily provide the user with any sort of prediction
+confidence measure, and in order to acquire such measure additional probabilistic
+assumptions regarding the observation model (eq.~\ref{eq:signal_model}) are required.
+With their help, it is usually quite straightforward to get a posterior probability
+measure for unobserved data given the training data using standard Bayesian derivation
+methods.
+
 For example, in the ordinary least squares regression with fixed design the assumption
 that the noise observations is Gaussian readily yields the posterior distribution of
-the target variable at new test points: if $X\in \Real^{n\times d}$, and $y\in\Real{n\times1}$
+the target variable at new test points: if $X\in \Real^{n\times d}$, and $y\in\Real^{n\times1}$
 is the observed training sample, then at a new $x_0\Real^{d\times 1}$
 \begin{equation}
   y_{x_0} - x_0'\hat{\beta} \sim \Ncal(0, \sigma^2(1 + x_0'(X'X)^{-1} x_0)) \,,
@@ -226,10 +263,10 @@ which can be used to measure confidence in unobserved target at $x_0$ is
 where $t_{n-d}$ is the Student-t distribution with $n-d$ degrees of freedom, and
 $\hat{s}^2 = (n-d)^{-1}\|y-X\hat{\beta}\|^2$ is the estimate of the noise variance.
 
-The distributional assumptions used to derive this distribution are too restrictive:
-even though the additive effect of many uncontrollable factors is usually quite
-faithfully modeled by a Gaussian distribution (according to the CLT), still it is
-desirable to have distribution-free method that measures confidence of predictions
+The distributional assumptions used to derive this posterior distribution are too
+restrictive: even though the additive effect of many uncontrollable factors is usually
+quite faithfully modeled by a Gaussian distribution (according to the CLT), still
+it is desirable to have distribution-free method that measures confidence of predictions
 of a machine learning algorithm, and works well in practice, yet does not loose too
 much performance when Gaussianity assumptions are satisfied. Such a non-parametric
 method coupled with such a powerful curve fitting and interpolation technique, as
@@ -240,15 +277,31 @@ a model-free data-driven measure of predictive confidence at each new input.
 One such method is ``conformal prediction'' -- a model-free approach developed in
 \cite{vovk2005} for online learning setting, that under the standard independence
 assumption constructs a set in the space of targets, that contains yet unobserved
-target $y_{x_0}$ with a pre-specified confidence level.
+data with a pre-specified confidence level. Conformal prediction can be built on
+top of any other ML algorithm: regression (ridge, $k$-NN et c., \cite{vovk2005},
+chapter 2) or classification, -- any tool, that is able to make predictions about
+yet unobserved target variables. The chief purpose of ``conformalizing'' is to make
+predictive models, especially Bayesian models, valid under less restrictive distributional
+assumptions, and yet offer not much worse performance, when the assumptions of the
+original method are valid. ``Conformalization'' of ML algorithms is in spirit similar
+to designing non-parametric, robust analogues to classical parametric tests, which
+rely on Gaussianity.
+
+Conformal prediction essentially does the following: for every possible value $z$
+of an object $Z_{n+1}$ the procedure tests $H_0: Z_{n+1}=z$, and then inverts the
+test to get a confidence region. The hypothesis tests are based on the observed sample
+$(Z_i)_{i=1}^n$ and hypothesized $z$, and are designed to have a pre-specified type-I
+error rate $\alpha$. In classification, the class label hypotheses for new $x_{n+1}$
+are tested, whereas in regression the test are conducted for target levels.
 
 In this study, we provide empirical evidence supporting the applicability of conformal
-prediction in the offline batch learning setting. We report evidence showing that when
-model assumptions do hold, the conformal confidence sets, constructed with the Kernel
-Ridge Regression do not perform worse than the prediction confidence intervals
-of the Gaussian Process Regression (GPR) with the same kernel, being a Bayesian
-interpretation of the KRR. The obtained empirical results validate the applicability
-of conformal methods to anomaly detection in supervised learning setting.
+prediction in the offline batch learning setting. In particular, we report evidence
+showing that when model assumptions do hold, the conformal confidence sets, constructed
+over the Kernel Ridge Regression with isotropic Gaussian kernel do not perform worse
+than the prediction confidence intervals of a Bayesian version of the KRR -- the
+Gaussian Process Regression (GPR) with the same kernel. The obtained empirical results
+demonstrate applicability of conformal methods to anomaly detection in supervised
+offline learning setting.
 
 The report is structured as follows: in sec.~\ref{sec:survey} we review common state
 of the art approaches to anomaly detection in mutlivariate data, in sec.~\ref{sec:kernel_ridge_regression}
@@ -268,41 +321,15 @@ and prospects of future research on this topic (sec.~\ref{sec:conclusion_and_fur
 \section{Survey of anomaly detection methods} % (fold)
 \label{sec:survey}
 
-Anomaly detection is concerned with identifying observations in new incoming test
-data, which diverge in a certain sense from the previously seen data. Practical importance
-and difficulty of this task spurred a large volume of research which resulted in
-a large number of heterogeneous approaches and methods to its solution. These methods
-are used in analysis of data, in which the amount of ``normal'' observations (positive
-examples) overwhelms the number of ``anomaluos'' examples (negative samples).
-
-Methods of anomaly detection are widespread in applied fields, which deal with complex
-multi-component systems, that generate enormous volumes of telemetry and other data.
-For example, breast cancer detection based on mammography screening data \cite{tarassenko1995}
-and other fields of medical diagnostics \cite{quinn2007,clifton2011}, detection of
-failures and breakdown in complex industrial systems \cite{tarassenko2009}, on-site
-structure monitoring \cite{surace2010}, intrusion detection and anti-fraud solutions
-in bank and mobile network operators \cite{patcha2007,jyothsna2011} and etc. The
-complexity of modern multi-component systems stems from practical difficulty of recovering
-the complete picture of interactions between the constituent parts. As a result,
-there is a large number of ``anomalous'' regimes of operation, some of which may
-not be known in advance, and which render the standard multiclass classification
-solutions inapplicable. One way of resolving this issue of incomplete information
-is to employ such anomaly detection methods, which ``learns'' what the ``normal''
-mode is by using the overwhelming volume of positive examples. The method checks
-the test patterns against the ``learnt'' normal model by estimating their degree
-of abnormality. This measure,  which may have probabilistic interpretation, is compared
-to a decision threshold, and the test examples are classified as anomalous if the
-threshold is exceeded.
-
-In this section we are going to review some main approaches for anomaly detection
-in multidimensional i.i.d. observations. The case of obervations, depending on time,
-and related to a problem of quickest change-point detection and classification, will
-be considered in the next sections. 
+Practical importance and difficulty of anomaly detection in general spurred a great
+deal of research, which resulted in a large volume of heterogeneous approaches and
+methods to its solution. In this section we are going to review some main approaches
+for anomaly detection in multidimensional i.i.d. observations.
 
 \paragraph{Anomaly detection based on probabilistic models} % (fold)
 \label{par:anomaly_detection_based_on_probabilistic_models}
 
-Probabilistic approaches to anomaly detection are rely on approximating the generative
+Probabilistic approaches to anomaly detection rely on approximating the generative
 distribution of the observed data. Later, the learnt distribution can be truncated
 in order to determine a ``normal'' region in the space of data, and be used to tell
 if test data is generated by this distribution, or another one. It is assumed that
@@ -557,13 +584,13 @@ argument. In the following presentation all considered vector spaces are over th
 field of reals.
 
 A Hilbert space is an inner product space, which is complete with respect to the
-natural metric induced by the norm $ \|f\| = \sqrt{\langle f, f\rangle} $. A \textbf{R}eproducing
-\textbf{K}ernel \textbf{H}ilbert \textbf{S}pace is a complete inner-product vector
-space of maps $\Xcal \mapsto \Real$ over the field $\Real$, in which the evaluation
-functional defined by $\epsilon_x(f) = f(x)$ is $(\Hcal, \|\cdot\|) \mapsto (\Real, |\cdot|)$
-bounded for any $x\in \Xcal$ (in normed spaces bounded linearity is equivalent to
-continuity). Equivalently, an \textbf{RKHS} is a Hilbert space for which there exists
-a map $\phi:\Xcal\to\Hcal$, and a \textbf{P}ositive \textbf{D}efinite kernel function
+natural metric induced by the norm $ \|f\| = \sqrt{\langle f, f\rangle} $. A Reproducing
+Kernel Hilbert Space (RKHS) is a complete inner-product vector space of maps $\Xcal
+\mapsto \Real$ over the field $\Real$, in which the evaluation functional defined
+by $\epsilon_x(f) = f(x)$ is $(\Hcal, \|\cdot\|) \mapsto (\Real, |\cdot|)$ bounded
+for any $x\in \Xcal$ (in normed spaces bounded linearity is equivalent to continuity).
+Equivalently, an \textbf{RKHS} is a Hilbert space for which there exists a map
+$\phi:\Xcal\to\Hcal$, and a Positive Definite (PD) kernel function
 $K:\Xcal \times \Xcal \mapsto \Real$ such that \begin{enumerate}
   \item $K(x,y) = \langle \phi(x), \phi(y) \rangle$ for all $x, y\in \Xcal$;
   \item $g(x) = \langle g, K(x, \cdot)\rangle$ for all $x\in \Xcal$ and every
@@ -583,8 +610,8 @@ definite'' here permits such non-zero weights, for which the product is exactly
 zero. Positive definite kernels are also known as Mercer kernels, or covariance
 kernels.
 
-Finally, any \textbf{PD} kernel $K$ gives rise to a so called \textbf{canonical RKHS}
-associated with $K$ constructed by a standard metric-completion argument for a pre-Hilbert
+Finally, any PD kernel $K$ gives rise to a so called ``canonical RKHS'' associated
+with $K$ constructed by a standard metric-completion argument for a pre-Hilbert
 space (a non-complete inner-product space)
 \begin{equation*}
 \Hcal_0
@@ -698,8 +725,8 @@ where $Q_X = \bigl( \lambda I_n + K_{XX} \bigr)^{-1}$ and
   M = \lambda I_m + K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*} \,.
 \end{equation*}
 Since $\lambda I_{n+m} + K_{\tilde{X}\tilde{X}}$ is an invertible positive definite
-matrix ($M\succeq 0$), its inverse is \textbf{PD} as well, whence $M$ is positive
-definite and invertible as well. If $H_{\tilde{X}} = K_{\tilde{X}\tilde{X}} Q_{\tilde{X}}$,
+matrix, its inverse must be positive definite, and thus $M$ must be positive definite
+and invertible as well. If $H_{\tilde{X}} = K_{\tilde{X}\tilde{X}} Q_{\tilde{X}}$,
 then $I_{n+m} - H_{\tilde{X}} = \lambda Q_{\tilde{X}}$, whence
 \begin{align}
   y^* - \hat{y}^*_{|(\tilde{X}, \tilde{y})}
@@ -712,12 +739,21 @@ then $I_{n+m} - H_{\tilde{X}} = \lambda Q_{\tilde{X}}$, whence
     \label{eq:holdout_resid}
     \,.
 \end{align}
+
 It is possible to show that the matrix $K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}$ is also
-\textbf{PD}. Therefore, we have that $M \succeq \lambda I_m$, whence $\lambda M^{-1}
-\preceq I_m$. This means that the matrix $M^{-1}$ defines a non-expanding (in terms
-of the Euclidean norm) linear transformation $\Real^{n\times 1} \mapsto \Real^{n\times 1}$.
-This shows that the out-of-sample residuals are generally larger than the corresponding
-in-sample ones.
+PD. Indeed, one can take a sum of two zero-mean independent Gaussian Processes $f_x$
+and $\epsilon_x$ with kernels $K(x,x')$ and $\lambda \delta_{x,x'}$, respectively
+(see sec.~\ref{sub:bayesian_interpretation_of_krr}), which are equivalent in finite-
+dimensional distributions to a zero-mean GP $y_x=f_x+\epsilon_x$ with combined kernel
+$K(x,x') + \lambda \delta_{x,x'}$, and then derive a distribution of $(f_x)_{x\in X^*}$
+conditional on the observed sample $(y_x)_{x\in X}$. This distribution is Gaussian
+with mean $K_{X^*X}Q_X y_X$ and variance $K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}$.
+
+Therefore, we have that $M \succeq \lambda I_m$, whence $\lambda M^{-1} \preceq I_m$,
+which means that the matrix $M^{-1}$ defines a non-expanding (in terms of the Euclidean
+norm) linear transformation $\Real^{n\times 1} \mapsto \Real^{n\times 1}$. This shows
+that the out-of-sample residuals are generally larger than the corresponding in-sample
+ones.
 
 In particular, eq.~\ref{eq:holdout_resid} enables fast computation of the leave-one-out
 residuals of the KRR, without refitting all the way. The full sample residuals of a
@@ -1065,7 +1101,7 @@ of $y^*$ at $x^*$ conditional on the observed sample is
     \,.
 \end{align}
 
-The properties of Conformalized Ridge Regression (CRR) have been studied in \cite{burnaevV14},
+The properties of ``Conformalized Ridge Regression'' (CRR) have been studied in \cite{burnaevV14},
 where it has been shown that under more general assumptions (the Gaussianity of $\beta$
 is relaxed), the conformal confidence region, eq.~\ref{eq:conf_pred_set}, constructed
 with an NCM based on the ridge regression residuals is asymptotically efficient.
@@ -1090,18 +1126,23 @@ these NCMs define a \textbf{upper} and \textbf{lower} CRR sets respectively, and
 together constitute a ``two-sided'' conformal procedure.
 
 The main result of \cite{burnaevV14} states that under relaxed BRR assumptions if
-a sequence $(x_n)_{n\geq1}\in\Xcal$ is iid with an existing and non-singular second
-moment matrix $\ex x_1x_1' \preceq 0$, then for all sufficiently large $n$ the CRR
+a sequence $(x_n)_{n\geq1}\in\Xcal$ is i.i.d. with an existing and non-singular second
+moment matrix $\ex x_1x_1' \succeq 0$, then for all sufficiently large $n$ the CRR
 produces confidence regions that are intervals, and the difference between the upper
 and lower ends of the Bayesian confidence interval and the conformal confidence
-intervals are asymptotically Gaussian with zero mean.
+intervals is asymptotically Gaussian with zero mean. For the ridge regression this
+means that when Gaussianity is valid little efficiency is lost if conformal confidence
+intervals are used instead of Bayesian: the upper endpoint of the prediction interval
+deviates asymptotically as $\mathcal{O}_p\bigl(n^{-\frac{1}{2}}\bigr)$ (the discrepancy
+times $\sqrt{n}$ is stochastically bounded), where $n$ is the number of observations
+in the train sample.
 
 Since ridge regression has a dual form solution, it is possible to apply the kernel
 trick to it to get a more powerful ML algorithm. The posterior distribution for the
 GPR confidence intervals has been derived in sec.~\ref{sub:bayesian_interpretation_of_krr},
 so in the next section the construction of conformal prediction procedures will be
 discussed. Two methods in particular: in sec.~\ref{sub:ridge_regression_confidence_machine}
-we consider the orginal ridge regression approach from \cite{vovk2005}, and in
+we consider the original ridge regression approach from \cite{vovk2005}, and in
 sec.~\ref{sub:kernel_crr} a ``two-sided'' version, which is more amenable to theoretical
 analysis, \cite{burnaevV14}.
 
@@ -1382,7 +1423,7 @@ hyper-parameters: \begin{enumerate}
   \item the precision of the Gaussian kernel $\theta$ is picked from
   $\{10, 10^2, 10^3\}$, since the input domain is the unit cube, for which
   $\|x-x'\| \leq \sqrt{d}$ for all $x,x'\in[0,1]^d$;
-  \item the fixed $\theta$ or its MLE estimate ($\theta$ that minimizes \ref{eq:bkrr_likelihood};
+  \item the fixed $\theta$ or its MLE estimate ($\theta$ that minimizes \ref{eq:bkrr_likelihood});
 \end{enumerate}
 For a given test function $f:\Xcal \mapsto \Real$ on some compact domain $\Xcal$
 each experiment for $n, \theta, \lambda, A$ and $\hat{r}$ consists of the following
@@ -3318,7 +3359,7 @@ conclusions: \begin{itemize}
 \label{sec:conclusion_and_further_work}
 
 In conclusion we summarize the results obtained in section~\ref{sec:numerical_study},
-and outline future research on the applicability of the conformal procedures based
+and outline further research on the applicability of the conformal procedures based
 on the kernel ridge regression in batch learning setting.
 
 In the non-Gaussian experiments we found empirical evidence suggesting that the GPR
@@ -3330,14 +3371,49 @@ time, confidence intervals of the conformalized kernel ridge regression seem to
 perform not worse than the confidence regions of the Gaussian Process regression,
 when the Gaussianity assumptions hold.
 
-Further work on the validity of conformal procedures in batch setting, with application
-to anomaly detection, includes: \begin{itemize}
+Further work on the validity of conformal procedures in batch setting, with applications
+to anomaly detection, shall include: \begin{itemize}
   \item establishing theoretical foundations for the proposed conjectures for the
   kernel ridge regression with Gaussian kernel, or isolating special cases when it
   holds, and studying the cases when it fails;
   \item obtaining a generalization to the asymptotic efficiency result in \cite{burnaevV14},
-  in for a kernel ridge regression with general kernels.
+  in for a kernel ridge regression with general kernels;
+  \item designing a non-parametric procedure, that permits estimation of the kernel
+  precision based on conformal confidence intervals, for example in similar in spirit
+  to the central idea of \cite{goldenshluger1997};
 \end{itemize}
+
+It might be fruitful to research conformal procedures the field of kernel embedding
+of probability distributions \cite{smola2007}. In \cite{gretton2012}, a powerful two-
+sample distribution test was constructed, that reduces the problem of testing the
+equality of distributions $P$ an $Q$ to studying the distance between their embeddings
+$\mu_P(x) = \ex_{y\sim P} K(x, y)$ in the universal RKHS, induced by the kernel $K$.
+The proposed test statistic measures, the \textit{maximum mean discrepancy} (MDD),
+which measures the RKHS norm of the deviation of the embeddings of the empirical
+distributions. This MDD measure can readily be used as a non-conformity measure for
+the following anomaly detection problem: given a sample $Z_{:n-1} = (z_i)_{i=1}^{n-1}$
+decide if a new example $z_n$ is anomalous or not by measuring how well it conforms
+to $Z$. If the full sample is denoted by $Z_{:n} = (z_i)_{i=1}^n$, then the proposed
+conformal procedure would be based on the following NCM:
+\begin{equation*}
+  A(Z_{-i:n}, z_i) = \| \mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}} \|^2_{\Hcal} \,,
+\end{equation*}
+where $\hat{P}_{-i:n}$ and $\hat{P}_{:n}$ are empirical distributions over $Z_{-i:n}$
+and $Z_{:n}$, respectively, with $Z_{:n-1}$ being the sample $Z_{:n}$ without the
+$i$-th observation. Note, that it would be necessary to consider only vector-matrix
+multiplications, since for any subsample $S$ of $Z_{:n}$ the empirical distribution
+embedding is given by
+\begin{equation*}
+  \mu_{\hat{P}_S}(\cdot) = (\one_m'\one_m)^{-1} \one_m' k_S(\cdot) \,,
+\end{equation*}
+where $m = |S|$, $k_S(\cdot) = (K(z_i, \cdot))_{i\in S} \in \Hcal^{m\times 1}$ is
+the sample evaluation vector of the kernel $K$, and $\one_m \in \Real^{m\times 1}$
+is the vector of ones.
+
+Finally, it would be interesting in general to investigate possible benefits conformalization
+could provide for such unsupervised machine learning algorithms, as the LOF (\cite{breunig2000},
+described in sec.~\ref{par:anomaly_detection_based_on_distance_similarity} of this report),
+Bayesian PCA and mixtures thereof \cite{tippnigbishop1999}, and the kernel PCA \cite{hoffmann2007}.
 
 % section conclusion_and_further_work (end)
 
