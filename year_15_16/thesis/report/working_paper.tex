@@ -3388,13 +3388,13 @@ of probability distributions \cite{smola2007}. In \cite{gretton2012}, a powerful
 sample distribution test was constructed, that reduces the problem of testing the
 equality of distributions $P$ an $Q$ to studying the distance between their embeddings
 $\mu_P(x) = \ex_{y\sim P} K(x, y)$ in the universal RKHS, induced by the kernel $K$.
-The proposed test statistic measures, the \textit{maximum mean discrepancy} (MDD),
-which measures the RKHS norm of the deviation of the embeddings of the empirical
-distributions. This MDD measure can readily be used as a non-conformity measure for
-the following anomaly detection problem: given a sample $Z_{:n-1} = (z_i)_{i=1}^{n-1}$
-decide if a new example $z_n$ is anomalous or not by measuring how well it conforms
-to $Z$. If the full sample is denoted by $Z_{:n} = (z_i)_{i=1}^n$, then the proposed
-conformal procedure would be based on the following NCM:
+The proposed test statistic, the \textit{maximum mean discrepancy} (MDD), measures
+the RKHS norm of the deviation of the embeddings of the empirical distributions.
+This MDD measure can readily be used as a non-conformity measure for the following
+anomaly detection problem: given a sample $Z_{:n-1} = (z_i)_{i=1}^{n-1}$ decide if
+a new example $z_n$ is anomalous or not by measuring how well it conforms to $Z$.
+If the full sample is denoted by $Z_{:n} = (z_i)_{i=1}^n$, then the proposed conformal
+procedure would be based on the following NCM:
 \begin{equation*}
   A(Z_{-i:n}, z_i) = \| \mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}} \|^2_{\Hcal} \,,
 \end{equation*}
@@ -3411,9 +3411,10 @@ the sample evaluation vector of the kernel $K$, and $\one_m \in \Real^{m\times 1
 is the vector of ones.
 
 Finally, it would be interesting in general to investigate possible benefits conformalization
-could provide for such unsupervised machine learning algorithms, as the LOF (\cite{breunig2000},
-described in sec.~\ref{par:anomaly_detection_based_on_distance_similarity} of this report),
-Bayesian PCA and mixtures thereof \cite{tippnigbishop1999}, and the kernel PCA \cite{hoffmann2007}.
+could provide for such unsupervised machine learning algorithms, as the LOF anomaly
+detection method (see sec.~\ref{par:anomaly_detection_based_on_distance_similarity}
+of this report, and \cite{breunig2000}), Bayesian PCA \cite{tippnigbishop1999} and
+mixtures thereof, and the kernel PCA \cite{hoffmann2007}.
 
 % section conclusion_and_further_work (end)
 
