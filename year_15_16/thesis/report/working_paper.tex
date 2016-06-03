@@ -95,7 +95,8 @@
 
             {\large \bfseries ВЫПУСКНАЯ КВАЛИФИКАЦИОННАЯ РАБОТА}\\[0.5cm]
             на тему\\[1.0cm]
-            {\large \bfseries <<Применение конформных процедур в многомерных линейных моделях и детектировании аномалий>>}\\[0.5cm]
+            {\large \bfseries <<Конформные методы в многомерных линейных моделях и детектировании аномалий>>}\\[0.5cm]
+            % {\large \bfseries <<Применение конформных процедур в многомерных линейных моделях и детектировании аномалий>>}\\[0.5cm]
         \end{center}
         %\end{center}
 
@@ -140,16 +141,17 @@
             
             \textbf{\large \bfseries MASTER THESIS}\\[0.5cm]
             on\\[1.0cm]
-            {\large \bfseries ``Conformal procedures in multivariate linear models and anomaly detection'' }\\[0.5cm]
+            % {\large \bfseries ``Conformal procedures in multivariate linear models and anomaly detection'' }\\[0.5cm]
+            {\large \bfseries ``Conformalized multidimensional linear modelling and anomaly detection'' }\\[0.5cm]
         \end{center}
 
         \vspace{3.0cm}
 
         \begin{flushright}
-        	Student of group \rus{м14НоД ИССА} \\
-            Ivan Nazarov\\[2.0cm]
-            Scientific Advisor\\
-            Evgeniy Brunaev\\[3cm]
+        	by Nazarov Ivan \\student, group \rus{м14НоД ИССА}\\[2.0cm]
+            Scientific Advisor:\\
+            Evgeniy Brunaev, PhD\\
+            Associate Professor\\[3cm]
         \end{flushright}
 
         \vspace{2.0cm}
@@ -163,6 +165,8 @@
 \end{titlepage}
 
 \clearpage
+\begin{titlepage}
+\thispagestyle{empty}
 \selectlanguage{russian}
 \section*{Аннотация}
 
@@ -182,7 +186,11 @@
 \hfill\\\hfill\\
 \noindent\textbf{Ключевые слова:} конформные процедуры, ядерные методы, гребневая регрессия,
 доверительныне множества, консервативная валидность;
+\end{titlepage}
 
+\clearpage
+\begin{titlepage}
+\thispagestyle{empty}
 \selectlanguage{english}
 \section*{Abstract}
 The problem of anomaly detection is an important applied task, among the most common
@@ -201,10 +209,13 @@ regions perform against the confidence sets, produced by the Gaussian Process Re
 \hfill\\\hfill\\
 \noindent\textbf{Keywords:} conformal prediction, kernel methods, ridge regression,
 confidence sets, conservative validity;
+\end{titlepage}
 
 \clearpage
+\begin{titlepage}
 \selectlanguage{english}
 \tableofcontents
+\end{titlepage}
 
 \clearpage
 \selectlanguage{english}
@@ -323,7 +334,10 @@ over the Kernel Ridge Regression with isotropic Gaussian kernel do not perform w
 than the prediction confidence intervals of a Bayesian version of the KRR -- the
 Gaussian Process Regression (GPR) with the same kernel. The obtained empirical results
 demonstrate applicability of conformal methods to anomaly detection in supervised
-offline learning setting.
+offline learning setting. The chief contribution of the conducted research is in
+the field of applicability of comformalized models, specifically the kernel ridge
+regression methods, anomaly and novelty detection in complex multi-component systems
+with multi-dimensional datasets.
 
 The report is structured as follows: in sec.~\ref{sec:survey} we review common state
 of the art approaches to anomaly detection in multivariate data, in sec.~\ref{sec:kernel_ridge_regression}
@@ -458,7 +472,7 @@ dataset.
 
 Other possible approaches to endowing LOF with probabilistic scores include using
 the empirical distribution of the scores over the train dataset, or applying conformal
-anomaly detection procedures to assign calibrated probabilities, \cite{Laxhammar2014}.
+anomaly detection procedures to assign calibrated probabilities, \cite{laxhammar2014}.
 
 % paragraph anomaly_detection_based_on_distance_similarity (end)
 
@@ -590,7 +604,7 @@ which is why it is possible to restate it as the kernel ridge regression problem
 \label{sub:kernel_methods}
 
 In this section we are going to give a brief recap of the foundations of kernel methods
-and their applications.
+and their applications (for a more thorough overview see \cite{hofmann2008}).
 
 A tuple $(\Hcal, \langle\cdot, \cdot\rangle)$ is an inner-product space over $\Real$
 if $\Hcal$ is a vector space over $\Real$, and $\langle\cdot, \cdot\rangle : \Hcal
@@ -647,7 +661,7 @@ with an inner-product
   \langle f, g \rangle = \sum_{i=1}^n \sum_{j=1}^m \alpha_i K(x_i, z_j) \beta_j \,,
 \end{equation*}
 where $f, g\in \Hcal_0$ with representations $f = \sum_{i=1}^n \alpha_i K(x_i, \cdot)$
-and $g = \sum_{j=1}^m \beta_j K(z_j, \cdot)$. In the completed RKHS $\Hcal = \bigl[\Hcal_0\bigr]$
+and $g = \sum_{j=1}^m \beta_j K(z_j, \cdot)$. In the completed RKHS, $\Hcal = \bigl[\Hcal_0\bigr]$,
 the canonical feature map $\phi$ is given by the canonical map $x\mapsto K(x, \cdot)$
 and $K(\cdot, \cdot)$ is the reproducing kernel. The inner-product is extended to
 $\Hcal$ by continuity as a step in completion of $\Hcal_0$. It is worth noting, that
@@ -663,7 +677,7 @@ machine learning regularized loss minimization problem is to solve
 \end{equation}
 where $\Hcal$ is a Hilbert Space with Reproducing Kernel $K$, $\Lcal$ is a loss
 function which depends on $f$ through $(f(x_i))_{i=1}^n$, and $\Omega:\Real\mapsto\Real$
-is a monotone increasing function used for regularization. In this setting the Representer
+is a non-decreasing function used for regularization. In this setting the Representer
 theorem, \cite{scholkopf2002}, states that the optimal solution is to be sought in a
 finite dimensional linear span of the canonical feature maps $\phi: x\mapsto K(x, \cdot)$
 evaluated at the sample objects:
@@ -696,7 +710,7 @@ of the Gram matrix $K$ and due to its symmetry for any $j=1,\ldots,n$
     = e_j' K \beta
     \,,
 \end{equation*}
-where $k_x = \Phi(x) = (\phi(x_i)(y))_{i=1}^n \in \Real^{n\times 1}$ and $e_j$ is
+where $k_x = \Phi(x) = (\phi(x_i)(x))_{i=1}^n \in \Real^{n\times 1}$ and $e_j$ is
 the $j$-th unit vector in $\Real^{n\times 1}$. Furthermore
 \begin{equation*}
   \| f \|^2
@@ -725,30 +739,28 @@ The out-of-train-sample prediction residuals are given by
     = y^* - K_{XX^*}' (\lambda I_n + K_{XX})^{-1} y
     \,,
 \end{equation*}
-with $K_{XX^*} = (K_X(x^*_j))_{j=1}^m \in \Real{n\times m}$.
-Now an in-sample prediction based on the optimal weights over the pooled sample
-$(\tilde{X}, \tilde{y})$ given by $((X, X^*), (y, y^*))$. First, since the matrix
-$\lambda I_n + K_{XX}$ is always invertible for $\lambda > 0$, block-matrix inversion
-formula implies that $Q_{\tilde{X}} = (\lambda I_{n+m} + K_{\tilde{X}\tilde{X}})^{-1}$
-is given by:
+with $K_{XX^*} = (K(x_i, x^*_j))_{i,j} \in \Real^{n\times m}$ and $K_{XX}$ defined as
+$(K(x_i, x_j))_{i,j} \in \Real^{n\times n}$. Now an in-sample prediction based on the
+optimal weights over the pooled sample $(\tilde{X}, \tilde{y})$ given by $((X, X^*),
+(y, y^*))$. First, since the matrix $\lambda I_n + K_{XX}$ is always invertible for
+$\lambda > 0$, block-matrix inversion formula implies that $Q_{\tilde{X}} =
+(\lambda I_{n+m} + K_{\tilde{X}\tilde{X}})^{-1}$ is given by:
 \begin{equation*}
-  % & = \begin{pmatrix}
+  % \begin{pmatrix}
   %   \lambda I_n + K_{XX} & K_{XX^*} \\
   %   K_{X^*X} & \lambda I_m + K_{X^*X^*}
-  % \end{pmatrix}^{-1} \\
+  % \end{pmatrix}^{-1} =
   \begin{pmatrix}
     Q_X + Q_X K_{XX^*} M^{-1} K_{X^*X} Q_X & - Q_X K_{XX^*} M^{-1} \\
     - M^{-1} K_{X^*X} Q_X & M^{-1}
   \end{pmatrix}
   \,,
 \end{equation*}
-where $Q_X = \bigl( \lambda I_n + K_{XX} \bigr)^{-1}$ and
-\begin{equation*}
-  M = \lambda I_m + K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*} \,.
-\end{equation*}
-Since $\lambda I_{n+m} + K_{\tilde{X}\tilde{X}}$ is an invertible positive definite
-matrix, its inverse must be positive definite, and thus $M$ must be positive definite
-and invertible as well. If $H_{\tilde{X}} = K_{\tilde{X}\tilde{X}} Q_{\tilde{X}}$,
+where $Q_X = \bigl( \lambda I_n + K_{XX} \bigr)^{-1}$ and $M = \lambda I_m + K_{X^*X^*}
+- K_{X^*X} Q_X K_{XX^*}$. Since $\lambda I_{n+m} + K_{\tilde{X}\tilde{X}}$ is an
+invertible positive definite matrix, its inverse must be positive definite, and thus
+$M$ must be positive definite and invertible as well.
+If $H_{\tilde{X}} = K_{\tilde{X}\tilde{X}} Q_{\tilde{X}}$,
 then $I_{n+m} - H_{\tilde{X}} = \lambda Q_{\tilde{X}}$, whence
 \begin{align}
   y^* - \hat{y}^*_{|(\tilde{X}, \tilde{y})}
@@ -3406,12 +3418,27 @@ However, future research should not be limited to the items, listed above. Below
 briefly outline possible novel application of conformal prediction, that might be
 no less interesting than the conformalized kernel ridge regression.
 
+It would be interesting in general to investigate possible benefits conformalization
+could provide for such unsupervised machine learning algorithms, as the LOF anomaly
+detection method (see sec.~\ref{par:anomaly_detection_based_on_distance_similarity}
+of this report, and \cite{breunig2000}), Bayesian PCA \cite{tippnigbishop1999} and
+mixtures thereof, and the kernel PCA \cite{hoffmann2007}.
+
+Finally, we would like to outline two potentially interesting research topics: in
+sec.~\ref{sub:conformalized_kernel_embeddings} we state the possible use of conformal
+prediction in constructing more direct unsupervised anomaly detection method, and
+in sec.~\ref{sub:conformal_kernel_precision_selection} we propose a method for selection
+of kernel precision based on conformal confidence sets.
+
+\subsection{Conformalized kernel embeddings} % (fold)
+\label{sub:conformalized_kernel_embeddings}
+
 It might be fruitful to research conformal procedures the field of kernel embedding
 of probability distributions, \cite{smola2007}. Basically in a suitable RKHS many non-
 pathological distributions on metric spaces can be identified with a unique element
 of said RKHS. In particular, if $K$ is a kernel that induces a universal RKHS $\Hcal$
 of functions $\Xcal\mapsto\Real$, then for any probability distribution $P$ on $\Xcal$
-there is a unique $\mu_P\in \Hcal$ whenever $\ex_{x\sim P} \sqrt{K(x,x)} < +\infty$.
+there is a unique $\mu_P\in \Hcal$ whenever $\ex_{x\sim P} \sqrt{K(x,x)}$ is finite.
 For instance, the Gaussian kernel in eq.~\ref{eq:gauss_kenrel} satisfies this property
 and its induced canonical RKHS is universal. Now, the boundedness of $K$ in expectation
 implies that $f\mapsto \ex_P f$ is a bounded linear functional in $\Hcal$, whence by
@@ -3456,41 +3483,77 @@ pre-Hilbert space, their inner products can be computed from the sample Gram mat
 of $K$. Indeed, using the ordinary formula for sequential update of the sample average
 we get
 \begin{align*}
-  \mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}}
-    &= (n-1)^{-1}\sum_{j\neq i} K(x_j, \cdot) - n^{-1}\sum_j K(x_j, \cdot) \\
-    &= \frac{1}{n-1} \bigl( n^{-1} \sum_j K(x_j, \cdot) - K(x_i, \cdot) \bigr) \,,
+  % (n-1)\bigl(\mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}}\bigr)
+  %   % &= (n-1)^{-1}\sum_{j\neq i} K(x_j, \cdot) - n^{-1}\sum_j K(x_j, \cdot) \\
+  %   &= n^{-1} \sum_j K(x_j, \cdot) - K(x_i, \cdot) \,,
+  (n-1)^2 \bigl\|\mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}} \bigr\|^2_\Hcal
+    &= \bigl\| n^{-1} \sum_j K(x_j, \cdot) - K(x_i, \cdot) \bigr\|^2_\Hcal \\
+    % &= \bigl\| e_i' (I_n - \one(\one'\one)^{-1}\one') k_X(\cdot) \bigr\|^2_\Hcal \\
+    &= e_i'K_{XX} e_i + \frac{1}{n^2} \one' K_{XX} \one - \frac{2}{n} \one' K_{XX} e_i \,,
+    % &= e_i'(I_n - \one(\one'\one)^{-1}\one')K_{XX}(I_n - \one(\one'\one)^{-1}\one') e_i \,,
 \end{align*}
-whence
-\begin{align*}
-  (n-1)^2 \|\mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}}\|^2_\Hcal
-    &= e_i'K_{XX} e_i + \frac{1}{n^2} \one' K_{XX} \one \\
-    & \, - \frac{2}{n} \one' K_{XX} e_i \,,
-\end{align*}
-where $\one$ is the vector of $1$ and $e_i$ is the unit vector.
+where $\one$ is the vector of $1$'s and $e_i$ is the unit vector both of appropriate
+dimensions. This is basically the distance of the $i$-th canonical feature map from
+the centre of dataset in $\Hcal$.
 
 Conformalization of this procedure would most likely proceed in the direction of
-using  eq.~\ref{eq:conf_p_value} to measure the degree of abnormality of new examples.
-Even more in low dimensional cases there might exist an efficient approximation procedure
-that yields multivariate quantiles based on the conformal prediction.
+using eq.~\ref{eq:conf_p_value} as a measure of the degree of abnormality of new
+examples. Furthermore, it seems that in low dimensional cases there might exist an
+efficient approximation procedure that could yield multivariate quantiles of even
+confidence sets based on inverting hypothesis test in the conformal prediction.
+
+% subsection conformalized_kernel_embeddings (end)
+
+\subsection{Conformal kernel precision selection} % (fold)
+\label{sub:conformal_kernel_precision_selection}
 
 Yet another research direction, which is intimately connected to both the conformalized
 ridge regression and kernel embeddings, is concerned with designing a non-parametric
-procedure, that could permit estimation of the kernel precision parameter based on
+procedure, that could yield estimates of the kernel precision parameter based on
 conformal confidence intervals, for example, similar in spirit to the central idea
-of \cite{goldenshluger1997}.
+of \cite{goldenshluger1997}. The authors consider the problem of restoring $f:[0,1]
+\mapsto\Real$ in eq.~\ref{eq:signal_model} from observations contaminated by an i.i.d
+sub-Gaussian noise, and propose a method to select a locally optimal kernel bandwidth
+(the reciprocal of the precision $\theta$) based on approximate minimization of the
+size of the confidence region for a true value of $f$ with fixed coverage rate. They
+propose to approximate the optimal bandwidth with the largest bandwidth, for which
+all confidence regions corresponding to lower bandwidths overlap.
 
-%%% THIS
-The authors propose to obtain an optimal local bandwidth
-(reciprocal of the precision $\theta$) of the kernel estimate at a particular point,
-based on the confidence intervals, derived from a sub-gaussain noise. The optimal
-bandwidth is chosen to be value that minimizes the width of the confidence interval  constructed on the assumption of subgaussianity of the additive
-noise in eq.~\ref{eq:signal_model}.
+In particular they show that in their setting the confidence regions for $f(x_0)$
+have error rate at most $e^{- c t^2}$ for $c = \mathcal{O}(n)$, $n$ is the train
+sample size, and are of the form
+\begin{equation*}
+  \bigl| f(x_0) - \hat{f}_\delta(x_0) \bigr|
+    \leq \omega_f(x_0, \delta) + t \sqrt{\delta} \,,
+\end{equation*}
+where $\omega_f(x_0, \delta) = \sup_{x\in[0,1]} |f(x)-f(x_0)|$ is the ``deterministic
+dynamic error'', $t \sqrt{\delta}$ is an upper bound for the ``stochastic error'',
+and $\delta$ is the bandwidth of the estimator $\hat{f}_\delta(\cdot)$. If $f$ were
+known, the optimal $\delta^*$ would have been given by
+\begin{equation*}
+  \delta^*
+    = \sup\bigl\{ \delta > 0 \, : \,
+        \omega_f(x_0, \delta) \leq t \sqrt{\delta} \bigr\}\,,
+\end{equation*}
+but, since $f$ is unknown, authors propose the ``intersection'' estimate:
+\begin{equation*}
+  \delta^+
+    = \sup\{ \eta > 0 \, : \, \emptyset \neq 
+        \cap_{\delta\leq \eta} [\hat{f}_\delta(x_0) - 2 t \sqrt{\delta},
+                                \hat{f}_\delta(x_0) + 2 t \sqrt{\delta}] \} \,,
+\end{equation*}
+which they show makes the approximation error lie within acceptable bounds with high
+probability.
 
-Finally, it would be interesting in general to investigate possible benefits conformalization
-could provide for such unsupervised machine learning algorithms, as the LOF anomaly
-detection method (see sec.~\ref{par:anomaly_detection_based_on_distance_similarity}
-of this report, and \cite{breunig2000}), Bayesian PCA \cite{tippnigbishop1999} and
-mixtures thereof, and the kernel PCA \cite{hoffmann2007}.
+The main obstacle in their method is that the deterministic dynamic error depends
+on the unknown $f$, which is why direct minimization of the width of the confidence
+interval was not feasible. In contrast to their situation, conformal confidence
+intervals have a clear and known width and fixed coverage guarantees, which means
+that we can directly minimize the width to select the optimal bandwidth. Possible
+challenge in this research might be selecting and justifying the aggregation method,
+used to move from local bandwidth estimates to global ones.
+
+% subsection conformal_kernel_precision_selection (end)
 
 % section conclusion_and_further_work (end)
 
