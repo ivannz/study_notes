@@ -166,15 +166,37 @@
 \selectlanguage{russian}
 \section*{Аннотация}
 
-В настоящей работе сравниваются байесовские доверительные интервалы и конформные процедуры.
+Обнаружение аномалий является важной важной прикладной задачей, одним из методов
+которой является построение предиктивных моделей, на основе прогнозов которых выносится
+суждение об аномальности. Однако без дополнительных вероятностных предположений
+подобные методы не способны указать степень уверенности в собственном предсказании.
+В настоящей работе рассматривается конформный метод построения доверительных множеств
+в задаче регрессии, позволяющий получить некоторые вероятностные гарантии относительно
+точности прогноза, что очевидным образом даёт возможность определят аномалии как
+события выхода за пределы построенных доверительных интервалов. В данной работе
+приводится описание и построение эффективной процедуры для построения конформных
+интервалов, а также проводится сравнительное эмпирическое исследование конформной
+ядерной гребневой регрессии с байесовскими доверительными интервалами, полученными
+из регрессии на Гауссвоских процессах.
 
 \hfill\\\hfill\\
 \noindent\textbf{Ключевые слова:} конформные процедуры, ядерные методы, гребневая регрессия,
-доверительныне множества, консервативаня валидность;
+доверительныне множества, консервативная валидность;
 
 \selectlanguage{english}
 \section*{Abstract}
-The problem of detecting anomalies  is extremely important in applications.
+The problem of anomaly detection is an important applied task, among the most common
+approaches to which is anomaly detection based on predictive modelling. The predictions 
+of such models are compared to the actually observed new data in order to decide
+whether there is an anomaly or not. However, without additional distributional assumptions
+such models cannot provide an probabilistic measure of the degree of their own confidence
+in the prediction. This report considers conformal methods for constructing non-
+parametric confidence regions, which offer certain probabilistic guarantees regarding
+their validity. With a ready confidence region a new observation is considered anomalous
+if it is not covered by the constructed confidence set. In this report a detailed
+description of a computationally efficient conformal procedure is presented, and
+a comparative numerical study is conducted to see how well the conformal confidence
+regions perform against the confidence sets, produced by the Gaussian Process Regression.
 
 \hfill\\\hfill\\
 \noindent\textbf{Keywords:} conformal prediction, kernel methods, ridge regression,
@@ -207,7 +229,7 @@ in bank and mobile network operators \cite{patcha2007,jyothsna2011}, et c. The c
 of modern multi-component systems stems from practical difficulty of recovering the
 complete picture of interactions between the constituent parts. As a result, there
 is a large number of ``anomalous'' regimes of operation, some of which may not be
-known in advance, and that render standard multiclass classification solutions inapplicable.
+known in advance, and that render standard multi-class classification solutions inapplicable.
 One way of resolving this issue of incomplete information is to employ anomaly detection
 methods, that ``learns'' what the ``normal'' mode is by using the overwhelming volume
 of positive examples. Such methods check the patterns in the test observations against
@@ -222,7 +244,7 @@ load balancing, it is necessary not only to make optimal predictions with respec
 to some loss, but also to be able to quantify the degree of confidence in the obtained
 forecasts. At the same time it is necessary to take into consideration exogenous
 variables, that in certain ways affect the object of study. Anomaly detection techniques
-based on predictive modeling are concerned with applying regression and classification
+based on predictive modelling are concerned with applying regression and classification
 methods to model the data, and based on the learnt conditional model, decide if the
 new data is normal or not.
 
@@ -265,13 +287,13 @@ $\hat{s}^2 = (n-d)^{-1}\|y-X\hat{\beta}\|^2$ is the estimate of the noise varian
 
 The distributional assumptions used to derive this posterior distribution are too
 restrictive: even though the additive effect of many uncontrollable factors is usually
-quite faithfully modeled by a Gaussian distribution (according to the CLT), still
+quite faithfully modelled by a Gaussian distribution (according to the CLT), still
 it is desirable to have distribution-free method that measures confidence of predictions
 of a machine learning algorithm, and works well in practice, yet does not loose too
 much performance when Gaussianity assumptions are satisfied. Such a non-parametric
 method coupled with such a powerful curve fitting and interpolation technique, as
 the kernel ridge regression (KRR) could be beneficial in anomaly detection: it models
-the dependence of a target varaible on the input features, and provides the user with
+the dependence of a target variable on the input features, and provides the user with
 a model-free data-driven measure of predictive confidence at each new input.
 
 One such method is ``conformal prediction'' -- a model-free approach developed in
@@ -304,7 +326,7 @@ demonstrate applicability of conformal methods to anomaly detection in supervise
 offline learning setting.
 
 The report is structured as follows: in sec.~\ref{sec:survey} we review common state
-of the art approaches to anomaly detection in mutlivariate data, in sec.~\ref{sec:kernel_ridge_regression}
+of the art approaches to anomaly detection in multivariate data, in sec.~\ref{sec:kernel_ridge_regression}
 we provide an brief overview of the machinery behind the kernel ridge regression, in
 section~\ref{sub:bayesian_interpretation_of_krr} we restate the KRR in the Gaussian
 setting, and in section~\ref{sec:conformal_prediction} a concise overview of what
@@ -342,13 +364,13 @@ The tools employed in such tasks vary in their complexity. The simplest approach
 are based on the machinery of statistical hypothesis testing, which are usually equivalent
 to statistical outlier tests \cite{vic1994}. These procedures are able to determine
 whether an example comes from the same probability distribution as the normal data.
-The majority of these tests are based on gaussianity assumption (c.f.~\cite{grubbs1969}),
+The majority of these tests are based on Gaussian assumption (c.f.~\cite{grubbs1969}),
 and work only for univariate continuous data, however there are versions adapted
 to multivariate case (c.f.~\cite{aggarwal2008,vic1994}). We are not going to consider
 classical univariate outlier test any further, and instead will examine more modern
 methods, that can handle complex multivariate distributions.
 
-Estimation of the distribution, which generated the mutlivariate observations, has
+Estimation of the distribution, which generated the multivariate observations, has
 been extensively studied (c.f.~\cite{chow1970,scott2008}). The relevant methods can
 be either parametric or non-parametric. Parametric methods rely on a rather restrictive
 assumption, that the data distribution belongs to a certain class of models, where
@@ -404,7 +426,7 @@ of a point $x$ to averaged local density of each of its local neighbours. It was
 shown in \cite{breunig2000}, that whenever a point lies deep within a cluster (well
 embedded) then its ``LOF'' is approximately equal to $1$, and conversely that if
 $l_x < 1$ then the average local density to the neighbours is greater than the
-local density within the neighborhood, which means that $x$ is actually well embedded
+local density within the neighbourhood, which means that $x$ is actually well embedded
 within a cluster. It is worth noting, however, that LOF ranks the observation by
 their abnormality score, but still can miss potential outliers, the local density
 of which is sufficiently large, yet close to the neighbourhood's average.
@@ -418,7 +440,7 @@ or metric $d$. The local context of $x$ gives rise to the so called $\phi$-dista
 defined as such a value $\rho_x\geq 0$, that $P_{z\sim S_x}(d(x,z)\leq \rho_x)\geq \phi$
 for some fixed probability threshold $\phi\in(0,1)$. Authors make a simplifying assumption
 that $d(x,z)$ for $z$ within $S_x$ is distributed like $a\sim \Ncal(0, \sigma^2)$
-given $a\geq0$, that enables them to reparametrize the $\phi$-distance in terms of
+given $a\geq0$, that enables them to re-parametrize the $\phi$-distance in terms of
 the number of root mean squared distance in $S_x$, which yields a simpler formula
 for $\rho_x$:
 \begin{equation*}
@@ -440,8 +462,8 @@ anomaly detection procedures to assign calibrated probabilities, \cite{Laxhammar
 
 % paragraph anomaly_detection_based_on_distance_similarity (end)
 
-\paragraph{Anomaly detection based on predictive modeling} % (fold)
-\label{par:anomaly_detection_based_on_predictive_modeling}
+\paragraph{Anomaly detection based on predictive modelling} % (fold)
+\label{par:anomaly_detection_based_on_predictive_modelling}
 
 Anomaly detection techniques based on prediction employ regression and classification
 methods, which model the observed dataset. For each test observation a forecast error
@@ -466,17 +488,17 @@ directions along which the variability of the data is maximal. This method can b
 used to construct an approximation of the train data distribution in the transformed
 space \cite{jolliffe2014}. PCA based methods for anomaly detection are reviewed in
 \cite{dutta2007,shyu2003}. In \cite{hoffmann2007,scholkopf1998} the PCA is generalized
-to nonlinear case with a nonlinear data transformation using a special kernel mapping
+to non-linear case with a non-linear data transformation using a special kernel mapping
 (Kernel PCA).
 
-% paragraph anomaly_detection_based_on_predictive_modeling (end)
+% paragraph anomaly_detection_based_on_predictive_modelling (end)
 
 \paragraph{Domain-based anomaly detection} % (fold)
 \label{par:domain_based_anomaly_detection}
 
 Yet another class of anomaly detection methods relies on describing the decision
 boundary of the ``normal'' data. This sort of methods is unaffected by the density
-of the normal class, since only the boundary of the relevant region is modeled, not
+of the normal class, since only the boundary of the relevant region is modelled, not
 its interior. Whether an observation belongs to a certain class is decided on the
 proximity to the decision boundary. As in the case of two-class SVM, SVM for anomaly
 detection (one-class SVM) defines the normal-abnormal separating hypersurface using
@@ -499,7 +521,7 @@ relationship is non-linear, the trained linear model will have high bias, i.e.
 it will make statistically non-negligible systematic errors in its predictions.
 However, the linear formulation does not limit the applicability of the ordinary
 regression, since by choosing a richer input-feature mapping $\phi: \Omega \mapsto
-\Real^{p\times 1}$ it is possible to cover the case of nonlinear target-observation
+\Real^{p\times 1}$ it is possible to cover the case of non-linear target-observation
 relationships. The map $\phi$ defines a basis with respect to which the unknown
 underlying $f$ is approximated. For instance, the mapping $x\mapsto (\prod_{i=1}^d
 x_i^{m_i})_{m\in M}$, with integers $M=(m_i)_{i=1}^d\geq 0$ and $\sum_{i=1}^d m_i \leq p$,
@@ -530,10 +552,10 @@ The intercept term is given by
   \hat{\beta}_0 = \bar{y} - \bar{X} \hat{\beta} \,,
 \end{equation}
 where $\bar{y}$ and $\bar{X}$ are the mean target and observation values respectively,
-and $\hat{\beta}$ solves the intercept-free ridge regression problem run on centered
-observations and targets. Therefore in the following we omit the intercept term and
-assume that the relevant columns in the design matrix have been dealt with, and both
-the design matrix and the targets have been centered.
+and $\hat{\beta}$ solves the intercept-free ridge regression problem run on centred
+observations and targets. Therefore in the remainder of this section we omit the intercept
+term and assume that the relevant columns in the design matrix have been dealt with,
+and both the design matrix and the targets have been centred.
 
 Since this one is problem of convex optimization, there exists a unique solution
 given by 
@@ -795,7 +817,7 @@ is \textbf{PD} (see argument after eq.~\ref{eq:holdout_resid}).
 \label{sub:bayesian_interpretation_of_krr}
 
 Kernel ridge regression as a problem of fitting some scattered data can be viewed
-from the stochastic Gaussian process, or kriging, perspective, \cite{rasmussen2006}.
+from the stochastic Gaussian process, or Kriging, perspective, \cite{rasmussen2006}.
 As we will see in this subsection, this approach to KRR readily yields predictive
 Bayesian confidence intervals, to which in the numerical study (sec.~\ref{sec:numerical_study})
 the conformal confidence regions (sec.~\ref{sec:conformalized_krr}) will be compared
@@ -984,9 +1006,9 @@ we consider supervised setting with $\Zcal$ denoting the object-target space $\X
 
 The nature of the underlying ML predictive algorithm is irrelevant to conformal
 prediction, as the core of the procedure is a measurable map $A: \Zcal^*\times \Zcal \mapsto \Real$,
-a \textbf{N}on-\textbf{C}onformity \textbf{M}easure, \textbf{NCM}, which for a training
-sample $Z_{:n}=(z_i)_{i=1}^n\in\Zcal$ and a test object $z_* \in \Zcal$ quantifies
-how much different $z_*$ is relative to the sample $Z_{:n}$.
+a Non-Conformity Measure, NCM, which for a training sample $Z_{:n}=(z_i)_{i=1}^n\in\Zcal$
+and a test object $z_* \in \Zcal$ quantifies how much different $z_*$ is relative
+to the sample $Z_{:n}$.
 
 A conformal predictor over the NCM $A$ is a procedure, that for every sample $Z_{:n}$,
 a test object $x_{n+1} \in \Xcal$, and a confidence level $\alpha\in(0,1)$, computes
@@ -1681,7 +1703,7 @@ those of other columns in fig.~\ref{fig:gaussian_1d_low_noise_width_arb}.
     \includegraphics[width=0.95\linewidth]{images/output_pdf/exp_1d/gaussian/1e-06_0.1/gaussian_1e-06_0,1_auto_ratio.pdf}
     \caption{} \label{fig:gaussian_1d_low_noise_c4}
   \end{subfigure}%
-  \caption{Coverage rate dynamics in the fully gaussian low-noise case $\gamma=10^{-6}$
+  \caption{Coverage rate dynamics in the fully Gaussian low-noise case $\gamma=10^{-6}$
   for different $(\theta, \lambda)$:
   \subref{fig:gaussian_1d_low_noise_c1}~--~$(\theta_0, 10^{-6})$,
   \subref{fig:gaussian_1d_low_noise_c2}~--~$(\theta_0, 10^{-1})$,
@@ -1762,7 +1784,7 @@ those of other columns in fig.~\ref{fig:gaussian_1d_low_noise_width_arb}.
   $\gamma=10^{-6}$ for different $(\theta, \lambda)$. Upward triangles indicate the
   $5\%$ sample quantile across the whole test sample of confidence regions' widths,
   whereas downward triangles indicate the maximal width. The median width is drawn
-  with a slightly thicker line. The coloring matches the colors of respective confidence
+  with a slightly thicker line. The colouring matches the colours of respective confidence
   levels as in fig.~\ref{fig:gaussian_1d_low_noise}.}
   \label{fig:gaussian_1d_low_noise_width}
 \end{figure}
@@ -1845,7 +1867,7 @@ those of other columns in fig.~\ref{fig:gaussian_1d_low_noise_width_arb}.
     \includegraphics[width=0.95\linewidth]{images/output_pdf/exp_1d/gaussian/1e-06_0.1/gaussian_1e-06_0,1_1000_ratio.pdf}
     \caption{} \label{fig:gaussian_1d_low_noise_arb_c4}
   \end{subfigure}%
-  \caption{The coverage rate dependence on $n$ in the fully gaussian low-noise case $\gamma=10^{-6}$
+  \caption{The coverage rate dependence on $n$ in the fully Gaussian low-noise case $\gamma=10^{-6}$
   for arbitrary $\theta$:
   (\subref{fig:gaussian_1d_low_noise_arb_c1}, \subref{fig:gaussian_1d_low_noise_arb_c2})~--~$\theta=10$,
   and (\subref{fig:gaussian_1d_low_noise_arb_c3}, \subref{fig:gaussian_1d_low_noise_arb_c4})~--~$\theta=1000$.
@@ -1919,7 +1941,7 @@ those of other columns in fig.~\ref{fig:gaussian_1d_low_noise_width_arb}.
     \includegraphics[width=0.95\linewidth]{images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/CRR-loo/width_gaussian_1e-06_0,1_1000_CRR-loo.pdf}
     \caption{} \label{fig:gaussian_1d_low_noise_width_arb_c4}
   \end{subfigure}%
-  \caption{Confidence region size dynamics for arbitrary $\theta$ in the fully gaussian
+  \caption{Confidence region size dynamics for arbitrary $\theta$ in the fully Gaussian
   case (see description in fig.~\ref{fig:gaussian_1d_low_noise_arb}).}
   \label{fig:gaussian_1d_low_noise_width_arb}
 \end{figure}
@@ -2284,7 +2306,7 @@ provide at least conservatively the required level of validity regardless of the
 parameters ($\theta$, $\lambda$) at the core of the non-conformity measure.
 
 From this particular experiment in this setting, can be concluded that there is evidence
-in favor of the conjectured asymptotic conservative validity of the conformal confidence
+in favour of the conjectured asymptotic conservative validity of the conformal confidence
 regions for all considered NCMs and residual types as well as their asymptotic efficiency.
 As expected, the GPR confidence predictions uphold their theoretical guarantees in
 this case.
@@ -2367,7 +2389,7 @@ this case.
     \includegraphics[width=0.95\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/gaussian_0,1_0,1_auto_ratio.pdf}
     \caption{} \label{fig:gaussian_1d_high_noise_c4}
   \end{subfigure}%
-  \caption{Coverage rate dynamics in the noisy fully gaussian case $\gamma=10^{-1}$
+  \caption{Coverage rate dynamics in the noisy fully Gaussian case $\gamma=10^{-1}$
   for different $(\theta, \lambda)$:
   \subref{fig:gaussian_1d_high_noise_c1}~--~$(\theta_0, 10^{-6})$,
   \subref{fig:gaussian_1d_high_noise_c2}~--~$(\theta_0, 10^{-1})$,
@@ -2527,7 +2549,7 @@ this case.
     \includegraphics[width=0.95\linewidth]{images/output_pdf/exp_1d/gaussian/0.1_0.1/gaussian_0,1_0,1_1000_ratio.pdf}
     \caption{} \label{fig:gaussian_1d_high_noise_arb_c4}
   \end{subfigure}%
-  \caption{Coverage rate dynamics in the noisy fully gaussian case $\gamma=10^{-1}$
+  \caption{Coverage rate dynamics in the noisy fully Gaussian case $\gamma=10^{-1}$
   for different $(\theta, \lambda)$ (see fig.~\ref{fig:gaussian_1d_high_noise}).}
   \label{fig:gaussian_1d_high_noise_arb}
 \end{figure}
@@ -2931,7 +2953,7 @@ following conclusions:
     \caption{} \label{fig:f6_1d_high_noise_width_c2}
   \end{subfigure}
   \caption{Width dynamics of the KRR and GPR confidence sets for the ML estimate
-  of $\theta$ for the values of the ``f6'' test function, distorted by gaussian noise
+  of $\theta$ for the values of the ``f6'' test function, distorted by Gaussian noise
   with $\gamma=10^{-1}$.}
   \label{fig:f6_1d_high_noise_width}
 \end{figure}
@@ -2957,7 +2979,7 @@ Gaussian noise.
   \begin{subfigure}[b]{0.5\linewidth}
     \includegraphics[width=\linewidth]{images/output_pdf/exp_2d/f5/0.1_1e-06/1500/profile/f5_0,1_1e-06_1000_test.pdf}
   \end{subfigure}
-  \caption{A sample path of a $2$-d non-Gaussian function, contanimated by moderate
+  \caption{A sample path of a $2$-d non-Gaussian function, contaminated by moderate
   independent $\Ncal(0, \gamma)$ noise. Function: \textit{left:} ``f2''; \textit{right:}
   ``f5''.}
   \label{fig:nongauss_2d_profile}
@@ -3378,37 +3400,91 @@ to anomaly detection, shall include: \begin{itemize}
   holds, and studying the cases when it fails;
   \item obtaining a generalization to the asymptotic efficiency result in \cite{burnaevV14},
   in for a kernel ridge regression with general kernels;
-  \item designing a non-parametric procedure, that permits estimation of the kernel
-  precision based on conformal confidence intervals, for example in similar in spirit
-  to the central idea of \cite{goldenshluger1997};
 \end{itemize}
 
+However, future research should not be limited to the items, listed above. Below we
+briefly outline possible novel application of conformal prediction, that might be
+no less interesting than the conformalized kernel ridge regression.
+
 It might be fruitful to research conformal procedures the field of kernel embedding
-of probability distributions \cite{smola2007}. In \cite{gretton2012}, a powerful two-
-sample distribution test was constructed, that reduces the problem of testing the
-equality of distributions $P$ an $Q$ to studying the distance between their embeddings
-$\mu_P(x) = \ex_{y\sim P} K(x, y)$ in the universal RKHS, induced by the kernel $K$.
-The proposed test statistic, the \textit{maximum mean discrepancy} (MDD), measures
-the RKHS norm of the deviation of the embeddings of the empirical distributions.
-This MDD measure can readily be used as a non-conformity measure for the following
-anomaly detection problem: given a sample $Z_{:n-1} = (z_i)_{i=1}^{n-1}$ decide if
-a new example $z_n$ is anomalous or not by measuring how well it conforms to $Z$.
-If the full sample is denoted by $Z_{:n} = (z_i)_{i=1}^n$, then the proposed conformal
-procedure would be based on the following NCM:
+of probability distributions, \cite{smola2007}. Basically in a suitable RKHS many non-
+pathological distributions on metric spaces can be identified with a unique element
+of said RKHS. In particular, if $K$ is a kernel that induces a universal RKHS $\Hcal$
+of functions $\Xcal\mapsto\Real$, then for any probability distribution $P$ on $\Xcal$
+there is a unique $\mu_P\in \Hcal$ whenever $\ex_{x\sim P} \sqrt{K(x,x)} < +\infty$.
+For instance, the Gaussian kernel in eq.~\ref{eq:gauss_kenrel} satisfies this property
+and its induced canonical RKHS is universal. Now, the boundedness of $K$ in expectation
+implies that $f\mapsto \ex_P f$ is a bounded linear functional in $\Hcal$, whence by
+Riesz representation theorem there exists a unique $\mu_P\in \Hcal$ with $\ex_P f
+= \langle \mu_P, f\rangle$ for all $f\in \Hcal$. In particular, for $f = k(x, \cdot)$
+the reproducing property of $K$ implies that
 \begin{equation*}
-  A(Z_{-i:n}, z_i) = \| \mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}} \|^2_{\Hcal} \,,
+  \ex_{y\sim P} K(x, y) = \langle \mu_P, K(x, \cdot) \rangle = \mu_P(x) \,,
+\end{equation*}
+which provides a closed formula for the embedding of $P$.
+
+In \cite{gretton2012}, a powerful two-sample distribution test was constructed, based
+on this elegant idea. Essentially, for a compact metric space $\Xcal$ the distributions
+$P$ and $Q$ coincide if and only if $\ex_P f = \ex_Q f$ for all continuous and bounded
+$f:\Xcal\mapsto \Real$. However, because the RKHS is universal it is enough to check
+the equality only in the class of functions from the Hilbert space $\Hcal$. This
+reduces the problem of testing to studying the norm between the embeddings $\mu_P$
+and $\mu_Q$ in $\Hcal$.
+
+The proposed test statistic, \cite{gretton2012}, the \textit{maximum mean discrepancy}
+(MDD), measures the RKHS norm of the deviation of the embeddings of the empirical
+distributions. This MDD measure can readily be used as a non-conformity measure
+for the following anomaly detection problem: given a sample $Z_{:n-1} = (z_i)_{i=1}^{n-1}$
+decide if a new example $z_n$ is anomalous or not by measuring how well it conforms
+to $Z$. If the full sample is denoted by $Z_{:n} = (z_i)_{i=1}^n$, then the proposed
+conformal procedure would be based on the following NCM:
+\begin{equation*}
+  A(Z_{-i:n}, z_i) = \| \mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}} \|_{\Hcal} \,,
 \end{equation*}
 where $\hat{P}_{-i:n}$ and $\hat{P}_{:n}$ are empirical distributions over $Z_{-i:n}$
 and $Z_{:n}$, respectively, with $Z_{:n-1}$ being the sample $Z_{:n}$ without the
 $i$-th observation. Note, that it would be necessary to consider only vector-matrix
-multiplications, since for any subsample $S$ of $Z_{:n}$ the empirical distribution
+multiplications, since for any sub-sample $S$ of $Z_{:n}$ the empirical distribution
 embedding is given by
 \begin{equation*}
   \mu_{\hat{P}_S}(\cdot) = (\one_m'\one_m)^{-1} \one_m' k_S(\cdot) \,,
 \end{equation*}
 where $m = |S|$, $k_S(\cdot) = (K(z_i, \cdot))_{i\in S} \in \Hcal^{m\times 1}$ is
 the sample evaluation vector of the kernel $K$, and $\one_m \in \Real^{m\times 1}$
-is the vector of ones.
+is the vector of ones. Since the empirical embeddings are elements of the data-driven
+pre-Hilbert space, their inner products can be computed from the sample Gram matrix
+of $K$. Indeed, using the ordinary formula for sequential update of the sample average
+we get
+\begin{align*}
+  \mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}}
+    &= (n-1)^{-1}\sum_{j\neq i} K(x_j, \cdot) - n^{-1}\sum_j K(x_j, \cdot) \\
+    &= \frac{1}{n-1} \bigl( n^{-1} \sum_j K(x_j, \cdot) - K(x_i, \cdot) \bigr) \,,
+\end{align*}
+whence
+\begin{align*}
+  (n-1)^2 \|\mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}}\|^2_\Hcal
+    &= e_i'K_{XX} e_i + \frac{1}{n^2} \one' K_{XX} \one \\
+    & \, - \frac{2}{n} \one' K_{XX} e_i \,,
+\end{align*}
+where $\one$ is the vector of $1$ and $e_i$ is the unit vector.
+
+Conformalization of this procedure would most likely proceed in the direction of
+using  eq.~\ref{eq:conf_p_value} to measure the degree of abnormality of new examples.
+Even more in low dimensional cases there might exist an efficient approximation procedure
+that yields multivariate quantiles based on the conformal prediction.
+
+Yet another research direction, which is intimately connected to both the conformalized
+ridge regression and kernel embeddings, is concerned with designing a non-parametric
+procedure, that could permit estimation of the kernel precision parameter based on
+conformal confidence intervals, for example, similar in spirit to the central idea
+of \cite{goldenshluger1997}.
+
+%%% THIS
+The authors propose to obtain an optimal local bandwidth
+(reciprocal of the precision $\theta$) of the kernel estimate at a particular point,
+based on the confidence intervals, derived from a sub-gaussain noise. The optimal
+bandwidth is chosen to be value that minimizes the width of the confidence interval  constructed on the assumption of subgaussianity of the additive
+noise in eq.~\ref{eq:signal_model}.
 
 Finally, it would be interesting in general to investigate possible benefits conformalization
 could provide for such unsupervised machine learning algorithms, as the LOF anomaly
