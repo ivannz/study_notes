@@ -3506,13 +3506,13 @@ of $K$. Indeed, using the ordinary formula for sequential update of the sample a
 we get
 \begin{align*}
   % (n-1)\bigl(\mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}}\bigr)
-  %   % &= (n-1)^{-1}\sum_{j\neq i} K(x_j, \cdot) - n^{-1}\sum_j K(x_j, \cdot) \\
-  %   &= n^{-1} \sum_j K(x_j, \cdot) - K(x_i, \cdot) \,,
+  %   % &= (n-1)^{-1}\sum_{j\neq i} K(z_j, \cdot) - n^{-1}\sum_j K(z_j, \cdot) \\
+  %   &= n^{-1} \sum_j K(z_j, \cdot) - K(z_i, \cdot) \,,
   (n-1)^2 \bigl\|\mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}} \bigr\|^2_\Hcal
-    &= \bigl\| n^{-1} \sum_j K(x_j, \cdot) - K(x_i, \cdot) \bigr\|^2_\Hcal \\
-    % &= \bigl\| e_i' (I_n - \one(\one'\one)^{-1}\one') k_X(\cdot) \bigr\|^2_\Hcal \\
-    &= e_i'K_{XX} e_i + \frac{1}{n^2} \one' K_{XX} \one - \frac{2}{n} \one' K_{XX} e_i \,,
-    % &= e_i'(I_n - \one(\one'\one)^{-1}\one')K_{XX}(I_n - \one(\one'\one)^{-1}\one') e_i \,,
+    &= \bigl\| n^{-1} \sum_j K(z_j, \cdot) - K(z_i, \cdot) \bigr\|^2_\Hcal \\
+    % &= \bigl\| e_i' (I_n - \one(\one'\one)^{-1}\one') k_Z(\cdot) \bigr\|^2_\Hcal \\
+    &= e_i'K_{ZZ} e_i + \frac{1}{n^2} \one' K_{ZZ} \one - \frac{2}{n} \one' K_{ZZ} e_i \,,
+    % &= e_i'(I_n - \one(\one'\one)^{-1}\one')K_{ZZ}(I_n - \one(\one'\one)^{-1}\one') e_i \,,
 \end{align*}
 where $\one$ is the vector of $1$'s and $e_i$ is the unit vector both of appropriate
 dimensions. This is basically the distance of the $i$-th canonical feature map from
@@ -3521,7 +3521,7 @@ the centre of dataset in $\Hcal$.
 Conformalization of this procedure would most likely proceed in the direction of
 using eq.~\ref{eq:conf_p_value} as a measure of the degree of abnormality of new
 examples. Furthermore, it seems that in low dimensional cases there might exist an
-efficient approximation procedure that could yield multivariate quantiles of even
+efficient approximation procedure that could yield multivariate quantiles or even
 confidence sets based on inverting hypothesis test in the conformal prediction.
 
 % subsection conformalized_kernel_embeddings (end)
@@ -3546,23 +3546,23 @@ have error rate at most $e^{- c t^2}$ for $c = \mathcal{O}(n)$, $n$ is the train
 sample size, and are of the form
 \begin{equation*}
   \bigl| f(x_0) - \hat{f}_\delta(x_0) \bigr|
-    \leq \omega_f(x_0, \delta) + t \sqrt{\delta} \,,
+    \leq \omega_f(x_0, \delta) + \frac{t}{\sqrt{\delta}} \,,
 \end{equation*}
 where $\omega_f(x_0, \delta) = \sup_{x\in[0,1]} |f(x)-f(x_0)|$ is the ``deterministic
-dynamic error'', $t \sqrt{\delta}$ is an upper bound for the ``stochastic error'',
-and $\delta$ is the bandwidth of the estimator $\hat{f}_\delta(\cdot)$. If $f$ were
-known, the optimal $\delta^*$ would have been given by
+dynamic error'', $\frac{t}{\sqrt{\delta}}$ is an upper bound for the ``stochastic error'',
+and $\delta$ is the bandwidth of the kernel estimator $\hat{f}_\delta(\cdot)$. If
+$f$ were known, the optimal $\delta^*$ would have been given by
 \begin{equation*}
   \delta^*
     = \sup\bigl\{ \delta > 0 \, : \,
-        \omega_f(x_0, \delta) \leq t \sqrt{\delta} \bigr\}\,,
+        \omega_f(x_0, \delta) \leq \frac{t}{\sqrt{\delta}} \bigr\}\,,
 \end{equation*}
 but, since $f$ is unknown, authors propose the ``intersection'' estimate:
 \begin{equation*}
   \delta^+
     = \sup\{ \eta > 0 \, : \, \emptyset \neq 
-        \cap_{\delta\leq \eta} [\hat{f}_\delta(x_0) - 2 t \sqrt{\delta},
-                                \hat{f}_\delta(x_0) + 2 t \sqrt{\delta}] \} \,,
+        \cap_{\delta\leq \eta} [\hat{f}_\delta(x_0) - 2 \frac{t}{\sqrt{\delta}},
+                                \hat{f}_\delta(x_0) + 2 \frac{t}{\sqrt{\delta}}] \} \,,
 \end{equation*}
 which they show makes the approximation error lie within acceptable bounds with high
 probability: at least $ 1 - n e^{-c(n) t^2}$.
