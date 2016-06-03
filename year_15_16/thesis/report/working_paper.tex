@@ -3533,13 +3533,13 @@ Yet another research direction, which is intimately connected to both the confor
 ridge regression and kernel embeddings, is concerned with designing a non-parametric
 procedure, that could yield estimates of the kernel precision parameter based on
 conformal confidence intervals, for example, similar in spirit to the central idea
-of \cite{goldenshluger1997}. The authors consider the problem of restoring $f:[0,1]
-\mapsto\Real$ in eq.~\ref{eq:signal_model} from observations contaminated by an i.i.d
-sub-Gaussian noise, and propose a method to select a locally optimal kernel bandwidth
-(the reciprocal of the precision $\theta$) based on approximate minimization of the
-size of the confidence region for a true value of $f$ with fixed coverage rate. They
-propose to approximate the optimal bandwidth with the largest bandwidth, for which
-all confidence regions corresponding to lower bandwidths overlap.
+of \cite{goldenshluger1997}. The authors consider the problem of restoring a continuous
+$f:[0,1] \mapsto\Real$ in eq.~\ref{eq:signal_model} from observations contaminated
+by an i.i.d sub-Gaussian noise, and propose a method to select a locally optimal
+kernel bandwidth (the reciprocal of the precision $\theta$) based on approximate
+minimization of the size of the confidence region for a true value of $f$ with fixed
+coverage rate. They propose to approximate the optimal bandwidth with the largest
+bandwidth, for which all confidence regions corresponding to lower bandwidths overlap.
 
 In particular they show that in their setting the confidence regions for $f(x_0)$
 have error rate at most $e^{- c t^2}$ for $c = \mathcal{O}(n)$, $n$ is the train
