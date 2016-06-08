@@ -1,0 +1,160 @@
+% \documentclass[a4paper]{article}
+\documentclass[a4paper,14pt]{extarticle}
+\usepackage[utf8]{inputenc}
+
+\usepackage{geometry}
+\usepackage{fullpage}
+
+\usepackage[mathcal]{euscript}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{mathptmx}
+\usepackage{algorithm2e}
+
+\newcommand{\diag}{\mathop{\text{diag}}\nolimits}
+\newcommand{\ex}{\mathop{\mathbb{E}}\nolimits}
+\newcommand{\pr}{\mathop{\mathbb{P}}\nolimits}
+\newcommand{\prto}{\overset{\pr}{\to}}
+\newcommand{\lawto}{\overset{\mathcal{D}}{\to}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\nil}{\mathbf{0}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Ycal}{\mathcal{Y}}
+\newcommand{\Scal}{\mathcal{S}}
+\newcommand{\Lcal}{\mathcal{L}}
+\newcommand{\Zcal}{\mathcal{Z}}
+\newcommand{\Xcal}{\mathcal{X}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\tr}{\mathop{\mathtt{tr}}\nolimits}
+\newcommand{\argmin}{\mathop{\mathtt{argmin}}\nolimits}
+
+\title{Conformal prediction: a note for defense}
+\author{Ivan Nazarov}
+
+\begin{document}
+\maketitle
+
+Conformal prediction is a distribution-free technique designed to yield a statistically
+valid confidence sets for predictions made by machine learning algorithms. The key
+advantage of the method is that it offers coverage probability guarantees under standard
+IID assumptions, even in cases when assumptions of the underlying prediction algorithm
+fail to be satisfied. The method was introduced in \cite{vovk2005} and is applicable
+in both the supervised and unsupervised online learning settings. In the following
+we consider supervised setting with $\Zcal$ denoting the object-target space $\Xcal \times \Ycal$.
+
+The nature of the underlying ML predictive algorithm is irrelevant to conformal
+prediction, as the core of the procedure is a measurable map $A: \Zcal^*\times \Zcal \mapsto \Real$,
+a Non-Conformity Measure, NCM, which for a training sample $Z_{:n}=(z_i)_{i=1}^n\in\Zcal$
+and a test object $z_* \in \Zcal$ quantifies how much different $z_*$ is relative
+to the sample $Z_{:n}$.
+
+A conformal predictor over the NCM $A$ is a procedure, that for every sample $Z_{:n}$,
+a test object $x_{n+1} \in \Xcal$, and a confidence level $\alpha\in(0,1)$, computes
+a confidence set $\Gamma_{Z+{:n}}^\alpha(x^*)$ for the target value $y_{n+1}$ corresponding
+to $x_{n+1}$:
+\begin{equation} \label{eq:conf_pred_set}
+  \Gamma_{Z_{:n}}^\alpha(x_{n+1})
+    = \bigl\{ y\in \Ycal \,:\, p_{Z_{:n}}(\tilde{z}^y_{n+1}) \geq \alpha \bigr\} \,,
+\end{equation}
+where $\tilde{z}^y_{n+1} = (x_{n+1}, y)$ a synthetic test observation with target
+label $y$. The function $p:\Zcal^*\times (\Xcal\times \Ycal)\mapsto [0,1]$ is given
+by
+\begin{equation} \label{eq:conf_p_value}
+  p_{Z_{:n}}(\tilde{z})
+    = (n+1)^{-1} \bigl\lvert\{ i \,:\,
+      \eta_i^{\tilde{z}} \geq \eta_{n+1}^{\tilde{z}} \}\bigr\rvert \,,
+\end{equation}
+where $i=1,\ldots, n+1$, and $\eta_i^{\tilde{z}} = A(S^{\tilde{z}}_{-i}, S^{\tilde{z}}_i)$
+-- the degree of non-conformity of the $i$-th observation with respect to the augmented
+sample $S^{\tilde{z}} = (Z_{:n}, {\tilde{z}}^y_{n+1}) \in \Zcal^{n+1}$. For any $i$,
+$S^{\tilde{z}}_i$ is the $i$-th element of the sample, and $S^{\tilde{z}}_{-i}$ is
+the sample with the $i$-th observation omitted. Intuitively, the p-value (eq.~\ref{eq:conf_p_value})
+measures the likelihood of $\tilde{z}$ based on its non-conformity, or with $Z_{:n}$.
+
+In \cite{vovk2005} conformal predictor in hte supervised learning setting is presented
+more verbosely by the following algorithm (see alg.~\ref{alg:conf_predictor}).
+
+\begin{algorithm}
+  \caption{Conformal predictor (for supervised learning)} \label{alg:conf_predictor}
+  \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+  \Input{
+    Non-conformity measure $A$, significance level $\alpha \in (0,1)$,
+    training sample $Z_{:n} = (z_i)_{i=1}^n \in \Zcal$, a test object $x_{n+1}\in \Xcal$.}
+  \Output{Confidence set $\Gamma_{:n}^\alpha(x_{n+1})$ for $y_{n+1}$.}
+  \BlankLine
+  $\Gamma_{:n}^\alpha \leftarrow \emptyset$\;
+  \For{$y \in \Ycal$}{
+    $z_{n+1} \leftarrow (x_{n+1}, y)$\;
+    \For{$i = 1,\ldots, n, n+1$}{
+      $Z_{-i} \leftarrow \bigl(z_j\bigr)_{j=1, j\neq i}^{n+1}$\;
+      $\eta_i \leftarrow A(Z_{-i}, z_i)$\;
+    }
+    $p^y \leftarrow (n+1)^{-1} \bigl\lvert \{
+        i \,:\, \eta_i \geq \eta_{n+1} \} \bigr\rvert $\;
+    \If{$p^y > \alpha$}{
+      $\Gamma_{:n}^\alpha \leftarrow \Gamma_{:n}^\alpha \cup\{y\}$\;
+    }
+  }
+  \Return{$\Gamma_{:n}^\alpha$}\;
+\end{algorithm}
+
+A distribution $P$ on $\Zcal^n$ is called \textbf{exchangeable} if for any permutation
+$\sigma$ of ${1,\ldots,n}$ for any measurable $B\subseteq \Zcal^n$
+\begin{equation} \label{eq:exchangeability}
+  \pr\bigl(\{z\in\Zcal^n \,:\, (z_i)_{i=1}^n\in B\}\bigr)
+  = \pr\bigl(\{z\in\Zcal^n \,:\, (z_{\sigma(i)})_{i=1}^n \in B\} \bigr)\,.
+\end{equation}
+Any product-measure on $\Zcal^n$ is exchangeable, and therefore exchangeability
+generalizes independence. A distribution $P$ on $\Zcal^\infty$ is exchangeable
+is all its finite distributions are exchangeable.
+
+In \cite{vovk2005}, chapter 2, is has been shown, that if a sequence of examples
+$(z_n)_{n \geq1}$ is generated by an exchangeable distribution $P$ on $\Zcal^\infty$,
+then the coverage probability of the prediction set $\Gamma^\alpha$, yielded by
+the procedure \ref{eq:conf_pred_set} is at least $1-\alpha$ and successive errors
+are independent in online learning and prediction setting. Thus the outlined procedure
+guarantees unconditional validity of the confidence region (eq.~\ref{eq:conf_pred_set}):
+for any $\alpha \in (0,1)$, for any $n\geq1$ and any exchangeable distribution
+$P_n$ on $\Zcal^n$ one has
+\begin{equation} \label{eq:conservative_coverage}
+  \pr_{Z_{:n}\sim P_n} \bigl(
+    y_n \notin \Gamma^\alpha_{Z_{:(n-1)}}(x_n)
+  \bigr) \leq \alpha \,,
+\end{equation} 
+where $(x_n, y_n) = z_n$. In a special case, when $z_n$ are independent the measure
+$P_n$ is just the product measure $P_{z_1} \otimes \ldots \otimes P_{z_n}$.
+
+Intuitively, the event $y_n \notin \Gamma^\alpha_{Z_{:(n-1)}}(x_n)$ is equivalent
+to $\eta_n$ being among the largest $\lfloor n\alpha\rfloor$ values of $\eta_i = A(Z_{-i}, Z_i)$,
+which is equal to $\frac{\lfloor n\alpha\rfloor}{n}$, due to exchangeability of
+$Z_{:n}$ (this heuristic argument assumes that all $\eta_i$ are distinct and that
+probability under $P_{:n}$ of any $(\eta_i)_{i=1}^n$ is positive, for a rigorous
+proof see \cite{vovk2005}, chapter 8).
+
+In general, any real-valued jointly measurable \textbf{NCM} could be used, the only
+difference will be in the size of the predicted confidence set (efficiency) and the
+computational complexity of the conformal procedure. In the general case, despite
+theoretical guarantees, computing eq.~\ref{eq:conf_pred_set} requires exhaustive
+search through the target space $\Ycal$. This complexity issue is not acute in typical
+classification settings, when $\Ycal$ is finite, but is infeasible in regression
+settings when $\Ycal$ is $\Real$. Furthermore, the inner eq.~\ref{eq:conf_p_value}
+requires looping over all observations in the augmented sample $S^{\tilde{z}}$.
+In regression setting for specific non-conformity measures it is possible to come
+up with an efficient procedure for computing the confidence region (eq.~\ref{eq:conf_pred_set}),
+as demonstrated in \cite{vovk2005}, chapter 2.
+
+It should be note, that a conformal prediction procedure can also be constructed
+based on ``conformity measures'', as opposed to ``non-conformity measures''. As
+the name suggests conformity measures quantify the similarity of a test object to
+the train sample. Both approaches yield equivalent guarantees and are almost identically
+constructed: the ``$\geq$'' sign must be switched to ``$\leq$'' in eq.~\ref{eq:conf_p_value}
+if a conformity measure is used.
+
+\bibliographystyle{ugost2008ls}
+\bibliography{../references}
+
+\end{document}
