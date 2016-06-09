@@ -32,11 +32,58 @@
 \newcommand{\tr}{\mathop{\mathtt{tr}}\nolimits}
 \newcommand{\argmin}{\mathop{\mathtt{argmin}}\nolimits}
 
-\title{Conformal prediction: a note for defense}
+\title{a Note for Defense}
 \author{Ivan Nazarov}
 
 \begin{document}
 \maketitle
+
+\section{Actuality} % (fold)
+\label{sec:actuality}
+
+Anomaly detection using predictive modelling
+
+% section actuality (end)
+
+\section{Problem statement} % (fold)
+\label{sec:problem_statement}
+
+Suppose the observed data  $y_x = f(x) + \epsilon_x$;
+
+Goals \begin{itemize}
+  \item approximate $f(\cdot)$ on the train data (GBRT, KRR, SVR, and NN);
+  \item construct $x \mapsto \hat{\Gamma}^\alpha(x)$ such that
+    $$ \pr\bigl(y \notin \hat{\Gamma}^\alpha(x)\bigr) \leq \alpha \,. $$
+\end{itemize}
+
+Conformal prediction is known to work in an online setting under exchangeablilty.
+
+Does it work in offline learning setting
+
+Can we expect a conformal predictor based on a kernel ridge regression to perform
+not worse than the GPR confidence interval in the Gaussian setting?
+
+Does the conformal procedure work in the offline setting?
+
+
+% section problem_statement (end)
+
+\section{Kernel Rdige Regression} % (fold)
+\label{sec:kernel_rdige_regression}
+
+% section kernel_rdige_regression (end)
+
+\section{Results} % (fold)
+\label{sec:results}
+
+% section results (end)
+
+\section{Further development} % (fold)
+\label{sec:further_development}
+
+% section further_development (end)
+
+
 
 Conformal prediction is a distribution-free technique designed to yield a statistically
 valid confidence sets for predictions made by machine learning algorithms. The key
