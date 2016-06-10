@@ -1,0 +1,244 @@
+% Этот шаблон документа разработан в 2014 году
+% Данилом Фёдоровых (danil@fedorovykh.ru) 
+% для использования в курсе 
+% <<Документы и презентации в \LaTeX>>, записанном НИУ ВШЭ
+% для Coursera.org: http://coursera.org/course/latex .
+% Исходная версия шаблона --- 
+% https://www.writelatex.com/coursera/latex/5.1
+
+\documentclass[t]{beamer}  % [t], [c], или [b] --- вертикальное выравнивание на слайдах (верх, центр, низ)
+%\documentclass[handout]{beamer} % Раздаточный материал (на слайдах всё сразу)
+%\documentclass[aspectratio=169]{beamer} % Соотношение сторон
+
+%\usetheme{Berkeley} % Тема оформления
+%\usetheme{Bergen}
+%\usetheme{Szeged}
+
+%\usecolortheme{beaver} % Цветовая схема
+%\useinnertheme{circles}
+%\useinnertheme{rectangles}
+
+% \usetheme{HSE}
+\usepackage{HSE-theme/beamerthemeHSE-en}
+
+\usepackage{cmap}         % поиск в PDF
+\usepackage{mathtext}         % русские буквы в формулах
+\usepackage[T2A]{fontenc}     % кодировка
+\usepackage[utf8]{inputenc}     % кодировка исходного текста
+\usepackage[english,russian]{babel} % локализация и переносы
+
+% \newtheorem{rtheorem}{Теорема}
+% \newtheorem{rproof}{Доказательство}
+% \newtheorem{rexample}{Пример}
+
+\usepackage{amsmath,amsfonts,amssymb,amsthm,mathtools} % AMS
+% \usepackage{icomma} % "Умная" запятая: $0,2$ --- число, $0, 2$ --- перечисление
+\usepackage{mathptmx}
+\usepackage{algorithm2e}
+
+%% Номера формул
+%\mathtoolsset{showonlyrefs=true} % Показывать номера только у тех формул, на которые есть \eqref{} в тексте.
+%\usepackage{leqno} % Нумерация формул слева
+
+%% Свои команды
+% \DeclareMathOperator{\sgn}{\mathop{sgn}}
+
+%% Перенос знаков в формулах (по Львовскому)
+% \newcommand*{\hm}[1]{#1\nobreak\discretionary{}
+% {\hbox{$\mathsurround=0pt #1$}}{}}
+
+\usepackage{graphicx}  % Для вставки рисунков
+% \graphicspath{{images/}{images2/}}  % папки с картинками
+% \setlength\fboxsep{3pt} % Отступ рамки \fbox{} от рисунка
+% \setlength\fboxrule{1pt} % Толщина линий рамки \fbox{}
+\usepackage{wrapfig} % Обтекание рисунков текстом
+
+\usepackage{array,tabularx,tabulary,booktabs} % Дополнительная работа с таблицами
+\usepackage{longtable}  % Длинные таблицы
+\usepackage{multirow} % Слияние строк в таблице
+
+\usepackage{etoolbox} % логические операторы
+
+\usepackage{lastpage} % Узнать, сколько всего страниц в документе.
+\usepackage{soul} % Модификаторы начертания
+\usepackage{csquotes} % Еще инструменты для ссылок
+%\usepackage[style=authoryear,maxcitenames=2,backend=biber,sorting=nty]{biblatex}
+\usepackage{multicol} % Несколько колонок
+
+\usepackage{tikz} % Работа с графикой
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+
+% \usepackage{biblatex}
+
+% \usepackage{fontspec}
+% \defaultfontfeatures{Ligatures={TeX},Renderer=Basic}
+% \setmainfont[Ligatures={TeX,Historic}]{Myriad Pro} % install Myriad Pro or replace with Arial
+% \setsansfont{Myriad Pro}  % install Myriad Pro or replace with Arial
+% \setmonofont{Courier New}
+\newcommand{\Ycal}{\mathcal{Y}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Xcal}{\mathcal{X}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\ex}{\mathop{\mathbb{E}}\nolimits}
+\newcommand{\pr}{\mathop{\mathbb{P}}\nolimits}
+
+\title{Conformal methods in multidimensional linear models and anomaly detection}
+% \title[Short title]{Presentation Title} 
+% \subtitle{Presentation Subtitle or Conference Title}
+\author[Nazarov Ivan]{Nazarov Ivan}
+% \author[Author's name]{Author's name \\ \smallskip \scriptsize \url{author@hse.ru}\\\url{http://hse.ru/en/staff/author/}}
+\date{\today}
+\institute[Higher School of Economics]{National Research University \\ Higher School of Economics}
+
+
+\begin{document}
+\selectlanguage{english}
+\frame[plain]{\titlepage} % Титульный слайд
+
+\section{Problem statement} % (fold)
+\label{sec:problem_statement}
+\subsection{Anomaly detection} % (fold)
+\label{sub:anomaly_detection}
+
+
+\begin{frame}[c]\frametitle{\insertsection}
+  \framesubtitle{\insertsubsection}
+  \begin{block}{}
+    Applied problem of being able to tell ``abnormal'' observations from ``normal''
+    ones. % Requires a concept of ``abnormal''.
+    \begin{itemize}
+      \item probabilistic models: observations outside of typical (dense) regions;
+      \item predictive models: observations deviating from predictions (reconstructions)
+      by the learnt model of ``normal'' regime;
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+% subsection anomaly_detection (end)
+
+\subsection{Predictive models} % (fold)
+\label{sub:predictive_models}
+
+\begin{frame}[c]\frametitle{\insertsection}
+  \framesubtitle{\insertsubsection}
+  \begin{block}{}
+    Consider a training sample $(x_i, y_i)_{i=1}^n \sim \Dcal$ i.i.d., where conditional
+    on $x\in \Xcal$, $\Xcal \subset \Real^{p\times 1}$, the target $y_x$ obeys
+    $$ y_x = f(x) + \epsilon_x \,, $$
+    for some unknown $f:\Xcal\mapsto \Ycal$, $\Ycal\subseteq \Real$ and $\ex(\epsilon_x|x) = 0$.
+
+    In general functional approximation it is desirable to learn a faithful approximation
+    $\hat{f}_{:n}$ of $f$ for $x\sim \Xcal$ within the support of $\Dcal$, and have an
+    estimate of its accuracy.
+
+    Anomaly detection is more concerned with a confidence region for new observations:
+    a learnt point-set map $x \mapsto \hat{\Gamma}_{:n}^\alpha(x)$ such that
+    $$ \pr_\Dcal\bigl(y_x \notin \hat{\Gamma}_{:n}^\alpha(x)\bigr) \leq \alpha \,. $$
+  \end{block}
+\end{frame}
+
+\begin{frame}[c]\frametitle{\insertsection}
+  \framesubtitle{\insertsubsection}
+  Options for building blocks of a predictive model in AD framework: 
+  \begin{block}{approximation}
+    \begin{itemize}
+      \item linear models, (Kernel) Ridge regression, Support Vector regression;
+      \item piecewise linear Gradient Boosted Regression Trees;
+      \item Neural Networks;
+    \end{itemize}
+  \end{block}
+  \begin{block}{confidence}
+      \begin{itemize}
+        \item Bayesian assumptions for conditional predictive distributions;
+        \item conformal prediction;
+      \end{itemize}
+  \end{block}
+\end{frame}
+
+% subsection predictive_models (end)
+
+\subsection{Conformal prediction} % (fold)
+\label{sub:conformal_prediction}
+
+\begin{frame}
+  \frametitle{\insertsection}
+  \framesubtitle{\insertsubsection}
+  Conformal prediction is a distribution-free technique designed to yield a statistically
+  valid confidence sets for predictions made by machine learning algorithms.
+
+  \begin{itemize}
+    \item can be constructed atop any ML algorithm by incorporating it into a function
+    $A(Z_{:n}, z)$, reflecting non-conformity of $z$ with respect to sample $Z_{:n}$;
+    \item validity guarantees for i.i.d. observations in online setting established
+    in \cite{vovk2005};
+    \item asymptotic efficiency in the batch setting for ridge regression shown in
+    \cite{burnaevV14};
+  \end{itemize}
+
+  In particular, for predictive models the non-conformity measures $A$ are typically
+  based on residuals;
+\end{frame}
+
+\begin{frame}[c, shrink=6]
+  \frametitle{\insertsection}
+  \framesubtitle{Conformal predictor}
+  \begin{algorithm}[H]
+  \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+  \Input{Non-conformity measure $A$, significance level $\alpha \in (0,1)$,
+    training sample $Z_{:n} = (x_i, y_i)_{i=1}^n$, a test object $x_{n+1}\in \Xcal$.}
+  \Output{Confidence set $\Gamma_{:n}^\alpha(x_{n+1})$ for $y_{n+1}\in \Ycal$.}
+  \BlankLine
+  $\Gamma_{:n}^\alpha \leftarrow \emptyset$\;
+  \For{$y \in \Ycal$}{
+    $z_{n+1} \leftarrow (x_{n+1}, y)$\;
+    \For{$i = 1,\ldots, n, n+1$}{
+      $Z_{-i} \leftarrow \bigl(z_j\bigr)_{j=1, j\neq i}^{n+1}$\;
+      $\eta_i \leftarrow A(Z_{-i}, z_i)$\;
+    }
+    $p^y \leftarrow (n+1)^{-1} \bigl\lvert \{
+        i \,:\, \eta_i \geq \eta_{n+1} \} \bigr\rvert $\;
+    \If{$p^y > \alpha$}{
+      $\Gamma_{:n}^\alpha \leftarrow \Gamma_{:n}^\alpha \cup\{y\}$\;
+    }
+  }
+  \Return{$\Gamma_{:n}^\alpha$}\;
+  \end{algorithm}
+\end{frame}
+
+% subsection conformal_prediction (end)
+
+\subsection{Specific research results} % (fold)
+\label{sub:specific_research_results}
+
+\begin{frame}
+  \frametitle{\insertsection}
+  \framesubtitle{\insertsubsection}
+
+  The research achieved the following goals:
+  \begin{enumerate}
+    \item propose a computationally efficient procedure for constructing conformal
+    confidence regions for predictions of the kernel ridge regression;
+    \item provide experimental verification of its validity guarantees in batch learning
+    setting;
+    \item obtain empirical evidence suggesting its asymptotic efficiency in Gaussian
+    setting in comparison to the Bayesian confidence sets.
+  \end{enumerate}
+\end{frame}
+
+% subsection specific_research_results (end)
+
+% section problem_statement (end)
+
+\section{References} % (fold)
+\label{sec:references}
+
+\begin{frame}[t]{References}  
+  \bibliographystyle{amsplain}
+  \bibliography{../references}
+\end{frame}
+
+% section references (end)
+
+
+\end{document}
