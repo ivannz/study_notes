@@ -79,6 +79,7 @@
 \newcommand{\Ycal}{\mathcal{Y}}
 \newcommand{\Dcal}{\mathcal{D}}
 \newcommand{\Xcal}{\mathcal{X}}
+\newcommand{\Ocal}{\mathcal{O}}
 \newcommand{\Real}{\mathbb{R}}
 \newcommand{\ex}{\mathop{\mathbb{E}}\nolimits}
 \newcommand{\pr}{\mathop{\mathbb{P}}\nolimits}
@@ -208,27 +209,144 @@
 
 % subsection conformal_prediction (end)
 
-\subsection{Specific research results} % (fold)
-\label{sub:specific_research_results}
+% section problem_statement (end)
 
-\begin{frame}
-  \frametitle{\insertsection}
-  \framesubtitle{\insertsubsection}
+\section{Research goals and results} % (fold)
+\label{sec:research_goals_and_results}
 
-  The research achieved the following goals:
-  \begin{enumerate}
-    \item propose a computationally efficient procedure for constructing conformal
-    confidence regions for predictions of the kernel ridge regression;
-    \item provide experimental verification of its validity guarantees in batch learning
-    setting;
-    \item obtain empirical evidence suggesting its asymptotic efficiency in Gaussian
-    setting in comparison to the Bayesian confidence sets.
-  \end{enumerate}
+\begin{frame}[c]\frametitle{\insertsection}
+  \begin{block}{Goals}
+    \begin{itemize}
+      \item Propose an efficient construction for conformal prediciton based on
+      kernel ridge regression (KRR);
+      \item Experimentally verify validity guaranteees and efficiency of conformal
+      confidence regions over KRR with the Gaussian kernel in the batch learning
+      setting;
+    \end{itemize}
+  \end{block}
 \end{frame}
 
-% subsection specific_research_results (end)
+\begin{frame}[c]\frametitle{\insertsection}
+  \begin{block}{Results: algorithm}
+    Outlined a specialized algorithm for KRR conformal confidence region for each
+    new test observation, $\hat{\Gamma}^\alpha_{:n}(x_{n+1})$:
+    \begin{itemize}
+      \item Initialization: inversion of the regularized Gram matrix $\Ocal(n^3)$;
+      \item Memory compelxity: $\mathcal{O}(n^2)$ to store the inverse;
+      \item Runtime complexity: $\Ocal(n^2)$ for canonical feature map computation
+      and matrix multiplication, and $\Ocal(n \log n)$ for interval construction;
+    \end{itemize}
 
-% section problem_statement (end)
+    The procedure uses structre of sample Gram matrix and the block matrix inversion,
+    to represent KRR residuals for $n+1$ sample as a linear function of the test
+    observation's value.
+  \end{block}
+\end{frame}
+
+\begin{frame}[c]\frametitle{\insertsection}
+  \begin{block}{Experimental setup}
+    The experiments were set up as follows: \begin{itemize}
+      \item 
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}[c]\frametitle{\insertsection}
+  \begin{block}{Results: performance}
+    Extensive empirical study of CCR over KRR with the Gaussian kernel revealed:
+    \begin{itemize}
+      \item CCR have asymptotic validity, regardless of KRR hyperparameters, quality
+      of fit or noise-to-signal ratio;
+      %% page 34, columns a,c; page 36, columns a,c
+      %% nongaussian: figures 10-12
+      \item In Gaussian setting with high noise-to-signal, both Bayesian and conformal
+      KRR intervals are valid, and the latter are asymptotically as efficient as the
+      former;
+      %% fig 14-17, pp. 42-45;
+      %% fig 18-19, p. 46 (double "the", different hyperparameters)
+      %% ``f6'' function is much gaussian-like; thus the comparison on fig. 22
+      \item Bayesian confidence regions are severely affected by the choice of KRR
+      hyperparamters (kernel precision -- proxy for the degree of locality), and
+      in non-Gaussian with low-noise settings fail to guarantee requested coverage
+      rate;
+      %% fig. 6, 16; fig. 10-13
+    \end{itemize}
+    Similar results were obtained in test cases with $1-d$ and $2-d$ domains.
+  \end{block}
+\end{frame}
+
+\begin{frame}[c]\frametitle{\insertsection}
+  \begin{block}{Implications}
+    By design, the conformal prediction algorithm is oblivious to the nature and
+    the domain of the used non-conformity measure.
+
+    That is why we consider the obtained empirical evidence for the validity and
+    efficiency of the KRR CCR in batch setting to be sufficient to \begin{itemize}
+      \item warrant further throretical research in asymptotic properties of conformal
+      kernel ridge regression predictions;
+      \item recommend the use of conformal confidence regions in applied prediction
+      tasks when the assumption of i.i.d. observations is reasonable;
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{Typical applications}
+    \begin{itemize}
+      \item anomaly detection (batch);
+      \item time series forecasting (online);
+      \item confidence regions for function approximation (batch);
+    \end{itemize}
+  \end{block}
+
+\end{frame}
+
+% section research_goals_and_results (end)
+
+\section{Further development beyond kernel ridge regression} % (fold)
+\label{sec:further_development_beyond_krr}
+
+\subsection{Kernel embeddings of distributions} % (fold)
+\label{sub:kernel_embeddings_of_distributions}
+
+\begin{frame}[c]\frametitle{\insertsection}
+  \framesubtitle{\insertsubsection}
+    A distribution $P$ on $\Xcal$ admits an embedding in an RKHS $\Hcal_K$ induced
+    by $K$, if $\ex_{x\sim P} \sqrt{K(x,x)} < +\infty$, in which case $\ex_{x\sim P} f(x)
+    = \langle f, \mu_P \rangle_\Hcal $ for any $f\in \Hcal_K$, where
+    $$ \mu_P: x \mapsto \ex_{x'\sim P} K(x', x) \,. $$
+    If the RKHS $\Hcal_K$ is universal and on compact metric domain, then the distribution
+    embeddin $\mu_P$ is injective, \cite{gretton2012};
+
+    \begin{block}{Idea}
+    Use confromal procedure to assign abnormality probability to new observations
+    based on RKHS norm of difference of embeddings of empirical distributions of
+    original and pooled samples.
+    \begin{itemize}
+      \item Analogous to jackknife bootstrapping;
+      \item In special cases might permit computation of quantile regions;
+    \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}[c]\frametitle{\insertsection}
+  \framesubtitle{\insertsubsection}
+      Picture ocSVM versus CKDE.
+\end{frame}
+
+% subsection kernel_embeddings_of_distributions (end)
+
+\subsection{Kernel bandwidth selection} % (fold)
+\label{sub:kernel_bandwidth_selection}
+
+\begin{frame}[c]\frametitle{\insertsection}
+
+  The research achieved the following goals:
+  % \begin{enumerate}
+  % \end{enumerate}
+\end{frame}
+
+% subsection kernel_bandwidth_selection (end)
+
+% section further_development_beyond_krr (end)
 
 \section{References} % (fold)
 \label{sec:references}
