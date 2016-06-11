@@ -100,13 +100,25 @@
 
 \section{Problem statement} % (fold)
 \label{sec:problem_statement}
-\subsection{Anomaly detection} % (fold)
-\label{sub:anomaly_detection}
-
+\subsection{Confidence predictions} % (fold)
+\label{sub:confidence_predictions}
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-  \begin{block}{}
+  \begin{block}{Typical applications}
+    Confidence predictions are useful in
+    \begin{itemize}
+      \item anomaly detection (batch setting): learn a detector on a train sample,
+      apply to test objects;
+      \item time series forecasting (online setting): based on the dynamic model, be
+      it ARIMA with/without seasonality, GARCH et c., make a confidence prediciton
+      regarding the levels and or volatilities;
+      \item function approximation (batch setting): given a set of observations,
+      asses the appeoxiamte error region for the underlying function;
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{Anomaly Detection}
     Applied problem of being able to tell ``abnormal'' observations from ``normal''
     ones. % Requires a concept of ``abnormal''.
     \begin{itemize}
@@ -117,7 +129,7 @@
   \end{block}
 \end{frame}
 
-% subsection anomaly_detection (end)
+% subsection confidence_predictions (end)
 
 \subsection{Predictive models} % (fold)
 \label{sub:predictive_models}
@@ -289,15 +301,6 @@
       tasks when the assumption of i.i.d. observations is reasonable;
     \end{itemize}
   \end{block}
-
-  \begin{block}{Typical applications}
-    \begin{itemize}
-      \item anomaly detection (batch);
-      \item time series forecasting (online);
-      \item confidence regions for function approximation (batch);
-    \end{itemize}
-  \end{block}
-
 \end{frame}
 
 % section research_goals_and_results (end)
@@ -310,12 +313,13 @@
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-    A distribution $P$ on $\Xcal$ admits an embedding in an RKHS $\Hcal_K$ induced
-    by $K$, if $\ex_{x\sim P} \sqrt{K(x,x)} < +\infty$, in which case $\ex_{x\sim P} f(x)
-    = \langle f, \mu_P \rangle_\Hcal $ for any $f\in \Hcal_K$, where
+    A distribution $P$ on $\Xcal$ admits an embedding $\mu_P$ in an RKHS $\Hcal_K$
+    induced by $K$, if $\ex_{x\sim P} \sqrt{K(x,x)} < +\infty$, in which case
+    $\ex_{x\sim P} f(x) = \langle f, \mu_P \rangle_\Hcal $ for any $f\in \Hcal_K$,
+    where $\mu_P\in \Hcal_K$ is unique and
     $$ \mu_P: x \mapsto \ex_{x'\sim P} K(x', x) \,. $$
-    If the RKHS $\Hcal_K$ is universal and on compact metric domain, then the distribution
-    embeddin $\mu_P$ is injective, \cite{gretton2012};
+    If the RKHS $\Hcal_K$ is universal and on a compact metric domain, then the
+    distribution embedding $\mu_P$ is injective, \cite{gretton2012};
 
     \begin{block}{Idea}
     Use confromal procedure to assign abnormality probability to new observations
