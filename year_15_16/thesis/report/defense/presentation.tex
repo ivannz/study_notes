@@ -354,6 +354,7 @@
     \begin{itemize}
       \item Analogous to jackknife bootstrapping;
       \item In special cases might permit computation of quantile regions;
+      \item Weighted observations in emebedding?;
     \end{itemize}
   \end{block}
 \end{frame}
@@ -377,7 +378,8 @@
     \textit{middle} C-KDE with laplacian kernel $\text{exp}(-\theta\|x-x'\|)$.}
     \label{fig:gauss_1d_prof_gpr}
   \end{figure}
-  C-KDE is very sensitive to kernel bandwidth $\theta$.
+  C-KDE is very sensitive to kernel bandwidth $\theta$: coalesces clsuters for
+  moderately large badnwidth.
 \end{frame}
 
 % subsection kernel_embeddings_of_distributions (end)
