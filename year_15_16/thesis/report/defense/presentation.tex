@@ -16,7 +16,7 @@
 
 %\usecolortheme{beaver} % Цветовая схема
 %\useinnertheme{circles}
-%\useinnertheme{rectangles}
+\useinnertheme{rectangles}
 
 % \usetheme{HSE}
 \usepackage{HSE-theme/beamerthemeHSE-en}
@@ -25,7 +25,7 @@
 \usepackage{mathtext}         % русские буквы в формулах
 \usepackage[T2A]{fontenc}     % кодировка
 \usepackage[utf8]{inputenc}     % кодировка исходного текста
-\usepackage[english,russian]{babel} % локализация и переносы
+\usepackage[english]{babel} % локализация и переносы
 
 % \newtheorem{rtheorem}{Теорема}
 % \newtheorem{rproof}{Доказательство}
@@ -52,24 +52,28 @@
 % \setlength\fboxsep{3pt} % Отступ рамки \fbox{} от рисунка
 % \setlength\fboxrule{1pt} % Толщина линий рамки \fbox{}
 \usepackage{wrapfig} % Обтекание рисунков текстом
+\usepackage{subcaption}
+\usepackage{caption}
 
 \usepackage{array,tabularx,tabulary,booktabs} % Дополнительная работа с таблицами
-\usepackage{longtable}  % Длинные таблицы
+% \usepackage{longtable}  % Длинные таблицы
 \usepackage{multirow} % Слияние строк в таблице
 
-\usepackage{etoolbox} % логические операторы
+% \usepackage{etoolbox} % логические операторы
 
 \usepackage{lastpage} % Узнать, сколько всего страниц в документе.
 \usepackage{soul} % Модификаторы начертания
 \usepackage{csquotes} % Еще инструменты для ссылок
-%\usepackage[style=authoryear,maxcitenames=2,backend=biber,sorting=nty]{biblatex}
+\usepackage[style=alphabetic,backend=biber,sorting=nty]{biblatex}
+
+\bibliography{../references}
+
+% \usepackage[style=authoryear,maxcitenames=2,backend=bibtex,sorting=nty]{biblatex}
 \usepackage{multicol} % Несколько колонок
 
-\usepackage{tikz} % Работа с графикой
-\usepackage{pgfplots}
-\usepackage{pgfplotstable}
-
-% \usepackage{biblatex}
+% \usepackage{tikz} % Работа с графикой
+% \usepackage{pgfplots}
+% \usepackage{pgfplotstable}
 
 % \usepackage{fontspec}
 % \defaultfontfeatures{Ligatures={TeX},Renderer=Basic}
@@ -105,56 +109,51 @@
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-  \begin{block}{Typical applications}
-    Confidence predictions are useful in
-    \begin{itemize}
-      \item anomaly detection (batch setting): learn a detector on a train sample,
-      apply to test objects;
-      \item time series forecasting (online setting): based on the dynamic model, be
-      it ARIMA with/without seasonality, GARCH et c., make a confidence prediciton
-      regarding the levels and or volatilities;
-      \item function approximation (batch setting): given a set of observations,
-      asses the appeoxiamte error region for the underlying function;
-    \end{itemize}
-  \end{block}
+  Consider a training sample $(x_i, y_i)_{i=1}^n \sim \Dcal$ i.i.d., where conditional
+  on $x\in \Xcal$, $\Xcal \subset \Real^{p\times 1}$, the target $y_x$ obeys
+  $$ y_x = f(x) + \epsilon_x \,, $$
+  for some unknown $f:\Xcal\mapsto \Ycal$, $\Ycal\subseteq \Real$ and $\ex(\epsilon_x|x) = 0$.
 
-  \begin{block}{Anomaly Detection}
-    Applied problem of being able to tell ``abnormal'' observations from ``normal''
-    ones. % Requires a concept of ``abnormal''.
+  In general functional approximation it is desirable to learn a faithful approximation
+  $\hat{f}_{:n}$ of $f$ for $x\sim \Xcal$ within the support of $\Dcal$, and have an
+  estimate of its accuracy.
+
+  Confidence prediction is more concerned with learning a ``well behaved'' point-set
+  map $x \mapsto \hat{\Gamma}_{:n}^\alpha(x)$ such that
+  $$ \pr_\Dcal\bigl(y_x \notin \hat{\Gamma}_{:n}^\alpha(x)\bigr) \approx \alpha \,. $$
+\end{frame}
+
+% subsection confidence_predictions (end)
+
+\subsection{Typical applications} % (fold)
+\label{sub:typical_applications}
+
+\begin{frame}[c]\frametitle{\insertsection}
+  \framesubtitle{\insertsubsection}
+  \begin{itemize}
+    \item anomaly detection (batch setting): learn a detector on a train sample,
+    that is able to tell ``abnormal'' observations from ``normal'' ones, then
+    apply to test objects;
     \begin{itemize}
       \item probabilistic models: observations outside of typical (dense) regions;
       \item predictive models: observations deviating from predictions (reconstructions)
       by the learnt model of ``normal'' regime;
     \end{itemize}
-  \end{block}
+    \item time series forecasting (online setting): based on the dynamic model, be
+    it ARIMA with/without seasonality, GARCH et c., make a confidence prediciton
+    regarding the levels and or volatilities;
+    \item function approximation (batch setting): given a set of observations,
+    asses the appeoxiamte error region for the underlying function;
+  \end{itemize}
 \end{frame}
-
-% subsection confidence_predictions (end)
+% subsection typical_applications (end)
 
 \subsection{Predictive models} % (fold)
 \label{sub:predictive_models}
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-  \begin{block}{}
-    Consider a training sample $(x_i, y_i)_{i=1}^n \sim \Dcal$ i.i.d., where conditional
-    on $x\in \Xcal$, $\Xcal \subset \Real^{p\times 1}$, the target $y_x$ obeys
-    $$ y_x = f(x) + \epsilon_x \,, $$
-    for some unknown $f:\Xcal\mapsto \Ycal$, $\Ycal\subseteq \Real$ and $\ex(\epsilon_x|x) = 0$.
-
-    In general functional approximation it is desirable to learn a faithful approximation
-    $\hat{f}_{:n}$ of $f$ for $x\sim \Xcal$ within the support of $\Dcal$, and have an
-    estimate of its accuracy.
-
-    Anomaly detection is more concerned with a confidence region for new observations:
-    a learnt point-set map $x \mapsto \hat{\Gamma}_{:n}^\alpha(x)$ such that
-    $$ \pr_\Dcal\bigl(y_x \notin \hat{\Gamma}_{:n}^\alpha(x)\bigr) \leq \alpha \,. $$
-  \end{block}
-\end{frame}
-
-\begin{frame}[c]\frametitle{\insertsection}
-  \framesubtitle{\insertsubsection}
-  Options for building blocks of a predictive model in AD framework: 
+  Options for building blocks of predictive regression models: 
   \begin{block}{approximation}
     \begin{itemize}
       \item linear models, (Kernel) Ridge regression, Support Vector regression;
@@ -172,14 +171,15 @@
 
 % subsection predictive_models (end)
 
-\subsection{Conformal prediction} % (fold)
-\label{sub:conformal_prediction}
+% section problem_statement (end)
+
+\section{Conformal prediction} % (fold)
+\label{sec:conformal_prediction}
 
 \begin{frame}
   \frametitle{\insertsection}
-  \framesubtitle{\insertsubsection}
-  Conformal prediction is a distribution-free technique designed to yield a statistically
-  valid confidence sets for predictions made by machine learning algorithms.
+  A distribution-free technique designed to yield a statistically valid confidence
+  sets for predictions made by Machine Learning algorithms.
 
   \begin{itemize}
     \item can be constructed atop any ML algorithm by incorporating it into a function
@@ -194,9 +194,12 @@
   based on residuals;
 \end{frame}
 
-\begin{frame}[c, shrink=6]
+\subsection{General algorithm} % (fold)
+\label{sub:general_algorithm}
+
+\begin{frame}[c, shrink=10]
   \frametitle{\insertsection}
-  \framesubtitle{Conformal predictor}
+  \framesubtitle{\insertsubsection}
   \begin{algorithm}[H]
   \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
   \Input{Non-conformity measure $A$, significance level $\alpha \in (0,1)$,
@@ -220,14 +223,14 @@
   \end{algorithm}
 \end{frame}
 
-% subsection conformal_prediction (end)
+% subsection general_algorithm (end)
 
-% section problem_statement (end)
+% section conformal_prediction (end)
 
 \section{Research goals and results} % (fold)
 \label{sec:research_goals_and_results}
 
-\begin{frame}[c]\frametitle{\insertsection}
+\begin{frame}[c, shrink=10]\frametitle{\insertsection}
   \begin{block}{Goals}
     \begin{itemize}
       \item Propose an efficient construction for conformal prediciton based on
@@ -237,71 +240,94 @@
       setting;
     \end{itemize}
   \end{block}
-\end{frame}
 
-\begin{frame}[c]\frametitle{\insertsection}
-  \begin{block}{Results: algorithm}
-    Outlined a specialized algorithm for KRR conformal confidence region for each
-    new test observation, $\hat{\Gamma}^\alpha_{:n}(x_{n+1})$:
-    \begin{itemize}
-      \item Initialization: inversion of the regularized Gram matrix $\Ocal(n^3)$;
-      \item Memory compelxity: $\mathcal{O}(n^2)$ to store the inverse;
-      \item Runtime complexity: $\Ocal(n^2)$ for canonical feature map computation
-      and matrix multiplication, and $\Ocal(n \log n)$ for interval construction;
-    \end{itemize}
-
-    The procedure uses structre of sample Gram matrix and the block matrix inversion,
-    to represent KRR residuals for $n+1$ sample as a linear function of the test
-    observation's value.
-  \end{block}
-\end{frame}
-
-\begin{frame}[c]\frametitle{\insertsection}
   \begin{block}{Experimental setup}
-    The experiments were set up as follows: \begin{itemize}
-      \item 
-    \end{itemize}
+    \begin{enumerate}
+      \item Draw a large random uniform sample from $\Xcal$ to serve as a train set;
+        Use a regular grid as a test sample;
+      \item Generate a large sample path over the pooled sample;
+      \item For each setting of hyperparameters make $M$ replications: \begin{itemize}
+        \item pick a random subsample of specified size from the train sample;
+        \item construct confidence regions (conformal, bayesian) for the test sample;
+        \item compute the coverage rate across the test sample and region size for each test object;
+      \end{itemize}
+    \end{enumerate}
   \end{block}
 \end{frame}
+
+\subsection{Results: algorithm} % (fold)
+\label{sub:results_algorithm}
 
 \begin{frame}[c]\frametitle{\insertsection}
-  \begin{block}{Results: performance}
-    Extensive empirical study of CCR over KRR with the Gaussian kernel revealed:
-    \begin{itemize}
-      \item CCR have asymptotic validity, regardless of KRR hyperparameters, quality
-      of fit or noise-to-signal ratio;
-      %% page 34, columns a,c; page 36, columns a,c
-      %% nongaussian: figures 10-12
-      \item In Gaussian setting with high noise-to-signal, both Bayesian and conformal
-      KRR intervals are valid, and the latter are asymptotically as efficient as the
-      former;
-      %% fig 14-17, pp. 42-45;
-      %% fig 18-19, p. 46 (double "the", different hyperparameters)
-      %% ``f6'' function is much gaussian-like; thus the comparison on fig. 22
-      \item Bayesian confidence regions are severely affected by the choice of KRR
-      hyperparamters (kernel precision -- proxy for the degree of locality), and
-      in non-Gaussian with low-noise settings fail to guarantee requested coverage
-      rate;
-      %% fig. 6, 16; fig. 10-13
-    \end{itemize}
-    Similar results were obtained in test cases with $1-d$ and $2-d$ domains.
-  \end{block}
+  \framesubtitle{\insertsubsection}
+  Outlined a specialized algorithm for KRR conformal confidence region for each
+  new test observation, $\hat{\Gamma}^\alpha_{:n}(x_{n+1})$:
+  \begin{itemize}
+    \item Initialization: inversion of the regularized Gram matrix $\Ocal(n^3)$;
+    \item Memory compelxity: $\mathcal{O}(n^2)$ to store the inverse;
+    \item Runtime complexity: $\Ocal(n^2)$ for canonical feature map computation
+    and matrix multiplication, and $\Ocal(n \log n)$ for interval construction;
+  \end{itemize}
+
+  The procedure uses structre of sample Gram matrix and the block matrix inversion,
+  to represent KRR residuals for $n+1$ sample as a linear function of the test
+  observation's value.
 \end{frame}
+
+% subsection results_algorithm (end)
+
+\subsection{Results: performance} % (fold)
+\label{sub:results_performance}
 
 \begin{frame}[c]\frametitle{\insertsection}
-  \begin{block}{Implications}
-    By design, the conformal prediction algorithm is oblivious to the nature and
-    the domain of the used non-conformity measure.
-
-    That is why we consider the obtained empirical evidence for the validity and
-    efficiency of the KRR CCR in batch setting to be sufficient to \begin{itemize}
-      \item warrant further throretical research in asymptotic properties of conformal
-      kernel ridge regression predictions;
-      \item recommend the use of conformal confidence regions in applied prediction
-      tasks when the assumption of i.i.d. observations is reasonable;
-    \end{itemize}
-  \end{block}
+  \framesubtitle{\insertsubsection}
+  Extensive empirical study of CCR over KRR with the Gaussian kernel revealed:
+  \begin{itemize}
+    \item CCR have asymptotic validity, regardless of KRR hyperparameters, quality
+    of fit or noise-to-signal ratio;
+    %% page 34, columns a,c; page 36, columns a,c
+    %% nongaussian: figures 10-12
+    \item In Gaussian setting with high noise-to-signal, both Bayesian and conformal
+    KRR intervals are valid, and the latter are asymptotically as efficient as the
+    former;
+    %% fig 14-17, pp. 42-45;
+    %% fig 18-19, p. 46 (double "the", different hyperparameters)
+    %% ``f6'' function is much gaussian-like; thus the comparison on fig. 22
+    \item Bayesian confidence regions are severely affected by the choice of KRR
+    hyperparamters (kernel precision -- proxy for the degree of locality), and
+    in non-Gaussian with low-noise settings fail to guarantee requested coverage
+    rate;
+    %% fig. 6, 16; fig. 10-13
+  \end{itemize}
+  Similar results were obtained in test cases with $1-d$ and $2-d$ domains.
 \end{frame}
+
+
+\begin{frame}[c]\frametitle{\insertsection}
+  \framesubtitle{\insertsubsection}
+  Some illustrations
+\end{frame}
+
+% subsection results_performance (end)
+
+\subsection{Implications} % (fold)
+\label{sub:implications}
+
+\begin{frame}[c]\frametitle{\insertsection}
+  \framesubtitle{\insertsubsection}
+  By design, the conformal prediction algorithm is oblivious to the nature and
+  the domain of the used non-conformity measure.
+
+  That is why we consider the obtained empirical evidence for the validity and
+  efficiency of the KRR CCR in batch setting to be sufficient to \begin{itemize}
+    \item warrant further throretical research in asymptotic properties of conformal
+    kernel ridge regression predictions;
+    \item recommend the use of conformal confidence regions in applied prediction
+    tasks when the assumption of i.i.d. observations is reasonable;
+  \end{itemize}
+\end{frame}
+
+% subsection implications (end)
 
 % section research_goals_and_results (end)
 
@@ -313,15 +339,15 @@
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-    A distribution $P$ on $\Xcal$ admits an embedding $\mu_P$ in an RKHS $\Hcal_K$
-    induced by $K$, if $\ex_{x\sim P} \sqrt{K(x,x)} < +\infty$, in which case
-    $\ex_{x\sim P} f(x) = \langle f, \mu_P \rangle_\Hcal $ for any $f\in \Hcal_K$,
-    where $\mu_P\in \Hcal_K$ is unique and
-    $$ \mu_P: x \mapsto \ex_{x'\sim P} K(x', x) \,. $$
-    If the RKHS $\Hcal_K$ is universal and on a compact metric domain, then the
-    distribution embedding $\mu_P$ is injective, \cite{gretton2012};
+  A distribution $P$ on $\Xcal$ admits an embedding $\mu_P$ in an RKHS $\Hcal_K$
+  induced by $K$, if $\ex_{x\sim P} \sqrt{K(x,x)} < +\infty$, in which case
+  $\ex_{x\sim P} f(x) = \langle f, \mu_P \rangle_\Hcal $ for any $f\in \Hcal_K$,
+  where $\mu_P\in \Hcal_K$ is unique and
+  $$ \mu_P: x \mapsto \ex_{x'\sim P} K(x', x) \,. $$
+  If the RKHS $\Hcal_K$ is universal and on a compact metric domain, then the
+  distribution embedding $\mu_P$ is injective, \cite{gretton2012};
 
-    \begin{block}{Idea}
+  \begin{block}{Idea: C-KDE}
     Use confromal procedure to assign abnormality probability to new observations
     based on RKHS norm of difference of embeddings of empirical distributions of
     original and pooled samples.
@@ -329,25 +355,35 @@
       \item Analogous to jackknife bootstrapping;
       \item In special cases might permit computation of quantile regions;
     \end{itemize}
-    \end{block}
+  \end{block}
 \end{frame}
 
-\begin{frame}[c]\frametitle{\insertsection}
+\begin{frame}[c, shrink=0]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-      Picture ocSVM versus CKDE.
+  \begin{figure}%[t, width=0.5\textwidth]
+    \centering
+    \begin{subfigure}[b]{0.33\linewidth}
+      \includegraphics[width=0.9\linewidth]{ocSVM.pdf}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.33\linewidth}
+      \includegraphics[width=0.9\linewidth]{ckde.pdf}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.33\linewidth}
+      \includegraphics[width=0.9\linewidth]{ckde-lap.pdf}
+    \end{subfigure}%
+    \caption{A toy example of one-class SVM (\textit{left}, normlaized exp-slacks
+    $e^{\xi_i}$) and the proposed conformal p-values for empirical kernel embeddings
+    (\textit{middle}) with gaussian kernel $\text{exp}(-\theta\|x-x'\|^2)$;
+    \textit{middle} C-KDE with laplacian kernel $\text{exp}(-\theta\|x-x'\|)$.}
+    \label{fig:gauss_1d_prof_gpr}
+  \end{figure}
+  C-KDE is very sensitive to kernel bandwidth $\theta$.
 \end{frame}
 
 % subsection kernel_embeddings_of_distributions (end)
 
 \subsection{Kernel bandwidth selection} % (fold)
 \label{sub:kernel_bandwidth_selection}
-
-\begin{frame}[c]\frametitle{\insertsection}
-
-  The research achieved the following goals:
-  % \begin{enumerate}
-  % \end{enumerate}
-\end{frame}
 
 % subsection kernel_bandwidth_selection (end)
 
@@ -356,9 +392,8 @@
 \section{References} % (fold)
 \label{sec:references}
 
-\begin{frame}[t]{References}  
-  \bibliographystyle{amsplain}
-  \bibliography{../references}
+\begin{frame}[t]{References}
+  \printbibliography
 \end{frame}
 
 % section references (end)
