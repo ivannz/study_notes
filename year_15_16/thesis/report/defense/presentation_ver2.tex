@@ -85,6 +85,7 @@
 \newcommand{\Xcal}{\mathcal{X}}
 \newcommand{\Ocal}{\mathcal{O}}
 \newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Ncal}{\mathcal{N}}
 \newcommand{\Real}{\mathbb{R}}
 \newcommand{\ex}{\mathop{\mathbb{E}}\nolimits}
 \newcommand{\pr}{\mathop{\mathbb{P}}\nolimits}
@@ -101,14 +102,6 @@
 \begin{document}
 \selectlanguage{english}
 \frame[plain]{\titlepage} % Титульный слайд
-
-\section{Introduction} % (fold)
-\label{sec:introduction}
-
-
-
-% section introduction (end)
-
 
 \section{Introduction} % (fold)
 \label{sec:introduction}
@@ -221,7 +214,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}[t]\frametitle{\insertection}
+\begin{frame}[t]\frametitle{\insertsection}
   \framesubtitle{Non-conformity measures}
   The in-sample residual of the $i$-th observation of $Z_{:n}\cup\{(x_{n+1}, y_{n+1})\}$,
   $\hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})$, is a linear function of $n+1$-st target value.
@@ -235,23 +228,21 @@
 
   Leave-one-out versions use
   $$ \hat{r}^{\text{loo}}_i(y_{n+1}; Z_{:n}, x_{n+1})
-    = \frac{h(x_i)}{\lambda} \hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})\,. $$
+    = \frac{h(x_i)}{\lambda} \hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1}) \,. $$
 \end{frame}
 
-\begin{frame}[t]\frametitle{\insertection}
+\begin{frame}[t]\frametitle{\insertsection}
   \begin{block}{Conformal p-value}
     Let $\eta_i(y_{n+1}) = A(Z_{-i}, z_i)$.
-    \begin{equation} \label{eq:conf_p_value}
-      p_{Z_{:n}}(y_{n+1})
-        = (n+1)^{-1} \bigl\lvert\{ i \,:\, \eta_i(y_{n+1}) \geq \eta_{n+1}(y_{n+1}) \}\bigr\rvert \,,
-    \end{equation}
+    $$ p_{Z_{:n}}(y_{n+1})
+          = (n+1)^{-1} \bigl\lvert\{ i \,:\, \eta_i(y_{n+1}) \geq \eta_{n+1}(y_{n+1}) \}\bigr\rvert
+      \,. $$
   \end{block}
 
   \begin{block}{Conformal confidence set}
-    \begin{equation} \label{eq:conf_pred_set}
-      \hat{\Gamma}_{Z_{:n}}^\alpha(x_{n+1})
-        = \bigl\{ y_{n+1}\in \Ycal \,:\, p_{Z_{:n}}(y_{n+1}) \geq \alpha \bigr\} \,.
-    \end{equation}
+    $$ \hat{\Gamma}_{Z_{:n}}^\alpha(x_{n+1})
+        = \bigl\{ y_{n+1}\in \Ycal \,:\, p_{Z_{:n}}(y_{n+1}) \geq \alpha \bigr\}
+      \,. $$
   \end{block}
 \end{frame}
 
@@ -269,7 +260,6 @@
       \item $\hat{\Gamma}_{Z_{:n}}^\alpha(x_{n+1})$ is a union of closed intervals
         $[a, b]\cup\Real$ covered by at least $\alpha n$ regions $S_i$, with
         $a\geq b$ in the set of endpoints of every $S_i$;
-      \end{itemize}
     \end{itemize}
   \end{block}
 \end{frame}
@@ -312,7 +302,7 @@
   \begin{block}{Conjecture \# 1}
     For any sequence $(x_i)_{i=1}^n\in \Xcal$ and kernel $K(\cdot, \cdot)$, such
     that for any $f$ in the canonical RKHS of $K$ one has
-    $$ f(x_{n+1})^2 \leq \sum_{i=1}^n f(x_n)^2 + \lamba \|f\|^2 \,, $$
+    $$ f(x_{n+1})^2 \leq \sum_{i=1}^n f(x_n)^2 + \lambda \|f\|^2 \,, $$
     then all $S_i$ for upper NCM are of the form $(-\infty, a_i]$.
   \end{block}
   \begin{block}{Conjecture \# 2}
@@ -406,96 +396,101 @@
 \subsection{Results} % (fold)
 \label{sub:results}
 
-\begin{frame}[t]\frametitle{\insertsection}
-  \begin{figure}%[t, width=0.5\textwidth]
+\begin{frame}[c]\frametitle{\insertsection}
+  \framesubtitle{Example Bayesian and conformal (RRCM) confidence regions}
+  \begin{figure}%[t, width=0.45\textwidth]
     \centering
-    \begin{subfigure}[b]{0.5\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/gaussian/0.1_0.1/50/profile_gaussian_0,1_0,1_100_5p-GPR_50.pdf}
     \end{subfigure}%
-    \begin{subfigure}[b]{0.5\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/gaussian/0.1_0.1/50/profile_gaussian_0,1_0,1_100_5p-RRCM_50.pdf}
     \end{subfigure}
-    \caption{Example Bayesian and conformal (RRCM) confidence regions.}
+    % \caption{Example Bayesian and conformal (RRCM) confidence regions.}
     \label{fig:gauss_1d_prof_gpr}
   \end{figure}
 \end{frame}
 
 \begin{frame}[t]\frametitle{\insertsection}
+  \framesubtitle{Asymptotic coverage rate in Gaussain case}
   \begin{figure}
     \centering
-    \begin{subfigure}[b]{0.25\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/GPR-f/coverage_gaussian_0,1_1e-06_auto_GPR-f.pdf}
     \end{subfigure}%
-    \begin{subfigure}[b]{0.25\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/RRCM/coverage_gaussian_0,1_1e-06_auto_RRCM.pdf}
     \end{subfigure}\\
-    \begin{subfigure}[b]{0.25\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/GPR-f/coverage_gaussian_0,1_0,1_auto_GPR-f.pdf}
     \end{subfigure}%
-    \begin{subfigure}[b]{0.25\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM/coverage_gaussian_0,1_0,1_auto_RRCM.pdf}
     \end{subfigure}\\
-    \caption{Asymptotic coverage rate in Gaussain case.}
+    % \caption{Asymptotic coverage rate in Gaussain case.}
     \label{fig:gaussian_1d_high_noise}
   \end{figure}
 \end{frame}
 
 \begin{frame}[t]\frametitle{\insertsection}
+  \framesubtitle{Typical confidence region widths in Gaussian case with high noise}
   \begin{figure}
     \centering
-    \begin{subfigure}[b]{0.5\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/GPR-f/width_gaussian_0,1_1e-06_auto_GPR-f.pdf}
     \end{subfigure}%
-    \begin{subfigure}[b]{0.5\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/RRCM/width_gaussian_0,1_1e-06_auto_RRCM.pdf}
     \end{subfigure}\\
-    \begin{subfigure}[b]{0.5\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/GPR-f/width_gaussian_0,1_0,1_auto_GPR-f.pdf}
     \end{subfigure}%
-    \begin{subfigure}[b]{0.5\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/RRCM/width_gaussian_0,1_0,1_auto_RRCM.pdf}
     \end{subfigure}\\
-    \caption{Typical confidence region widths in Gaussian case with high noise.}
+    % \caption{Typical confidence region widths in Gaussian case with high noise.}
     \label{fig:gaussian_1d_high_noise_width}
   \end{figure}
 \end{frame}
 
 \begin{frame}[t]\frametitle{\insertsection}
-  \begin{figure}%[b, width=0.5\textwidth]
+  \framesubtitle{Typical confidence region widths in Gaussian case with high noise}
+  \begin{figure}%[b, width=0.45\textwidth]
     \centering
-    \begin{subfigure}[b]{0.25\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/coverage/GPR-f/coverage_heaviside_1e-06_1e-06_100_GPR-f.pdf}
     \end{subfigure}%
-    \begin{subfigure}[b]{0.25\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/coverage/RRCM/coverage_heaviside_1e-06_1e-06_100_RRCM.pdf}
     \end{subfigure}\\
-    \begin{subfigure}[b]{0.25\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/coverage/GPR-f/coverage_heaviside_1e-06_0,1_100_GPR-f.pdf}
     \end{subfigure}%
-    \begin{subfigure}[b]{0.25\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/coverage/RRCM/coverage_heaviside_1e-06_0,1_100_RRCM.pdf}
     \end{subfigure}\\
-    \caption{Typical coverage rate in non-Gaussian case with low noise.}
+    % \caption{Typical confidence region widths in Gaussian case with high noise.}
     \label{fig:heaviside_1d_low_noise}
   \end{figure}
 \end{frame}
 
 \begin{frame}[t]\frametitle{\insertsection}
-  \begin{figure}%[b, width=0.5\textwidth]
+  \framesubtitle{Typical coverage rate in non-Gaussian case with high noise}
+  \begin{figure}%[b, width=0.45\textwidth]
     \centering
-    \begin{subfigure}[b]{0.25\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/coverage/GPR-f/coverage_heaviside_0,1_1e-06_10_GPR-f.pdf}
     \end{subfigure}%
-    \begin{subfigure}[b]{0.25\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/coverage/RRCM/coverage_heaviside_0,1_1e-06_10_RRCM.pdf}
     \end{subfigure}\\
-    \begin{subfigure}[b]{0.25\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/coverage/GPR-f/coverage_heaviside_0,1_0,1_10_GPR-f.pdf}
     \end{subfigure}%
-    \begin{subfigure}[b]{0.25\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/coverage/RRCM/coverage_heaviside_0,1_0,1_10_RRCM.pdf}
     \end{subfigure}\\
-    \caption{Typical coverage rate in non-Gaussian case with high noise.}
+    % \caption{Typical coverage rate in non-Gaussian case with high noise.}
     \label{fig:heaviside_1d_high_noise_arb}
   \end{figure}
 \end{frame}
@@ -602,7 +597,7 @@
 
 \begin{frame}[c, shrink=0]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-  \begin{figure}%[t, width=0.5\textwidth]
+  \begin{figure}%[t, width=0.45\textwidth]
     \centering
     \begin{subfigure}[b]{0.33\linewidth}
       \includegraphics[width=0.9\linewidth]{ocSVM.pdf}
