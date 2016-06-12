@@ -127,11 +127,11 @@
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
   \begin{itemize}
-    \item anomaly detection (batch setting): learn a confidence region for observatons,
+    \item anomaly detection (batch setting): learn a confidence region for observations,
     to discriminate ``inliners'' from ``outliers'';
     \item forecasting (online setting): based on the dynamic model of a time series
     yield a predictive region with specified confidence level;
-    \item function approximation (batch setting): assess the bounds for the approximaton
+    \item function approximation (batch setting): assess the bounds for the approximation
     error of the unknown function $f$;
   \end{itemize}
   % All these models also usually rely on some predictive model;
@@ -155,9 +155,11 @@
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{Bayesian KRR}
-  Gaussian Process Regression: observations are drawn from a Gaussian process with
-  mean $0$ and covariance $\sigma^2(\lambda\delta_{x,x'} + K(x,x'))$, $\sigma^2$
-  -- variance, $\lambda$ -- noise-to-signal ratio.
+  \begin{block}{Gaussian Process Regression}  
+    Observations are drawn from a Gaussian process with mean $0$ and covariance
+    $$ \sigma^2(\lambda\delta_{x,x'} + K(x,x')) \,,$$
+    $\sigma^2$ -- variance, $\lambda$ -- noise-to-signal ratio.
+  \end{block}
   \begin{block}{Forecast distribution}
   Conditional on the observed data $(X, y)$ at a new $x$:
   $$ y_x \sim \Ncal(\kappa_x' Q y, \sigma^2 h(x)) \,. $$
@@ -194,14 +196,19 @@
   \end{algorithm}
 \end{frame}
 
-\begin{frame}
-  \frametitle{\insertsection}
-  % A distribution-free technique designed to yield a statistically valid confidence
-  % sets for predictions made by Machine Learning algorithms.
+\begin{frame}[t]\frametitle{\insertsection}
+  A distribution-free method to construct statistically valid confidence sets for
+  predictions made by Machine Learning algorithms.
+
   \begin{itemize}
     \item can be constructed atop \textbf{any} ML algorithm by incorporating it into
     $A(Z_{:n}, z)$ -- a score reflecting non-conformity of $z$ with respect to sample
     $Z_{:n}$;
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[t]\frametitle{\insertsection}
+  \begin{itemize}
     \item Asymptotic validity guarantees for i.i.d. observations in online setting
     established in \cite{vovk2005}:
     $$ \pr\bigl( y_{n+1} \notin \hat{\Gamma}_{:n}^\alpha(x_{n+1}) \bigr) \leq \alpha \,. $$
@@ -216,27 +223,30 @@
 
 \begin{frame}[t]\frametitle{\insertsection}
   \framesubtitle{Non-conformity measures}
-  The in-sample residual of the $i$-th observation of $Z_{:n}\cup\{(x_{n+1}, y_{n+1})\}$,
-  $\hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})$, is a linear function of $n+1$-st target value.
+  \begin{block}{KRR residuals}  
+    The residual of the $i$-th observation in $Z_{:n}\cup\{(x_{n+1}, y_{n+1})\}$
+    is a linear function of $n+1$-st target value, $\hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})$.
+  \end{block}
 
   \begin{description}
     \item[Ridge Regression Confidence Machine] $A(Z_{-i}, z_i) = |\hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})|$;
-    \item[Two-sided Conformal Region]
+    \item[Two-sided Conformal Region] \hfill\\
       \textit{upper} $A(Z_{-i}, z_i) = \hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})$ and
       \textit{lower} $A(Z_{-i}, z_i) = -\hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})$;
   \end{description}
 
-  Leave-one-out versions use
-  $$ \hat{r}^{\text{loo}}_i(y_{n+1}; Z_{:n}, x_{n+1})
-    = \frac{h(x_i)}{\lambda} \hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1}) \,. $$
+  \begin{block}{Leave-one-out versions}
+    $$ \hat{r}^{\text{loo}}_i(y_{n+1}; Z_{:n}, x_{n+1})
+      = \frac{h(x_i)}{\lambda} \hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1}) \,. $$
+  \end{block}
 \end{frame}
 
 \begin{frame}[t]\frametitle{\insertsection}
   \begin{block}{Conformal p-value}
-    Let $\eta_i(y_{n+1}) = A(Z_{-i}, z_i)$.
     $$ p_{Z_{:n}}(y_{n+1})
           = (n+1)^{-1} \bigl\lvert\{ i \,:\, \eta_i(y_{n+1}) \geq \eta_{n+1}(y_{n+1}) \}\bigr\rvert
-      \,. $$
+      \,, $$
+    for $\eta_i(y_{n+1}) = A(Z_{-i}, z_i)$.
   \end{block}
 
   \begin{block}{Conformal confidence set}
@@ -249,33 +259,35 @@
 \subsection{Ridge Regression Confidence Machine} % (fold)
 \label{sub:ridge_regression_confidence_machine}
 
-\begin{frame}[t]\frametitle{\insertsection}
+\begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-  \begin{block}{Exhaustive search over $y\in \Real$ is not necessary.}
-    \begin{itemize}
-      \item regression residuals are special: each non-empty regions
-      $S_i = \{y_{n+1}\in \Ycal \,:\, \eta_i(y_{n+1}) \geq \eta_i(y_{n+1})\}$
-      is either $(-\infty, a_i]$, $[b_i, +\infty)$, $[a_i, b_i]$, $\Real$, or
-      $\Real\setminus (a_i, b_i)$;
-      \item $\hat{\Gamma}_{Z_{:n}}^\alpha(x_{n+1})$ is a union of closed intervals
-        $[a, b]\cup\Real$ covered by at least $\alpha n$ regions $S_i$, with
-        $a\geq b$ in the set of endpoints of every $S_i$;
-    \end{itemize}
+  \begin{block}{Exhaustive search over $y\in \Real$ is not necessary}
+    Regression residuals are special: each non-empty regions
+    $S_i = \{y_{n+1}\in \Ycal \,:\, \eta_i(y_{n+1}) \geq \eta_i(y_{n+1})\}$
+    is either $(-\infty, a_i]$, $[b_i, +\infty)$, $[a_i, b_i]$, $\Real$, or
+    $\Real\setminus (a_i, b_i)$;
+    \vspace{\baselineskip}
+    The set $\hat{\Gamma}_{Z_{:n}}^\alpha(x_{n+1})$ is a union of closed intervals
+    $[a, b]\cup\Real$ covered by at least $\alpha n$ regions $S_i$, with $a\geq b$
+    in the set of endpoints of every $S_i$;
   \end{block}
 \end{frame}
 
 \begin{frame}[c]\frametitle{\insertsection}
 \framesubtitle{\insertsubsection}
   Fixed requirements per sample $Z_{:n}$: \begin{itemize}
-    \item Initialization: inversion of the regularized Gram matrix $\Ocal(n^3)$;
+    \item Initialization: $\Ocal(n^3)$ for inversion of the regularized Gram matrix;
     \item Memory complexity: $\Ocal(n^2)$ to store the inverse;
   \end{itemize}
-
-  Requirements for each $(x_{n+1})$:
+  \vspace{\baselineskip}
+  Requirements for each $x_{n+1}$:
   \begin{itemize}
     \item Memory complexity: $\Ocal(n)$ to store endpoints;
-    \item Runtime complexity: $\Ocal(n^2)$ for kernel and matrix multiplication,
-    and $\Ocal(n \log n)$ for interval construction, $\Ocal(n)$ for pruning;
+    \item Runtime complexity: \begin{itemize}
+      \item $\Ocal(n^2)$ for kernel and matrix multiplication;
+      \item $\Ocal(n \log n)$ for interval construction;
+      \item $\Ocal(n)$ for pruning;
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -288,10 +300,10 @@
   \framesubtitle{\insertsubsection}
   Same constructon, less endpoints: each non-empty $S_i$ is $(-\infty, a_i]$,
   $[a_i, +\infty)$ or $\Real$.
-
+  \vspace{\baselineskip}
   \begin{block}{Specifics}
-    must intersect the \textit{upper} interval $\hat{\Gamma}_{Z_{:n}}^{\alpha, U}(x_{n+1})$
-    and the \textit{lower} interval $\hat{\Gamma}_{Z_{:n}}^{\alpha, L}(x_{n+1})$, which
+    must intersect the \textit{upper} interval $\hat{\Gamma}_{Z_{:n}}^{\frac{\alpha}{2}, U}(x_{n+1})$
+    and the \textit{lower} interval $\hat{\Gamma}_{Z_{:n}}^{\frac{\alpha}{2}, L}(x_{n+1})$, which
     takes $\Ocal(1)$ time;
   \end{block}
 \end{frame}
@@ -299,12 +311,17 @@
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
   General $\hat{\Gamma}_{Z_{:n}}^\alpha(x_{n+1})$ is not necessarily connected;
+  \vspace{\baselineskip}
   \begin{block}{Conjecture \# 1}
     For any sequence $(x_i)_{i=1}^n\in \Xcal$ and kernel $K(\cdot, \cdot)$, such
     that for any $f$ in the canonical RKHS of $K$ one has
     $$ f(x_{n+1})^2 \leq \sum_{i=1}^n f(x_n)^2 + \lambda \|f\|^2 \,, $$
     then all $S_i$ for upper NCM are of the form $(-\infty, a_i]$.
   \end{block}
+\end{frame}
+
+\begin{frame}[c]\frametitle{\insertsection}
+  \framesubtitle{\insertsubsection}
   \begin{block}{Conjecture \# 2}
     Condition of conjecture \#1 is satisfied when for sufficiently large $n\geq 1$
     $$ K(x_{n+1}, x_{n+1}) - \kappa_{:n}(x_{n+1})' K^{-1}_{:n} \kappa_{:n}(x_{n+1})
@@ -319,15 +336,17 @@
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
+  \begin{block}{So far:}
   \begin{itemize}
-    \item an effcient ploynomial algorithm for construction of conformal
+    \item an effcient ploynomial-time algorithm for construction of conformal
     confidence regions;
-    \item have a sufficient condition for regularity of two-sided intervals
-    for KRR (extends \cite{burnaevV14});
+    \item a sufficient condition for regularity of two-sided intervals for KRR
+    (extends \cite{burnaevV14});
   \end{itemize}
-
-  Next goal: compare the conformal confidence region to the Bayesian confidence
-  interval.
+  \end{block}
+  \begin{block}{Next step}
+    compare the conformal confidence region to the Bayesian confidence interval.
+  \end{block}
 \end{frame}
 
 % subsection preliminary_results (end)
@@ -339,39 +358,42 @@
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{Bayesian interval}
-  Gaussian Process Regression readily yields confidence prediction
-  \begin{block}{Maximum aposteriori prediction}
+  Gaussian Process Regression readily yields confidence intervals.
+  \vspace{\baselineskip}
+  \begin{block}{Maximum a posteriori prediction}
     $$ \hat{y}_{:n}(x) = \kappa_x' (\lambda I_n + K)^{-1} y_{:n} \,, $$
     where $\kappa_x = (K(x_i, x))_{i=1}^n$.
   \end{block}
 
   \begin{block}{Prediction confidence interval}
-    $$ y_{n+1} \in
-      \bigl[\hat{y}_{:n}(x_{n+1}) - \sigma \sqrt{h(x_{n+1})},
-            \hat{y}_{:n}(x_{n+1}) + \sigma \sqrt{h(x_{n+1})} \bigr] \,, $$
-    where $ h(x) = \lambda + K(x,x) - \kappa_x' (\lambda I_n + K)^{-1} \kappa_x$.
+    $$ \frac{y_{n+1} - \hat{y}_{:n}(x_{n+1})}{\sigma \sqrt{h(x_{n+1})}} \in
+      \bigl[- z_{1-\frac{\alpha}{2}}, z_{1-\frac{\alpha}{2}} \bigr] \,, $$
+    where $ h(x) = \lambda + K(x,x) - \kappa_x' (\lambda I_n + K)^{-1} \kappa_x$,
+    and $z_\alpha$ is the $\alpha$ quantile of the standard Normal distribution.
   \end{block}
 \end{frame}
 
 \begin{frame}[c]\frametitle{\insertsection}
-  we consider kernel ridge regression with Gaussian kernel:
+  In the study we consider kernel ridge regression with the Gaussian kernel:
   $$ K(x,x') = \text{exp}\bigl\{ -\theta \|x-x'\|^2 \bigr\} \,. $$
   \begin{block}{Objectives}
     \begin{itemize}
       \item verify validity guaranties of conformal confidence regions for KRR in
       the batch learning setting;
-      \item measure efficiency of conformal confidence regions under gaussainity
+      \item measure efficiency of conformal confidence regions under Gaussian
       assumptions.
     \end{itemize}
   \end{block}
 \end{frame}
 
 \begin{frame}[t]\frametitle{\insertsection}
+  \begin{block}{Experimental setup}
+  \end{block}
   \begin{itemize}
     \item Test functions on compact $1-d$ and $2-d$ domains; \begin{itemize}
       \item a piecewise continuous;
       \item a piecewise smooth;
-      \item a sample path of a Gaussain process;
+      \item a sample path of a Gaussian process;
     \end{itemize}
     \item Low or high Gaussian noise;
     \item KRR hyper-parameters: regularization $\lambda$, kernel precision $\theta$;
@@ -386,7 +408,7 @@
       Use a regular grid as a test sample;
     \item Generate a large sample path over the pooled sample;
     \item For each setting of hyper-parameters make $M$ replications: \begin{itemize}
-      \item pick a random subsample of specified size from the train sample;
+      \item pick a random sub-sample of specified size from the train sample;
       \item construct confidence regions (conformal, Bayesian) for the test sample;
       \item compute the coverage rate across the test sample and region size for each test object;
     \end{itemize}
@@ -406,13 +428,17 @@
     \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/gaussian/0.1_0.1/50/profile_gaussian_0,1_0,1_100_5p-RRCM_50.pdf}
     \end{subfigure}
-    % \caption{Example Bayesian and conformal (RRCM) confidence regions.}
+    \caption{Example Bayesian and conformal (RRCM) confidence regions.
+      \textit{Upward} triangles indicate the $5\%$ sample quantile across the whole
+      test sample of confidence regions' widths, whereas \textit{downward} triangles
+      indicate the maximal width. The median width is drawn with a slightly thicker
+      line.}
     \label{fig:gauss_1d_prof_gpr}
   \end{figure}
 \end{frame}
 
 \begin{frame}[t]\frametitle{\insertsection}
-  \framesubtitle{Asymptotic coverage rate in Gaussain case}
+  \framesubtitle{Asymptotic coverage rate in the Gaussian case with high noise}
   \begin{figure}
     \centering
     \begin{subfigure}[b]{0.45\linewidth}
@@ -427,13 +453,12 @@
     \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM/coverage_gaussian_0,1_0,1_auto_RRCM.pdf}
     \end{subfigure}\\
-    % \caption{Asymptotic coverage rate in Gaussain case.}
-    \label{fig:gaussian_1d_high_noise}
+    % \label{fig:gaussian_1d_high_noise}
   \end{figure}
 \end{frame}
 
 \begin{frame}[t]\frametitle{\insertsection}
-  \framesubtitle{Typical confidence region widths in Gaussian case with high noise}
+  \framesubtitle{Typical confidence region widths in the Gaussian case with high noise}
   \begin{figure}
     \centering
     \begin{subfigure}[b]{0.45\linewidth}
@@ -448,13 +473,12 @@
     \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/RRCM/width_gaussian_0,1_0,1_auto_RRCM.pdf}
     \end{subfigure}\\
-    % \caption{Typical confidence region widths in Gaussian case with high noise.}
-    \label{fig:gaussian_1d_high_noise_width}
+    % \label{fig:gaussian_1d_high_noise_width}
   \end{figure}
 \end{frame}
 
 \begin{frame}[t]\frametitle{\insertsection}
-  \framesubtitle{Typical confidence region widths in Gaussian case with high noise}
+  \framesubtitle{Typical coverage rate in non-Gaussian case with low noise}
   \begin{figure}%[b, width=0.45\textwidth]
     \centering
     \begin{subfigure}[b]{0.45\linewidth}
@@ -469,8 +493,7 @@
     \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/coverage/RRCM/coverage_heaviside_1e-06_0,1_100_RRCM.pdf}
     \end{subfigure}\\
-    % \caption{Typical confidence region widths in Gaussian case with high noise.}
-    \label{fig:heaviside_1d_low_noise}
+    % \label{fig:heaviside_1d_low_noise}
   \end{figure}
 \end{frame}
 
@@ -490,8 +513,7 @@
     \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/coverage/RRCM/coverage_heaviside_0,1_0,1_10_RRCM.pdf}
     \end{subfigure}\\
-    % \caption{Typical coverage rate in non-Gaussian case with high noise.}
-    \label{fig:heaviside_1d_high_noise_arb}
+    % \label{fig:heaviside_1d_high_noise_arb}
   \end{figure}
 \end{frame}
 
@@ -502,14 +524,21 @@
     regardless of KRR hyper-parameters, quality of fit or noise-to-signal ratio;
     %% page 34, columns a,c; page 36, columns a,c
     %% non-Gaussian: figures 10-12
+    \vspace{\baselineskip}
     \item Gaussian setting with high noise-to-signal: Bayesian intervals are valid,
     conformal regions are asymptotically efficient;
     %% fig 14-17, pp. 42-45;
     %% fig 18-19, p. 46 (double "the", different hyper-parameters)
     %% ``f6'' function is much Gaussian-like; thus the comparison on fig. 22
+    \vspace{\baselineskip}
     \item Gaussian setting with low noise-to-signal: Bayesian intervals are
     conservatively valid and wider than conformal intervals;
-    \item non-Gaussian settings with high noise: ;
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[c]\frametitle{\insertsection}
+  \framesubtitle{\insertsubsection}
+  \begin{itemize}
     %% fig. 6, 16; fig. 10-13
     \item non-Gaussian settings with low noise: Bayseian intervals fail to have
     correct coverage rate;
@@ -524,11 +553,11 @@
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-  By design, the conformal prediction algorithm is oblivious to the nature and
-  the domain of the used non-conformity measure.
-
-  That is why we consider the obtained empirical evidence for the validity and
-  efficiency of the KRR CCR in batch setting to be sufficient to \begin{itemize}
+  Conformal prediction algorithm is by design oblivious to the nature of
+  the non-conformity measure.
+  \vspace{\baselineskip}
+  Gathered empirical evidence is sufficient to \begin{itemize}
+    % for validity and efficiency of the KRR conformal confidence regions in batch setting
     \item warrant further theoretical research in asymptotic properties of conformal
     kernel ridge regression predictions;
     \item recommend the use of conformal confidence regions in applied prediction
@@ -548,20 +577,25 @@
 
 \begin{frame}[t]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-  Inspired by the approach taken in \cite{goldenshluger1997}: in function approximation
-  setting assume that the observational noise is sub-Gaussian, use it to construct
-  confidence intervals the true value of $f(x_0)$ at $x_0$, and, finally, select
-  a locally optimal bandwidth by minimizing the size of the confidence region. 
+  \begin{block}{Possible approaches}
+  \begin{itemize}
+    \item full Bayesian assumptions: use MLE of $\theta$;
+    \item sub-Gaussian noise: use local spatially adaptive window estimate of
+      \cite{goldenshluger1997} based on approximate confidence interval;
+    \item model-free: use conformal confidence regions;
+  \end{itemize}
+  \end{block}
 
-  \begin{block}{Idea: Conformal Bandwidth Selection}
-    Conformal confidence intervals have certain coverage guarantees, which is
-    why they are a good non-parametric substitute for the sub-Gaussian confidence 
-    intervals.
-
-    Main challenge -- aggregation: \begin{itemize}
-      \item how to move from local to global bandwidth choice;
-      \item balance computational complexity versus approximation precision;
+  \begin{block}{Conformal Bandwidth Selection}
+    Conformal confidence sets have coverage guarantees;
+    \begin{itemize}
+      \item define the reasonable interval of kernel widths (reciprocal of $\theta$);
+      \item construct confidence region for $f(x_0)$ for each width;
+      \item use the minimizer the size of the confidence region as a locally optimal
+      bandwidth;
     \end{itemize}
+    \vspace{\baselineskip}
+    Main challenge: move from local to global bandwidth;
   \end{block}
 \end{frame}
 
@@ -573,10 +607,12 @@
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
   A distribution $P$ on $\Xcal$ admits an embedding $\mu_P$ in an RKHS $\Hcal_K$
-  induced by $K$, if $\ex_{x\sim P} \sqrt{K(x,x)} < +\infty$, in which case
-  $\ex_{x\sim P} f(x) = \langle f, \mu_P \rangle_\Hcal $ for any $f\in \Hcal_K$,
-  where $\mu_P\in \Hcal_K$ is unique and
+  induced by $K$, if $\ex_{x\sim P} \sqrt{K(x,x)} < +\infty$.
+  \vspace{\baselineskip}
+  In this case $\ex_{x\sim P} f(x) = \langle f, \mu_P \rangle_\Hcal$ for any
+  $f\in \Hcal_K$, where $\mu_P\in \Hcal_K$ is unique and
   $$ \mu_P: x \mapsto \ex_{x'\sim P} K(x', x) \,. $$
+  \vspace{\baselineskip}
   If the RKHS $\Hcal_K$ is universal and on a compact metric domain, then the
   distribution embedding $\mu_P$ is injective, \cite{gretton2012};
 \end{frame}
