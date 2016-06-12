@@ -129,8 +129,10 @@
   \begin{itemize}
     \item anomaly detection (batch setting): learn a confidence region for observations,
     to discriminate ``inliners'' from ``outliers'';
+    \vspace{\baselineskip}
     \item forecasting (online setting): based on the dynamic model of a time series
     yield a predictive region with specified confidence level;
+    \vspace{\baselineskip}
     \item function approximation (batch setting): assess the bounds for the approximation
     error of the unknown function $f$;
   \end{itemize}
@@ -145,6 +147,7 @@
   $$ \|y - K\beta \|^2 + \lambda \beta' K \beta \to \min_\beta \,, $$
   $y\in \Real^{n\times1}$, $\lambda > 0$, $K$ -- sample Gram matrix of kernel
   $K(\cdot,\cdot)$ on inputs $x_i$.
+  \vspace{\baselineskip}
   \begin{description}
     \item[prediction] $\hat{y}(x) = \kappa_x' \hat{\beta} = \kappa_x' Q y$;
     \item[loo-cv] $\hat{r}^{\text{loo}}_i = \frac{h(x_i)}{\lambda} e_i'(y - K Q y)$;
@@ -160,6 +163,7 @@
     $$ \sigma^2(\lambda\delta_{x,x'} + K(x,x')) \,,$$
     $\sigma^2$ -- variance, $\lambda$ -- noise-to-signal ratio.
   \end{block}
+  \vspace{\baselineskip}
   \begin{block}{Forecast distribution}
   Conditional on the observed data $(X, y)$ at a new $x$:
   $$ y_x \sim \Ncal(\kappa_x' Q y, \sigma^2 h(x)) \,. $$
@@ -199,25 +203,27 @@
 \begin{frame}[t]\frametitle{\insertsection}
   A distribution-free method to construct statistically valid confidence sets for
   predictions made by Machine Learning algorithms.
-
+  \vspace{\baselineskip}
   \begin{itemize}
     \item can be constructed atop \textbf{any} ML algorithm by incorporating it into
     $A(Z_{:n}, z)$ -- a score reflecting non-conformity of $z$ with respect to sample
     $Z_{:n}$;
+    \vspace{\baselineskip}
+    \item Asymptotic validity guarantees for i.i.d. observations in online setting
+    established in \cite{vovk2005}:
+    $$ \pr\bigl( y_{n+1} \notin \hat{\Gamma}_{:n}^\alpha(x_{n+1}) \bigr) \leq \alpha \,. $$
   \end{itemize}
 \end{frame}
 
 \begin{frame}[t]\frametitle{\insertsection}
   \begin{itemize}
-    \item Asymptotic validity guarantees for i.i.d. observations in online setting
-    established in \cite{vovk2005}:
-    $$ \pr\bigl( y_{n+1} \notin \hat{\Gamma}_{:n}^\alpha(x_{n+1}) \bigr) \leq \alpha \,. $$
     \item Efficiency (e.g. width of prediction confidence intervals) depends on the
-    non-conformity measure $A$ and model assumptions; \begin{itemize}
-      \item Asymptotic efficiency in the batch setting for linear ridge regression shown
-      in \cite{burnaevV14};
-      \item Nothing is known about efficiency in the case of nonlinear models;
-    \end{itemize}
+    non-conformity measure $A$ and model assumptions;
+    \vspace{\baselineskip}
+    \item Asymptotic efficiency in the batch setting for linear ridge regression shown
+    in \cite{burnaevV14};
+    \vspace{\baselineskip}
+    \item Nothing is known about efficiency in the case of nonlinear models;
   \end{itemize}
 \end{frame}
 
@@ -230,8 +236,9 @@
 
   \begin{description}
     \item[Ridge Regression Confidence Machine] $A(Z_{-i}, z_i) = |\hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})|$;
+    \vspace{\baselineskip}
     \item[Two-sided Conformal Region] \hfill\\
-      \textit{upper} $A(Z_{-i}, z_i) = \hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})$ and
+      \textit{upper} $A(Z_{-i}, z_i) = \hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})$ and \hfill\\
       \textit{lower} $A(Z_{-i}, z_i) = -\hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})$;
   \end{description}
 
@@ -241,14 +248,15 @@
   \end{block}
 \end{frame}
 
-\begin{frame}[t]\frametitle{\insertsection}
+\begin{frame}[c]\frametitle{\insertsection}
   \begin{block}{Conformal p-value}
     $$ p_{Z_{:n}}(y_{n+1})
           = (n+1)^{-1} \bigl\lvert\{ i \,:\, \eta_i(y_{n+1}) \geq \eta_{n+1}(y_{n+1}) \}\bigr\rvert
       \,, $$
     for $\eta_i(y_{n+1}) = A(Z_{-i}, z_i)$.
   \end{block}
-
+  \vspace{\baselineskip}
+  \vspace{\baselineskip}
   \begin{block}{Conformal confidence set}
     $$ \hat{\Gamma}_{Z_{:n}}^\alpha(x_{n+1})
         = \bigl\{ y_{n+1}\in \Ycal \,:\, p_{Z_{:n}}(y_{n+1}) \geq \alpha \bigr\}
@@ -264,8 +272,11 @@
   \begin{block}{Exhaustive search over $y\in \Real$ is not necessary}
     Regression residuals are special: each non-empty regions
     $S_i = \{y_{n+1}\in \Ycal \,:\, \eta_i(y_{n+1}) \geq \eta_i(y_{n+1})\}$
-    is either $(-\infty, a_i]$, $[b_i, +\infty)$, $[a_i, b_i]$, $\Real$, or
-    $\Real\setminus (a_i, b_i)$;
+    is either \begin{itemize}
+      \item $(-\infty, a_i]$ or $[b_i, +\infty)$, or union;
+      \item $[a_i, b_i]$;
+      \item $\Real$, or $\{a_i\}$;
+    \end{itemize}
     \vspace{\baselineskip}
     The set $\hat{\Gamma}_{Z_{:n}}^\alpha(x_{n+1})$ is a union of closed intervals
     $[a, b]\cup\Real$ covered by at least $\alpha n$ regions $S_i$, with $a\geq b$
@@ -298,8 +309,10 @@
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-  Same constructon, less endpoints: each non-empty $S_i$ is $(-\infty, a_i]$,
-  $[a_i, +\infty)$ or $\Real$.
+  Same constructon, less endpoints: each non-empty $S_i$ is \begin{itemize}
+    \item $(-\infty, a_i]$ or $[a_i, +\infty)$;
+    \item $\Real$.
+  \end{itemize}
   \vspace{\baselineskip}
   \begin{block}{Specifics}
     must intersect the \textit{upper} interval $\hat{\Gamma}_{Z_{:n}}^{\frac{\alpha}{2}, U}(x_{n+1})$
@@ -316,11 +329,12 @@
     For any sequence $(x_i)_{i=1}^n\in \Xcal$ and kernel $K(\cdot, \cdot)$, such
     that for any $f$ in the canonical RKHS of $K$ one has
     $$ f(x_{n+1})^2 \leq \sum_{i=1}^n f(x_n)^2 + \lambda \|f\|^2 \,, $$
-    then all $S_i$ for upper NCM are of the form $(-\infty, a_i]$.
+    then all $S_i$ for upper and lower NCM are of the form $(-\infty, a_i]$ and
+    $[a_i, +\infty)$ respectively.
   \end{block}
 \end{frame}
 
-\begin{frame}[c]\frametitle{\insertsection}
+\begin{frame}[t]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
   \begin{block}{Conjecture \# 2}
     Condition of conjecture \#1 is satisfied when for sufficiently large $n\geq 1$
@@ -390,11 +404,12 @@
   \begin{block}{Experimental setup}
   \end{block}
   \begin{itemize}
-    \item Test functions on compact $1-d$ and $2-d$ domains; \begin{itemize}
+    \item Test functions on compact $1$-d and $2$-d domains; \begin{itemize}
       \item a piecewise continuous;
       \item a piecewise smooth;
       \item a sample path of a Gaussian process;
     \end{itemize}
+    \vspace{\baselineskip}
     \item Low or high Gaussian noise;
     \item KRR hyper-parameters: regularization $\lambda$, kernel precision $\theta$;
     \item Train sample size $n$;
@@ -407,11 +422,12 @@
     \item Draw a large random uniform sample from $\Xcal$ to serve as a train set;
       Use a regular grid as a test sample;
     \item Generate a large sample path over the pooled sample;
-    \item For each setting of hyper-parameters make $M$ replications: \begin{itemize}
+    % \vspace{\baselineskip}
+    \item For each setting of hyper-parameters make $M$ replications: \begin{enumerate}
       \item pick a random sub-sample of specified size from the train sample;
       \item construct confidence regions (conformal, Bayesian) for the test sample;
       \item compute the coverage rate across the test sample and region size for each test object;
-    \end{itemize}
+    \end{enumerate}
   \end{enumerate}
 \end{frame}
 
@@ -429,10 +445,8 @@
       \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/gaussian/0.1_0.1/50/profile_gaussian_0,1_0,1_100_5p-RRCM_50.pdf}
     \end{subfigure}
     \caption{Example Bayesian and conformal (RRCM) confidence regions.
-      \textit{Upward} triangles indicate the $5\%$ sample quantile across the whole
-      test sample of confidence regions' widths, whereas \textit{downward} triangles
-      indicate the maximal width. The median width is drawn with a slightly thicker
-      line.}
+      \textit{Upward} triangles indicate the $5\%$ sample quantile;
+      \textit{downward} triangles indicate the maximal width.}
     \label{fig:gauss_1d_prof_gpr}
   \end{figure}
 \end{frame}
@@ -519,31 +533,35 @@
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-  \begin{itemize}
-    \item in all settings confromal confidence regions are asymptotically valid,
-    regardless of KRR hyper-parameters, quality of fit or noise-to-signal ratio;
-    %% page 34, columns a,c; page 36, columns a,c
-    %% non-Gaussian: figures 10-12
-    \vspace{\baselineskip}
-    \item Gaussian setting with high noise-to-signal: Bayesian intervals are valid,
-    conformal regions are asymptotically efficient;
-    %% fig 14-17, pp. 42-45;
-    %% fig 18-19, p. 46 (double "the", different hyper-parameters)
-    %% ``f6'' function is much Gaussian-like; thus the comparison on fig. 22
-    \vspace{\baselineskip}
-    \item Gaussian setting with low noise-to-signal: Bayesian intervals are
-    conservatively valid and wider than conformal intervals;
-  \end{itemize}
+  \begin{block}{Results}
+    \begin{itemize}
+      \item in all settings confromal confidence regions are asymptotically valid,
+      regardless of KRR hyper-parameters, quality of fit or noise-to-signal ratio;
+      %% page 34, columns a,c; page 36, columns a,c
+      %% non-Gaussian: figures 10-12
+      \vspace{\baselineskip}
+      \item Gaussian setting with high noise-to-signal: Bayesian intervals are valid,
+      conformal regions are asymptotically efficient;
+      %% fig 14-17, pp. 42-45;
+      %% fig 18-19, p. 46 (double "the", different hyper-parameters)
+      %% ``f6'' function is much Gaussian-like; thus the comparison on fig. 22
+      \vspace{\baselineskip}
+      \item Gaussian setting with low noise-to-signal: Bayesian intervals are
+      conservatively valid and wider than conformal intervals;
+    \end{itemize}
+  \end{block}
 \end{frame}
 
-\begin{frame}[c]\frametitle{\insertsection}
+\begin{frame}[t]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-  \begin{itemize}
-    %% fig. 6, 16; fig. 10-13
-    \item non-Gaussian settings with low noise: Bayseian intervals fail to have
-    correct coverage rate;
-    \item Bayesian confidence regions are sensitive to KRR hyper-parameters;
-  \end{itemize}
+  \begin{block}{Results}
+    \begin{itemize}
+      %% fig. 6, 16; fig. 10-13
+      \item non-Gaussian settings with low noise: Bayseian intervals fail to have
+      correct coverage rate;
+      \item Bayesian confidence regions are sensitive to KRR hyper-parameters;
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 % subsection results (end)
@@ -553,8 +571,9 @@
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-  Conformal prediction algorithm is by design oblivious to the nature of
+  By design, conformal prediction algorithm iss oblivious to the nature of
   the non-conformity measure.
+
   \vspace{\baselineskip}
   Gathered empirical evidence is sufficient to \begin{itemize}
     % for validity and efficiency of the KRR conformal confidence regions in batch setting
@@ -575,7 +594,7 @@
 \subsection{Kernel bandwidth selection} % (fold)
 \label{sub:kernel_bandwidth_selection}
 
-\begin{frame}[t]\frametitle{\insertsection}
+\begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
   \begin{block}{Possible approaches}
   \begin{itemize}
@@ -585,7 +604,10 @@
     \item model-free: use conformal confidence regions;
   \end{itemize}
   \end{block}
+\end{frame}
 
+\begin{frame}[c]\frametitle{\insertsection}
+  \framesubtitle{\insertsubsection}
   \begin{block}{Conformal Bandwidth Selection}
     Conformal confidence sets have coverage guarantees;
     \begin{itemize}
@@ -608,10 +630,12 @@
   \framesubtitle{\insertsubsection}
   A distribution $P$ on $\Xcal$ admits an embedding $\mu_P$ in an RKHS $\Hcal_K$
   induced by $K$, if $\ex_{x\sim P} \sqrt{K(x,x)} < +\infty$.
+  
   \vspace{\baselineskip}
   In this case $\ex_{x\sim P} f(x) = \langle f, \mu_P \rangle_\Hcal$ for any
   $f\in \Hcal_K$, where $\mu_P\in \Hcal_K$ is unique and
   $$ \mu_P: x \mapsto \ex_{x'\sim P} K(x', x) \,. $$
+  
   \vspace{\baselineskip}
   If the RKHS $\Hcal_K$ is universal and on a compact metric domain, then the
   distribution embedding $\mu_P$ is injective, \cite{gretton2012};
