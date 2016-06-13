@@ -616,12 +616,67 @@
       \item use the minimizer the size of the confidence region as a locally optimal
       bandwidth;
     \end{itemize}
-    \vspace{\baselineskip}
-    Main challenge: move from local to global bandwidth;
+  \end{block}
+
+  \vspace{\baselineskip}
+  \begin{block}{Challenge}
+    Move from local to global bandwidth estimate: \begin{itemize}
+      \item Proposition: take the median of the locally optimal precision
+      $\theta$ (similarly, bandwidth).
+    \end{itemize}
   \end{block}
 \end{frame}
 
+\begin{frame}[t]\frametitle{\insertsection}
+  \framesubtitle{Selected precision $\hat{\theta}$ for a Gaussian process}
+  \begin{figure}%[b, width=0.45\textwidth]
+    \centering
+    \includegraphics[width=0.95\linewidth]{cbs_images/gaussian_01_100_0.5.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[t]\frametitle{\insertsection}
+  \framesubtitle{Selected precision $\hat{\theta}$ for a Gaussian process}
+  \begin{figure}%[b, width=0.45\textwidth]
+    \centering
+    \includegraphics[width=0.95\linewidth]{cbs_images/gaussian_01_100_0.05.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[t]\frametitle{\insertsection}
+  \framesubtitle{Selected precision for a noisy ``triangle'' signal}
+  \begin{figure}%[b, width=0.45\textwidth]
+    \centering
+    \includegraphics[width=0.95\linewidth]{cbs_images/triangle_00_0.5.pdf}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[t]\frametitle{\insertsection}
+  \framesubtitle{Selected precision for a noisy ``triangle'' signal}
+  \begin{figure}%[b, width=0.45\textwidth]
+    \centering
+    \includegraphics[width=0.95\linewidth]{cbs_images/triangle_00_0.1.pdf}
+  \end{figure}
+\end{frame}
+
 % subsection kernel_bandwidth_selection (end)
+
+\begin{frame}[t]\frametitle{\insertsection}
+  \framesubtitle{Anomaly detection}
+  \begin{block}{Supervised setting}
+    Use KRR prediction conformal confidence region to discriminate between
+    ``normal'' and ``anomalous'' observations.
+  \end{block}
+
+  \begin{block}{Unsupervised setting}
+    Given a sample $(x_i)_{i=1}^n\sim \Dcal$, decide if $x_{n+1}$ was generated
+    by $\Dcal$ as well. Possible approaches:
+    \begin{itemize}
+      \item one-class SVM: a kernel method for novelty detection;
+      \item kernel distribution embedding with conformal abnormal probability (C-KDE);
+    \end{itemize}
+  \end{block}
+\end{frame}
 
 \subsection{Kernel embeddings of distributions} % (fold)
 \label{sub:kernel_embeddings_of_distributions}
@@ -642,45 +697,86 @@
 \end{frame}
 
 \begin{frame}[c]\frametitle{\insertsection}
+  \framesubtitle{A toy example}
+  \begin{figure}%[t, width=0.45\textwidth]
+    \centering
+    \includegraphics[width=0.9\linewidth]{ocSVM.pdf}
+    \caption{one-class SVM with Gaussian kernel; normalized exp-slacks ($e^{\xi_i}$)
+    are used as proxies for abnormality probability.}
+    \label{fig:ocsvm}
+  \end{figure}
+  % one-class SVM work poorly when anomalies are relatively frequent, or form
+  % a cluster.
+\end{frame}
+
+\begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-  \begin{block}{Idea: C-KDE}
-    Use conformal procedure to assign abnormality probability to new observations
-    based on RKHS norm of difference of embeddings of empirical distributions of
-    original and pooled samples.
+  \begin{block}{C-KDE}
+    Non-conformity measure
+    $$ A(X_{-i}, x_i) = n^2 \| \mu_{\hat{P}_{-i}} - \mu_{\hat{P}} \|^2 \,. $$
+
+    Define the abnormality probability as the conformal p-value of with respect
+    to $A$.
+
     \begin{itemize}
       \item Analogous to jackknife bootstrapping;
       \item In special cases might permit computation of quantile regions;
-      \item Weighted observations in embedding?;
+      \item Extension: weighted observations in embedding;
     \end{itemize}
   \end{block}
 \end{frame}
 
 \begin{frame}[c, shrink=0]\frametitle{\insertsection}
-  \framesubtitle{\insertsubsection}
+  \framesubtitle{A toy example}
   \begin{figure}%[t, width=0.45\textwidth]
     \centering
-    \begin{subfigure}[b]{0.33\linewidth}
-      \includegraphics[width=0.9\linewidth]{ocSVM.pdf}
-    \end{subfigure}%
-    \begin{subfigure}[b]{0.33\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.9\linewidth]{ckde.pdf}
     \end{subfigure}%
-    \begin{subfigure}[b]{0.33\linewidth}
+    \begin{subfigure}[b]{0.45\linewidth}
       \includegraphics[width=0.9\linewidth]{ckde-lap.pdf}
     \end{subfigure}%
-    \caption{A toy example of one-class SVM (\textit{left}, normalized exp-slacks
-    $e^{\xi_i}$) and the proposed conformal p-values for empirical kernel embeddings
-    (\textit{middle}) with Gaussian kernel $\text{exp}(-\theta\|x-x'\|^2)$;
-    \textit{middle} C-KDE with Laplacian kernel $\text{exp}(-\theta\|x-x'\|)$.}
-    \label{fig:gauss_1d_prof_gpr}
+    \caption{The proposed abnormality p-values for empirical kernel embedding
+    with Gaussian kernel (\textit{left}) and Laplacian kernel,
+    $\text{exp}(-\theta\|x-x'\|)$, (\textit{right}).}
+    \label{fig:ckde}
   \end{figure}
-  C-KDE is very sensitive to kernel bandwidth $\theta$: coalesces clusters for
-  moderately large bandwidth.
+  % C-KDE is very sensitive to kernel bandwidth $\theta$: coalesces clusters for
+  % moderately large bandwidth.
 \end{frame}
 
 % subsection kernel_embeddings_of_distributions (end)
 
 % section further_development_beyond_krr (end)
+
+\section{Summary} % (fold)
+\label{sec:summary}
+
+\begin{frame}[t]\frametitle{\insertsection}
+  \begin{block}{Results}
+    \begin{itemize}
+      \item An efficient algorithm for valid non-parametric confidence regions for
+      kernel ridge regression;
+
+      \vspace{\baselineskip}
+      \item Experimental verification of validity guaranties of conformal confidence
+      regions over KRR with the Gaussian kernel in the batch learning setting;
+
+      \vspace{\baselineskip}
+      \item Extensive comparison of conformal confidence region to Bayesian confidence
+      interval and investigation of its efficiency;
+
+      \vspace{\baselineskip}
+      \item Outlined promising research directions with preliminary results:
+      \begin{itemize}
+        \item kernel bandwidth selection;
+        \item conformalized kernel distribution embeddings;
+      \end{itemize}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+% section summary (end)
 
 \section{References} % (fold)
 \label{sec:references}
@@ -690,6 +786,5 @@
 \end{frame}
 
 % section references (end)
-
 
 \end{document}
