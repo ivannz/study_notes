@@ -223,7 +223,7 @@
     \item Asymptotic efficiency in the batch setting for linear ridge regression shown
     in \cite{burnaevV14};
     \vspace{\baselineskip}
-    \item Nothing is known about efficiency in the case of nonlinear models;
+    \item Little is known about efficiency in the case of nonlinear models;
   \end{itemize}
 \end{frame}
 
@@ -238,7 +238,7 @@
     \item[Ridge Regression Confidence Machine] $A(Z_{-i}, z_i) = |\hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})|$;
     \vspace{\baselineskip}
     \item[Two-sided Conformal Region] \hfill\\
-      \textit{upper} $A(Z_{-i}, z_i) = \hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})$ and \hfill\\
+      \textit{upper} $A(Z_{-i}, z_i) = \hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})$;\hfill\\
       \textit{lower} $A(Z_{-i}, z_i) = -\hat{r}_i(y_{n+1}; Z_{:n}, x_{n+1})$;
   \end{description}
 
@@ -309,7 +309,7 @@
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-  Same constructon, less endpoints: each non-empty $S_i$ is \begin{itemize}
+  Same construction, less endpoints: each non-empty $S_i$ is \begin{itemize}
     \item $(-\infty, a_i]$ or $[a_i, +\infty)$;
     \item $\Real$.
   \end{itemize}
@@ -327,19 +327,20 @@
   \vspace{\baselineskip}
   \begin{block}{Conjecture \# 1}
     For any sequence $(x_i)_{i=1}^n\in \Xcal$ and kernel $K(\cdot, \cdot)$, such
-    that for any $f$ in the canonical RKHS of $K$ one has
+    that for any $f$ in the canonical RKHS of $K$
     $$ f(x_{n+1})^2 \leq \sum_{i=1}^n f(x_n)^2 + \lambda \|f\|^2 \,, $$
-    then all $S_i$ for upper and lower NCM are of the form $(-\infty, a_i]$ and
-    $[a_i, +\infty)$ respectively.
+    it is true, that all $S_i$ for upper and lower NCM are of the form $(-\infty, a_i]$
+    and $[a_i, +\infty)$ respectively.s
   \end{block}
 \end{frame}
 
 \begin{frame}[t]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
   \begin{block}{Conjecture \# 2}
-    Condition of conjecture \#1 is satisfied when for sufficiently large $n\geq 1$
+    Condition of conjecture \#1 is satisfied when
     $$ K(x_{n+1}, x_{n+1}) - \kappa_{:n}(x_{n+1})' K^{-1}_{:n} \kappa_{:n}(x_{n+1})
-      < \lambda \,. $$
+      < \lambda \,, $$
+    for all sufficiently large $n\geq 1$.
   \end{block}
 \end{frame}
 
@@ -352,7 +353,7 @@
   \framesubtitle{\insertsubsection}
   \begin{block}{So far:}
   \begin{itemize}
-    \item an effcient ploynomial-time algorithm for construction of conformal
+    \item an efficient polynomial-time algorithm for construction of conformal
     confidence regions;
     \item a sufficient condition for regularity of two-sided intervals for KRR
     (extends \cite{burnaevV14});
@@ -374,7 +375,7 @@
   \framesubtitle{Bayesian interval}
   Gaussian Process Regression readily yields confidence intervals.
   \vspace{\baselineskip}
-  \begin{block}{Maximum a posteriori prediction}
+  \begin{block}{Bayesian predictions}
     $$ \hat{y}_{:n}(x) = \kappa_x' (\lambda I_n + K)^{-1} y_{:n} \,, $$
     where $\kappa_x = (K(x_i, x))_{i=1}^n$.
   \end{block}
@@ -535,7 +536,7 @@
   \framesubtitle{\insertsubsection}
   \begin{block}{Results}
     \begin{itemize}
-      \item in all settings confromal confidence regions are asymptotically valid,
+      \item in all settings conformal confidence regions are asymptotically valid,
       regardless of KRR hyper-parameters, quality of fit or noise-to-signal ratio;
       %% page 34, columns a,c; page 36, columns a,c
       %% non-Gaussian: figures 10-12
@@ -557,7 +558,7 @@
   \begin{block}{Results}
     \begin{itemize}
       %% fig. 6, 16; fig. 10-13
-      \item non-Gaussian settings with low noise: Bayseian intervals fail to have
+      \item non-Gaussian settings with low noise: Bayesian intervals fail to have
       correct coverage rate;
       \item Bayesian confidence regions are sensitive to KRR hyper-parameters;
     \end{itemize}
@@ -571,7 +572,7 @@
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{\insertsubsection}
-  By design, conformal prediction algorithm iss oblivious to the nature of
+  By design, conformal prediction procedure is oblivious to the nature of
   the non-conformity measure.
 
   \vspace{\baselineskip}
@@ -631,7 +632,7 @@
   \framesubtitle{Selected precision $\hat{\theta}$ for a Gaussian process}
   \begin{figure}%[b, width=0.45\textwidth]
     \centering
-    \includegraphics[width=0.95\linewidth]{cbs_images/gaussian_01_100_0.5.pdf}
+    \includegraphics[width=0.95\linewidth]{cbs_images/gaussian_01_100_0,5.pdf}
   \end{figure}
 \end{frame}
 
@@ -639,7 +640,7 @@
   \framesubtitle{Selected precision $\hat{\theta}$ for a Gaussian process}
   \begin{figure}%[b, width=0.45\textwidth]
     \centering
-    \includegraphics[width=0.95\linewidth]{cbs_images/gaussian_01_100_0.05.pdf}
+    \includegraphics[width=0.95\linewidth]{cbs_images/gaussian_01_100_0,05.pdf}
   \end{figure}
 \end{frame}
 
@@ -647,7 +648,7 @@
   \framesubtitle{Selected precision for a noisy ``triangle'' signal}
   \begin{figure}%[b, width=0.45\textwidth]
     \centering
-    \includegraphics[width=0.95\linewidth]{cbs_images/triangle_00_0.5.pdf}
+    \includegraphics[width=0.95\linewidth]{cbs_images/triangle_00_0,5.pdf}
   \end{figure}
 \end{frame}
 
@@ -655,7 +656,7 @@
   \framesubtitle{Selected precision for a noisy ``triangle'' signal}
   \begin{figure}%[b, width=0.45\textwidth]
     \centering
-    \includegraphics[width=0.95\linewidth]{cbs_images/triangle_00_0.1.pdf}
+    \includegraphics[width=0.95\linewidth]{cbs_images/triangle_00_0,1.pdf}
   \end{figure}
 \end{frame}
 
@@ -700,7 +701,7 @@
   \framesubtitle{A toy example}
   \begin{figure}%[t, width=0.45\textwidth]
     \centering
-    \includegraphics[width=0.9\linewidth]{ocSVM.pdf}
+    \includegraphics[width=0.5\linewidth]{ocSVM.pdf}
     \caption{one-class SVM with Gaussian kernel; normalized exp-slacks ($e^{\xi_i}$)
     are used as proxies for abnormality probability.}
     \label{fig:ocsvm}
@@ -726,7 +727,7 @@
   \end{block}
 \end{frame}
 
-\begin{frame}[c, shrink=0]\frametitle{\insertsection}
+\begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{A toy example}
   \begin{figure}%[t, width=0.45\textwidth]
     \centering
@@ -753,27 +754,25 @@
 \label{sec:summary}
 
 \begin{frame}[t]\frametitle{\insertsection}
-  \begin{block}{Results}
+  \begin{itemize}
+    \item An efficient algorithm for valid non-parametric confidence regions for
+    kernel ridge regression;
+
+    \vspace{\baselineskip}
+    \item Experimental verification of validity guaranties of conformal confidence
+    regions over KRR with the Gaussian kernel in the batch learning setting;
+
+    \vspace{\baselineskip}
+    \item Extensive comparison of conformal confidence region to Bayesian confidence
+    interval and investigation of its efficiency;
+
+    \vspace{\baselineskip}
+    \item Outlined promising research directions with preliminary results:
     \begin{itemize}
-      \item An efficient algorithm for valid non-parametric confidence regions for
-      kernel ridge regression;
-
-      \vspace{\baselineskip}
-      \item Experimental verification of validity guaranties of conformal confidence
-      regions over KRR with the Gaussian kernel in the batch learning setting;
-
-      \vspace{\baselineskip}
-      \item Extensive comparison of conformal confidence region to Bayesian confidence
-      interval and investigation of its efficiency;
-
-      \vspace{\baselineskip}
-      \item Outlined promising research directions with preliminary results:
-      \begin{itemize}
-        \item kernel bandwidth selection;
-        \item conformalized kernel distribution embeddings;
-      \end{itemize}
+      \item kernel bandwidth selection;
+      \item conformalized kernel distribution embeddings;
     \end{itemize}
-  \end{block}
+  \end{itemize}
 \end{frame}
 
 % section summary (end)
