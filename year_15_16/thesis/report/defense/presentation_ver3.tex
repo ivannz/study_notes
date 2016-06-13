@@ -100,7 +100,7 @@ Associate Professor,\\
 Head of lab.~10, IITP, RAS}}
 
 % \author[Author's name]{Author's name \\ \smallskip \scriptsize \url{author@hse.ru}\\\url{http://hse.ru/en/staff/author/}}
-\date{\small \today}
+\date{\today}
 \institute[Higher School of Economics]{National Research University \\ Higher School of Economics}
 
 \begin{document}
@@ -112,38 +112,20 @@ Head of lab.~10, IITP, RAS}}
 
 \begin{frame}[c]\frametitle{\insertsection}
   \begin{block}{Function approximation}
-    Recover a faithful approximation $\hat{f}_{:n}$ of $f:\Xcal \mapsto \Real$, $\Xcal\subset \Real^{p\times 1}$,
-    from a sample of noisy observations $Z_{:n} = (X,y) = (x_i, y_i)_{i=1}^n \sim \Dcal$ with
+    A faithful approximation $\hat{f}_{:n}$ of $f:\Xcal \mapsto \Real$,
+    $\Xcal\subset \Real^{p\times 1}$, from noisy observations
+    $Z_{:n} = (X,y) = (x_i, y_i)_{i=1}^n \sim \Dcal$ with
     $$ y_i = f(x_i) + \epsilon_i \,. $$
-    % and $\ex(\epsilon_i|x_i) = 0$.
   \end{block}
-
   \begin{block}{Confidence prediction}
-    % Concerned with learning a ``well behaved''
     Construct a point-set map $x \mapsto \hat{C}_{:n}^\alpha(x)$ such that
     $$ \pr_\Dcal\bigl(y_x \notin \hat{C}_{:n}^\alpha(x)\bigr) \approx \alpha \,. $$
+    Necessary for: \begin{itemize}
+      \item anomaly detection, forecasting, function approximation;
+    \end{itemize}
+    % All these models also usually rely on some predictive model;
   \end{block}
 \end{frame}
-
-\subsection{Importance of confidence prediction} % (fold)
-\label{sub:importance_of_cp}
-
-\begin{frame}[c]\frametitle{\insertsection}
-  \framesubtitle{\insertsubsection}
-  \begin{itemize}
-    \item anomaly detection (batch setting): a confidence region for observations,
-    to discriminate ``inliners'' from ``outliers'';
-    \vspace{\baselineskip}
-    \item forecasting (online setting): a predictive confidence region based on
-    the dynamic model of a time series;
-    \vspace{\baselineskip}
-    \item function approximation (batch setting): bounds for the approximation
-    error of the unknown function $f$ at some point;
-  \end{itemize}
-  % All these models also usually rely on some predictive model;
-\end{frame}
-
-% subsection importance_of_cp (end)
 
 \begin{frame}[c]\frametitle{\insertsection}
   \framesubtitle{Typical approach}
