@@ -171,7 +171,7 @@ Head of lab.~10, IITP, RAS}}
   \begin{itemize}
     \item can be constructed atop \textbf{any} ML algorithm;
     \item relies on non-conformity score of $z_{n+1}=(x_{n+1}, y)$ with respect to
-    the sample $Z_{:n}$;
+    the sample $Z_{:n}$, $A(Z_{:n}, z_{n+1})$;
     \item asymptotic validity guarantees, \cite{vovk2005}:
     $$ \pr\bigl( y_{n+1} \notin \hat{\Gamma}_{:n}^\alpha(x_{n+1}) \bigr) \leq \alpha \,; $$
     \item Efficiency depends on the non-conformity measure $A$ and model assumptions,
@@ -571,7 +571,7 @@ Head of lab.~10, IITP, RAS}}
   \framesubtitle{A toy example}
   \begin{figure}%[t, width=0.45\textwidth]
     \centering
-    \includegraphics[width=0.5\linewidth]{toy_ckde.pdf}
+    \includegraphics[width=0.5\linewidth]{old/toy_ckde.pdf}
     \caption{Toy $2$-d data with three ``normal'' clusters (\textit{colored}).}
     \label{fig:toy}
   \end{figure}
@@ -581,7 +581,7 @@ Head of lab.~10, IITP, RAS}}
   \framesubtitle{A toy example}
   \begin{figure}%[t, width=0.45\textwidth]
     \centering
-    \includegraphics[width=0.5\linewidth]{ocSVM.pdf}
+    \includegraphics[width=0.5\linewidth]{old/ocSVM.pdf}
     \caption{one-class SVM with Gaussian kernel; normalized exp-slacks ($e^{\xi_i}$)
     are used as proxies for abnormality probability.}
     \label{fig:ocsvm}
@@ -614,8 +614,7 @@ Head of lab.~10, IITP, RAS}}
     Non-conformity measure
     $$ A(X_{-i}, x_i) = n^2 \| \mu_{\hat{P}_{-i}} - \mu_{\hat{P}} \|^2 \,. $$
 
-    Define the abnormality probability as the conformal p-value of with respect
-    to $A$.
+    Define the abnormality probability as the conformal p-value with respect to $A$.
 
     \begin{itemize}
       \item Analogous to jackknife bootstrapping;
@@ -630,10 +629,10 @@ Head of lab.~10, IITP, RAS}}
   \begin{figure}%[t, width=0.45\textwidth]
     \centering
     \begin{subfigure}[b]{0.45\linewidth}
-      \includegraphics[width=0.9\linewidth]{ckde.pdf}
+      \includegraphics[width=0.9\linewidth]{old/ckde.pdf}
     \end{subfigure}%
     \begin{subfigure}[b]{0.45\linewidth}
-      \includegraphics[width=0.9\linewidth]{ckde-lap.pdf}
+      \includegraphics[width=0.9\linewidth]{old/ckde-lap.pdf}
     \end{subfigure}%
     \caption{Abnormality p-values for empirical kernel embedding with
     (\textit{left})~Gaussian kernel, and

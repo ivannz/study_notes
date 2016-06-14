@@ -309,7 +309,7 @@ is the observed training sample, then at a new $x_0\Real^{d\times 1}$
   y_{x_0} - x_0'\hat{\beta} \sim \Ncal(0, \sigma^2(1 + x_0'(X'X)^{-1} x_0)) \,,
 \end{equation}
 for the OLS estimate $\hat{\beta} = (X'X)^{-1} X'y$ and assuming known variance $\sigma^2$.
-If the variance is is estimated form the training data and the final distribution,
+If the variance is estimated form the training data and the final distribution,
 which can be used to measure confidence in unobserved target at $x_0$ is
 \begin{equation*}
   \frac{y_{x_0} - x_0'\hat{\beta}}{\sqrt{\hat{s}^2 (1 + x_0'(X'X)^{-1} x_0)}}
@@ -511,7 +511,7 @@ in \cite{hawkins2002,williams2002}. Autoencoders are multilayer neural networks 
 special structure, which are trained to replicate as close as possible any input
 observation vector. Autoencoders are structured in such a way as to force dimensionality
 reduction, and thus generalization and information compression, within the network.
-Finally, an observation is considered anomalous is it suffers large reconstruction
+Finally, an observation is considered anomalous if it suffers large reconstruction
 error.
 
 Another type of algorithms for anomaly detection, also known as spectral methods
@@ -1160,7 +1160,7 @@ of $y^*$ at $x^*$ conditional on the observed sample is
 The properties of ``Conformalized Ridge Regression'' (CRR) have been studied in \cite{burnaevV14},
 where it has been shown that under more general assumptions (the Gaussianity of $\beta$
 is relaxed), the conformal confidence region, eq.~\ref{eq:conf_pred_set}, constructed
-with an NCM based on the ridge regression residuals is asymptotically efficient.
+with an NCM based on the ridge regression residuals, is asymptotically efficient.
 
 The conformal procedure in \cite{burnaevV14} is constructed from a conformity measure
 \begin{align} \label{eq:crr_ncm}
