@@ -1,0 +1,228 @@
+\documentclass[12pt]{article}         % класс документа - статья. Также report, book и др.
+%\usepackage[14pt]{extsizes}
+\usepackage{amstext,amsmath,amssymb}            % пакеты для формул
+\usepackage{mathtext}           % позволяет использовать русские буквы в формулах
+\usepackage{geometry}           % пакет для задания полей страницы командой \geometry
+%\geometry{left=3cm,right=1.5cm,top=2cm,bottom=2cm}
+\usepackage[cp1251]{inputenc}  % кодировка текста
+\usepackage[T2A]{fontenc}       %пакет Т2А необходим для правильного отображения кириллицы и переноса слов
+%\inputencoding{cp1251}          % тоже кодировка...
+\usepackage[english,russian]{babel}     % языковой пакет - последний язык главный
+\usepackage[unicode]{hyperref}  %создаёт гиперссылки на список литературы в pdf-файле
+\usepackage{bm}                 % boldmath - пакет для жирного шрифта
+\ifx\pdfoutput\undefined
+\usepackage[dvips]{graphicx}
+\else
+\usepackage[pdftex]{graphicx}
+\usepackage{epstopdf}
+\fi   % пакет для включения рисунков в форматах png,pdf,jpg,mps,tif
+\graphicspath{{fig/}}           % папка с рисунками
+
+\usepackage{amsfonts}           % греческие символы и, возможно, что-то ещё
+\usepackage{indentfirst}        % одинаковый отступ для первого параграфа и всего остального
+\usepackage{cite}               % команда /cite{1,2,7,9} даёт ссылки
+\usepackage{multicol}
+\usepackage{array}              % нужен для создания таблиц
+%\usepackage{pscyr}              % шрифты
+\usepackage{url}
+\def\tmdefault{ftm}
+\input glyphtounicode.tex       % для поиска и копирования
+\pdfgentounicode=1
+
+\linespread{1.3}                % полтора интервала. Если 1.6, то два интервала
+\pagestyle{plain}               % номерует страницы
+\usepackage[font=small,format=plain,labelfont=bf,up,textfont=it,up]{caption}
+%\numberwithin{figure}{section}  % для сквозной нумерации
+%\numberwithin{table}{section}
+%\numberwithin{equation}{section}
+
+\setlength{\parskip}{1ex} %--skip lines between paragraphs
+\setlength{\parindent}{0pt} %--don't indent paragraphs
+
+\textheight=24cm % высота текста
+\textwidth=16cm % ширина текста
+\oddsidemargin=0pt % отступ от левого края
+\topmargin=-1.5cm % отступ от верхнего края
+\parindent=12pt % абзацный отступ
+%\parskip=2pt % интервал между абзацами
+\tolerance=2000 % терпимость к "жидким" строкам
+\flushbottom % выравнивание высоты страниц
+
+
+\usepackage{listings}
+\usepackage{color}
+\definecolor{Purple}{rgb}{0.44,0.00,0.94}
+\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+\definecolor{Blue}{rgb}{0.00,0.00,1.00}
+\lstloadlanguages{Matlab}%
+\lstset{language=Matlab,                        % Use MATLAB
+        frame=single,                           % Single frame around code
+        basicstyle=\small\ttfamily,             % Use small true type font
+        keywordstyle=[1]\color{Blue}\bf,        % MATLAB functions bold and blue
+        keywordstyle=[2]\color{Purple},         % MATLAB function arguments purple
+        keywordstyle=[3]\color{Blue}\underbar,  % User functions underlined and blue
+        identifierstyle=,                       % Nothing special about identifiers
+                                                % Comments small dark green courier
+        commentstyle=\color{MyDarkGreen}\small,
+        stringstyle=\color{Purple},             % Strings are purple
+        showstringspaces=false,                 % Don't put marks in string spaces
+        tabsize=5,                              % 5 spaces per tab
+        breaklines=true,
+        %%% Put standard MATLAB functions not included in the default
+        %%% language here
+        morekeywords={imread,double,size,reshape,image},
+        %
+        %%% Put MATLAB function parameters here
+        morekeywords=[2]{on, off, interp},
+        %
+        %%% Put user defined functions here
+        morekeywords=[3]{FindESS, homework_example},
+        %
+        morecomment=[l][\color{Blue}]{...},     % Line continuation (...) like blue comment
+        numbers=left,                           % Line numbers on left
+        firstnumber=1,                          % Line numbers start with line 1
+        numberstyle=\tiny\color{Blue},          % Line numbers are blue
+        stepnumber=5                            % Line numbers go in steps of 5
+        }
+
+
+\begin{document}
+\begin{center}
+%\textbf{\large <<Машинное обучение>>}
+\textbf{\large <<<Machine Learning>>}
+
+%\textit{1 курс магистратуры, Компьютерная лингвистика}
+\textit{Computer lingusistics, masters 1 year}
+
+\end{center}
+\begin{center}
+% {\large Групповой или индивидуальный проект}
+{\large Projects to be completed either indvidually or in groups}
+\end{center}
+\hrule
+% Авторы:  Д.И.~Игнатов
+Authors: Ignatov, D.
+
+
+% Срок сдачи итогового отчета: 25.03.2016 (выбор задачи до 11.03.2016)
+The project is to be chosen by 2016-03-11, final report is due 2016-03-25
+
+\hrule
+
+
+% \section*{Постановка задачи}
+\section*{Problem statement}
+% Под групповым проектом подразумевается коллективное выполнение задания, связанного с применением методов разработки данных и машинного обучения. Перед тем как приступить к выполнению проекта необходимо:
+Group project entails solving a machine learning and data mining problem or challenge in collaboration with other students.
+Before engaging with the project, it is necessary to:
+\begin{enumerate}
+
+  % \item Сформировать группы не более трех человек. Альтернативно можно работать над индивидуальным проектом.
+  \item Form groups of at least one (individual project) and at most three students (group projects);
+  % \item Найти (выбрать) набор данных для анализа.
+  \item Pick a dataset to be analysed in the project;
+  % \item Сформулирвать постановку задачи, описать данные и составить план решения.
+  \item Provide concise and clear statement of research goals, a brief summary of the dataset
+  and outline a roadmap for a likely solution.
+
+\end{enumerate}
+% Необходимо проинформировать проверяющих о выборе задачи до дедлайна (11.03.2016), а затем можно перейти к выполнению проекта. Подходящие наборы данных, например, можно найти на сайтах:
+It is important to submit the project proposal for approval by a the faculty staff 
+member before the first deadline (2016-03-11). Only after the project has been approved
+it advisable to start working on it. Below is a short list of web repositories with
+freely available dataset (the list is not exhaustive and the selection is not limited
+to it):
+
+ % \
+
+
+ \begin{tabular}{|l|}
+
+   \hline
+\href{http://archive.ics.uci.edu/ml/}{UC Irvine Machine Learning Repository}\\
+\url{http://www.kaggle.com/competitions}{}\\
+\url{http://www.openml.org/}{}\\
+\url{http://www-stat.stanford.edu/~tibs/ElemStatLearn/}{}\\
+\url{http://lib.stat.cmu.edu/datasets}{}\\
+\url{http://www.statsci.org/datasets.html}{}\\
+\url{http://www.amstat.org/publications/jse/jse_data_archive.htm}{}\\
+\url{http://www.physionet.org/physiobank/database}{}\\
+\url{http://biostat.mc.vanderbilt.edu/twiki/bin/view/Main/DataSets}{}.\\
+   \hline
+
+ \end{tabular}
+
+ \
+
+% Приветствуется работа с текстовыми (лингвистическими) данными, например, \url{http://universaldependencies.org/}, а также \href{http://trec.nist.gov/}{TREC}, \href{http://www.clef-initiative.eu/dataset/test-collection}{}, \url{http://pan.webis.de/data.html} и т.п.
+Projects concerning textual data analysis and natural language processing are encouraged.
+To this end one may have a look at these web sites (but not limited to):
+\url{http://universaldependencies.org/}, \href{http://trec.nist.gov/}{TREC},
+\href{http://www.clef-initiative.eu/dataset/test-collection}{},
+and \url{http://pan.webis.de/data.html} et c..
+
+
+ \
+
+% Примерное содержание отчета по проекту следующее:
+The following structure of the report is suggested:
+\begin{enumerate}
+  % \item Формулировка задачи
+  \item Problem statement;
+  % \item Описание данных
+  \item Dataset summary;
+  % \item Обоснование выбора методов
+  \item Methodology (justify the selected ML/DM approach);
+  % \item Постановка / результаты экспериментов
+  \item Experminet setup and results;
+  % \item Сравнение методов
+  \item Discussion (Comparisons, interpretations et c.);
+  % \item Выводы
+  \item Conslusion.
+\end{enumerate}
+
+\
+
+% \textbf{Q.:} \textit{Есть ли ограничения снизу/сверху по размеру данных, текста отчета и набору применяемых алгоритмов машинного обучения?}
+\textbf{Q.:} \textit{Are there any restriction to the size of the dataset, the report size, and/or the set of applied machine learning algorithms?}
+
+% \textbf{A.:} \textit{Ограничения снизу есть. Данные не должны быть слишком маленькими, например, размером не менее 50 объектов $\times$ 10 признаков. Текст должен быть похож на подробный и понятный преподавателю или сокурснику рассказ о том, что Вы сделали, с таблицами, графиками, скриншотами и прочими вспомогательными иллюстрациями. В принципе, чем больше методов применено, тем лучше. Сравнение и интерпретация результатов обязательны. Если Вы, например, решили применить кластеризацию, то необходимо сравнить результаты работы несколько методов. Применение своего оригинального метода весьма приветствуется. Необходимо продемонстрировать всю цепочку работы с данными, включающую в себя их сбор, предобработку (шкалирование, удаление выбросов, отбор или извлечение признаков и т.п.), применение методов, сравнение, анализ ошибок и интерпретацию результатов.}
+\textbf{A.:} \textit{Yes, there are. The dataset must not be too small, at least 50
+objects with at least 10 features. The report must be relevant to the proposal, coherent
+and sufficiently detailed, so that any reader, be it the teacher or a student, could be
+able to understand the work you did, the research steps undertaken and the goals achieved.
+This entails reasonable and relevant usage of tables, plots, or other visualization tools.
+In general the more data analysis approached are used the better. Comparisons and
+interpretations are crucial. For instance, when using clustering it is important to
+compare the results of different methods, and analyse the effects of parameter tuning
+within the same algorithm (at least empirically). Implementation of new ideas, methods
+or algorithms are strongly encouraged.
+It is necessary to demonstrate the complete data analysis pipeline: data collection,
+data preprocessing (scaling, outlier elimination, feature selection, et c.), method
+application, comparison, analysis and interpretation.}
+
+The defense of the project will take place during the exam week. The highest grade is 10.
+
+The following packages are suggested for the use in the project:
+\begin{itemize}
+  \item Orange \url{http://orange.biolab.si/};
+  \item Weka \url{www.cs.waikato.ac.nz/ml/weka};
+  \item Scikit-leran \url{http://scikit-learn.org/stable/}
+  \item Matlab, or R.
+\end{itemize}
+% (см. иллюстрацию базовых возможностей в туториале).
+For the comparison of the basic capabilities please refer to the illustration in the tutorial.
+% Приветствуется работа с применением частых множеств признаков, см., например, пакет SPMF \url{http://www.philippe-fournier-viger.com/spmf/}.
+The use of frequent itemset mining, for example SPMF package (\url{http://www.philippe-fournier-viger.com/spmf/})
+is encouraged, but not mandatory.
+
+% Письма с выбором задачи и финальным отчетом необходимо прислать на почту: \textit{anya\_potapenko@mail.ru}, \textit{dmitrii.ignatov@gmail.com} и \textit{akutuzov72@gmail.com}. Тема письма должна иметь вид \textbf{[CL-ML2016-Project] Фамилия Имя}.
+Emails with the project proposals and the final version of the reports are to be sent to these emails:
+``to'' \textit{dmitrii.ignatov@gmail.com}, with a ``cc'' to both \textit{anya\_potapenko@mail.ru} and
+\textit{akutuzov72@gmail.com}.
+The title of the letter must have the following format (no quotes)\hfill\\
+\textbf{[CL-ML2016-Project] ``LAST NAME'' ``FIRST NAME''}.
+
+
+
+\end{document}

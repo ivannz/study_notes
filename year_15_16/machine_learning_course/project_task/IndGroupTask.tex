@@ -1,0 +1,173 @@
+\documentclass[12pt]{article}         % класс документа - статья. Также report, book и др.
+%\usepackage[14pt]{extsizes}
+\usepackage{amstext,amsmath,amssymb}            % пакеты для формул
+\usepackage{mathtext}           % позволяет использовать русские буквы в формулах
+\usepackage{geometry}           % пакет для задания полей страницы командой \geometry
+%\geometry{left=3cm,right=1.5cm,top=2cm,bottom=2cm}
+\usepackage[cp1251]{inputenc}  % кодировка текста
+\usepackage[T2A]{fontenc}       %пакет Т2А необходим для правильного отображения кириллицы и переноса слов
+%\inputencoding{cp1251}          % тоже кодировка...
+\usepackage[english,russian]{babel}     % языковой пакет - последний язык главный
+\usepackage[unicode]{hyperref}  %создаёт гиперссылки на список литературы в pdf-файле
+\usepackage{bm}                 % boldmath - пакет для жирного шрифта
+\ifx\pdfoutput\undefined
+\usepackage[dvips]{graphicx}
+\else
+\usepackage[pdftex]{graphicx}
+\usepackage{epstopdf}
+\fi   % пакет для включения рисунков в форматах png,pdf,jpg,mps,tif
+\graphicspath{{fig/}}           % папка с рисунками
+
+\usepackage{amsfonts}           % греческие символы и, возможно, что-то ещё
+\usepackage{indentfirst}        % одинаковый отступ для первого параграфа и всего остального
+\usepackage{cite}               % команда /cite{1,2,7,9} даёт ссылки
+\usepackage{multicol}
+\usepackage{array}              % нужен для создания таблиц
+%\usepackage{pscyr}              % шрифты
+\usepackage{url}
+\def\tmdefault{ftm}
+\input glyphtounicode.tex       % для поиска и копирования
+\pdfgentounicode=1
+
+\linespread{1.3}                % полтора интервала. Если 1.6, то два интервала
+\pagestyle{plain}               % номерует страницы
+\usepackage[font=small,format=plain,labelfont=bf,up,textfont=it,up]{caption}
+%\numberwithin{figure}{section}  % для сквозной нумерации
+%\numberwithin{table}{section}
+%\numberwithin{equation}{section}
+
+\setlength{\parskip}{1ex} %--skip lines between paragraphs
+\setlength{\parindent}{0pt} %--don't indent paragraphs
+
+\textheight=24cm % высота текста
+\textwidth=16cm % ширина текста
+\oddsidemargin=0pt % отступ от левого края
+\topmargin=-1.5cm % отступ от верхнего края
+\parindent=12pt % абзацный отступ
+%\parskip=2pt % интервал между абзацами
+\tolerance=2000 % терпимость к "жидким" строкам
+\flushbottom % выравнивание высоты страниц
+
+
+\usepackage{listings}
+\usepackage{color}
+\definecolor{Purple}{rgb}{0.44,0.00,0.94}
+\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+\definecolor{Blue}{rgb}{0.00,0.00,1.00}
+\lstloadlanguages{Matlab}%
+\lstset{language=Matlab,                        % Use MATLAB
+        frame=single,                           % Single frame around code
+        basicstyle=\small\ttfamily,             % Use small true type font
+        keywordstyle=[1]\color{Blue}\bf,        % MATLAB functions bold and blue
+        keywordstyle=[2]\color{Purple},         % MATLAB function arguments purple
+        keywordstyle=[3]\color{Blue}\underbar,  % User functions underlined and blue
+        identifierstyle=,                       % Nothing special about identifiers
+                                                % Comments small dark green courier
+        commentstyle=\color{MyDarkGreen}\small,
+        stringstyle=\color{Purple},             % Strings are purple
+        showstringspaces=false,                 % Don't put marks in string spaces
+        tabsize=5,                              % 5 spaces per tab
+        breaklines=true,
+        %%% Put standard MATLAB functions not included in the default
+        %%% language here
+        morekeywords={imread,double,size,reshape,image},
+        %
+        %%% Put MATLAB function parameters here
+        morekeywords=[2]{on, off, interp},
+        %
+        %%% Put user defined functions here
+        morekeywords=[3]{FindESS, homework_example},
+        %
+        morecomment=[l][\color{Blue}]{...},     % Line continuation (...) like blue comment
+        numbers=left,                           % Line numbers on left
+        firstnumber=1,                          % Line numbers start with line 1
+        numberstyle=\tiny\color{Blue},          % Line numbers are blue
+        stepnumber=5                            % Line numbers go in steps of 5
+        }
+
+
+\begin{document}
+\begin{center}
+\textbf{\large <<Машинное обучение>>}
+
+\textit{1 курс магистратуры, Компьютерная лингвистика}
+
+\end{center}
+\begin{center}
+{\large Групповой или индивидуальный проект}
+\end{center}
+\hrule
+Авторы:  Д.И.~Игнатов
+
+
+Срок сдачи итогового отчета: 25.03.2016 (выбор задачи до 11.03.2016)
+
+\hrule
+
+
+\section*{Постановка задачи}
+Под групповым проектом подразумевается коллективное выполнение задания, связанного с применением методов разработки данных и машинного обучения. Перед тем как приступить к выполнению проекта необходимо:
+
+\begin{enumerate}
+
+  \item Сформировать группы не более трех человек. Альтернативно можно работать над индивидуальным проектом.
+  \item Найти (выбрать) набор данных для анализа.
+  \item Сформулирвать постановку задачи, описать данные и составить план решения.
+
+\end{enumerate}
+Необходимо проинформировать проверяющих о выборе задачи до дедлайна (11.03.2016), а затем можно перейти к выполнению проекта. Подходящие наборы данных, например, можно найти на сайтах:
+
+ \
+
+
+ \begin{tabular}{|l|}
+
+   \hline
+\href{http://archive.ics.uci.edu/ml/}{UC Irvine Machine Learning Repository}\\
+\url{http://www.kaggle.com/competitions}{}\\
+\url{http://www.openml.org/}{}\\
+\url{http://www-stat.stanford.edu/~tibs/ElemStatLearn/}{}\\
+\url{http://lib.stat.cmu.edu/datasets}{}\\
+\url{http://www.statsci.org/datasets.html}{}\\
+\url{http://www.amstat.org/publications/jse/jse_data_archive.htm}{}\\
+\url{http://www.physionet.org/physiobank/database}{}\\
+\url{http://biostat.mc.vanderbilt.edu/twiki/bin/view/Main/DataSets}{}.\\
+   \hline
+
+ \end{tabular}
+
+ \
+
+Приветствуется работа с текстовыми (лингвистическими) данными, например, \url{http://universaldependencies.org/}, а также \href{http://trec.nist.gov/}{TREC}, \href{http://www.clef-initiative.eu/dataset/test-collection}{}, \url{http://pan.webis.de/data.html} и т.п.
+
+
+ \
+
+Примерное содержание отчета по проекту следующее:
+\begin{enumerate}
+  \item Формулировка задачи
+  \item Описание данных
+  \item Обоснование выбора методов
+  \item Постановка / результаты экспериментов
+  \item Сравнение методов
+  \item Выводы
+\end{enumerate}
+
+\
+
+\textbf{Q.:} \textit{Есть ли ограничения снизу/сверху по размеру данных, текста отчета и набору применяемых алгоритмов машинного обучения?}
+
+\textbf{A.:} \textit{Ограничения снизу есть. Данные не должны быть слишком маленькими, например, размером не менее 50 объектов $\times$ 10 признаков. Текст должен быть похож на подробный и понятный преподавателю или сокурснику рассказ о том, что Вы сделали, с таблицами, графиками, скриншотами и прочими вспомогательными иллюстрациями. В принципе, чем больше методов применено, тем лучше. Сравнение и интерпретация результатов обязательны. Если Вы, например, решили применить кластеризацию, то необходимо сравнить результаты работы несколько методов. Применение своего оригинального метода весьма приветствуется. Необходимо продемонстрировать всю цепочку работы с данными, включающую в себя их сбор, предобработку (шкалирование, удаление выбросов, отбор или извлечение признаков и т.п.), применение методов, сравнение, анализ ошибок и интерпретацию результатов.}
+
+Защита проекта будет проходить во время зачёта. Максимальный балл 10.
+
+В качестве программных продуктов для решения задачи рекомендуются программные продукты Orange \url{http://orange.biolab.si/}, Weka \url{www.cs.waikato.ac.nz/ml/weka}, Scikit-leran \url{http://scikit-learn.org/stable/}, Matlab или R (см. иллюстрацию базовых возможностей в туториале).
+
+
+%Приветствуется работа с применением частых множеств признаков, см., например, пакет SPMF \url{http://www.philippe-fournier-viger.com/spmf/}.
+
+
+Письма с выбором задачи и финальным отчетом необходимо прислать на почту: \textit{anya\_potapenko@mail.ru}, \textit{dmitrii.ignatov@gmail.com} и \textit{akutuzov72@gmail.com}. Тема письма должна иметь вид \textbf{[CL-ML2016-Project] Фамилия Имя}.
+
+
+\end{document}
