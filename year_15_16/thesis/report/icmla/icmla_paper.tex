@@ -1,27 +1,8 @@
 \documentclass[conference]{IEEEtran}
-% \documentclass[a4paper]{article}
-% \documentclass[a4paper,14pt]{extarticle}
 
-%% >
-% \usepackage{extsizes}
-% \linespread{1.3}
 \usepackage[T2A]{fontenc}
-%% <
 
 \usepackage[utf8]{inputenc}
-
-%% >
-\usepackage{indentfirst}
-%% <
-
-% \usepackage{geometry}
-% \geometry{top=2cm} % отступ сверху
-% \geometry{bottom=2cm} % отступ снизу
-% \geometry{left=3.5cm}
-% \geometry{right=2cm} % отступ справа
-
-% \usepackage{fullpage}
-\usepackage[square,numbers,sort&compress]{natbib}
 
 \usepackage[mathcal]{euscript}
 \usepackage{booktabs}
@@ -46,35 +27,31 @@
 \newcommand{\Ycal}{\mathcal{Y}}
 \newcommand{\Zcal}{\mathcal{Z}}
 \newcommand{\Real}{\mathbb{R}}
-\newcommand{\nil}{\mathbf{0}}
-\newcommand{\one}{\mathbf{1}}
-\newcommand{\Lcal}{\mathcal{L}}
-\newcommand{\Cplx}{\mathbb{C}}
-\newcommand{\diag}{\mathop{\text{diag}}\nolimits}
-
-\usepackage[english, russian]{babel}
-\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
-\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
-
-\def\bbljan{Jan.}
-\def\bblfeb{Feb.}
-\def\bblmar{Mar.}
-\def\bblapr{Apr.}
-\def\bblmay{May}
-\def\bbljun{Jun.}
-\def\bbljul{Jul.}
-\def\bblaug{Aug.}
-\def\bblsep{Sep.}
-\def\bbloct{Oct.}
-\def\bblnov{Nov.}
-\def\bbldec{Dec.}
 
 \title{Conformalized Kernel Ridge Regression}
-\author{Nazarov, I. N., Burnaev, E. V.}
+\author{
+\IEEEauthorblockN{
+Burnaev\IEEEauthorrefmark{1}, E. V.,
+Nazarov\IEEEauthorrefmark{2}, I. N.}
+\IEEEauthorblockA{
+\IEEEauthorrefmark{1}IITP RAS, Skoltech, e.burnaev@skoltech.ru}
+\IEEEauthorblockA{\IEEEauthorrefmark{2} IITP RAS, ivan.nazarov@iitp.ru}
+}
 
 \begin{document}
-\selectlanguage{english}
 \maketitle
+
+\begin{abstract}
+General predictive models do not provide a measure of confidence in predictions
+without Bayesian assumptions. A way to circumvent potential restrictions is to
+use conformal methods for constructing non-parametric confidence regions, that
+offer guarantees regarding validity. In this paper we provide a detailed description
+of a computationally efficient conformal procedure for Kernel Ridge Regression (KRR),
+and conduct a comparative numerical study to see how well conformal regions perform
+against the Bayesian confidence sets. The results suggest that conformalized KRR
+can yield predictive confidence regions with specified coverage rate, which is
+essential in constructing anomaly detection systems based on predictive models.
+\end{abstract}
 
 \section{Introduction} % (fold)
 \label{sec:introduction}
@@ -101,8 +78,11 @@ from a sample $(x_i, y_i)_{i=1}^n$ of noisy observations
   y_i = f(x_i) + \epsilon_i \,,
 \end{equation}
 where $\epsilon_i$ is iid with mean zero. One way of assigning a confidence measure
-to a prediction $\hat{f}$ is by quantifying estimate's, model's and observational
-uncertainty, which requires prior probabilistic, Bayesian assumptions (eq.~\ref{eq:signal_model}).
+to a prediction $\hat{f}$ is by using assumptions on the geometric structure of the
+manifold approximating the sample data which provide estimates of the likelihood of
+the prediction error for the test data, \cite{Bernstein2015,Kuleshov2016}. Another
+approach is to quantify estimate's, model's and observational uncertainty, by imposing
+Bayesian assumptions (eq.~\ref{eq:signal_model}).
 
 Consider Kernel Ridge Regression -- a model that combines ridge regression with the
 kernel trick. It learns a function $\hat{f}$ which, given training sample $X = (x_i)_{i=1}^n$,
@@ -177,7 +157,7 @@ where $z_\gamma$ is the $\gamma$ quantile of $\Ncal(0, 1)$. Additionally, this v
 naturally permits estimation of parameters of the underlying kernel $\Kcal$ through
 maximization of the joint likelihood of the train data $(X, y_X)$:
 \begin{equation} \label{eq:bkrr_likelihood}
-  \Lcal
+  \mathcal{L}
     = -\frac{n}{2} \log 2\pi
     - \frac{n}{2}\log \sigma^2
     - \frac{1}{2}\log \lvert R_X \rvert
@@ -211,9 +191,7 @@ of what conformal prediction is and what is required to construct such kind of c
 predictor is given. Section~\ref{sec:conformalized_krr} describes the particular steps
 needed to build a conformal predictor atop the kernel ridge regression. The main
 empirical study is reported in section~\ref{sec:numerical_study}, where we study the
-properties of the predictor in a batch learning setting for a KRR with specific kernel
-(isotropic Gaussian). We conclude this study with discussion and prospects of future
-research on this topic (sec.~\ref{sec:conclusion_and_further_work}).
+properties of the predictor in a batch learning setting for a KRR with specific kernel. 
 
 % section introduction (end)
 
@@ -383,7 +361,7 @@ given by
     - B_{-n}(x_n) K_{-n}(x_n)' Q_{-n} y_{-n}
     \,,
 \end{equation*}
-where $0$ is scalar and the vector $B_{-n}(x_n)\in\Real^{n\times 1}$ is given by
+where $0$ is scalar and the vector $B_{-n}(x_n)\in\Real^{n\times 1}$ is
 \begin{equation} \label{eq:krr_in_resid_B}
   B_{-n}(x_n)
     = \begin{pmatrix} - Q_{-n} K_{-n}(x_n) \\ 1 \end{pmatrix} m_n^{-1}
@@ -443,9 +421,8 @@ Another possibility is to use the two-sided conformal procedure, proposed in \ci
 The main result of that paper is that under relaxed Bayesian Ridge Regression assumptions
 if a sequence $(x_n)_{n\geq1}\in\Xcal$ is i.i.d. with an non-singular second moment
 matrix $\ex x_1x_1' \succeq 0$, then for all sufficiently large $n$ the conformal
-confidence regions that lose little efficiency compared to Bayesian confidence interval
-when Gaussianity is valid (the upper endpoints of the Bayesian and conformal prediction
-intervals deviate as much as $\mathcal{O}_p\bigl(n^{-\frac{1}{2}}\bigr)$).
+confidence regions that lose little efficiency (the upper endpoints of the Bayesian
+and conformal prediction intervals deviate as much as $\mathcal{O}_p\bigl(n^{-\frac{1}{2}}\bigr)$).
 
 The ``two-sided'' procedure of \cite{burnaevV14}, denoted by \textbf{CRR} for short,
 uses a conformity measure
@@ -502,197 +479,113 @@ learning setting. Our experiments aim to evaluate the empirical performance of t
 conformal prediction in this setting: with dedicated train and test datasets. In
 this section we conduct a set of experiments to examine the validity of the regions,
 produced by the conformal Kernel Ridge Regression and compare its efficiency to
-the Bayesian confidence intervals.
+the Bayesian confidence intervals. We use the isotropic Gaussian kernel with the
+precision parameter $\theta>0$, $\Kcal(x,x') = \mathop{\text{exp}}\bigl
+\{-\theta \|x - x'\|^2\bigr\}$, for both the Conformal Kernel ridge regression and
+the Gaussian Process Regression. We experiment on a compact set $\Xcal\subset \Real^{d\times 1}$,
+since the validity of conformal region is by design unaffected by the NCM $A$, which
+can be an arbitrary computable function and is oblivious to the structure of the
+domain. The dimensionality of the input data, however, may impact the width of
+the constructed confidence region.
 
-We primarily test the conformalized KRR predictions in cases when the input space
-$\Xcal$ is a compact set in $\Real^{d\times 1}$ for either $d=1$ or $d=2$. The rationale
-for this is that since conformal procedure is oblivious to the structure of the
-input dataset, there is no reason for its validity to deteriorate with increasing
-dimensionality of $\Xcal$. Indeed, the conformal confidence region eq.~\ref{eq:conf_pred_set}
-the input data from $\Xcal$ in the training and the test sets are fed into the NCM
-$A$, which, in general, can be an arbitrary computable function, and never ``leak''
-into the procedure itself. The dimensionality of the input data, however, may impact
-the efficiency (the width) of the resulting confidence region. And our experiments,
-to a certain extent, assess their effect.
+The off-line validity and efficiency of Bayesian and Conformal confidence regions
+is studied in two settings: the fully Gaussian case, and the non-Gaussian cases.
+In the first case the Bayesian assumptions hold and experiments are run on a sample
+path of $GP(0, \Kcal + \delta_{x,x'} \gamma)$. In the second the assumptions of
+Gaussian Process Regression are partially valid: a deliberately non-Gaussian $f$
+in eq.~\ref{eq:signal_model} is contaminated by moderate Gaussian white noise with
+variance $\gamma$.
 
-We consider the isotropic Gaussian kernel for both the Conformal Kernel ridge regression
-and the Gaussian Process Regression.:
-\begin{equation} \label{eq:gauss_kenrel}
-  K(x,x')
-  = \mathop{\text{exp}}\bigl\{-\theta \|x - x'\|^2\bigr\}
-  \,,
-\end{equation}
-where $\theta>0$ is the precision parameter. This kernel is widely used in practice,
-because it has very nice properties. In particular, if $\Xcal$ is compact its canonical
-RKHS is universal: $\Hcal_K$ is dense in the set $C_0(\Xcal)$ of continuous bounded
-maps with respect to the uniform norm $\|\cdot\|_\infty$, see.~\cite{steinwart2002}.
+The following hyper-parameters are controlled: the true noise-to-signal ratio $\gamma
+\in \{10^{-6}, 10^{-1}\}$, the covariance kernel precision $\theta \in \{10, 10^2, 10^3\}$,
+the train sample size $n$ (from $25$ up to $1600$), the NCM (eq.~\ref{eq:ins_ncm}
+RRCM, or eq.~\ref{eq:crr_ncm} CRR), the residual eq.~\ref{eq:ins_resid}, or eq.~\ref{eq:loo_resid},
+the regularization parameter $\lambda \in \{10^{-1}, 10^{-6}\}$, and either fixed
+$\theta$ or $\theta$ that minimizes eq.~\ref{eq:bkrr_likelihood}.
+%% What is the estimate of \sigma^2
 
-% Another example of a universal kernel is the Laplacian kernel 
-% \begin{equation*}
-%   K(x,x')
-%   = \mathop{\text{exp}}\bigl\{-\theta \|x - x'\|_1\bigr\}
-%   \,,
-% \end{equation*}
-% where $\|\cdot\|_1$ is the $L_1$ norm on $\Xcal$. In contrast to the Gaussian, the Laplacian
-% kernel 
-% Its spectral density is the Cauchy
-% density, as opposed to the Gaussian density in the case of Gaussian kernel. The
-
-\subsection{Setup} % (fold)
-\label{sub:setup}
-
-The off-line validity and efficiency is studied in two settings: the fully Gaussian
-case, and the non-Gaussian cases. In the first case, we study the validity and
-efficiency of GPR and conformal confidence regions on a sample path of a Gaussian
-process on $\Xcal$. We focus consider $4$ alternatives, depending on whether the
-parameter $\theta$ or $\lambda$ of the KRR are equal, or not, to their counterparts
-in the kernel of the synthesized Gaussian process.
-
-In the second setting, we concentrate on deliberately non-Gaussian test functions,
-and examine the effects of moderate Gaussian additive noise on the performance of
-both Bayesian and Conformal confidence regions. In this setting, the assumptions
-of the confidence regions of Gaussian Process Regression are valid to a certain
-extent: a deterministic function is contaminated by moderate Gaussian noise. We
-explicitly examine two cases: whether the regularization in the kernel ridge regression
-is equal to the theoretical level of the noise in the data, or not.
-
-Below is a list of working conjectures we aim to find empirical evidence for: \begin{itemize}
-  \item conformal confidence regions for different NCMs and residuals are at least
-  asymptotically equivalent tin terms of coverage and efficiency;
-  \item the Bayesian confidence regions perform gradually worse the further the data
-  is from the GPR assumptions;
-  \item in the fully Gaussian case both Bayesian and conformal confidence intervals
-  possess the asymptotic validity guarantees, and the conformal procedure yields
-  asymptotically efficient (close to the Bayesian) regions;
-  \item the asymptotic validity (at least conservative) of the conformal confidence
-  set is expected to hold in all cases.
-\end{itemize}
-
-We study the effects of the kernel parameters and the choice of the conformal procedure
-on the validity and efficiency of the confidence regions by varying the following
-hyper-parameters: \begin{enumerate}
-  \item the magnitude of the Gaussian noise-to-signal ratio in the data: negligible
-  $\gamma = 10^{-6}$ and moderate $\gamma = 10^{-1}$;
-  \item the size $n$ of the train sample: small ($n \in \{ 25, 50, 100\}$),
-  moderate, and large ($n \in \{200 k\,:\, k=1, \ldots, 8 \}$);
-  \item the NCM $A$ for the confidence region: either the RRCM, or the CRR;
-  \item the type of residual $\hat{r}$: either $\hat{r}_{\text{in}}$, or $\hat{r}_{\text{loo}}$;
-  \item the noise-to-signal (regularization) ratio $\lambda$ in the kernel ridge
-  regression is chosen from two regimes: high $\lambda = 10^{-1}$ (smoothing), and
-  low $\lambda=10^{-6}$ (interpolation);
-  \item the precision of the Gaussian kernel $\theta$ is picked from
-  $\{10, 10^2, 10^3\}$, since the input domain is the unit cube, for which
-  $\|x-x'\| \leq \sqrt{d}$ for all $x,x'\in[0,1]^d$;
-  \item the fixed $\theta$ or its MLE estimate ($\theta$ that minimizes \ref{eq:bkrr_likelihood});
-\end{enumerate}
-For a given test function $f:\Xcal \mapsto \Real$ on some compact domain $\Xcal$
-each experiment for $n, \theta, \lambda, A$ and $\hat{r}$ consists of the following
-steps:
+For a given test function $f:\Xcal \mapsto \Real$ and a set of hyper-parameters
+each experiment consists of the following steps:
 \begin{enumerate}
-  \item The test inputs, $X^*$, are given by a grid with constant spacing in $\Xcal$;
+  \item The test inputs, $X^*$, are given by a regular grid in $\Xcal$ with constant
+  spacing;
   \item Train inputs, $X$, are sampled from a uniform distribution over $\Xcal$;
-  \item For all $x\in X_{\text{pool}} = X \cup X^*$, draw target values $y_x = f(x)$
-  from the data generation process;
-  \item let $\tilde{T} = (x, y_x)_{x\in X}$;
-  \item perform $L$ independent replications of the following steps: for $l=1,\ldots, L$
+  \item For all $x\in X_{\text{pool}} = X \cup X^*$, target values $y_x = f(x)$
+  are generated;
+  \item For $l=1,\ldots, L$ independently
   \begin{enumerate}
-    \item draw an independent random sample of size $n$ without replacement from $\tilde{T}$;
-    \item fit a Gaussian Process regression with $\beta = 0$ and $\Kcal$ given by
-    eq.~\ref{eq:krig_kernel} for the Gaussian kernel $K$ with the specified precision
-    $\theta$ with fixed $\lambda > 0$;
-    \item for each $x^* \in X^*$ construct, the Bayesian KRR region, $\Bcal_l^\alpha(x^*)$,
-    and the conformal confidence regions, $\Gamma_l^\alpha(x^*; A, \hat{r})$ using
-    the specified NCM $A$, the residuals $\hat{r}$, and the kernel $\Kcal$ (with
-    estimated $\sigma^2$);
+    \item draw a random subsample of size $n$ from train dataset;
+    \item fit a Gaussian Process Regression with zero mean and Gaussian kernel
+    $\Kcal$ with the specified precision $\theta$ and $\lambda$;
+    \item for each $x^* \in X^*$ construct the Bayesian (eq.~\ref{eq:gp_conf_int})
+    and conformal (eq.~\ref{eq:conf_pred_set}) confidence regions using the NCM $A$
+    and residuals $\hat{r}$ with MLE estimated $\sigma^2$;
     \item estimate the coverage rate and the width of the convex hull of the region
     over the test sample $X^*$: $p_l(R) = |X^*|^{-1}\sum_{x\in X^*} 1_{y_x\in R_x}$,
     and $w_l(R) = \inf\{b-a\,:\,R \subseteq [a, b]\}$, where $R$ is a confidence
     region;
   \end{enumerate}
 \end{enumerate}
-For the $1$-D case the domain $\Xcal$ is $[0,1]$ and the test input set is given by
-$\{k N^{-1}\,:\,k=0,\ldots, N+1\}$ for $N=1000$. In $2$-D case we consider functions
-defined on $\Xcal=[-1,1]^2$, and use $X^* = \{k N^{-1}\,:\,k=0,\ldots, N+1\}^2$
-for $N=50$ as the test set.
-
-To measure the quality of fit of the kernel ridge regression for each KRR set of
-hyper-parameters, we compute the ratio of the root mean squared error to the standard
-derivation on the test set (``RMSE-std'' on the plot the results section). This
-reflects how well the KRR predictions fares against the constant prediction.
-
-%% What is the estimate of \sigma^2
-
-% subsection setup (end)
+With the experimental procedure properly outlined, we proceed to summarizing the
+results.
 
 \subsection{Results: $1$-d} % (fold)
 \label{sub:results_1_d}
 
-We begin with the examination of the fully-Gaussian setup with $\Xcal = [0, 1]$.
+We begin with the examination of the fully-Gaussian setup with $\Xcal=[0, 1]$.
 To illustrate the constructed confidence regions, we generated a sample path of
-the $1$-d Gaussian process with $y_x\sim GP(0, \gamma \delta_{x,x'} + K_{x,x'})$
-for the Gaussian kernel (eq.~\ref{eq:gauss_kenrel}) on a regular grid $G=\{500^{-1} k \,:\, k=0,
-\ldots, 500\}$, and then use its sub-grid of size $51$ with stepping $0.9\cdot 20^{-1}$
-in $[0.05, 0.95]$ for training the Kernel Ridge regression and constructing the
-confidence regions. The training sample was deliberately chosen to highlight the
-blowup of the size of the confidence bands near the boundaries of the train sample.
-Figure~\ref{fig:gauss_1d_prof_gpr} illustrates one realization of $y_x$ and the
-constructed Bayesian confidence regions (eq.~\ref{eq:gp_conf_int}). Here the abbreviation
-``GPR-p'' stands for a confidence region for the true value $f_x$ in eq.~\ref{eq:signal_model},
-and ``GPR-f'' -- for the observed value. Recall that the non-parametric vanilla
-conformal procedures yield predictions for the observed values $y_x$ only. That
-is why in the following we are going to focus on the ``GPR-f'' confidence intervals,
-and the ``GPR-p'' band is presented for illustrative purposes only.
+the $1$-d Gaussian process with isotropic Gaussian kernel on a regular grid of
+$501$ knots, and use a subset of $51$ knots in $[0.05, 0.95]$ for constructing
+the Bayesian (GPR) and conformal (RRCM) confidence regions. The confidence regions
+are depicted in fig.~\ref{fig:gauss_1d_prof_gpr_conf}: conformal regions closely
+track the Bayesian confidence bands (``GPR-f'', eq.~\ref{eq:gp_conf_int}), but the
+latter are too wide in the low noise case. Near the endpoints the confidence regions
+dramatically increase in width, reflecting increased uncertainty. In general, the
+conformal regions necessarily cover the KRR prediction $\hat{y}^*_{|(X, y)}(x^*)$
+but are not necessarily symmetric around it, where as GPR regions are (eq.~\ref{eq:gp_conf_int}).
 
-On the provided illustration (fig.~\ref{fig:gauss_1d_prof_gpr}) the confidence bands
-on are too wide in the negligible noise case, whereas the bands in seem to have better
-coverage rate due to higher noise. Figure~\ref{fig:gauss_1d_prof_conf} shows sample
-conformal confidence bands in the same setting. Near the endpoints of the $[0,1]$,
-the confidence regions dramatically increase their size, reflecting increasing uncertainty.
-
-In can be argued theoretically, that confidence regions for any observation $x_n$
-sufficiently far away from the bulk of the training dataset have constant size,
-determined only by the train sample (fig.~\ref{fig:limit_1d_ci_size}). Indeed, as
-$\|x_n\|^2\to \infty$ ($n$-fixed) the vector $B_{-n}$ in (eq.~\ref{eq:krr_in_resid_B})
-approaches the $n$-th unit vector $e_n$, since for the Gaussian kernel the vector
-$\|K_{-n}(x_n)\|^2\to 0$. Since the kernel is bounded, the value $m_n$ (eq.~\ref{eq:krr_leverage})
-is a bounded function of $x_n$, which, in turn, implies that eventually all RRCM
+In can be argued, that confidence regions for any observation $x_n$ sufficiently
+far away from the bulk of the training dataset have constant size, determined only
+by the train sample (fig.~\ref{fig:limit_1d_ci_size}). Indeed, as $\|x_n\|^2\to \infty$
+($n$-fixed) the vector $B_{-n}$ in (eq.~\ref{eq:krr_in_resid_B}) approaches the
+$n$-th unit vector $e_n$, since for the Gaussian kernel the vector $\|K_{-n}(x_n)\|^2\to 0$.
+Since the kernel is bounded, the value $m_n$ (eq.~\ref{eq:krr_leverage}) is a bounded
+function of $x_n$, which, in turn, implies that eventually all RRCM (similarly, CRR)
 regions $S_i$ assume the form of closed intervals $[-|q_i|, |q_i|]$, where
-$q_i = m_n (e_i'Q_{-n}y_{-n}) + o(\|x_n\|^2)$, $i \neq n$. The same is true for
-the CRR procedure. Therefore, the conformal procedure essentially reverts to a
-constant-size confidence region, determined by the  $n^{-1}\lfloor n(1-\alpha)\rfloor$-th
-order statistic of $(|q_i|)_{i=1}^n$. Analogous effects can be observed for the
-Gaussian Process confidence interval (eq.~\ref{eq:gp_conf_int}).
+$q_i = m_n (e_i'Q_{-n}y_{-n}) + o(\|x_n\|^2)$, $i \neq n$. Therefore, the conformal
+procedure essentially reverts to a constant-size confidence region, determined by
+the $n^{-1}\lfloor n(1-\alpha)\rfloor$-th order statistic of $(|q_i|)_{i=1}^n$.
+Analogous effects can be observed for the Gaussian Process confidence interval
+(eq.~\ref{eq:gp_conf_int}).
 % Is this true for any stationary kernel on $\Real^{d\times 1})$? Bochner's theorem, maybe?
+
+By construction, conformal confidence region (eq.~\ref{eq:conf_pred_set}) allows
+for some uncertainty. Indeed, the residuals (eq.~\ref{eq:krr_in_resid}) and hence
+the vector of non-conformity scores $(\eta^z_i)_{i=1}^n$ are continuous functions
+of targets $y=(y_i)_{i=1}^n$. Thus for small perturbations of $y$ the relative
+ordering of $\eta^z_i$ is kept, and the interval remains unchanged. Therefore,
+eq.~\ref{eq:conf_pred_set} tends to capture more points $y$ for the same fixed
+significance level.
+
 \begin{figure}%[t, width=0.5\textwidth]
   \centering
   \begin{subfigure}[b]{0.5\linewidth}
     \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/gaussian/0.1_0.1/50/profile_gaussian_0,1_0,1_100_5p-GPR_50.pdf}
   \end{subfigure}%~
   \begin{subfigure}[b]{0.5\linewidth}
-    \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/gaussian/1e-06_0.1/50/profile_gaussian_1e-06_0,1_100_5p-GPR_50.pdf}
-  \end{subfigure}%
-  \caption{A sample path of a $1$-d Gaussian Process on $\Xcal$ ($y_x$,  $\hat{y}_x$),
-  and the forecast and prediction confidence bands (GPR-f and GPR-p, respectively).
-  \textit{Left:} a sample path with $\gamma=10^{-1}$; \textit{right:} $\gamma=10^{-6}$.}
-  \label{fig:gauss_1d_prof_gpr}
-\end{figure}
-
-\begin{figure}%[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.5\linewidth}
     \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/gaussian/0.1_0.1/50/profile_gaussian_0,1_0,1_100_5p-RRCM_50.pdf}
+  \end{subfigure}\\
+  \begin{subfigure}[b]{0.5\linewidth}
+    \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/gaussian/1e-06_0.1/50/profile_gaussian_1e-06_0,1_100_5p-GPR_50.pdf}
   \end{subfigure}%~
   \begin{subfigure}[b]{0.5\linewidth}
     \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/gaussian/1e-06_0.1/50/profile_gaussian_1e-06_0,1_100_5p-RRCM_50.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.5\linewidth}
-    \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/gaussian/0.1_1e-06/200/profile_gaussian_0,1_1e-06_100_5p-RRCM_200.pdf}
-  \end{subfigure}%~
-  \begin{subfigure}[b]{0.5\linewidth}
-    \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/gaussian/1e-06_1e-06/200/profile_gaussian_1e-06_1e-06_100_5p-RRCM_200.pdf}
   \end{subfigure}%
-  \caption{Sample RRCM confidence bands (eq.~\ref{eq:rrcm_conf_ci}).}
-  \label{fig:gauss_1d_prof_conf}
+  \caption{A sample path of a $1$-d Gaussian Process with $\gamma=10^{-1}$ (\textit{top}),
+  and $\gamma=10^{-6}$ (\textit{bottom}) constructed confidence intervals: the forecast
+  ``GPR-f'' and prediction ``GPR-p'' (\textit{left}), and the ``RRCM'' confidence
+  bands (\textit{right}).}
+  \label{fig:gauss_1d_prof_gpr_conf}
 \end{figure}
 
 \begin{figure}%[b, width=0.5\textwidth]
@@ -709,156 +602,29 @@ Gaussian Process confidence interval (eq.~\ref{eq:gp_conf_int}).
   \begin{subfigure}[b]{0.5\linewidth}
     \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/gaussiantest/0.1_0.1/200/profile_gaussian_0,1_0,1_100_1p-RRCM_200.pdf}
   \end{subfigure}
-  \caption{Limiting behaviour of GPR (\textit{left}) and RRCM (\textit{right})
-  confidence regions for a sample path of a Gaussian process with negligible noise
-  (\textit{top}, $\gamma=10^{-6}$) and high noise-to-signal level (\textit{bottom},
-  $\gamma=10^{-1}$).}
+  \caption{Limiting out-of-sample behaviour of GPR (\textit{left}) and RRCM (\textit{right})
+    confidence regions for a sample path of a Gaussian process with negligible (\textit{top},
+    $\gamma=10^{-6}$) and high (\textit{bottom}, $\gamma=10^{-1}$) noise-to-signal level.}
   \label{fig:limit_1d_ci_size}
 \end{figure}
 
-Now, let's consider the experimental setting with negligible noise in the observed
-processes, disregarding for a while the fact that in the noiseless case the necessity
-of confidence measures of predictions seems questionable.
-
-The first important observation is that conformal procedures (eq.\ref{eq:conf_pred_set})
-can allow for some uncertainty by construction. Indeed, for a sample $(X, y)$, the
-NCMs based on KRR (eq.~\ref{eq:krr_in_resid} and eq.~\ref{eq:loo_resid}) and continuous
-functions of $y_n$. Therefore the vector of non-conformity scores $(\eta^z_i)_{i=1}^n$
-also depends continuously on $y_n$, which mean that for small perturbations of $y_n$
-the relative ordering of $\eta^z_i$ remains the same. Hence, in the case of perfectly
-noiseless observations, the confidence regions have positive width, thereby having
-necessarily higher coverage rate. The GPR based confidence regions are subject to
-the same effect in the noiseless case but for another reason: the predictive variance
-includes the noise-to-signal ratio.
-
-This conservativeness is indeed confirmed by the experimental results (see fig.~
-\ref{fig:gaussian_1d_low_noise}). Within each column the confidence regions were
-computed under exactly identical conditions: for each hyper-parameter setting (excluding
-$\gamma$) we draw $L$ random samples from some fixed realization of a Gaussian process
-(with kernel precision $\theta_0$), compute the ML estimate of $\theta$, if necessary,
-construct the confidence intervals, and then average the coverage rate for each test
-input, to average out the effects of random choice of the input data.
-
-Judging by the coverage rate, conformal confidence regions are much more narrower
-than the Bayesian intervals. This suggests, that the procedure (eq.~\ref{eq:conf_pred_set})
-adapts to the noise level not through the regularization $\lambda$, but through
-the sample distribution on the non-conformity scores (fig.~\ref{fig:gaussian_1d_low_noise_c2}
-and \ref{fig:gaussian_1d_low_noise_c2}). Indeed, fig.~\ref{fig:gaussian_1d_low_noise_width}
-clearly show that GPR intervals tend to be wider.
-
-With lower kernel precision parameter ($\theta$) the KRR estimate of the underlying
-$f$ becomes less variable, thus enabling better coverage by the GPR and conformal
-regions (fig.~\ref{fig:gaussian_1d_low_noise_arb} columns \subref{fig:gaussian_1d_low_noise_arb_c1}
-and \subref{fig:gaussian_1d_low_noise_arb_c2}).
-
-It is noteworthy, the conformal procedure yields correct coverage despite relatively
-poor fit (the last row in fig.~\ref{fig:gaussian_1d_low_noise_arb}). This suggests,
-a certain flexibility of a KRR-based conformal prediction: it is able to maintain
-the required coverage rate regardless of the quality of prediction within the NCM.
-The region sizes at fig.~\ref{fig:gaussian_1d_low_noise_width_arb_c2} implies that
-the GPR regions kept being symmetric around a less accurate prediction, which hints
-at the reason why their coverage rate suffered. At the same time the coverage rate
-of the conformal regions, symmetry of which is not required, demonstrated no significant
-deviations from specified confidence levels. It should be noted, however, that all
-intervals in col.~\subref{fig:gaussian_1d_low_noise_width_arb_c2} are wider than
-those of other columns in fig.~\ref{fig:gaussian_1d_low_noise_width_arb}.
+Experimental results in the perfectly noiseless case show that both confidence regions
+are conservative (see fig.~\ref{fig:gaussian_1d_low_noise}). In this picture we consider
+the ML estimate of $\theta$, but the results for other fixed choices are qualitatively
+similar. By construction, the procedure (eq.~\ref{eq:conf_pred_set}) adapts to the noise
+level in observations through the distribution of the non-conformity scores, rather
+than the regularization parameter $\lambda$, which makes Bayesian confidence intervals
+usually wider than conformal regions (fig.~\ref{fig:gaussian_1d_low_noise_c4}). Nevertheless
+for higher $\lambda$ the coverage rate of conformal regions gets closer to the specified
+confidence level.
 
 \begin{figure}%[b, width=0.5\textwidth]
   \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/GPR-f/coverage_gaussian_1e-06_1e-06_100_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/GPR-f/coverage_gaussian_1e-06_0,1_100_GPR-f.pdf}
-  \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/GPR-f/coverage_gaussian_1e-06_1e-06_auto_GPR-f.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/GPR-f/coverage_gaussian_1e-06_0,1_auto_GPR-f.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/RRCM/coverage_gaussian_1e-06_1e-06_100_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/RRCM/coverage_gaussian_1e-06_0,1_100_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/RRCM/coverage_gaussian_1e-06_1e-06_auto_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/RRCM/coverage_gaussian_1e-06_0,1_auto_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/RRCM-loo/coverage_gaussian_1e-06_1e-06_100_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/RRCM-loo/coverage_gaussian_1e-06_0,1_100_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/RRCM-loo/coverage_gaussian_1e-06_1e-06_auto_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/RRCM-loo/coverage_gaussian_1e-06_0,1_auto_RRCM-loo.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/CRR/coverage_gaussian_1e-06_1e-06_100_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/CRR/coverage_gaussian_1e-06_0,1_100_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/CRR/coverage_gaussian_1e-06_1e-06_auto_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/CRR/coverage_gaussian_1e-06_0,1_auto_CRR.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/CRR-loo/coverage_gaussian_1e-06_1e-06_100_CRR-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/CRR-loo/coverage_gaussian_1e-06_0,1_100_CRR-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/CRR-loo/coverage_gaussian_1e-06_1e-06_auto_CRR-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/CRR-loo/coverage_gaussian_1e-06_0,1_auto_CRR-loo.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/gaussian_1e-06_1e-06_100_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_low_noise_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/gaussian_1e-06_0,1_100_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_low_noise_c2}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/gaussian_1e-06_1e-06_auto_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_low_noise_c3}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/gaussian_1e-06_0,1_auto_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_low_noise_c4}
-  \end{subfigure}%
-  \caption{Coverage rate dynamics in the fully Gaussian low-noise case $\gamma=10^{-6}$
-  for different $(\theta, \lambda)$:
-  \subref{fig:gaussian_1d_low_noise_c1}~--~$(\theta_0, 10^{-6})$,
-  \subref{fig:gaussian_1d_low_noise_c2}~--~$(\theta_0, 10^{-1})$,
-  \subref{fig:gaussian_1d_low_noise_c3}~--~$(\hat{\theta}_\text{ML}, 10^{-6})$,
-  \subref{fig:gaussian_1d_low_noise_c4}~--~$(\hat{\theta}_\text{ML}, 10^{-1})$.
-  Rows from \textit{top} to \textit{bottom}: ``GPR-f'', ``RRCM'', ``RRCM-loo'',
-  ``CRR'', ``CRR-loo'', and the last depicting ``RMSE-std'' ratio.}
-  \label{fig:gaussian_1d_low_noise}
-\end{figure}
-
-\begin{figure}%[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/GPR-f/width_gaussian_1e-06_1e-06_100_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/GPR-f/width_gaussian_1e-06_0,1_100_GPR-f.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/GPR-f/width_gaussian_1e-06_1e-06_auto_GPR-f.pdf}
@@ -867,10 +633,10 @@ those of other columns in fig.~\ref{fig:gaussian_1d_low_noise_width_arb}.
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/GPR-f/width_gaussian_1e-06_0,1_auto_GPR-f.pdf}
   \end{subfigure}\\
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/RRCM/width_gaussian_1e-06_1e-06_100_RRCM.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/RRCM/coverage_gaussian_1e-06_1e-06_auto_RRCM.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/RRCM/width_gaussian_1e-06_0,1_100_RRCM.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/RRCM/coverage_gaussian_1e-06_0,1_auto_RRCM.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/RRCM/width_gaussian_1e-06_1e-06_auto_RRCM.pdf}
@@ -879,10 +645,10 @@ those of other columns in fig.~\ref{fig:gaussian_1d_low_noise_width_arb}.
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/RRCM/width_gaussian_1e-06_0,1_auto_RRCM.pdf}
   \end{subfigure}\\
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/RRCM-loo/width_gaussian_1e-06_1e-06_100_RRCM-loo.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/RRCM-loo/coverage_gaussian_1e-06_1e-06_auto_RRCM-loo.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/RRCM-loo/width_gaussian_1e-06_0,1_100_RRCM-loo.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/RRCM-loo/coverage_gaussian_1e-06_0,1_auto_RRCM-loo.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/RRCM-loo/width_gaussian_1e-06_1e-06_auto_RRCM-loo.pdf}
@@ -891,10 +657,10 @@ those of other columns in fig.~\ref{fig:gaussian_1d_low_noise_width_arb}.
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/RRCM-loo/width_gaussian_1e-06_0,1_auto_RRCM-loo.pdf}
   \end{subfigure}\\
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/CRR/width_gaussian_1e-06_1e-06_100_CRR.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/CRR/coverage_gaussian_1e-06_1e-06_auto_CRR.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/CRR/width_gaussian_1e-06_0,1_100_CRR.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/CRR/coverage_gaussian_1e-06_0,1_auto_CRR.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/CRR/width_gaussian_1e-06_1e-06_auto_CRR.pdf}
@@ -903,12 +669,12 @@ those of other columns in fig.~\ref{fig:gaussian_1d_low_noise_width_arb}.
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/CRR/width_gaussian_1e-06_0,1_auto_CRR.pdf}
   \end{subfigure}\\
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/CRR-loo/width_gaussian_1e-06_1e-06_100_CRR-loo.pdf}
-    \caption{} \label{fig:gaussian_1d_low_noise_width_c1}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/CRR-loo/coverage_gaussian_1e-06_1e-06_auto_CRR-loo.pdf}
+    \caption{} \label{fig:gaussian_1d_low_noise_c3}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/CRR-loo/width_gaussian_1e-06_0,1_100_CRR-loo.pdf}
-    \caption{} \label{fig:gaussian_1d_low_noise_width_c2}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/CRR-loo/coverage_gaussian_1e-06_0,1_auto_CRR-loo.pdf}
+    \caption{} \label{fig:gaussian_1d_low_noise_c4}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/CRR-loo/width_gaussian_1e-06_1e-06_auto_CRR-loo.pdf}
@@ -918,271 +684,49 @@ those of other columns in fig.~\ref{fig:gaussian_1d_low_noise_width_arb}.
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/CRR-loo/width_gaussian_1e-06_0,1_auto_CRR-loo.pdf}
     \caption{} \label{fig:gaussian_1d_low_noise_width_c4}
   \end{subfigure}%
-  \caption{Asymptotic width of the confidence regions in the fully Gaussian low-noise case
-  $\gamma=10^{-6}$ for different $(\theta, \lambda)$. Upward triangles indicate the
-  $5\%$ sample quantile across the whole test sample of confidence regions' widths,
-  whereas downward triangles indicate the maximal width. The median width is drawn
-  with a slightly thicker line. The colouring matches the colours of respective confidence
-  levels as in fig.~\ref{fig:gaussian_1d_low_noise}.}
-  \label{fig:gaussian_1d_low_noise_width}
+  \caption{Coverage rate dynamics (\subref{fig:gaussian_1d_low_noise_c3}, \subref{fig:gaussian_1d_low_noise_c4})
+  and asymptotic width (\subref{fig:gaussian_1d_low_noise_width_c3}, \subref{fig:gaussian_1d_low_noise_width_c4})
+  of the confidence regions in the fully Gaussian low-noise case $\gamma=10^{-6}$
+  for $\theta=\hat{\theta}_\text{ML}$ and $\lambda = 10^{-6}$ (\subref{fig:gaussian_1d_low_noise_c3},
+  \subref{fig:gaussian_1d_low_noise_width_c3}), and $\lambda = 10^{-1}$ (\subref{fig:gaussian_1d_low_noise_c4},
+  \subref{fig:gaussian_1d_low_noise_width_c4}). Rows from \textit{top} to \textit{bottom}: ``GPR-f'', ``RRCM'',
+  ``RRCM-loo'', ``CRR'', ``CRR-loo''. In columns \subref{fig:gaussian_1d_low_noise_width_c3} and
+  \subref{fig:gaussian_1d_low_noise_width_c4} upward triangles indicate the $5\%$ sample
+  quantile across the whole test sample, downward triangles indicate the maximal width,
+  the median width is drawn with a slightly thicker line.}
+  \label{fig:gaussian_1d_low_noise}
 \end{figure}
 
-\begin{figure}%[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/GPR-f/coverage_gaussian_1e-06_1e-06_10_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/GPR-f/coverage_gaussian_1e-06_0,1_10_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/GPR-f/coverage_gaussian_1e-06_1e-06_1000_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/GPR-f/coverage_gaussian_1e-06_0,1_1000_GPR-f.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/RRCM/coverage_gaussian_1e-06_1e-06_10_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/RRCM/coverage_gaussian_1e-06_0,1_10_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/RRCM/coverage_gaussian_1e-06_1e-06_1000_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/RRCM/coverage_gaussian_1e-06_0,1_1000_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/RRCM-loo/coverage_gaussian_1e-06_1e-06_10_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/RRCM-loo/coverage_gaussian_1e-06_0,1_10_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/RRCM-loo/coverage_gaussian_1e-06_1e-06_1000_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/RRCM-loo/coverage_gaussian_1e-06_0,1_1000_RRCM-loo.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/CRR/coverage_gaussian_1e-06_1e-06_10_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/CRR/coverage_gaussian_1e-06_0,1_10_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/CRR/coverage_gaussian_1e-06_1e-06_1000_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/CRR/coverage_gaussian_1e-06_0,1_1000_CRR.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/CRR-loo/coverage_gaussian_1e-06_1e-06_10_CRR-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/CRR-loo/coverage_gaussian_1e-06_0,1_10_CRR-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/coverage/CRR-loo/coverage_gaussian_1e-06_1e-06_1000_CRR-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/coverage/CRR-loo/coverage_gaussian_1e-06_0,1_1000_CRR-loo.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/gaussian_1e-06_1e-06_10_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_low_noise_arb_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/gaussian_1e-06_0,1_10_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_low_noise_arb_c2}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/gaussian_1e-06_1e-06_1000_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_low_noise_arb_c3}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/gaussian_1e-06_0,1_1000_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_low_noise_arb_c4}
-  \end{subfigure}%
-  \caption{The coverage rate dependence on $n$ in the fully Gaussian low-noise case $\gamma=10^{-6}$
-  for arbitrary $\theta$:
-  (\subref{fig:gaussian_1d_low_noise_arb_c1}, \subref{fig:gaussian_1d_low_noise_arb_c2})~--~$\theta=10$,
-  and (\subref{fig:gaussian_1d_low_noise_arb_c3}, \subref{fig:gaussian_1d_low_noise_arb_c4})~--~$\theta=1000$.
-  For description refer to fig.~\ref{fig:gaussian_1d_low_noise}.}
-  \label{fig:gaussian_1d_low_noise_arb}
-\end{figure}
-
-\begin{figure}%[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/GPR-f/width_gaussian_1e-06_1e-06_10_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/GPR-f/width_gaussian_1e-06_0,1_10_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/GPR-f/width_gaussian_1e-06_1e-06_1000_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/GPR-f/width_gaussian_1e-06_0,1_1000_GPR-f.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/RRCM/width_gaussian_1e-06_1e-06_10_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/RRCM/width_gaussian_1e-06_0,1_10_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/RRCM/width_gaussian_1e-06_1e-06_1000_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/RRCM/width_gaussian_1e-06_0,1_1000_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/RRCM-loo/width_gaussian_1e-06_1e-06_10_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/RRCM-loo/width_gaussian_1e-06_0,1_10_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/RRCM-loo/width_gaussian_1e-06_1e-06_1000_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/RRCM-loo/width_gaussian_1e-06_0,1_1000_RRCM-loo.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/CRR/width_gaussian_1e-06_1e-06_10_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/CRR/width_gaussian_1e-06_0,1_10_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/CRR/width_gaussian_1e-06_1e-06_1000_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/CRR/width_gaussian_1e-06_0,1_1000_CRR.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/CRR-loo/width_gaussian_1e-06_1e-06_10_CRR-loo.pdf}
-    \caption{} \label{fig:gaussian_1d_low_noise_width_arb_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/CRR-loo/width_gaussian_1e-06_0,1_10_CRR-loo.pdf}
-    \caption{} \label{fig:gaussian_1d_low_noise_width_arb_c2}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_1e-06/width/CRR-loo/width_gaussian_1e-06_1e-06_1000_CRR-loo.pdf}
-    \caption{} \label{fig:gaussian_1d_low_noise_width_arb_c3}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/1e-06_0.1/width/CRR-loo/width_gaussian_1e-06_0,1_1000_CRR-loo.pdf}
-    \caption{} \label{fig:gaussian_1d_low_noise_width_arb_c4}
-  \end{subfigure}%
-  \caption{Confidence region size dynamics for arbitrary $\theta$ in the fully Gaussian
-  case (see description in fig.~\ref{fig:gaussian_1d_low_noise_arb}).}
-  \label{fig:gaussian_1d_low_noise_width_arb}
-\end{figure}
-
-We now proceed to the non-Gaussian noiseless experiments. The results for the conformal
-confidence intervals are not qualitatively different in the non-Gaussian setting:
-coverage rate maintains its convergence to the specified confidence levels and all
-conformal procedures demonstrate very similar asymptotic validity. For the Heaviside
+In the non-Gaussian noiseless experiments the coverage rate of conformal confidence
+intervals maintains approaches the specified confidence levels and all conformal
+procedures demonstrate very similar asymptotic validity. For the ``Heaviside''
 step function typical confidence bands are shown in fig.~\ref{fig:nongauss_1d_heaviside},
-and the asymptotic coverage rate of various confidence bands are presented at fig.~
-\ref{fig:heaviside_1d_low_noise}, and~\ref{fig:heaviside_1d_low_noise_arb}. For another
-non-Gaussian function (``f6'', fig.~\ref{fig:nongauss_1d_f6}) see fig.~\ref{fig:f6_1d_low_noise},
-and~\ref{fig:f6_1d_low_noise_arb}.
+and the asymptotic coverage rate of various confidence bands are presented in
+fig.~\ref{fig:heaviside_1d_low_noise}.
+
 \begin{figure}%[t, width=0.5\textwidth]
   \centering
-  \begin{subfigure}[b]{0.33\linewidth}
-    \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/heaviside/1e-06_1e-06/50/profile_heaviside_1e-06_1e-06_100_10p-GPR_50.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.33\linewidth}
+  % \begin{subfigure}[b]{0.33\linewidth}
+  %   \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/heaviside/1e-06_1e-06/50/profile_heaviside_1e-06_1e-06_100_10p-GPR_50.pdf}
+  % \end{subfigure}%
+  \begin{subfigure}[b]{0.5\linewidth}
     \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/heaviside/1e-06_1e-06/50/profile_heaviside_1e-06_1e-06_100_10p-CRR_50.pdf}
   \end{subfigure}%
-  \begin{subfigure}[b]{0.33\linewidth}
+  \begin{subfigure}[b]{0.5\linewidth}
     \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/heaviside/1e-06_1e-06/50/profile_heaviside_1e-06_1e-06_100_10p-RRCM_50.pdf}
   \end{subfigure}
-  \caption{Sample Bayesian and conformal confidence bands for the ``Heaviside'' step
-  function (train sample size $n=50$): \textit{left} -- GPR, \textit{middle} -- CRR,
-  and \textit{right} -- RRCM.}
+  \caption{Typical conformal confidence bands for the ``Heaviside'' step function
+  (train sample size $n=50$): \textit{left} -- CRR, and \textit{right} -- RRCM.}
   \label{fig:nongauss_1d_heaviside}
 \end{figure}
-\begin{figure}%[t, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.33\linewidth}
-    \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/f6/1e-06_1e-06/50/profile_f6_1e-06_1e-06_100_10p-GPR_50.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.33\linewidth}
-    \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/f6/1e-06_1e-06/50/profile_f6_1e-06_1e-06_100_10p-CRR_50.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.33\linewidth}
-    \includegraphics[width=0.9\linewidth]{../images/output_pdf/profile/f6/1e-06_1e-06/50/profile_f6_1e-06_1e-06_100_10p-RRCM_50.pdf}
-  \end{subfigure}
-  \caption{Sample Bayesian and conformal confidence bands for the ``f6'' function
-  (train sample size $n=50$): \textit{left} -- GPR, \textit{middle} -- CRR, and
-  \textit{right} -- RRCM.}
-  \label{fig:nongauss_1d_f6}
-\end{figure}
 
-In contrast to the fully Gaussian setting, the GPR confidence intervals are not
-consistently conservative. As is evident from coverage rate dynamics for both functions,
-for relatively high regularization $\lambda=10^{-1}$ the GPR region fails to show
-conservative validity in a consistent manner, despite quite faithful approximation
-by the KRR as demonstrated by the ``RMSE-std'' ratio. At the same time conformal
-procedures, e.g. RRCM, show no significant departures from claimed validity.
-
-The main conclusion we can draw from the case on negligible noise is that at least
-for the Gaussian kernel the conformal confidence intervals seem to perform reasonably
-well both in terms of validity in a non-Gaussian setting and efficiency in Gaussian
-setting.
-
-\begin{figure}%[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/coverage/GPR-f/coverage_heaviside_1e-06_1e-06_100_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/coverage/GPR-f/coverage_heaviside_1e-06_0,1_100_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/coverage/GPR-f/coverage_heaviside_1e-06_1e-06_auto_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/coverage/GPR-f/coverage_heaviside_1e-06_0,1_auto_GPR-f.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/coverage/RRCM/coverage_heaviside_1e-06_1e-06_100_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/coverage/RRCM/coverage_heaviside_1e-06_0,1_100_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/coverage/RRCM/coverage_heaviside_1e-06_1e-06_auto_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/coverage/RRCM/coverage_heaviside_1e-06_0,1_auto_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/heaviside_1e-06_1e-06_100_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_low_noise_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/heaviside_1e-06_0,1_100_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_low_noise_c2}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/heaviside_1e-06_1e-06_auto_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_low_noise_c3}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/heaviside_1e-06_0,1_auto_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_low_noise_c4}
-  \end{subfigure}%
-  \caption{Coverage dynamics for the ``Heaviside'' step function.}
-  \label{fig:heaviside_1d_low_noise}
-\end{figure}
+In the non-Gaussian setting the GPR confidence intervals are not consistently valid,
+as is evident from coverage rate dynamics for $\lambda=10^{-1}$. At the same time
+conformal procedures show no significant departures from claimed validity (results
+for other measures and residuals were qualitatively similar). The main conclusion
+is that in the negligible noise case the conformal confidence intervals for the KRR
+with the Gaussian kernel perform reasonably well both in terms of validity in a
+non-Gaussian setting and efficiency in fully Gaussian setting.
 
 \begin{figure}%[b, width=0.5\textwidth]
   \centering
@@ -1193,10 +737,10 @@ setting.
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/coverage/GPR-f/coverage_heaviside_1e-06_0,1_10_GPR-f.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/coverage/GPR-f/coverage_heaviside_1e-06_1e-06_1000_GPR-f.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/coverage/GPR-f/coverage_heaviside_1e-06_1e-06_auto_GPR-f.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/coverage/GPR-f/coverage_heaviside_1e-06_0,1_1000_GPR-f.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/coverage/GPR-f/coverage_heaviside_1e-06_0,1_auto_GPR-f.pdf}
   \end{subfigure}\\
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/coverage/RRCM/coverage_heaviside_1e-06_1e-06_10_RRCM.pdf}
@@ -1205,358 +749,43 @@ setting.
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/coverage/RRCM/coverage_heaviside_1e-06_0,1_10_RRCM.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/coverage/RRCM/coverage_heaviside_1e-06_1e-06_1000_RRCM.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/coverage/RRCM/coverage_heaviside_1e-06_1e-06_auto_RRCM.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/coverage/RRCM/coverage_heaviside_1e-06_0,1_1000_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/heaviside_1e-06_1e-06_10_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_low_noise_arb_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/heaviside_1e-06_0,1_10_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_low_noise_arb_c2}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_1e-06/heaviside_1e-06_1e-06_1000_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_low_noise_arb_c3}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/heaviside_1e-06_0,1_1000_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_low_noise_arb_c4}
-  \end{subfigure}%
-  \caption{Coverage dynamics for the ``Heaviside'' step function(c.f. fig.~\ref{fig:heaviside_1d_low_noise}).}
-  \label{fig:heaviside_1d_low_noise_arb}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/1e-06_0.1/coverage/RRCM/coverage_heaviside_1e-06_0,1_auto_RRCM.pdf}
+  \end{subfigure}
+  \caption{Coverage dynamics for the ``Heaviside'' ($\lambda=10^{-6}$).}
+  \label{fig:heaviside_1d_low_noise}
 \end{figure}
 
-% \begin{figure}%[b, width=0.5\textwidth]
-%   \centering
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_1e-06/coverage/GPR-f/coverage_pressure2_1e-06_1e-06_100_GPR-f.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_0.1/coverage/GPR-f/coverage_pressure2_1e-06_0,1_100_GPR-f.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_1e-06/coverage/GPR-f/coverage_pressure2_1e-06_1e-06_auto_GPR-f.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_0.1/coverage/GPR-f/coverage_pressure2_1e-06_0,1_auto_GPR-f.pdf}
-%   \end{subfigure}\\
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_1e-06/coverage/RRCM/coverage_pressure2_1e-06_1e-06_100_RRCM.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_0.1/coverage/RRCM/coverage_pressure2_1e-06_0,1_100_RRCM.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_1e-06/coverage/RRCM/coverage_pressure2_1e-06_1e-06_auto_RRCM.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_0.1/coverage/RRCM/coverage_pressure2_1e-06_0,1_auto_RRCM.pdf}
-%   \end{subfigure}\\
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_1e-06/pressure2_1e-06_1e-06_100_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_low_noise_c1}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_0.1/pressure2_1e-06_0,1_100_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_low_noise_c2}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_1e-06/pressure2_1e-06_1e-06_auto_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_low_noise_c3}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_0.1/pressure2_1e-06_0,1_auto_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_low_noise_c4}
-%   \end{subfigure}%
-%   \caption{Coverage dynamics for the ``pressure2'' function.}
-%   \label{fig:pressure2_1d_low_noise}
-% \end{figure}
-
-% \begin{figure}%[b, width=0.5\textwidth]
-%   \centering
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_1e-06/coverage/GPR-f/coverage_pressure2_1e-06_1e-06_10_GPR-f.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_0.1/coverage/GPR-f/coverage_pressure2_1e-06_0,1_10_GPR-f.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_1e-06/coverage/GPR-f/coverage_pressure2_1e-06_1e-06_1000_GPR-f.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_0.1/coverage/GPR-f/coverage_pressure2_1e-06_0,1_1000_GPR-f.pdf}
-%   \end{subfigure}\\
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_1e-06/coverage/RRCM/coverage_pressure2_1e-06_1e-06_10_RRCM.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_0.1/coverage/RRCM/coverage_pressure2_1e-06_0,1_10_RRCM.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_1e-06/coverage/RRCM/coverage_pressure2_1e-06_1e-06_1000_RRCM.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_0.1/coverage/RRCM/coverage_pressure2_1e-06_0,1_1000_RRCM.pdf}
-%   \end{subfigure}\\
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_1e-06/pressure2_1e-06_1e-06_10_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_low_noise_arb_c1}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_0.1/pressure2_1e-06_0,1_10_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_low_noise_arb_c2}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_1e-06/pressure2_1e-06_1e-06_1000_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_low_noise_arb_c3}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/1e-06_0.1/pressure2_1e-06_0,1_1000_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_low_noise_arb_c4}
-%   \end{subfigure}%
-%   \caption{Coverage dynamics for the ``pressure2'' function(c.f. fig.~\ref{fig:pressure2_1d_low_noise}).}
-%   \label{fig:pressure2_1d_low_noise_arb}
-% \end{figure}
+The performance of conformal confidence regions in noisy setting ($\gamma=10^{-1}$)
+is qualitatively similar to the negligible nose case, except that the bands are wider
+due to higher observation noise. We report the findings for the MLE of $\theta$ only,
+but the results for conformal regions with fixed $\theta$ are qualitatively similar.
+In fig.~\ref{fig:gaussian_1d_high_noise} the conformal confidence regions provide the
+specified level of validity regardless of the parameter $\lambda$ of the non-conformity
+measure. As expected, the Bayesian confidence predictions uphold their theoretical
+guarantees.
 
 \begin{figure}%[b, width=0.5\textwidth]
   \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_1e-06/coverage/GPR-f/coverage_f6_1e-06_1e-06_100_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_0.1/coverage/GPR-f/coverage_f6_1e-06_0,1_100_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_1e-06/coverage/GPR-f/coverage_f6_1e-06_1e-06_auto_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_0.1/coverage/GPR-f/coverage_f6_1e-06_0,1_auto_GPR-f.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_1e-06/coverage/RRCM/coverage_f6_1e-06_1e-06_100_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_0.1/coverage/RRCM/coverage_f6_1e-06_0,1_100_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_1e-06/coverage/RRCM/coverage_f6_1e-06_1e-06_auto_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_0.1/coverage/RRCM/coverage_f6_1e-06_0,1_auto_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_1e-06/f6_1e-06_1e-06_100_ratio.pdf}
-    \caption{} \label{fig:f6_1d_low_noise_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_0.1/f6_1e-06_0,1_100_ratio.pdf}
-    \caption{} \label{fig:f6_1d_low_noise_c2}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_1e-06/f6_1e-06_1e-06_auto_ratio.pdf}
-    \caption{} \label{fig:f6_1d_low_noise_c3}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_0.1/f6_1e-06_0,1_auto_ratio.pdf}
-    \caption{} \label{fig:f6_1d_low_noise_c4}
-  \end{subfigure}%
-  \caption{Coverage dynamics and ``RMSE-std'' ratio for the ``f6'' function.}
-  \label{fig:f6_1d_low_noise}
-\end{figure}
-
-\begin{figure}%[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_1e-06/coverage/GPR-f/coverage_f6_1e-06_1e-06_10_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_0.1/coverage/GPR-f/coverage_f6_1e-06_0,1_10_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_1e-06/coverage/GPR-f/coverage_f6_1e-06_1e-06_1000_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_0.1/coverage/GPR-f/coverage_f6_1e-06_0,1_1000_GPR-f.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_1e-06/coverage/RRCM/coverage_f6_1e-06_1e-06_10_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_0.1/coverage/RRCM/coverage_f6_1e-06_0,1_10_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_1e-06/coverage/RRCM/coverage_f6_1e-06_1e-06_1000_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_0.1/coverage/RRCM/coverage_f6_1e-06_0,1_1000_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_1e-06/f6_1e-06_1e-06_10_ratio.pdf}
-    \caption{} \label{fig:f6_1d_low_noise_arb_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_0.1/f6_1e-06_0,1_10_ratio.pdf}
-    \caption{} \label{fig:f6_1d_low_noise_arb_c2}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_1e-06/f6_1e-06_1e-06_1000_ratio.pdf}
-    \caption{} \label{fig:f6_1d_low_noise_arb_c3}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/1e-06_0.1/f6_1e-06_0,1_1000_ratio.pdf}
-    \caption{} \label{fig:f6_1d_low_noise_arb_c4}
-  \end{subfigure}%
-  \caption{Coverage dynamics and ``RMSE-std'' ratio for the ``f6'' function (see
-  the description of fig.~\ref{fig:f6_1d_low_noise}).}
-  \label{fig:f6_1d_low_noise_arb}
-\end{figure}
-
-Now let's assess the performance of the confidence regions in noisy setting. We
-study the effects of a moderate noise-to-signal $\gamma=10^{-1}$ ratio, relative
-to the variability of the studied test functions.
-
-Firstly, we consider the case when the $\theta$ hyper-parameter is exactly equal
-to $\theta_0$. In this setting the sample GPR and KRR RRCM confidence bands are
-depicted in fig.~\ref{fig:gauss_1d_prof_conf}, and fig.~\ref{fig:gauss_1d_prof_gpr}.
-Qualitatively there is no difference to the negligible nose case, except in the current
-setting the band are wider do to higher observation noise. Despite the overall worse
-fit, however, both conformal and Bayesian confidence regions show approximately correct
-asymptotic coverage rates (fig.~\ref{fig:gaussian_1d_high_noise_c1} and~\ref{fig:gaussian_1d_high_noise_c2}).
-Regarding the efficiency, GPR confidence intervals are narrower that the conformal
-regions, but for sufficiently large train samples $n$ the width of the latter gradually
-shrinks to that of the Bayesian interval (fig.~\ref{fig:gaussian_1d_high_noise_width_c1}
-and~\ref{fig:gaussian_1d_high_noise_width_c2}. Thus, in this setting, as in the
-previous one, we found evidence supporting the conjectured properties of conformal
-procedures over KRR with the Gaussian kernel.
-
-In the setting, when the kernel precision $\theta$ no equal to the theoretical $\theta_0$,
-but is either estimated with the MLE $\hat{\theta}_\text{MLE}$, provided by the GPR
-likelihood, eq.~\ref{eq:bkrr_likelihood}, (fig.~\ref{fig:gaussian_1d_high_noise_c3}
-and~\ref{fig:gaussian_1d_high_noise_c4}), or too low $\theta=10$ (fig.~\ref{fig:gaussian_1d_high_noise_arb_c1}
-and~\ref{fig:gaussian_1d_high_noise_arb_c1}), or too high $\theta=10^3$ (fig.~\ref{fig:gaussian_1d_high_noise_arb_c3}
-and~\ref{fig:gaussian_1d_high_noise_arb_c4}) we arrive at similar conclusions: confidence
-intervals constructed with an NCM based on KRR with kernel eq.~\ref{eq:gauss_kenrel}
-provide at least conservatively the required level of validity regardless of the
-parameters ($\theta$, $\lambda$) at the core of the non-conformity measure.
-
-From this particular experiment in this setting, can be concluded that there is evidence
-in favour of the conjectured asymptotic conservative validity of the conformal confidence
-regions for all considered NCMs and residual types as well as their asymptotic efficiency.
-As expected, the GPR confidence predictions uphold their theoretical guarantees in
-this case.
-
-\begin{figure}%[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/GPR-f/coverage_gaussian_0,1_1e-06_100_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/GPR-f/coverage_gaussian_0,1_0,1_100_GPR-f.pdf}
-  \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/GPR-f/coverage_gaussian_0,1_1e-06_auto_GPR-f.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/GPR-f/coverage_gaussian_0,1_0,1_auto_GPR-f.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/RRCM/coverage_gaussian_0,1_1e-06_100_RRCM.pdf}
   \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM/coverage_gaussian_0,1_0,1_100_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/RRCM/coverage_gaussian_0,1_1e-06_auto_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM/coverage_gaussian_0,1_0,1_auto_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/RRCM-loo/coverage_gaussian_0,1_1e-06_100_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM-loo/coverage_gaussian_0,1_0,1_100_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/RRCM-loo/coverage_gaussian_0,1_1e-06_auto_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM-loo/coverage_gaussian_0,1_0,1_auto_RRCM-loo.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/CRR/coverage_gaussian_0,1_1e-06_100_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR/coverage_gaussian_0,1_0,1_100_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/CRR/coverage_gaussian_0,1_1e-06_auto_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR/coverage_gaussian_0,1_0,1_auto_CRR.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/CRR-loo/coverage_gaussian_0,1_1e-06_100_CRR-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR-loo/coverage_gaussian_0,1_0,1_100_CRR-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/CRR-loo/coverage_gaussian_0,1_1e-06_auto_CRR-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR-loo/coverage_gaussian_0,1_0,1_auto_CRR-loo.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/gaussian_0,1_1e-06_100_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_high_noise_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/gaussian_0,1_0,1_100_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_high_noise_c2}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/gaussian_0,1_1e-06_auto_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_high_noise_c3}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/gaussian_0,1_0,1_auto_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_high_noise_c4}
-  \end{subfigure}%
-  \caption{Coverage rate dynamics in the noisy fully Gaussian case $\gamma=10^{-1}$
-  for different $(\theta, \lambda)$:
-  \subref{fig:gaussian_1d_high_noise_c1}~--~$(\theta_0, 10^{-6})$,
-  \subref{fig:gaussian_1d_high_noise_c2}~--~$(\theta_0, 10^{-1})$,
-  \subref{fig:gaussian_1d_high_noise_c3}~--~$(\hat{\theta}_\text{ML}, 10^{-6})$,
-  \subref{fig:gaussian_1d_high_noise_c4}~--~$(\hat{\theta}_\text{ML}, 10^{-1})$.
-  Rows from \textit{top} to \textit{bottom}: ``GPR-f'', ``RRCM'', ``RRCM-loo'',
-  ``CRR'', ``CRR-loo'', and the last depicting ``RMSE-std'' ratio.}
-  \label{fig:gaussian_1d_high_noise}
-\end{figure}
-
-\begin{figure}%[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/GPR-f/width_gaussian_0,1_1e-06_100_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/GPR-f/width_gaussian_0,1_0,1_100_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
+    \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/GPR-f/width_gaussian_0,1_1e-06_auto_GPR-f.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/GPR-f/width_gaussian_0,1_0,1_auto_GPR-f.pdf}
   \end{subfigure}\\
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/RRCM/width_gaussian_0,1_1e-06_100_RRCM.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/RRCM/coverage_gaussian_0,1_1e-06_auto_RRCM.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/RRCM/width_gaussian_0,1_0,1_100_RRCM.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM/coverage_gaussian_0,1_0,1_auto_RRCM.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/RRCM/width_gaussian_0,1_1e-06_auto_RRCM.pdf}
@@ -1565,10 +794,10 @@ this case.
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/RRCM/width_gaussian_0,1_0,1_auto_RRCM.pdf}
   \end{subfigure}\\
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/RRCM-loo/width_gaussian_0,1_1e-06_100_RRCM-loo.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/RRCM-loo/coverage_gaussian_0,1_1e-06_auto_RRCM-loo.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/RRCM-loo/width_gaussian_0,1_0,1_100_RRCM-loo.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM-loo/coverage_gaussian_0,1_0,1_auto_RRCM-loo.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/RRCM-loo/width_gaussian_0,1_1e-06_auto_RRCM-loo.pdf}
@@ -1577,10 +806,10 @@ this case.
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/RRCM-loo/width_gaussian_0,1_0,1_auto_RRCM-loo.pdf}
   \end{subfigure}\\
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/CRR/width_gaussian_0,1_1e-06_100_CRR.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/CRR/coverage_gaussian_0,1_1e-06_auto_CRR.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/CRR/width_gaussian_0,1_0,1_100_CRR.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR/coverage_gaussian_0,1_0,1_auto_CRR.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/CRR/width_gaussian_0,1_1e-06_auto_CRR.pdf}
@@ -1589,12 +818,12 @@ this case.
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/CRR/width_gaussian_0,1_0,1_auto_CRR.pdf}
   \end{subfigure}\\
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/CRR-loo/width_gaussian_0,1_1e-06_100_CRR-loo.pdf}
-    \caption{} \label{fig:gaussian_1d_high_noise_width_c1}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/CRR-loo/coverage_gaussian_0,1_1e-06_auto_CRR-loo.pdf}
+    \caption{} \label{fig:gaussian_1d_high_noise_c3}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/CRR-loo/width_gaussian_0,1_0,1_100_CRR-loo.pdf}
-    \caption{} \label{fig:gaussian_1d_high_noise_width_c2}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR-loo/coverage_gaussian_0,1_0,1_auto_CRR-loo.pdf}
+    \caption{} \label{fig:gaussian_1d_high_noise_c4}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/CRR-loo/width_gaussian_0,1_1e-06_auto_CRR-loo.pdf}
@@ -1604,244 +833,16 @@ this case.
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/CRR-loo/width_gaussian_0,1_0,1_auto_CRR-loo.pdf}
     \caption{} \label{fig:gaussian_1d_high_noise_width_c4}
   \end{subfigure}
-  \caption{Confidence region width as a function of the train sample size $n$ for
-  different $(\theta, \lambda)$ (see fig.~\ref{fig:gaussian_1d_high_noise}).}
-  \label{fig:gaussian_1d_high_noise_width}
-\end{figure}
-
-\begin{figure}%[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/GPR-f/coverage_gaussian_0,1_1e-06_10_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/GPR-f/coverage_gaussian_0,1_0,1_10_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/GPR-f/coverage_gaussian_0,1_1e-06_1000_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/GPR-f/coverage_gaussian_0,1_0,1_1000_GPR-f.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/RRCM/coverage_gaussian_0,1_1e-06_10_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM/coverage_gaussian_0,1_0,1_10_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/RRCM/coverage_gaussian_0,1_1e-06_1000_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM/coverage_gaussian_0,1_0,1_1000_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/RRCM-loo/coverage_gaussian_0,1_1e-06_10_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM-loo/coverage_gaussian_0,1_0,1_10_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/RRCM-loo/coverage_gaussian_0,1_1e-06_1000_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/RRCM-loo/coverage_gaussian_0,1_0,1_1000_RRCM-loo.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/CRR/coverage_gaussian_0,1_1e-06_10_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR/coverage_gaussian_0,1_0,1_10_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/CRR/coverage_gaussian_0,1_1e-06_1000_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR/coverage_gaussian_0,1_0,1_1000_CRR.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/CRR-loo/coverage_gaussian_0,1_1e-06_10_CRR-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR-loo/coverage_gaussian_0,1_0,1_10_CRR-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/coverage/CRR-loo/coverage_gaussian_0,1_1e-06_1000_CRR-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/coverage/CRR-loo/coverage_gaussian_0,1_0,1_1000_CRR-loo.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/gaussian_0,1_1e-06_10_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_high_noise_arb_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/gaussian_0,1_0,1_10_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_high_noise_arb_c2}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/gaussian_0,1_1e-06_1000_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_high_noise_arb_c3}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/gaussian_0,1_0,1_1000_ratio.pdf}
-    \caption{} \label{fig:gaussian_1d_high_noise_arb_c4}
-  \end{subfigure}%
-  \caption{Coverage rate dynamics in the noisy fully Gaussian case $\gamma=10^{-1}$
-  for different $(\theta, \lambda)$ (see fig.~\ref{fig:gaussian_1d_high_noise}).}
-  \label{fig:gaussian_1d_high_noise_arb}
-\end{figure}
-
-\begin{figure}%[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/GPR-f/width_gaussian_0,1_1e-06_10_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/GPR-f/width_gaussian_0,1_0,1_10_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/GPR-f/width_gaussian_0,1_1e-06_1000_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/GPR-f/width_gaussian_0,1_0,1_1000_GPR-f.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/RRCM/width_gaussian_0,1_1e-06_10_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/RRCM/width_gaussian_0,1_0,1_10_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/RRCM/width_gaussian_0,1_1e-06_1000_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/RRCM/width_gaussian_0,1_0,1_1000_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/RRCM-loo/width_gaussian_0,1_1e-06_10_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/RRCM-loo/width_gaussian_0,1_0,1_10_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/RRCM-loo/width_gaussian_0,1_1e-06_1000_RRCM-loo.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/RRCM-loo/width_gaussian_0,1_0,1_1000_RRCM-loo.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/CRR/width_gaussian_0,1_1e-06_10_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/CRR/width_gaussian_0,1_0,1_10_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/CRR/width_gaussian_0,1_1e-06_1000_CRR.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/CRR/width_gaussian_0,1_0,1_1000_CRR.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/CRR-loo/width_gaussian_0,1_1e-06_10_CRR-loo.pdf}
-    \caption{} \label{fig:gaussian_1d_high_noise_arb_width_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/CRR-loo/width_gaussian_0,1_0,1_10_CRR-loo.pdf}
-    \caption{} \label{fig:gaussian_1d_high_noise_arb_width_c2}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_1e-06/width/CRR-loo/width_gaussian_0,1_1e-06_1000_CRR-loo.pdf}
-    \caption{} \label{fig:gaussian_1d_high_noise_arb_width_c3}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/gaussian/0.1_0.1/width/CRR-loo/width_gaussian_0,1_0,1_1000_CRR-loo.pdf}
-    \caption{} \label{fig:gaussian_1d_high_noise_arb_width_c4}
-  \end{subfigure}
-  \caption{Confidence region width as a function of the train sample size $n$ for
-  different $(\theta, \lambda)$ (see fig.~\ref{fig:gaussian_1d_high_noise_arb}).}
-  \label{fig:gaussian_1d_high_noise_arb_width}
+  \caption{Coverage rate and region size dynamics in the noisy fully Gaussian case
+  with $\gamma=10^{-1}$ for different $\theta=\hat{\theta}_\text{ML}$ and $\lambda=10^{-6}$
+  (\subref{fig:gaussian_1d_high_noise_c3}), and $\lambda=10^{-1}$ (\subref{fig:gaussian_1d_high_noise_c4}).
+  Rows from \textit{top} to \textit{bottom}: ``GPR-f'', ``RRCM'', ``RRCM-loo'', ``CRR'', and ``CRR-loo''.}
+  \label{fig:gaussian_1d_high_noise}
 \end{figure}
 
 In the non-Gaussian setting with noise-to-signal ratio $\gamma=10^{-1}$, all experiments
-yielded results similar to the non-Gaussian setting with negligible noise: all conformal
-procedures produced asymptotically valid confidence sets. As for the Gaussian Process
-Regression confidence intervals, the results were similar but were less extreme.
-In the case of the ``Heaviside'' step test function, despite the fact that KRR achieved
-adequate fit to the test data on average, GPR confidence intervals do not provide
-conservative validity on all significance levels consistently for kernel precision
-parameters $\theta \leq 10^3$, with the ML estimate being $\hat{\theta}\approx 2000$
-for $n=1600$ (fig.~\ref{fig:heaviside_1d_high_noise} and~\ref{fig:heaviside_1d_high_noise_arb}).
-This is due to the fact that the test function is discontinuous, and of relative
-low precision setting, the induced basis functions are more spread out, which results
-in worse fit in the vicinity of the discontinuity.
-
-In contrast, GPR confidence intervals exhibit more adequate validity in the case
-of ``f6'' test function: which is a pair of polynomials continuously pasted at $0.5$.
-That is why the performance of the GPR confidence intervals in noticeably better
-(fig.~\ref{fig:f6_1d_high_noise} and.~\ref{fig:f6_1d_high_noise_arb}). The widths
-of the Bayesian and conformal intervals converge as the train sample grows larger
-(fig.~\ref{fig:f6_1d_high_noise_width}).
-
-The conducted experiments in the $1$-d setting yielded empirical support for the
-following conclusions:
-\begin{itemize}
-  \item the kernel ridge regression conformal procedure seems to be asymptotically
-  conservatively valid in all setups, despite being applied in the off-line learning
-  setting;
-  \item  the confidence intervals of the GPR fails in the non-Gaussian settings,
-  especially with low noise-to-signal ratio;
-  \item in those experiments, where the GPR intervals were approximately valid, the
-  size of conformal confidence regions converged to the width of the Bayesian confidence
-  set.
-\end{itemize}
-
-%%
-\begin{figure}%[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/coverage/GPR-f/coverage_heaviside_0,1_1e-06_100_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/coverage/GPR-f/coverage_heaviside_0,1_0,1_100_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/coverage/GPR-f/coverage_heaviside_0,1_1e-06_auto_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/coverage/GPR-f/coverage_heaviside_0,1_0,1_auto_GPR-f.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/coverage/RRCM/coverage_heaviside_0,1_1e-06_100_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/coverage/RRCM/coverage_heaviside_0,1_0,1_100_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/coverage/RRCM/coverage_heaviside_0,1_1e-06_auto_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/coverage/RRCM/coverage_heaviside_0,1_0,1_auto_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/heaviside_0,1_1e-06_100_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_high_noise_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/heaviside_0,1_0,1_100_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_high_noise_c2}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/heaviside_0,1_1e-06_auto_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_high_noise_c3}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/heaviside_0,1_0,1_auto_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_high_noise_c4}
-  \end{subfigure}%
-  \caption{Coverage dynamics for the ``Heaviside'' step function.}
-  \label{fig:heaviside_1d_high_noise}
-\end{figure}
+yielded results similar to the negligible noise case: the conformal confidence sets are
+asymptotically valid, whereas the Bayesian intervals are not, fig.~\ref{fig:heaviside_1d_high_noise}.
 
 \begin{figure}%[b, width=0.5\textwidth]
   \centering
@@ -1852,10 +853,10 @@ following conclusions:
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/coverage/GPR-f/coverage_heaviside_0,1_0,1_10_GPR-f.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/coverage/GPR-f/coverage_heaviside_0,1_1e-06_1000_GPR-f.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/coverage/GPR-f/coverage_heaviside_0,1_1e-06_auto_GPR-f.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/coverage/GPR-f/coverage_heaviside_0,1_0,1_1000_GPR-f.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/coverage/GPR-f/coverage_heaviside_0,1_0,1_auto_GPR-f.pdf}
   \end{subfigure}\\
   \begin{subfigure}[b]{0.25\linewidth}
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/coverage/RRCM/coverage_heaviside_0,1_1e-06_10_RRCM.pdf}
@@ -1864,236 +865,13 @@ following conclusions:
     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/coverage/RRCM/coverage_heaviside_0,1_0,1_10_RRCM.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/coverage/RRCM/coverage_heaviside_0,1_1e-06_1000_RRCM.pdf}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/coverage/RRCM/coverage_heaviside_0,1_1e-06_auto_RRCM.pdf}
   \end{subfigure}%
   \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/coverage/RRCM/coverage_heaviside_0,1_0,1_1000_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/heaviside_0,1_1e-06_10_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_high_noise_arb_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/heaviside_0,1_0,1_10_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_high_noise_arb_c2}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_1e-06/heaviside_0,1_1e-06_1000_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_high_noise_arb_c3}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/heaviside_0,1_0,1_1000_ratio.pdf}
-    \caption{} \label{fig:heaviside_1d_high_noise_arb_c4}
-  \end{subfigure}%
-  \caption{Coverage dynamics for the ``Heaviside'' step function (c.f. fig.~\ref{fig:heaviside_1d_high_noise}).}
-  \label{fig:heaviside_1d_high_noise_arb}
-\end{figure}
-
-% \begin{figure}%[b, width=0.5\textwidth]
-%   \centering
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_1e-06/coverage/GPR-f/coverage_pressure2_0,1_1e-06_100_GPR-f.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_0.1/coverage/GPR-f/coverage_pressure2_0,1_0,1_100_GPR-f.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_1e-06/coverage/GPR-f/coverage_pressure2_0,1_1e-06_auto_GPR-f.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_0.1/coverage/GPR-f/coverage_pressure2_0,1_0,1_auto_GPR-f.pdf}
-%   \end{subfigure}\\
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_1e-06/coverage/RRCM/coverage_pressure2_0,1_1e-06_100_RRCM.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_0.1/coverage/RRCM/coverage_pressure2_0,1_0,1_100_RRCM.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_1e-06/coverage/RRCM/coverage_pressure2_0,1_1e-06_auto_RRCM.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_0.1/coverage/RRCM/coverage_pressure2_0,1_0,1_auto_RRCM.pdf}
-%   \end{subfigure}\\
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_1e-06/pressure2_0,1_1e-06_100_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_high_noise_c1}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_0.1/pressure2_0,1_0,1_100_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_high_noise_c2}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_1e-06/pressure2_0,1_1e-06_auto_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_high_noise_c3}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_0.1/pressure2_0,1_0,1_auto_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_high_noise_c4}
-%   \end{subfigure}%
-%   \caption{Coverage dynamics for the ``pressure2'' function.}
-%   \label{fig:pressure2_1d_high_noise}
-% \end{figure}
-
-% \begin{figure}%[b, width=0.5\textwidth]
-%   \centering
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_1e-06/coverage/GPR-f/coverage_pressure2_0,1_1e-06_10_GPR-f.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_0.1/coverage/GPR-f/coverage_pressure2_0,1_0,1_10_GPR-f.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_1e-06/coverage/GPR-f/coverage_pressure2_0,1_1e-06_1000_GPR-f.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_0.1/coverage/GPR-f/coverage_pressure2_0,1_0,1_1000_GPR-f.pdf}
-%   \end{subfigure}\\
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_1e-06/coverage/RRCM/coverage_pressure2_0,1_1e-06_10_RRCM.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_0.1/coverage/RRCM/coverage_pressure2_0,1_0,1_10_RRCM.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_1e-06/coverage/RRCM/coverage_pressure2_0,1_1e-06_1000_RRCM.pdf}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_0.1/coverage/RRCM/coverage_pressure2_0,1_0,1_1000_RRCM.pdf}
-%   \end{subfigure}\\
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_1e-06/pressure2_0,1_1e-06_10_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_high_noise_arb_c1}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_0.1/pressure2_0,1_0,1_10_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_high_noise_arb_c2}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_1e-06/pressure2_0,1_1e-06_1000_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_high_noise_arb_c3}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{0.25\linewidth}
-%     \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/pressure2/0.1_0.1/pressure2_0,1_0,1_1000_ratio.pdf}
-%     \caption{} \label{fig:pressure2_1d_high_noise_arb_c4}
-%   \end{subfigure}%
-%   \caption{Coverage dynamics for the ``pressure2'' function(c.f. fig.~\ref{fig:pressure2_1d_high_noise}).}
-%   \label{fig:pressure2_1d_high_noise_arb}
-% \end{figure}
-
-\begin{figure}%[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_1e-06/coverage/GPR-f/coverage_f6_0,1_1e-06_100_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_0.1/coverage/GPR-f/coverage_f6_0,1_0,1_100_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_1e-06/coverage/GPR-f/coverage_f6_0,1_1e-06_auto_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_0.1/coverage/GPR-f/coverage_f6_0,1_0,1_auto_GPR-f.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_1e-06/coverage/RRCM/coverage_f6_0,1_1e-06_100_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_0.1/coverage/RRCM/coverage_f6_0,1_0,1_100_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_1e-06/coverage/RRCM/coverage_f6_0,1_1e-06_auto_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_0.1/coverage/RRCM/coverage_f6_0,1_0,1_auto_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_1e-06/f6_0,1_1e-06_100_ratio.pdf}
-    \caption{} \label{fig:f6_1d_high_noise_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_0.1/f6_0,1_0,1_100_ratio.pdf}
-    \caption{} \label{fig:f6_1d_high_noise_c2}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_1e-06/f6_0,1_1e-06_auto_ratio.pdf}
-    \caption{} \label{fig:f6_1d_high_noise_c3}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_0.1/f6_0,1_0,1_auto_ratio.pdf}
-    \caption{} \label{fig:f6_1d_high_noise_c4}
-  \end{subfigure}%
-  \caption{Coverage dynamics and ``RMSE-std'' ratio for the ``f6'' function.}
-  \label{fig:f6_1d_high_noise}
-\end{figure}
-
-\begin{figure}%[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_1e-06/coverage/GPR-f/coverage_f6_0,1_1e-06_10_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_0.1/coverage/GPR-f/coverage_f6_0,1_0,1_10_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_1e-06/coverage/GPR-f/coverage_f6_0,1_1e-06_1000_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_0.1/coverage/GPR-f/coverage_f6_0,1_0,1_1000_GPR-f.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_1e-06/coverage/RRCM/coverage_f6_0,1_1e-06_10_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_0.1/coverage/RRCM/coverage_f6_0,1_0,1_10_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_1e-06/coverage/RRCM/coverage_f6_0,1_1e-06_1000_RRCM.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_0.1/coverage/RRCM/coverage_f6_0,1_0,1_1000_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_1e-06/f6_0,1_1e-06_10_ratio.pdf}
-    \caption{} \label{fig:f6_1d_high_noise_arb_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_0.1/f6_0,1_0,1_10_ratio.pdf}
-    \caption{} \label{fig:f6_1d_high_noise_arb_c2}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_1e-06/f6_0,1_1e-06_1000_ratio.pdf}
-    \caption{} \label{fig:f6_1d_high_noise_arb_c3}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_0.1/f6_0,1_0,1_1000_ratio.pdf}
-    \caption{} \label{fig:f6_1d_high_noise_arb_c4}
-  \end{subfigure}%
-  \caption{Coverage dynamics and ``RMSE-std'' ratio for the ``f6'' function (see
-  the description of fig.~\ref{fig:f6_1d_high_noise}).}
-  \label{fig:f6_1d_high_noise_arb}
-\end{figure}
-
-\begin{figure}%[b, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_1e-06/width/GPR-f/width_f6_0,1_1e-06_auto_GPR-f.pdf}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_1e-06/width/RRCM/width_f6_0,1_1e-06_auto_RRCM.pdf}
-  \end{subfigure}\\
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_0.1/width/GPR-f/width_f6_0,1_0,1_auto_GPR-f.pdf}
-    \caption{} \label{fig:f6_1d_high_noise_width_c1}
-  \end{subfigure}%
-  \begin{subfigure}[b]{0.25\linewidth}
-    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/f6/0.1_0.1/width/RRCM/width_f6_0,1_0,1_auto_RRCM.pdf}
-    \caption{} \label{fig:f6_1d_high_noise_width_c2}
+    \includegraphics[width=0.95\linewidth]{../images/output_pdf/exp_1d/heaviside/0.1_0.1/coverage/RRCM/coverage_heaviside_0,1_0,1_auto_RRCM.pdf}
   \end{subfigure}
-  \caption{Width dynamics of the KRR and GPR confidence sets for the ML estimate
-  of $\theta$ for the values of the ``f6'' test function, distorted by Gaussian noise
-  with $\gamma=10^{-1}$.}
-  \label{fig:f6_1d_high_noise_width}
+  \caption{Coverage dynamics for the ``Heaviside'' ($\lambda=10^{-1}$).}
+  \label{fig:heaviside_1d_high_noise}
 \end{figure}
 
 % subsection results_1_d (end)
@@ -2101,156 +879,65 @@ following conclusions:
 \subsection{Results: $2$-d} % (fold)
 \label{sub:results_2_d}
 
-In this section we study the performance in the $2$-d setting. We begin by testing
-the conformal procedure in a Gaussian process setting, where the Bayesian GPR intervals
-are provably correct: we compare the validity and assess the efficiency. We test
-the effects of using ML estimate of the kernel precision parameter $\theta$ and
-fixing it to deliberately large or small values. Finally, we use specific test functions,
-fig.~\ref{fig:nongauss_2d_profile}, observations of which are contaminated by moderate
-Gaussian noise.
-
-\begin{figure}%[t, width=0.5\textwidth]
-  \centering
-  \begin{subfigure}[b]{0.5\linewidth}
-    \includegraphics[width=\linewidth]{../images/output_pdf/exp_2d/f2/0.1_1e-06/1500/profile/f2_0,1_1e-06_1000_test.pdf}
-  \end{subfigure}%~
-  \begin{subfigure}[b]{0.5\linewidth}
-    \includegraphics[width=\linewidth]{../images/output_pdf/exp_2d/f5/0.1_1e-06/1500/profile/f5_0,1_1e-06_1000_test.pdf}
-  \end{subfigure}
-  \caption{A sample path of a $2$-d non-Gaussian function, contaminated by moderate
-  independent $\Ncal(0, \gamma)$ noise. Function: \textit{left:} ``f2''; \textit{right:}
-  ``f5''.}
-  \label{fig:nongauss_2d_profile}
-\end{figure}
-
-For the first part we generated realizations of a $GP(0, K(x,x'))$ process on $\Xcal=[0,1]^2$
-with kernel defined in eq.~\ref{eq:gauss_kenrel} and precision $\theta_0 = 10^2$.
-The typical sample path is depicted in fig.~\ref{fig:gauss_2d_profile}. As in the
-$1$-d experiments we synthesized one sample path of $GP$ and then for each set of
-hyper-parameters, excluding $\gamma$, we drew $L=25$ random samples from $\Xcal$
-to average the effects of random sampling on the KRR and the derived confidence regions.
-The goodness-of-fit ratios are presented in table~\ref{tab:gaussian_2d_rmse_std}.
-For the true precision $\theta=\theta_0$ and small sample $n=150$ we see overfitting
-in the case of high noise in the observations ($\gamma$) and low regularization
-parameter ($\lambda$).
-
+In this section we conduct experiments in the $2$-d setting $\Xcal=[-1,1]^2$, and
+the experimental steps are similar to \ref{sub:results_1_d} The typical sample realisations
+of the studied $2-d$ functions $f$ are depicted in fig.~\ref{fig:2d_profile}.
 \begin{figure}%[t, width=0.5\textwidth]
   \centering
   \begin{subfigure}[b]{0.5\linewidth}
     \includegraphics[width=\linewidth]{../images/output_pdf/exp_2d/gaussian/1e-06_1e-06/1500/profile/gaussian_1e-06_1e-06_1000_test.pdf}
-  \end{subfigure}%~
+  \end{subfigure}%
   \begin{subfigure}[b]{0.5\linewidth}
-    \includegraphics[width=\linewidth]{../images/output_pdf/exp_2d/gaussian/0.1_1e-06/1500/profile/gaussian_0,1_1e-06_1000_test.pdf}
+    \includegraphics[width=\linewidth]{../images/output_pdf/exp_2d/f2/0.1_1e-06/1500/profile/f2_0,1_1e-06_1000_test.pdf}
   \end{subfigure}
-  \caption{A sample path of a $2$-d Gaussian process with kernel $\gamma \delta_{x,x'} + K(x,x')$:
-  \textit{left:} $\gamma=10^{-6}$; \textit{right:} $\gamma=10^{-1}$.}
-  \label{fig:gauss_2d_profile}
+  \caption{A sample path of a $2$-d Gaussian process(\textit{left} $\gamma=10^{-6}$)
+  and a non-Gaussian function ``f2'' (\textit{right} $\gamma=10^{-1}$).}
+  \label{fig:2d_profile}
 \end{figure}
 
-Table~\ref{tab:gaussian_2d_cov_gpr} shows the error rates ($y^*\notin\Bcal(x^*)$) of
-the GPR confidence intervals on a fixed test sample, the inputs $X^*\subseteq \Xcal$
-of which are given by
-\begin{equation*}
-  X^* = \bigl\{(N^{-1} i, N^{-1} j)\,:\,i,j=0\ldots, N\bigr\} \,,
-\end{equation*}
-for $N=50$. Columns 1 and 4 show that the regions are approximately valid in the
-cases when the KRR parameters are set to the true values used to generate the data
-and with larger train sample the coverage improves. As in the $1$-d case the intervals
-are more conservative for the case of low noise in the data $\gamma=10^{-6}$ and
-high regularization $\lambda=10^{-1}$. Table~\ref{tab:gaussian_2d_cov_gpr_neq} show
-that in current setting, the validity of the GPR confidence intervals is sensitive
-to misspecification of the kernel precision.
-
+Table~\ref{tab:gaussian_2d_cov_gpr} shows the error rates ($y^*\notin\Bcal(x^*)$)
+of the Bayesian confidence intervals on the fixed test sample. Columns 1 and 4 show
+that the regions are approximately valid when the kernel and noise hyper-parameters
+are known. The Bayesian intervals are more conservative for the case of low noise
+($\gamma=10^{-6}$) and high regularization $\lambda=10^{-1}$. However, the validity
+of the GPR confidence intervals is sensitive to misspecification of kernel precision
+$\theta$.
 \begin{table}
-  \centering
-  \caption{Goodness of fit of the KRR of simulated $2$-d Gaussian process.}
-  \label{tab:gaussian_2d_rmse_std}
+\centering
+  \caption{The empirical error rate ($\%$) of the GPR confidence interval for simulated
+  $2$-d Gaussian process with train size $n=1500$.}
+  \label{tab:gaussian_2d_cov_gpr}
   \begin{tabular}{ll||rr|rr}
   \toprule
        & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
        & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
-  $n$ & $\theta$ &          &          &          &          \\
+  $\theta$ & $\alpha(\%)$ &          &          &          &          \\
   \midrule
-  $150$  & $10^2$ &    \textbf{0.404} &    0.465 &    1.874 &    \textbf{0.503} \\
-       & $\hat{\theta}_\text{ML}$ &    0.404 &    0.469 &    0.707 &    0.499 \\\cline{2-6}
-       & $10^1$ &    1.606 &    0.795 &    2.010 &    0.774 \\
-       & $10^3$ &    0.783 &    0.795 &    0.799 &    0.798 \\%\cline{2-6}
+  $10^2$ & $1$ &     0.9 &     0.1 &     4.1 &     0.7 \\
+       & $5$ &     4.5 &     0.5 &    12.0 &     4.4 \\
+       & $10$ &     9.2 &     1.0 &    19.2 &     9.3 \\
+       & $25$ &    23.8 &     3.3 &    36.1 &    24.5 \\\cline{2-6}
+  $\hat{\theta}_\text{ML}$ & $1$ &     0.8 &     0.1 &     2.3 &     0.8 \\
+       & $5$ &     4.4 &     0.5 &     4.9 &     4.5 \\
+       & $10$ &     9.0 &     0.9 &     8.0 &     9.4 \\
+       & $25$ &    23.6 &     2.3 &    18.9 &    24.7 \\
   \midrule
-  $1500$ & $10^2$ &    \textbf{0.004} &    0.081 &    0.677 &    \textbf{0.291} \\
-       & $\hat{\theta}_\text{ML}$ &    0.005 &    0.056 &    0.706 &    0.291 \\\cline{2-6}
-       & $10^1$ &    0.342 &    0.640 &    0.373 &    0.606 \\
-       & $10^3$ &    0.144 &    0.188 &    2.239 &    0.377 \\%\cline{2-6}
-  \bottomrule
-  \end{tabular}
-\end{table}
-\begin{table}
-\centering
-  \caption{The empirical error rate ($\%$) of the GPR confidence interval for simulated
-  $2$-d Gaussian process.}
-  \label{tab:gaussian_2d_cov_gpr}
-  \begin{tabular}{lll||rr|rr}
-  \toprule
-       &      & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{3-3}
-       &      & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{3-3}
-  $n$ & $\theta$ & $\alpha(\%)$ &          &          &          &          \\
-  \midrule
-  $150$  & $10^2$ & $1$ &     1.3 &     0.7 &    14.6 &     0.8 \\
-       &      & $5$ &     6.7 &     3.2 &    20.1 &     4.2 \\
-       &      & $10$ &    12.8 &     6.1 &    24.3 &     8.9 \\
-       &      & $25$ &    28.9 &    15.9 &    33.5 &    23.3 \\\cline{2-7}
-       & $\hat{\theta}_\text{ML}$ & $1$ &     0.8 &     0.7 &     3.2 &     0.7 \\
-       &      & $5$ &     4.8 &     3.1 &     6.5 &     4.0 \\
-       &      & $10$ &    10.0 &     6.3 &    10.2 &     8.6 \\
-       &      & $25$ &    25.1 &    16.5 &    22.2 &    23.2 \\
-  \midrule
-  $1500$ & $10^2$ & $1$ &     0.9 &     0.1 &     4.1 &     0.7 \\
-       &      & $5$ &     4.5 &     0.5 &    12.0 &     4.4 \\
-       &      & $10$ &     9.2 &     1.0 &    19.2 &     9.3 \\
-       &      & $25$ &    23.8 &     3.3 &    36.1 &    24.5 \\\cline{2-7}
-       & $\hat{\theta}_\text{ML}$ & $1$ &     0.8 &     0.1 &     2.3 &     0.8 \\
-       &      & $5$ &     4.4 &     0.5 &     4.9 &     4.5 \\
-       &      & $10$ &     9.0 &     0.9 &     8.0 &     9.4 \\
-       &      & $25$ &    23.6 &     2.3 &    18.9 &    24.7 \\
-  \bottomrule
-  \end{tabular}
-\end{table}
-\begin{table}
-  \centering
-  \caption{The empirical error rate ($\%$) of the GPR confidence interval for simulated
-  $2$-d Gaussian process for misspecified $\theta$.}
-  \label{tab:gaussian_2d_cov_gpr_neq}
-  \begin{tabular}{lll||rr|rr}
-  \toprule
-       &      & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{3-3}
-       &      & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{3-3}
-  $n$ & $\theta$ & $\alpha(\%)$ &          &          &          &          \\
-  \midrule
-  $150$  & $10^1$ & $1$ &      7.2 &      1.9 &      6.6 &      1.7 \\
-       &      & $5$ &     15.1 &      6.2 &     15.6 &      6.2 \\
-       &      & $10$ &     21.6 &     10.7 &     23.1 &     11.6 \\
-       &      & $25$ &     36.7 &     24.3 &     39.8 &     26.2 \\\cline{2-7}
-       & $10^3$ & $1$ &      1.4 &      1.4 &      1.5 &      0.7 \\
-       &      & $5$ &      5.4 &      5.3 &      4.5 &      3.7 \\
-       &      & $10$ &      8.9 &      8.8 &      8.1 &      7.4 \\
-       &      & $25$ &     18.6 &     18.6 &     20.8 &     20.6 \\
-  \midrule
-  $1500$ & $10^1$ & $1$ &      1.6 &      0.6 &      1.0 &      0.6 \\
-       &      & $5$ &      5.3 &      4.2 &      5.2 &      3.7 \\
-       &      & $10$ &      9.6 &      8.6 &     10.4 &      8.2 \\
-       &      & $25$ &     22.5 &     23.4 &     26.3 &     22.6 \\\cline{2-7}
-       & $10^3$ & $1$ &      0.4 &      0.4 &      9.1 &      1.1 \\
-       &      & $5$ &      1.2 &      1.2 &     13.1 &      4.9 \\
-       &      & $10$ &      2.0 &      2.0 &     16.1 &      9.6 \\
-       &      & $25$ &      4.7 &      4.5 &     24.0 &     24.0 \\
+  $10^1$ & $1$ &      1.6 &      0.6 &      1.0 &      0.6 \\
+       & $5$ &      5.3 &      4.2 &      5.2 &      3.7 \\
+       & $10$ &      9.6 &      8.6 &     10.4 &      8.2 \\
+       & $25$ &     22.5 &     23.4 &     26.3 &     22.6 \\\cline{2-6}
+  $10^3$ & $1$ &      0.4 &      0.4 &      9.1 &      1.1 \\
+       & $5$ &      1.2 &      1.2 &     13.1 &      4.9 \\
+       & $10$ &      2.0 &      2.0 &     16.1 &      9.6 \\
+       & $25$ &      4.7 &      4.5 &     24.0 &     24.0 \\
   \bottomrule
   \end{tabular}
 \end{table}
 
-In contrast to the GPR confidence intervals, the conformal region show remarkable
-insensitivity to both the goodness of fit and the parameter misspecification
-as demonstrated in table.~\ref{tab:gaussian_2d_cov_conf}, where we show the maximal
-absolute deviation of the interval error rate from the stated rate $\alpha$
-across all studied significance levels (eq.~\ref{eq:mad_alpha}).
+In contrast to the GPR confidence intervals, the conformal regions are insensitive
+to misspecification as demonstrated in table.~\ref{tab:gaussian_2d_cov_conf}, where
+we show the maximal absolute deviation of the interval error rate from the specified
+rate $\alpha$ across all studied significance levels (eq.~\ref{eq:mad_alpha}).
 \begin{equation} \label{eq:mad_alpha}
   \mathtt{MAD}(\Gamma, A; \Theta)
   = \max_{\alpha\in A}\Bigl\lvert
@@ -2258,426 +945,153 @@ across all studied significance levels (eq.~\ref{eq:mad_alpha}).
   \Bigr\rvert
     \,,
 \end{equation}
-where $\Theta$ is the vector of hyper-parameters of the experiment (excluding $\gamma$),
-$A = \{1\%, 5\%, 10\%, 25\%\}$, $(X^*_j, y^*_j)_{j=1}^{|X^*|}$ -- the test sample, and
-$\Gamma$ is the conformal confidence region.
-
-Conclusions regarding the conformal procedure in the $2$-d Gaussian setting are
-similar to the respective $1$-d setting. In the case of low observation noise (interpolation
-case) the intervals have more coverage for the same reasons: the procedure itself
-allows for some uncertainty due to flexibility of the KRR with the Gaussian kernel.
-
+where $\Theta$ is the vector of hyper-parameters of the experiment revealed to the
+conformal procedure, $A = \{1\%, 5\%, 10\%, 25\%\}$, $(X^*_j, y^*_j)_{j=1}^{|X^*|}$
+is the test sample.
 \begin{table}
   \centering
   \caption{The maximal absolute deviation $\mathtt{MAD}(\Gamma, A; \Theta)$ ($\%$)
   of the empirical error rate from the theoretical significance level of conformal
-  confidence regions for simulated $2$-d Gaussian process.}
+  confidence regions for simulated $2$-d Gaussian process for $n=1500$.}
   \label{tab:gaussian_2d_cov_conf}
-  \begin{tabular}{ll||rrrr|rrrr}
+  \begin{tabular}{ll||rrrr}
   \toprule
-       & $n$ &    $150$  &          &          &          &     $1500$ &          &          &          \\\cline{2-2}
-       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
-       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
-  type & $\theta$ &          &          &          &          &          &          &          &          \\
+       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
+       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
+  type & $\theta$ &          &          &          &          \\
   \midrule
-  RRCM & $10^1$ &      1.5 &      0.7 &      1.6 &      1.1 &      0.3 &      0.2 &      0.8 &      0.4 \\
-       & $10^2$ &      1.3 &      1.0 &      1.9 &      0.5 &      1.7 &      1.3 &      1.1 &      0.7 \\
-       & $10^3$ &      1.4 &      0.5 &      1.5 &      0.9 &      1.1 &      2.6 &      1.2 &      0.5 \\
-       & $\hat{\theta}_\text{ML}$ &      0.8 &      0.9 &      0.6 &      1.5 &      1.7 &      2.2 &      0.1 &      0.5 \\
+  RRCM & $10^1$ &      0.3 &      0.2 &      0.8 &      0.4 \\
+       & $10^2$ &      1.7 &      1.3 &      1.1 &      0.7 \\
+       & $10^3$ &      1.1 &      2.6 &      1.2 &      0.5 \\
+       & $\hat{\theta}_\text{ML}$ &      1.7 &      2.2 &      0.1 &      0.5 \\
   \midrule
-  RRCM-loo & $10^1$ &      1.6 &      0.7 &      2.1 &      1.4 &      1.3 &      0.3 &      2.0 &      0.4 \\
-       & $10^2$ &      0.9 &      0.3 &      1.1 &      1.2 &      2.4 &      1.7 &      2.0 &      0.4 \\
-       & $10^3$ &      1.1 &      0.5 &      0.7 &      1.1 &      2.9 &      2.6 &      0.1 &      0.6 \\
-       & $\hat{\theta}_\text{ML}$ &      1.1 &      0.7 &      1.2 &      0.5 &      2.6 &      2.6 &      0.8 &      0.6 \\
+  RRCM-loo & $10^1$ &      1.3 &      0.3 &      2.0 &      0.4 \\
+       & $10^2$ &      2.4 &      1.7 &      2.0 &      0.4 \\
+       & $10^3$ &      2.9 &      2.6 &      0.1 &      0.6 \\
+       & $\hat{\theta}_\text{ML}$ &      2.6 &      2.6 &      0.8 &      0.6 \\
   \midrule
-  CRR & $10^1$ &      2.4 &      1.2 &      2.3 &      1.0 &      0.3 &      0.1 &      0.8 &      0.3 \\
-       & $10^2$ &      1.9 &      1.4 &      2.5 &      1.1 &      1.6 &      1.2 &      1.2 &      0.8 \\
-       & $10^3$ &      1.0 &      1.2 &      2.0 &      2.1 &      0.8 &      2.2 &      1.3 &      0.5 \\
-       & $\hat{\theta}_\text{ML}$ &      1.3 &      1.0 &      1.3 &      1.9 &      1.8 &      2.1 &      0.1 &      0.4 \\
+  CRR & $10^1$ &      0.3 &      0.1 &      0.8 &      0.3 \\
+       & $10^2$ &      1.6 &      1.2 &      1.2 &      0.8 \\
+       & $10^3$ &      0.8 &      2.2 &      1.3 &      0.5 \\
+       & $\hat{\theta}_\text{ML}$ &      1.8 &      2.1 &      0.1 &      0.4 \\
   \midrule
-  CRR-loo & $10^1$ &      1.0 &      1.0 &      1.4 &      1.0 &      1.2 &      0.3 &      2.0 &      0.2 \\
-       & $10^2$ &      1.0 &      1.2 &      1.0 &      1.0 &      2.4 &      1.7 &      2.1 &      0.5 \\
-       & $10^3$ &      1.1 &      1.0 &      1.0 &      1.6 &      2.6 &      2.4 &      0.3 &      0.5 \\
-       & $\hat{\theta}_\text{ML}$ &      1.0 &      1.0 &      1.7 &      1.4 &      2.6 &      2.4 &      0.8 &      0.6 \\
+  CRR-loo & $10^1$ &      1.2 &      0.3 &      2.0 &      0.2 \\
+       & $10^2$ &      2.4 &      1.7 &      2.1 &      0.5 \\
+       & $10^3$ &      2.6 &      2.4 &      0.3 &      0.5 \\
+       & $\hat{\theta}_\text{ML}$ &      2.6 &      2.4 &      0.8 &      0.6 \\
   \bottomrule
   \end{tabular}
 \end{table}
 
-We proceed to the non-Gaussian case, with sample paths of the test functions with
-domain $\Xcal=[-1,1]^2$ and plotted fig.~\ref{fig:nongauss_2d_profile} (p.~\pageref{fig:nongauss_2d_profile}).
-Table~\ref{tab:nongaussian_2d_gpr_fit} shows the goodness-of-fit on the test sample
-of the KRR for various hyper-parameters. Except for obvious overfitting in the case
-of $\theta=10^3$ for $n=150$ and occasionally for low regularization $\lambda=10^{-6}$,
-the overall fit is adequate. The input of the test sample in question is $X^*\subseteq \Xcal$
-constructed as
-\begin{equation*}
-  X^* = \bigl\{(\frac{2}{N} i, \frac{2}{N} j)\,:\,i,j = -\frac{N}{2}, \ldots, \frac{N}{2}\bigr\} \,,
-\end{equation*}
-for $N=50$.
-\begin{table}
-  \centering
-  \caption{``RMSE-std'' ratio averaged across $L=25$ replications of the train sample choice.}
-  \label{tab:nongaussian_2d_gpr_fit}
-  \begin{tabular}{ll||rrrr|rrrr}
-  \toprule
-       & $f(\cdot)$ &       ``f2'' &          &          &          &       ``f5'' &          &          &          \\\cline{2-2}
-       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
-       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
-  $n$ & $\theta$ &          &          &          &          &          &          &          &          \\
-  \midrule
-  $150$  & $10^1$ &     0.23 &     0.18 &     2.81 &     0.34 &     4.09 &     0.47 &     3.47 &     0.50 \\
-       & $10^2$ &     0.55 &     0.57 &     0.68 &     0.62 &     0.75 &     0.76 &     0.80 &     0.76 \\
-       & $10^3$ &     1.00 &     1.01 &     1.00 &     1.01 &     1.18 &     1.19 &     1.18 &     1.19 \\
-       & $\hat{\theta}_\text{ML}$ &     0.14 &     0.20 &     0.66 &     0.38 &     0.65 &     0.48 &     0.73 &     0.50 \\
-  \midrule
-  $1500$ & $10^1$ &     0.02 &     0.07 &     0.31 &     0.26 &     0.31 &     0.34 &     0.36 &     0.37 \\
-       & $10^2$ &     0.02 &     0.05 &     3.11 &     0.29 &     1.67 &     0.27 &     2.54 &     0.31 \\
-       & $10^3$ &     0.53 &     0.56 &     0.71 &     0.60 &     0.66 &     0.70 &     0.72 &     0.70 \\
-       & $\hat{\theta}_\text{ML}$ &     0.01 &     0.03 &     0.72 &     0.26 &     0.46 &     0.27 &     0.67 &     0.31 \\
-  \bottomrule
-  \end{tabular}
-\end{table}
-
-Tables~\ref{tab:nongaussian_f2_2d_cov_gpr} and~\ref{tab:nongaussian_f5_2d_cov_gpr}
-show the empirical error rate of the GPR Bayesian confidence interval on a fixed
-test sample. For large train size $n$ the ML estimate of the kernel precision parameter
-$\theta$ yields conservatively valid GPR prediction confidence regions for both
-``f2'' and ``f5'' test functions. Note that for ``f2'' test function with high noise
-$\gamma=10^{-1}$ the empirical error rate of GPR confidence intervals for the ML
-estimate of $\theta$ becomes closer to the requires significance level. This is
-due to the smoothness of the used function. In contrast, the ``f5'' function is
-discontinuous, and thus cannot be approximated well (as seen in tab.~\ref{tab:nongaussian_2d_gpr_fit}).
-Therefore, the GPR confidence intervals are more conservative for large $n$.
-\begin{table}
-  \centering
-  \caption{The empirical error rate ($\%$) of the GPR confidence interval for the
-  ``f2'' test function.}
-  \label{tab:nongaussian_f2_2d_cov_gpr}
-  \begin{tabular}{ll||rrrr|rrrr}
-  \toprule
-       & $n$ & $150$ &          &           &          & $1500$ &          &           &          \\\cline{2-2}
-       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
-       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
-  $\theta$ & $\alpha(\%)$ &          &          &          &          &          &          &          &          \\
-  \midrule
-   $10^1$ & $1\%$ &     12.2 &      1.9 &     20.8 &      1.6 &      2.3 &      1.9 &      2.2 &      1.1 \\
-        & $5\%$ &     16.9 &      3.0 &     29.7 &      4.8 &      3.2 &      3.0 &      7.9 &      4.9 \\
-        & $10\%$ &     20.6 &      3.8 &     35.9 &      8.9 &      4.0 &      3.7 &     13.8 &      9.7 \\
-        & $25\%$ &     29.6 &      5.5 &     48.5 &     22.4 &      5.8 &      5.6 &     29.9 &     24.3 \\
-  \midrule
-   $10^2$ & $1\%$ &      0.3 &      0.2 &      2.8 &      0.2 &      0.3 &      0.0 &     19.1 &      1.3 \\
-        & $5\%$ &      2.3 &      2.2 &      5.0 &      2.2 &      0.6 &      0.1 &     28.6 &      5.9 \\
-        & $10\%$ &      4.6 &      4.8 &      7.9 &      5.2 &      0.9 &      0.2 &     35.0 &     11.1 \\
-        & $25\%$ &     14.1 &     13.7 &     17.6 &     16.7 &      2.6 &      1.2 &     48.3 &     26.5 \\
-  \midrule
-   $10^3$ & $1\%$ &      0.0 &      0.0 &      0.2 &      0.1 &      0.1 &      0.1 &      2.4 &      0.1 \\
-        & $5\%$ &      4.1 &      4.4 &      4.1 &      3.8 &      1.9 &      2.1 &      4.0 &      1.9 \\
-        & $10\%$ &     10.3 &     10.7 &     10.1 &      9.8 &      4.1 &      4.5 &      6.0 &      5.0 \\
-        & $25\%$ &     26.1 &     26.5 &     25.9 &     25.5 &     12.9 &     13.4 &     13.9 &     16.4 \\
-  \midrule
-   $\hat{\theta}_\text{ML}$ & $1\%$ &      5.1 &      1.9 &      4.1 &      2.3 &      3.4 &      0.6 &      2.0 &      1.1 \\
-        & $5\%$ &      7.1 &      3.0 &      7.1 &      5.3 &      4.4 &      1.1 &      3.9 &      5.1 \\
-        & $10\%$ &      8.7 &      3.9 &     10.5 &      9.1 &      5.2 &      1.4 &      6.9 &     10.0 \\
-        & $25\%$ &     13.1 &      6.2 &     21.6 &     21.4 &      7.1 &      2.4 &     18.1 &     24.9 \\
-  \bottomrule
-  \end{tabular}
-\end{table}
-\begin{table}
-  \centering
-  \caption{The empirical error rate ($\%$) of the GPR confidence interval for the
-  ``f5'' test function.}
-  \label{tab:nongaussian_f5_2d_cov_gpr}
-  \begin{tabular}{ll||rrrr|rrrr}
-  \toprule
-       & $n$ & $150$ &          &        &          & $1500$ &          &        &          \\\cline{2-2}
-       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
-       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
-  $\theta$ & $\alpha(\%)$ &          &          &          &          &          &          &          &          \\
-  \midrule
-  $10^1$ & $1\%$ &     19.2 &      4.2 &     23.8 &      4.1 &      4.5 &      4.1 &      3.8 &      3.7 \\
-       & $5\%$ &     25.7 &      7.2 &     32.6 &      7.5 &      6.9 &      6.9 &      6.3 &      6.5 \\
-       & $10\%$ &     30.4 &      9.7 &     38.8 &     10.1 &      8.7 &      9.2 &      8.4 &      8.7 \\
-       & $25\%$ &     40.9 &     15.4 &     51.4 &     17.3 &     12.9 &     13.9 &     15.4 &     14.4 \\
-  \midrule
-  $10^2$ & $1\%$ &      1.6 &      0.8 &      2.4 &      0.8 &     10.2 &      3.2 &     15.7 &      2.7 \\
-       & $5\%$ &      3.9 &      2.9 &      5.1 &      2.9 &     13.8 &      4.7 &     23.9 &      4.3 \\
-       & $10\%$ &      6.4 &      5.9 &      7.9 &      5.5 &     16.4 &      5.9 &     30.0 &      5.9 \\
-       & $25\%$ &     15.4 &     15.8 &     17.8 &     15.7 &     22.2 &      8.7 &     42.7 &     12.3 \\
-  \midrule
-  $10^3$ & $1\%$ &      0.0 &      0.0 &      0.1 &      0.0 &      0.6 &      0.4 &      1.6 &      0.4 \\
-       & $5\%$ &      2.2 &      2.0 &      2.3 &      2.6 &      2.0 &      2.3 &      3.3 &      2.0 \\
-       & $10\%$ &      7.7 &      7.4 &      7.6 &      8.2 &      4.4 &      4.8 &      5.7 &      4.6 \\
-       & $25\%$ &     26.3 &     25.7 &     26.3 &     27.2 &     13.3 &     13.9 &     14.9 &     14.0 \\
-  \midrule
-  $\hat{\theta}_\text{ML}$ & $1\%$ &      5.1 &      4.5 &      5.0 &      3.8 &      3.2 &      3.7 &      2.5 &      3.3 \\
-       & $5\%$ &      8.0 &      7.7 &      8.5 &      7.2 &      4.6 &      5.7 &      4.4 &      5.4 \\
-       & $10\%$ &     10.7 &     10.3 &     12.0 &     10.0 &      5.9 &      7.1 &      6.6 &      7.0 \\
-       & $25\%$ &     18.4 &     16.6 &     22.6 &     17.0 &      9.7 &     10.2 &     15.3 &     12.6 \\
-  \bottomrule
-  \end{tabular}
-\end{table}
-
-The performance of the conformal confidence predictions are summarized in tables~\ref{tab:nongaussian_f2_2d_cov_conf}
-and~\ref{tab:nongaussian_f5_2d_cov_conf} using the MAD metric introduced earlier.
-Overall the error rates do not sway too far from the stated levels, and the conformal
-procedure yields intervals less sensitive to the hyper-parameters related to the KRR,
-which is expected, since the conservative validity of the conformal prediction should
-not be affected by the internals of the used non-conformity measure.
+Typical profile of the test function used in non-Gaussian experiment is plotted
+in fig.~\ref{fig:2d_profile} (p.~\pageref{fig:2d_profile}). The performance of the
+conformal regions in the non-Gaussian experiments are summarized in tab.~\ref{tab:nongaussian_f2_2d_cov_conf}.
+Overall, the error rates do not stray too far from the stated levels, and conformal
+regions are weakly sensitive to the KRR hyper-parameters. In contrast, tab.~\ref{tab:nongaussian_f2_2d_cov_gpr}
+shows that the empirical error rate of Bayesian confidence intervals depends on the
+values of the precision parameter. The MLE $\theta$ produces conservatively valid
+confidence intervals, and for $\gamma=10^{-1}$ the error rate becomes closer to
+the specified significance level.
 
 \begin{table}
   \centering
   \caption{The maximal absolute deviation $\mathtt{MAD}(\Gamma, A; \Theta)$ ($\%$)
   of the empirical error rate from the theoretical significance level of conformal
-  confidence regions for the ``f2'' test function.}
+  confidence regions for the ``f2'' test function ($n=1500$).}
   \label{tab:nongaussian_f2_2d_cov_conf}
-  \begin{tabular}{ll||rrrr|rrrr}
+  \begin{tabular}{ll||rrrr}
   \toprule
-       & $n$ &     $150$  &          &          &          &     $1500$ &          &          &          \\\cline{2-2}
-       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
-       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
-  type & $\theta$ &          &          &          &          &          &          &          &          \\
+       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
+       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
+  type & $\theta$ &          &          &          &          \\
   \midrule
-  CRR & $10^1$ &      1.9 &      1.3 &      2.0 &      1.6 &      1.0 &      1.3 &      1.2 &      0.2 \\
-       & $10^2$ &      1.1 &      1.0 &      1.9 &      2.9 &      0.7 &      2.7 &      1.4 &      0.6 \\
-       & $10^3$ &      1.4 &      1.2 &      1.1 &      1.0 &      0.3 &      1.1 &      1.0 &      0.1 \\
-       & $\hat{\theta}_\text{ML}$ &      2.4 &      1.0 &      3.4 &      1.0 &      1.4 &      2.2 &      0.6 &      0.5 \\
+  CRR & $10^1$ &      1.0 &      1.3 &      1.2 &      0.2 \\
+       & $10^2$ &      0.7 &      2.7 &      1.4 &      0.6 \\
+       & $10^3$ &      0.3 &      1.1 &      1.0 &      0.1 \\
+       & $\hat{\theta}_\text{ML}$ &      1.4 &      2.2 &      0.6 &      0.5 \\
   \midrule
-  CRR-loo & $10^1$ &      1.0 &      1.4 &      1.0 &      1.4 &      0.8 &      1.4 &      1.3 &      0.2 \\
-       & $10^2$ &      1.0 &      1.0 &      1.4 &      1.0 &      3.0 &      3.2 &      1.9 &      0.5 \\
-       & $10^3$ &      1.5 &      1.3 &      1.2 &      1.1 &      1.0 &      1.0 &      0.2 &      0.2 \\
-       & $\hat{\theta}_\text{ML}$ &      1.4 &      1.0 &      1.2 &      1.5 &      2.6 &      2.6 &      0.5 &      0.2 \\
+  CRR-loo & $10^1$ &      0.8 &      1.4 &      1.3 &      0.2 \\
+       & $10^2$ &      3.0 &      3.2 &      1.9 &      0.5 \\
+       & $10^3$ &      1.0 &      1.0 &      0.2 &      0.2 \\
+       & $\hat{\theta}_\text{ML}$ &      2.6 &      2.6 &      0.5 &      0.2 \\
   \midrule
-  RRCM & $10^1$ &      1.2 &      0.9 &      1.3 &      1.0 &      0.9 &      1.4 &      1.2 &      0.2 \\
-       & $10^2$ &      1.3 &      1.5 &      1.5 &      2.4 &      0.7 &      2.6 &      1.3 &      0.6 \\
-       & $10^3$ &      1.9 &      0.9 &      0.4 &      0.6 &      0.4 &      0.5 &      0.9 &      0.3 \\
-       & $\hat{\theta}_\text{ML}$ &      1.7 &      0.8 &      2.9 &      1.2 &      1.3 &      2.3 &      0.8 &      0.4 \\
+  RRCM & $10^1$ &      0.9 &      1.4 &      1.2 &      0.2 \\
+       & $10^2$ &      0.7 &      2.6 &      1.3 &      0.6 \\
+       & $10^3$ &      0.4 &      0.5 &      0.9 &      0.3 \\
+       & $\hat{\theta}_\text{ML}$ &      1.3 &      2.3 &      0.8 &      0.4 \\
   \midrule
-  RRCM-loo & $10^1$ &      1.5 &      0.5 &      0.4 &      1.0 &      0.8 &      1.6 &      1.2 &      0.3 \\
-       & $10^2$ &      0.8 &      0.5 &      0.7 &      0.5 &      3.0 &      3.2 &      2.0 &      0.6 \\
-       & $10^3$ &      1.9 &      0.8 &      0.7 &      0.9 &      0.9 &      0.6 &      0.2 &      0.2 \\
-       & $\hat{\theta}_\text{ML}$ &      0.6 &      1.4 &      1.0 &      2.1 &      2.6 &      2.6 &      0.7 &      0.1 \\
+  RRCM-loo & $10^1$ &      0.8 &      1.6 &      1.2 &      0.3 \\
+       & $10^2$ &      3.0 &      3.2 &      2.0 &      0.6 \\
+       & $10^3$ &      0.9 &      0.6 &      0.2 &      0.2 \\
+       & $\hat{\theta}_\text{ML}$ &      2.6 &      2.6 &      0.7 &      0.1 \\
   \bottomrule
   \end{tabular}
 \end{table}
 
 \begin{table}
   \centering
-  \caption{The maximal absolute deviation $\mathtt{MAD}(\Gamma, A; \Theta)$ ($\%$)
-  of the empirical error rate from the theoretical significance level of conformal
-  confidence regions for the ``f5'' test function.}
-  \label{tab:nongaussian_f5_2d_cov_conf}
-  \begin{tabular}{ll||rrrr|rrrr}
+  \caption{The empirical error rate ($\%$) of the GPR confidence interval for the
+  ``f2'' test function ($n=1500$).}
+  \label{tab:nongaussian_f2_2d_cov_gpr}
+  \begin{tabular}{ll||rrrr}
   \toprule
-       & $n$ &     $150$  &          &          &          &     $1500$ &          &          &          \\\cline{2-2}
-       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
-       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
-  type & $\theta$ &          &          &          &          &          &          &          &          \\
+       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
+       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
+  $\theta$ & $\alpha(\%)$ &          &          &          &          \\
   \midrule
-  CRR & $10^1$ &      2.3 &      2.5 &      1.0 &      1.6 &      1.2 &      0.6 &      1.3 &      0.8 \\
-       & $10^2$ &      1.0 &      1.0 &      1.0 &      1.0 &      1.1 &      1.3 &      1.2 &      0.4 \\
-       & $10^3$ &      1.0 &      1.1 &      1.3 &      1.1 &      0.2 &      0.8 &      0.6 &      0.3 \\
-       & $\hat{\theta}_\text{ML}$ &      2.4 &      1.0 &      1.1 &      1.4 &      0.3 &      0.3 &      1.0 &      0.8 \\
+   $10^1$ & $1\%$ &      2.3 &      1.9 &      2.2 &      1.1 \\
+        & $5\%$ &      3.2 &      3.0 &      7.9 &      4.9 \\
+        & $10\%$ &      4.0 &      3.7 &     13.8 &      9.7 \\
+        & $25\%$ &      5.8 &      5.6 &     29.9 &     24.3 \\
   \midrule
-  CRR-loo & $10^1$ &      2.2 &      1.4 &      1.0 &      1.0 &      0.1 &      0.5 &      0.6 &      0.5 \\
-       & $10^2$ &      1.0 &      1.0 &      1.0 &      1.2 &      0.3 &      1.8 &      1.7 &      1.2 \\
-       & $10^3$ &      1.0 &      1.2 &      1.4 &      1.0 &      0.4 &      0.8 &      0.3 &      0.5 \\
-       & $\hat{\theta}_\text{ML}$ &      1.0 &      1.0 &      1.0 &      1.0 &      1.0 &      0.9 &      0.1 &      0.3 \\
+   $10^2$ & $1\%$ &      0.3 &      0.0 &     19.1 &      1.3 \\
+        & $5\%$ &      0.6 &      0.1 &     28.6 &      5.9 \\
+        & $10\%$ &      0.9 &      0.2 &     35.0 &     11.1 \\
+        & $25\%$ &      2.6 &      1.2 &     48.3 &     26.5 \\
   \midrule
-  RRCM & $10^1$ &      1.8 &      1.7 &      0.3 &      1.2 &      1.2 &      0.6 &      1.2 &      0.7 \\
-       & $10^2$ &      0.8 &      0.6 &      1.4 &      0.6 &      1.0 &      1.6 &      1.1 &      0.3 \\
-       & $10^3$ &      0.5 &      1.1 &      0.3 &      0.3 &      0.2 &      1.0 &      0.5 &      0.5 \\
-       & $\hat{\theta}_\text{ML}$ &      1.6 &      0.5 &      0.5 &      0.8 &      0.4 &      0.5 &      0.9 &      0.8 \\
+   $10^3$ & $1\%$ &      0.1 &      0.1 &      2.4 &      0.1 \\
+        & $5\%$ &      1.9 &      2.1 &      4.0 &      1.9 \\
+        & $10\%$ &      4.1 &      4.5 &      6.0 &      5.0 \\
+        & $25\%$ &     12.9 &     13.4 &     13.9 &     16.4 \\
   \midrule
-  RRCM-loo & $10^1$ &      1.5 &      0.5 &      0.6 &      0.3 &      0.2 &      0.5 &      0.6 &      0.5 \\
-       & $10^2$ &      1.4 &      1.1 &      1.3 &      0.6 &      0.3 &      2.1 &      1.6 &      1.1 \\
-       & $10^3$ &      0.2 &      1.1 &      0.5 &      1.1 &      0.8 &      1.3 &      0.4 &      0.6 \\
-       & $\hat{\theta}_\text{ML}$ &      1.5 &      0.5 &      2.0 &      0.4 &      0.9 &      1.0 &      0.3 &      0.2 \\
+   $\hat{\theta}_\text{ML}$ & $1\%$ &      3.4 &      0.6 &      2.0 &      1.1 \\
+        & $5\%$ &      4.4 &      1.1 &      3.9 &      5.1 \\
+        & $10\%$ &      5.2 &      1.4 &      6.9 &     10.0 \\
+        & $25\%$ &      7.1 &      2.4 &     18.1 &     24.9 \\
   \bottomrule
   \end{tabular}
 \end{table}
-
-Based on the empirical evidence from the $2$-d experiments we arrive at similar
-conclusions: \begin{itemize}
-  \item the Gaussian Process Regression offers conservatively valid confidence regions
-  in the Gaussian case, provided the hyper-parameters are not severely misspecified;
-  \item in the non-Gaussian case experimental results regarding the validity of the
-  GPR confidence sets are less favourable;
-  \item there is empirical evidence in favour of conformal predictions based on
-  the kernel ridge regression with Gaussian kernel being asymptotically valid in
-  the offline setting;
-  \item numerical experiments support the  conjecture that conformal procedures
-  are insensitive to the choice of the core NCM: the hyper-parameters of the KRR
-  weakly affected the validity of the regions (as measure by MAD metric) in contrast
-  to the GPR confidence prediction.
-\end{itemize}
 
 % subsection results_2_d (end)
 
 % section numerical_study (end)
 
-\section{Conclusion and further work} % (fold)
-\label{sec:conclusion_and_further_work}
+\section{Conclusion} % (fold)
+\label{sec:conclusion}
 
-In conclusion we summarize the results obtained in section~\ref{sec:numerical_study},
-and outline further research on the applicability of the conformal procedures based
-on the kernel ridge regression in batch learning setting.
+Experiments in sec.~\ref{sec:numerical_study} provide evidence suggesting that
+conformal procedures are insensitive to the choice of the core NCM and are asymptotically
+equivalent in terms of coverage and efficiency, despite being applied in the off-line
+batch learning setting. Furthermore, the results indicate that both Bayesian and
+conformal confidence intervals possess the asymptotic validity guarantees, when
+the Gaussian assumptions hold, and the conformal procedure yields asymptotically
+efficient regions.
 
-In the non-Gaussian experiments we found empirical evidence suggesting that the GPR
-confidence regions are not consistently valid if the Gaussianity assumptions fail
-to hold, or if the KRR hyper-parameters are misspecified. Identical experiments on
-the conformal procedures demonstrated that indeed, there is empirical evidence in
-support of the conjectured conservative validity in the batch setting. At the same
-time, confidence intervals of the conformalized kernel ridge regression seem to
-perform not worse than the confidence regions of the Gaussian Process regression,
-when the Gaussianity assumptions hold.
+Further research shall focus on establishing theoretical foundations for the obtained
+experimental results for the KRR with Gaussian kernel, or isolating special cases
+when it holds, and studying the cases when it fails, and generalizing the efficiency
+result in \cite{burnaevV14}.
 
-Further work on the validity of conformal procedures in batch setting, with applications
-to anomaly detection, shall include: \begin{itemize}
-  \item establishing theoretical foundations for the proposed conjectures for the
-  kernel ridge regression with Gaussian kernel, or isolating special cases when it
-  holds, and studying the cases when it fails;
-  \item obtaining a generalization to the asymptotic efficiency result in \cite{burnaevV14},
-  in for a kernel ridge regression with general kernels;
-\end{itemize}
+% section conclusion (end)
 
-However, future research should not be limited to the items, listed above. We would
-like to outline two potentially interesting research topics: in sec.~\ref{sub:conformalized_kernel_embeddings}
-we state the possible use of conformal prediction in constructing more direct unsupervised
-anomaly detection method, and in sec.~\ref{sub:conformal_kernel_precision_selection}
-we propose a method for selection of kernel precision based on conformal confidence
-sets.
+\section*{Acknowledgements} % (fold)
+\label{sec:acknowledgements}
+\noindent This research was conducted in IITP RAS and supported solely by the
+Russian Science Foundation grant (project \textbf{14-50-00150}).
 
-\subsection{Conformalized kernel embeddings} % (fold)
-\label{sub:conformalized_kernel_embeddings}
+% section* acknowledgements (end)
 
-It might be fruitful to research conformal procedures the field of kernel embedding
-of probability distributions, \cite{smola2007}. Basically in a suitable RKHS many non-
-pathological distributions on metric spaces can be identified with a unique element
-of said RKHS. In particular, if $K$ is a kernel that induces a universal RKHS $\Hcal$
-of functions $\Xcal\mapsto\Real$, then for any probability distribution $P$ on $\Xcal$
-there is a unique $\mu_P\in \Hcal$ whenever $\ex_{x\sim P} \sqrt{K(x,x)}$ is finite.
-For instance, the Gaussian kernel in eq.~\ref{eq:gauss_kenrel} satisfies this property
-and its induced canonical RKHS is universal. Now, the boundedness of $K$ in expectation
-implies that $f\mapsto \ex_P f$ is a bounded linear functional in $\Hcal$, whence by
-Riesz representation theorem there exists a unique $\mu_P\in \Hcal$ with $\ex_P f
-= \langle \mu_P, f\rangle$ for all $f\in \Hcal$. In particular, for $f = k(x, \cdot)$
-the reproducing property of $K$ implies that
-\begin{equation*}
-  \ex_{y\sim P} K(x, y) = \langle \mu_P, K(x, \cdot) \rangle = \mu_P(x) \,,
-\end{equation*}
-which provides a closed formula for the embedding of $P$.
-
-In \cite{gretton2012}, a powerful two-sample distribution test was constructed, based
-on this elegant idea. Essentially, for a compact metric space $\Xcal$ the distributions
-$P$ and $Q$ coincide if and only if $\ex_P f = \ex_Q f$ for all continuous and bounded
-$f:\Xcal\mapsto \Real$. However, because the RKHS is universal it is enough to check
-the equality only in the class of functions from the Hilbert space $\Hcal$. This
-reduces the problem of testing to studying the norm between the embeddings $\mu_P$
-and $\mu_Q$ in $\Hcal$.
-
-The proposed test statistic, \cite{gretton2012}, the \textit{maximum mean discrepancy}
-(MDD), measures the RKHS norm of the deviation of the embeddings of the empirical
-distributions. This MDD measure can readily be used as a non-conformity measure
-for the following anomaly detection problem: given a sample $Z_{:n-1} = (z_i)_{i=1}^{n-1}$
-decide if a new example $z_n$ is anomalous or not by measuring how well it conforms
-to $Z$. If the full sample is denoted by $Z_{:n} = (z_i)_{i=1}^n$, then the proposed
-conformal procedure would be based on the following NCM:
-\begin{equation*}
-  A(Z_{-i:n}, z_i) = \| \mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}} \|_{\Hcal} \,,
-\end{equation*}
-where $\hat{P}_{-i:n}$ and $\hat{P}_{:n}$ are empirical distributions over $Z_{-i:n}$
-and $Z_{:n}$, respectively, with $Z_{:n-1}$ being the sample $Z_{:n}$ without the
-$i$-th observation. Note, that it would be necessary to consider only vector-matrix
-multiplications, since for any sub-sample $S$ of $Z_{:n}$ the empirical distribution
-embedding is given by
-\begin{equation*}
-  \mu_{\hat{P}_S}(\cdot) = (\one_m'\one_m)^{-1} \one_m' k_S(\cdot) \,,
-\end{equation*}
-where $m = |S|$, $k_S(\cdot) = (K(z_i, \cdot))_{i\in S} \in \Hcal^{m\times 1}$ is
-the sample evaluation vector of the kernel $K$, and $\one_m \in \Real^{m\times 1}$
-is the vector of ones. Since the empirical embeddings are elements of the data-driven
-pre-Hilbert space, their inner products can be computed from the sample Gram matrix
-of $K$. Indeed, using the ordinary formula for sequential update of the sample average
-we get
-\begin{align*}
-  % (n-1)\bigl(\mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}}\bigr)
-  %   % &= (n-1)^{-1}\sum_{j\neq i} K(z_j, \cdot) - n^{-1}\sum_j K(z_j, \cdot) \\
-  %   &= n^{-1} \sum_j K(z_j, \cdot) - K(z_i, \cdot) \,,
-  (n-1)^2 \bigl\|\mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}} \bigr\|^2_\Hcal
-    &= \bigl\| n^{-1} \sum_j K(z_j, \cdot) - K(z_i, \cdot) \bigr\|^2_\Hcal \\
-    % &= \bigl\| e_i' (I_n - \one(\one'\one)^{-1}\one') k_Z(\cdot) \bigr\|^2_\Hcal \\
-    &= e_i'K_{ZZ} e_i + \frac{1}{n^2} \one' K_{ZZ} \one - \frac{2}{n} \one' K_{ZZ} e_i \,,
-    % &= e_i'(I_n - \one(\one'\one)^{-1}\one')K_{ZZ}(I_n - \one(\one'\one)^{-1}\one') e_i \,,
-\end{align*}
-where $\one$ is the vector of $1$'s and $e_i$ is the unit vector both of appropriate
-dimensions. This is basically the distance of the $i$-th canonical feature map from
-the centre of dataset in $\Hcal$.
-
-Conformalization of this procedure would most likely proceed in the direction of
-using eq.~\ref{eq:conf_p_value} as a measure of the degree of abnormality of new
-examples. Furthermore, it seems that in low dimensional cases there might exist an
-efficient approximation procedure that could yield multivariate quantiles or even
-confidence sets based on inverting hypothesis test in the conformal prediction.
-
-% subsection conformalized_kernel_embeddings (end)
-
-\subsection{Conformal kernel precision selection} % (fold)
-\label{sub:conformal_kernel_precision_selection}
-
-Yet another research direction, which is intimately connected to both the conformalized
-ridge regression and kernel embeddings, is concerned with designing a non-parametric
-procedure, that could yield estimates of the kernel precision parameter based on
-conformal confidence intervals, for example, similar in spirit to the central idea
-of \cite{goldenshluger1997}. The authors consider the problem of restoring a continuous
-$f:[0,1] \mapsto\Real$ in eq.~\ref{eq:signal_model} from observations contaminated
-by an i.i.d sub-Gaussian noise, and propose a method to select a locally optimal
-kernel bandwidth (the reciprocal of the precision $\theta$) based on approximate
-minimization of the size of the confidence region for a true value of $f$ with fixed
-coverage rate. They propose to approximate the optimal bandwidth with the largest
-bandwidth, for which all confidence regions corresponding to lower bandwidths overlap.
-
-In particular they show that in their setting the confidence regions for $f(x_0)$
-have error rate at most $e^{- c t^2}$ for $c = \mathcal{O}(n)$, $n$ is the train
-sample size, and are of the form
-\begin{equation*}
-  \bigl| f(x_0) - \hat{f}_\delta(x_0) \bigr|
-    \leq \omega_f(x_0, \delta) + \frac{t}{\sqrt{\delta}} \,,
-\end{equation*}
-where $\omega_f(x_0, \delta) = \sup_{x\in[0,1]} |f(x)-f(x_0)|$ is the ``deterministic
-dynamic error'', $\frac{t}{\sqrt{\delta}}$ is an upper bound for the ``stochastic error'',
-and $\delta$ is the bandwidth of the kernel estimator $\hat{f}_\delta(\cdot)$. If
-$f$ were known, the optimal $\delta^*$ would have been given by
-\begin{equation*}
-  \delta^*
-    = \sup\bigl\{ \delta > 0 \, : \,
-        \omega_f(x_0, \delta) \leq \frac{t}{\sqrt{\delta}} \bigr\}\,,
-\end{equation*}
-but, since $f$ is unknown, authors propose the ``intersection'' estimate:
-\begin{equation*}
-  \delta^+
-    = \sup\{ \eta > 0 \, : \, \emptyset \neq 
-        \cap_{\delta\leq \eta} [\hat{f}_\delta(x_0) - 2 \frac{t}{\sqrt{\delta}},
-                                \hat{f}_\delta(x_0) + 2 \frac{t}{\sqrt{\delta}}] \} \,,
-\end{equation*}
-which they show makes the approximation error lie within acceptable bounds with high
-probability: at least $ 1 - n e^{-c(n) t^2}$.
-
-The main obstacle in their method is that the deterministic dynamic error depends
-on the unknown $f$, which is why direct minimization of the width of the confidence
-interval was not feasible. In contrast to their situation, conformal confidence
-intervals have a clear and known width and fixed coverage guarantees, which means
-that we can directly minimize the width to select the optimal bandwidth. Possible
-challenge in this research might be selecting and justifying the aggregation method,
-used to move from local bandwidth estimates to global ones.
-
-% subsection conformal_kernel_precision_selection (end)
-
-% section conclusion_and_further_work (end)
-
-% \bibliographystyle{amsplain}
-\clearpage
-\bibliographystyle{ugost2008ls}
+\bibliographystyle{IEEEtran}
 \bibliography{../references,references}
 
 \end{document}
-
