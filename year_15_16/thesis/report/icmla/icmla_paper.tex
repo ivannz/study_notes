@@ -106,12 +106,12 @@ uncertainty, which requires prior probabilistic, Bayesian assumptions (eq.~\ref{
 
 Consider Kernel Ridge Regression -- a model that combines ridge regression with the
 kernel trick. It learns a function $\hat{f}$ which, given training sample $X = (x_i)_{i=1}^n$,
-$X\in \Xcal^{n\times 1}$ and $y \in \Real^{n\times 1}$, solves
+$X\in \Xcal^{n\times 1}$, solves
 \begin{equation*}
-  \|y - f\|^2 + \lambda \|f\|^2 \to \min_{f \in \Hcal} \,,
+  \|y - f(X)\|^2 + \lambda \|f\|^2 \to \min_{f \in \Hcal} \,,
 \end{equation*}
-with $f \in \Real^{n\times 1}$ being a column-vector of $f$ evaluated at every input
-in $X$. Here $\Hcal$ is the canonical Reproducing Kernel Hilbert Space associated with
+with $f(X) = (f(x_i))_{i=1}^n \in \Real^{n\times 1}$, and $y=(y_i)_{i=1}^n \in \Real^{n\times 1}$.
+Here $\Hcal$ is the canonical Reproducing Kernel Hilbert Space associated with
 a Mercer-type kernel $\Kcal:\Xcal\times \Xcal\mapsto \Real$. The Representer theorem,
 \cite{scholkopf2002}, states that the solution $\hat{f}:\Xcal\mapsto\Real$ is of the
 form $f(x) = k_x' \beta$, for $k_x : x\mapsto \Phi(x)$ and $\Phi = (\phi(x_i))_{i=1}^n \in \Hcal^{n\times 1}$.
@@ -124,11 +124,7 @@ equivalent to this finite-dimensional convex minimization problem:
     \to \min_{\beta\in \Real^{n\times 1}} \,,
 \end{equation*}
 which yields the optimal weight vector $\hat{\beta}$ and prediction at $x^*\in \Xcal$
-given by
-\begin{equation} \label{eq:krr_approx}
-  \hat{\beta} = (\lambda I_n + K_{XX})^{-1} y \, \text{ and }\,
-  \hat{y}(x^*) = k_{x^*}'\hat{\beta} \,,
-\end{equation}
+given by $\hat{\beta} = (\lambda I_n + K_{XX})^{-1} y$ and $\hat{y}(x^*) = k_{x^*}'\hat{\beta}$,
 respectively.
 
 Bayesian Kernel Ridge Regression views the model eq.~\ref{eq:signal_model} as a sample
@@ -149,7 +145,9 @@ is given by
     \,,
 \end{equation}
 where $\Sigma_K(X^*) = K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}$, $Q_X = \bigl(K_{XX}\bigr)^{-1}$,
-and $K_{XX^*} = (\Kcal(x_i, x^*_j))\in \Real^{n\times l}$.
+and $K_{XX^*} = (\Kcal(x_i, x^*_j))\in \Real^{n\times l}$. Gaussian Process Regression,
+or Kriging, generalizes both linear and kernel regression and assumes linearity of the
+mean function with respect to $x$ and external factors $h$.
 
 Bayesian KRR assumes a prior on functions $f\sim GP(0, \sigma^2 \Kcal)$ and independent
 Gaussian white noise $\epsilon_x\sim \Ncal(0, \sigma^2 \lambda)$ in model~\ref{eq:signal_model},
@@ -187,9 +185,13 @@ maximization of the joint likelihood of the train data $(X, y_X)$:
     \,,
 \end{equation}
 where $R_X = \lambda I_n + K_{XX}$, and $K_{XX}$ depends on the hyper-parameters of
-$\Kcal$ (shape, precision et c.). Other approaches to estimating the covariance function's
-hyper-parameters are given in \cite{Burnaev2014}, \cite{Zaitsev2013}, \cite{Belyaev2016},
-\cite{Burnaev2016}, and \cite{Belyaev2015}.
+$\Kcal$ (shape, precision et c.).
+Other approaches to estimating the covariance function's hyper-parameters are reported
+in \cite{Burnaev2014}, properties of posterior parameter distribution in Bayesian KRR
+are studied in \cite{Zaitsev2013}, methods of estimating Gaussian Process Regression
+on large structured datasets are considered in \cite{Belyaev2015, Belyaev2016}, and
+the problem of estimating in non-stationary case with regularization is considered in 
+\cite{Burnaev2016}.
 
 % The distributional assumptions used to derive this posterior distribution are too
 % restrictive: the true relationship $f(x)$ is drawn from a Gaussian Process, and the
@@ -230,7 +232,7 @@ conformal predictor is a measurable map $A: \Zcal^*\times \Zcal \mapsto \Real$, 
 Non-Conformity Measure (NCM), which quantifies how much different $z_{n+1} \in \Zcal$
 is relative to a sample $Z_{:n} = (z_i)_{i=1}^n\in\Zcal$. A conformal predictor over
 $A$ is a procedure, which for every sample $Z_{:n}$, a test object $x_{n+1} \in \Xcal$,
-and a confidence level $\alpha \in (0,1)$, gives a confidence set $\Gamma_{Z_{:n}}^\alpha(x^*)$
+and a level $\alpha \in (0,1)$, gives a confidence set $\Gamma_{Z_{:n}}^\alpha(x^*)$
 for the target value $y_{n+1}$:
 \begin{equation} \label{eq:conf_pred_set}
   \Gamma_{Z_{:n}}^\alpha(x_{n+1})
@@ -239,7 +241,6 @@ for the target value $y_{n+1}$:
 where $\tilde{z}^y_{n+1} = (x_{n+1}, y)$ a synthetic test observation with target
 label $y$. The function $p:\Zcal^*\times (\Xcal\times \Ycal)\mapsto [0,1]$ measures
 the likelihood of $\tilde{z}$ based on its non-conformity with $Z_{:n}$, and is
-given by
 \begin{equation} \label{eq:conf_p_value}
   p_{Z_{:n}}(\tilde{z})
     = (n+1)^{-1} \bigl\lvert\{ i \,:\,
@@ -277,7 +278,7 @@ where $(x_n, y_n) = z_n$.
 Intuitively, the event $y_n \notin \Gamma^\alpha_{Z_{:(n-1)}}(x_n)$ is equivalent
 to $\eta_n = A(Z_{-n}, Z_n)$ being among the largest $\lfloor n\alpha\rfloor$ values
 of $\eta_i = A(Z_{-i}, Z_i)$, which is equal to $\frac{\lfloor n\alpha\rfloor}{n}$,
-due to independence of $Z_{:n}$ (for a rigorous proof see \cite{vovk2005}, chapter 8).
+due to independence of $Z_{:n}$ (for a rigorous proof see \cite{vovk2005}, ch.~8).
 
 The choice of \textbf{NCM} affects the size of the confidence sets and the computational
 burden of the conformal procedure. In the general case computing eq.~\ref{eq:conf_pred_set}
@@ -303,8 +304,8 @@ proposed in \cite{vovk2005}, chapter 2, and ``two-sided'' NCM, proposed in \cite
 In each NCM it is possible to use any kind of prediction error, but we focus on two:
 the in-sample and \textbf{l}eave-\textbf{o}ne-\textbf{o}ut (or deleted) residuals.
 Consider a sample $(X, y) = (x_i, y_{x_i})_{i=1}^n$, and for any $i=1\ldots, n$ put
-$X = (X_{-i}, x_i)$, and $y = (y_{-i}, y_i)$. In-sample residuals, $\hat{r}_{\text{in}}(X, y)$
-are defined for each $i=1,\ldots, n$ as
+$X = (X_{-i}, x_i)$, and $y = (y_{-i}, y_i)$. In-sample residuals, $\hat{r}_{\text{in}}(X, y)$,
+are defined for each $i$ as
 \begin{equation} \label{eq:ins_resid}
   e_i' \hat{r}_{\text{in}}(X, y) = y_i - \hat{y}_{|(X, y)}(x_i) \,,
 \end{equation}
@@ -375,14 +376,14 @@ $n$-th observation:
     = \lambda c_i + \lambda b_i z
     \,,
 \end{equation}
-with $c_i = e_i' C_{-n}\bigl((X, y), x_n\bigr)$ and
-\begin{align*}
-  C_{-n}\bigl((X, y), x_n\bigr)
-    &= \begin{pmatrix} Q_{-n} y_{-n} \\ 0 \end{pmatrix} \\
-    &- B_{-n}(x_n) K_{-n}(x_n)' Q_{-n} y_{-n}
+with $c_i = e_i' C_{-n}\bigl((X, y), x_n\bigr)$ and $C_{-n}\bigl((X, y), x_n\bigr)$
+given by
+\begin{equation*}
+  \begin{pmatrix} Q_{-n} y_{-n} \\ 0 \end{pmatrix}
+    - B_{-n}(x_n) K_{-n}(x_n)' Q_{-n} y_{-n}
     \,,
-\end{align*}
-where the vector $B_{-n}(x_n)\in\Real^{n\times 1}$ is given by
+\end{equation*}
+where $0$ is scalar and the vector $B_{-n}(x_n)\in\Real^{n\times 1}$ is given by
 \begin{equation} \label{eq:krr_in_resid_B}
   B_{-n}(x_n)
     = \begin{pmatrix} - Q_{-n} K_{-n}(x_n) \\ 1 \end{pmatrix} m_n^{-1}
@@ -515,7 +516,7 @@ the efficiency (the width) of the resulting confidence region. And our experimen
 to a certain extent, assess their effect.
 
 We consider the isotropic Gaussian kernel for both the Conformal Kernel ridge regression
-and the Gaussian Process Regression:
+and the Gaussian Process Regression.:
 \begin{equation} \label{eq:gauss_kenrel}
   K(x,x')
   = \mathop{\text{exp}}\bigl\{-\theta \|x - x'\|^2\bigr\}
