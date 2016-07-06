@@ -4,7 +4,7 @@
 
 %% >
 % \usepackage{extsizes}
-\linespread{1.3}
+% \linespread{1.3}
 \usepackage[T2A]{fontenc}
 %% <
 
@@ -84,27 +84,25 @@ online filtering and monitoring of potentially interesting events, or power grid
 load balancing, it is necessary not only to make optimal predictions with respect
 to some loss, but also to be able to quantify the degree of confidence in the obtained
 forecasts. At the same time it is necessary to take into consideration exogenous
-variables, that in certain ways affect the object of study.
+variables, that in certain ways affect the object of study. 
 
-Predictive modelling techniques are concerned with studying pattern of dependence
-between the target variable $y$ and the input variable $x$ based on a finite train
-sample of possibly noisy observations $(X, y)$ from $\Omega\times \Ycal \subseteq
-\Xcal\times\Real$. These methods postulate that there exits a stable unobserved
-relationship $y_x = \ex(y|X=x) = f(x)$: the observations of $y$ at any given
-$x\in \Omega$ are corrupted by additive noise:
+Practical importance and difficulty of anomaly detection in general spurred a great
+deal of research, which resulted in a large volume of heterogeneous approaches and
+methods to its solution (\cite{Alestra2014, Burnaev2015, Artemov2015}). There are many
+approaches: probabilistic, which rely on approximating the generative distribution
+of the observed data (\cite{aggarwal2008, scott2008}), metric-based anomaly detection,
+that measure similarity between normal and abnormal observations (\cite{hautamaki2004,
+breunig2000, kriegel2009}), predictive modelling approaches, which use the forecast
+error to measure abnormality (\cite{augusteijn2002, hawkins2002, hoffmann2007, scholkopf1998}).
+
+Predictive modelling is concerned with recovering an unobserved relation $x\mapsto f(x)$
+from a sample $(x_i, y_i)_{i=1}^n$ of noisy observations
 \begin{equation} \label{eq:signal_model}
-  y_x = f(x) + \xi_x \,,
+  y_i = f(x_i) + \epsilon_i \,,
 \end{equation}
-with $\ex \xi_x = 0$ for all $x\in \Omega$. Regression methods allow one to construct
-an estimate $\hat{f}$ of the true relation $f$, which can be used to produce point
-predictions at any $x$.
-
-These methods, however, do not readily provide the user with any sort of prediction
-confidence measure, and in order to acquire such measure additional probabilistic
-assumptions regarding the observation model (eq.~\ref{eq:signal_model}) are required.
-With their help, it is usually quite straightforward to get a posterior probability
-measure for unobserved data given the training data using standard Bayesian derivation
-methods.
+where $\epsilon_i$ is iid with mean zero. One way of assigning a confidence measure
+to a prediction $\hat{f}$ is by quantifying estimate's, model's and observational
+uncertainty, which requires prior probabilistic, Bayesian assumptions (eq.~\ref{eq:signal_model}).
 
 Consider Kernel Ridge Regression -- a model that combines ridge regression with the
 kernel trick. It learns a function $\hat{f}$ which, given training sample $X = (x_i)_{i=1}^n$,
@@ -133,20 +131,14 @@ given by
 \end{equation}
 respectively.
 
-In this basic form KRR does not give any kind of estimate of confidence in the prediction
-it makes, however if it is viewed from the Gaussian process perspective, \cite{rasmussen2006},
-which is essentially a Bayesian version of KRR, then predictive confidence intervals
-are readily available.
-
-A Gaussian Process $(y_x)_{x\in \Xcal}$, with mean $m : \Xcal \mapsto \Real$ and
-covariance kernel  $\Kcal : \Xcal \times \Xcal \mapsto \Real$ is a random process
-such that for any $n\geq1$ and any $X = (x_i)_{i=1}^n \in \Xcal$ the $n\times 1$
-vector $y_X = (y(x_i))_{i=1}^n$ is Gaussian:
-\begin{equation*}
-  y_X \sim \Ncal_n(m_X, K_{XX}) \,,
-\end{equation*}
+Bayesian Kernel Ridge Regression views the model eq.~\ref{eq:signal_model} as a sample
+path of the underlying Gaussian Process, \cite{rasmussen2006}, which makes predictive
+confidence intervals readily available. A Gaussian Process $(y_x)_{x\in \Xcal}$, with
+mean $m : \Xcal \mapsto \Real$ and covariance kernel  $\Kcal : \Xcal \times \Xcal \mapsto \Real$
+is a random process such that for any $n\geq1$ and any $X = (x_i)_{i=1}^n \in \Xcal$
+the $n\times 1$ vector $y_X = (y(x_i))_{i=1}^n$ is Gaussian, $y_X \sim \Ncal_n(m_X, K_{XX})$,
 where $m_X = (m(x_i))_{i=1}^n$. The conditional distribution of targets in a test sample
-$y_{X^*} = (y_{x^*_j})_{j=1}^l$, with respect to the train sample $y_X = (y_{x_i})_{i=1}^n$
+$y_{X^*} = (y_{x^*_j})_{j=1}^l$ with respect to the train sample $y_X = (y_{x_i})_{i=1}^n$
 is given by
 \begin{equation} \label{eq:cond_distr}
   y_{X^*}\vert_{y_X}
@@ -159,8 +151,8 @@ is given by
 where $\Sigma_K(X^*) = K_{X^*X^*} - K_{X^*X} Q_X K_{XX^*}$, $Q_X = \bigl(K_{XX}\bigr)^{-1}$,
 and $K_{XX^*} = (\Kcal(x_i, x^*_j))\in \Real^{n\times l}$.
 
-Bayesian version of KRR posits a prior on the underlying functions $f\sim GP(0, \sigma^2 \Kcal)$
-and independent Gaussian white noise $\xi_x\sim \Ncal(0, \sigma^2 \lambda)$ in model~\ref{eq:signal_model},
+Bayesian KRR assumes a prior on functions $f\sim GP(0, \sigma^2 \Kcal)$ and independent
+Gaussian white noise $\epsilon_x\sim \Ncal(0, \sigma^2 \lambda)$ in model~\ref{eq:signal_model},
 for $\sigma^2 > 0$. In this setting, eq.~\ref{eq:cond_distr} implies that the distribution
 of a yet unobserved target $y_{x^*}$ at $x^*\in \Xcal$, conditional on the train data $(X, y_X)$,
 is
@@ -186,16 +178,18 @@ confidence interval is thus given by
 where $z_\gamma$ is the $\gamma$ quantile of $\Ncal(0, 1)$. Additionally, this version
 naturally permits estimation of parameters of the underlying kernel $\Kcal$ through
 maximization of the joint likelihood of the train data $(X, y_X)$:
-\begin{align} \label{eq:bkrr_likelihood}
+\begin{equation} \label{eq:bkrr_likelihood}
   \Lcal
-    &= -\frac{n}{2} \log 2\pi
+    = -\frac{n}{2} \log 2\pi
     - \frac{n}{2}\log \sigma^2
-    - \frac{1}{2}\log \lvert R_X \rvert \nonumber\\
-    &- \frac{1}{2\sigma^2} y' R_X^{-1} y
+    - \frac{1}{2}\log \lvert R_X \rvert
+    - \frac{1}{2\sigma^2} y' R_X^{-1} y
     \,,
-\end{align}
+\end{equation}
 where $R_X = \lambda I_n + K_{XX}$, and $K_{XX}$ depends on the hyper-parameters of
-$\Kcal$ (shape, precision et c.).
+$\Kcal$ (shape, precision et c.). Other approaches to estimating the covariance function's
+hyper-parameters are given in \cite{Burnaev2014}, \cite{Zaitsev2013}, \cite{Belyaev2016},
+\cite{Burnaev2016}, and \cite{Belyaev2015}.
 
 % The distributional assumptions used to derive this posterior distribution are too
 % restrictive: the true relationship $f(x)$ is drawn from a Gaussian Process, and the
@@ -209,7 +203,7 @@ yields a set in the space of targets, that contains yet unobserved data with a p
 probability. In this study, we provide empirical evidence supporting the claim that
 when model assumptions do hold, the conformal confidence sets, constructed over the
 Kernel Ridge Regression with isotropic Gaussian kernel do not perform worse than
-the prediction confidence intervals of a Bayesian version of the KRR. The report is
+the prediction confidence intervals of a Bayesian version of the KRR. The paper is
 structured as follows: in section~\ref{sec:conformal_prediction} a concise overview
 of what conformal prediction is and what is required to construct such kind of confidence
 predictor is given. Section~\ref{sec:conformalized_krr} describes the particular steps
@@ -264,15 +258,16 @@ observation omitted.
 For every possible value $z$ of an object $Z_{n+1}$ the conformal procedure tests
 $H_0: Z_{n+1} = z$, and then inverts the test to get a confidence region. The hypothesis
 tests are designed to have a fixed empirical type-I error rate $\alpha$ based on
-the observed sample $Z_{:n}$ and hypothesized $z$. In classification, the class label
-hypotheses for new $x_{n+1}$ are tested, whereas in regression the test are conducted
-for target levels $y_{n+1}$.
+the observed sample $Z_{:n}$ and hypothesized $z$.
+% In classification, the class label
+% hypotheses for new $x_{n+1}$ are tested, whereas in regression the test are conducted
+% for target levels $y_{n+1}$.
 
 In \cite{vovk2005}, chapter 2, is has been shown, that for sequences of iid examples
 $(z_n)_{n \geq1} \sim P$, the coverage probability of the prediction set $\Gamma^\alpha$,
 \ref{eq:conf_pred_set}, is at least $1-\alpha$ and successive errors are independent
-in online learning and prediction setting. The outlined procedure guarantees unconditional
-validity: for any $\alpha \in (0,1)$
+in online learning and prediction setting. The procedure guarantees unconditional validity: 
+for any $\alpha \in (0,1)$
 \begin{equation} \label{eq:conservative_coverage}
   \pr_{Z_{:n}\sim P} \bigl(
     y_n \notin \Gamma^\alpha_{Z_{:(n-1)}}(x_n)
@@ -282,8 +277,7 @@ where $(x_n, y_n) = z_n$.
 Intuitively, the event $y_n \notin \Gamma^\alpha_{Z_{:(n-1)}}(x_n)$ is equivalent
 to $\eta_n = A(Z_{-n}, Z_n)$ being among the largest $\lfloor n\alpha\rfloor$ values
 of $\eta_i = A(Z_{-i}, Z_i)$, which is equal to $\frac{\lfloor n\alpha\rfloor}{n}$,
-due to exchangeability of $Z_{:n}$ (for a rigorous proof see \cite{vovk2005},
-chapter 8).
+due to independence of $Z_{:n}$ (for a rigorous proof see \cite{vovk2005}, chapter 8).
 
 The choice of \textbf{NCM} affects the size of the confidence sets and the computational
 burden of the conformal procedure. In the general case computing eq.~\ref{eq:conf_pred_set}
@@ -292,53 +286,6 @@ regression setting. However, for specific non-conformity measures it is possible
 come up with efficient procedures for computing the confidence region as demonstrated
 in \cite{vovk2005} and sec.~\ref{sec:conformalized_krr} of this work.
 
-\subsection{Confromalized ridge regression} % (fold)
-\label{sub:conformalized_ridge_regression}
-
-Bayesian Ridge Regression, a Bayesian KRR with linear kernel, basically assumes
-that $y = x'\beta + \epsilon_x$ for any $x\in \Xcal = \Real^{d\times 1}$ and
-$\Ycal = \Real$, and
-\begin{enumerate}
-  \item $\beta\sim\Ncal_d(0, \sigma^2 \lambda^{-1} I_p)$;
-  \item $\epsilon_x\sim \Ncal(0, \sigma^2)$ and iid for all $x\in \Real^{d\times 1}$;
-  \item $\beta$ and $\epsilon_x$ are independent.
-\end{enumerate}
-The properties of ``Conformalized Ridge Regression'' (CRR) are studied in \cite{burnaevV14}
-for a conformity measure
-\begin{align} \label{eq:crr_ncm}
-  \eta_i &= A(Z_{-i}, Z_i) \nonumber \\
-    &= \bigl\lvert\{j\,:\, \hat{r}_j \geq \hat{r}_i \} \bigr\rvert \wedge
-       \bigl\lvert\{j\,:\, \hat{r}_j \leq \hat{r}_i \} \bigr\rvert \,,
-\end{align}
-where $\hat{r} = \hat{r}_Z$ are the ridge regression residuals given by
-\begin{equation} \label{eq:rr_insample_resid}
-  \hat{r}_Z = (I_n - X (\lambda I_p + X'X)^{-1} X') y \,,
-\end{equation}
-and $X\in \Real^{n\times d}$ is the design matrix.
-
-The main result of \cite{burnaevV14} states that under relaxed BRR assumptions if
-a sequence $(x_n)_{n\geq1}\in\Xcal$ is i.i.d. with an non-singular second moment
-matrix $\ex x_1x_1' \succeq 0$, then for all sufficiently large $n$ the CRR
-produces confidence regions that lose little efficiency compared to Bayesian
-confidence interval when Gaussianity is valid. In particular, the upper endpoint
-of the prediction interval deviates asymptotically as $\mathcal{O}_p\bigl(n^{-\frac{1}{2}}\bigr)$.
-
-In the paper it was also shown that for any $\alpha \in (0,1)$ the confidence
-region $\Gamma^\alpha$ produced by CRR procedure for the conformity measure in
-eq.~\ref{eq:crr_ncm} is equivalent to the intersection of confidence sets yielded
-by conformal procedures with non-conformity measures given by $\eta_i = \hat{r}_i$
-and $\eta_i = -\hat{r}_i$ at significance levels $\frac{\alpha}{2}$. Individually,
-these NCMs define a \textbf{upper} and \textbf{lower} CRR sets respectively, and
-together constitute a ``two-sided'' conformal procedure.
-
-In the next section the construction of conformal prediction procedures will be
-discussed. Two methods in particular: in sec.~\ref{sub:ridge_regression_confidence_machine}
-we consider the original ridge regression approach from \cite{vovk2005}, and in
-sec.~\ref{sub:kernel_crr} a ``two-sided'' version, \cite{burnaevV14}, which is
-more amenable to theoretical analysis.
-
-% subsection conformalized_ridge_regression (end)
-
 % section conformal_prediction (end)
 
 \section{Conformalized kernel ridge regression} % (fold)
@@ -346,35 +293,29 @@ more amenable to theoretical analysis.
 
 In this section we describe the construction of confidence regions of the conformal
 procedure eq.~\ref{eq:conf_pred_set} for the case of the non-conformity measures
-based on kernel ridge regression.
+based on kernel ridge regression. We consider two NCMs defined in terms of regression
+residuals: the one used in constructing a ``Ridge Regression Confidence Machine'',
+proposed in \cite{vovk2005}, chapter 2, and ``two-sided'' NCM, proposed in \cite{burnaevV14}.
 
-\subsection{Ridge Regression Confidence Machine} % (fold)
-\label{sub:ridge_regression_confidence_machine}
+\subsection{Residuals} % (fold)
+\label{sub:residuals}
 
-We consider two versions of the NCM for the Ridge Regression Confidence Machine
-(RRCM),proposed in \cite{vovk2005}, chapter 2, for the regression setting: an in-sample
-and a \textbf{l}eave-\textbf{o}ne-\textbf{o}ut version. For this purpose consider
-a sample $(X, y) = (x_i, y_{x_i})_{i=1}^n$, and for any $i=1\ldots, n$ put $X =
-(X_{-i}, x_i)$, and $y = (y_{-i}, y_i)$. Let $K_{-i}$ be the Gram matrix of
-$\Kcal$ over $X_{-i}$.
-
-The ``in-sample'' NCM $A_{\text{in}}$, which measures the absolute value of the
-regression residual, is given by:
-\begin{align}
-  A_{\text{in}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
-    &= |e_i' \hat{r}_{\text{in}}(X, y)| \nonumber\\
-    &= |y_i - \hat{y}_{|(X, y)}(x_i)| \label{eq:ins_ncm}
-    \,.
-\end{align}
-where $\hat{y}_{|(X, y)}(x_i)$ is the prediction over the complete dataset $(X, y)$.
-The ``loo'' NCM is defined similarly, but uses deleted residuals:
-\begin{align*}
-  A_{\text{loo}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)
-    &= |e_i' \hat{r}_{\text{loo}}(X, y)| \\
-    &= |y_i - \hat{y}_{|(X_{-i}, y_{-i})}(x_i)|
-    \,.
-\end{align*}
-For any $i$ the residuals are related by
+In each NCM it is possible to use any kind of prediction error, but we focus on two:
+the in-sample and \textbf{l}eave-\textbf{o}ne-\textbf{o}ut (or deleted) residuals.
+Consider a sample $(X, y) = (x_i, y_{x_i})_{i=1}^n$, and for any $i=1\ldots, n$ put
+$X = (X_{-i}, x_i)$, and $y = (y_{-i}, y_i)$. In-sample residuals, $\hat{r}_{\text{in}}(X, y)$
+are defined for each $i=1,\ldots, n$ as
+\begin{equation} \label{eq:ins_resid}
+  e_i' \hat{r}_{\text{in}}(X, y) = y_i - \hat{y}_{|(X, y)}(x_i) \,,
+\end{equation}
+and LOO $\hat{r}_{\text{loo}}(X, y)$ are given by
+\begin{equation} \label{eq:loo_resid}
+  e_i' \hat{r}_{\text{loo}}(X, y) = y_i - \hat{y}_{|(X_{-i}, y_{-i})}(x_i) \,,
+\end{equation}
+where $\hat{y}_{|(X, y)}$ and $\hat{y}_{|(X_{-i}, y_{-i})}$ denote predictions of
+a KRR fit on the whole sample $(X, y)$, and a sample $(X_{-i}, y_{-i})$ with the
+$i$-th observation knocked-out, respectively. For any $i$ the residuals are related
+by
 \begin{equation}
   e_i' \hat{r}_{\text{in}}(X, y)
     = \lambda m_i^{-1} e_i' \hat{r}_{\text{loo}}(X, y)
@@ -386,10 +327,27 @@ the $i$-th observation, and
   m_i = \lambda + \Kcal(x_i, x_i) - k_{-i}(x_i)' Q_{-i} k_{-i}(x_i) \,,
 \end{equation}
 with $k_{-i}(x_i)$ -- the $n-1\times 1$ vector of $(\Kcal(x_j, x_i))_{i\neq j}$,
-and $Q_{-i} = (K_{-i} + \lambda I_{n-1})^{-1}$.
+$Q_{-i} = (K_{-i} + \lambda I_{n-1})^{-1}$, and $K_{-i}$ is the Gram matrix of
+the kernel $\Kcal$ over subsample $X_{-i}$.
 
-For the NCM $A$ the $1 - \alpha$ conformal confidence interval for the $n$-th
-observation is given by
+% subsection residuals (end)
+
+\subsection{Ridge Regression Confidence Machine} % (fold)
+\label{sub:ridge_regression_confidence_machine}
+
+In this section we describe a conformal procedure for the NMC proposed in \cite{vovk2005},
+chapter 2, and focus on its ``in-sample'' version, bearing in mind that residuals
+(\ref{eq:loo_resid}) and (\ref{eq:ins_resid}) are interchangeable.
+
+The Ridge Regression Confidence Machine (RRCM) constructs an non-conformity measure
+from the absolute value of the regression residual: the ``in-sample'' NCM, $A_{\text{in}}$,
+is given by
+\begin{equation} \label{eq:ins_ncm}
+  A_{\text{in}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr) = |e_i' \hat{r}_{\text{in}}(X, y)| \,,
+\end{equation}
+and the ``LOO'' NCM, $A_{\text{loo}}$ is defined similarly using eq.~\ref{eq:loo_resid}.
+For the NCM $A$ the $1 - \alpha$ conformal confidence interval for the $n$-th observation
+is given by
 \begin{equation} \label{eq:conf_ci}
   \Gamma_{X_{-n}, y_{-n}}^\alpha(x_n)
     = \bigl\{ z\in \Real \,:\, p_n\bigl((X, \tilde{y}_n^z)\bigr) \geq \alpha \bigr\}
@@ -409,7 +367,7 @@ in some sample $(X, y)$ is given by
 for $\eta_i = A\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr)$.
 
 Efficient construction of the confidence set for the NCM (\ref{eq:ins_ncm}) for
-in-sample and deleted residuals relies on linear dependence on the target of the
+in-sample (and deleted) residuals relies on linear dependence on the target of the
 $n$-th observation:
 \begin{equation} \label{eq:krr_in_resid}
   \hat{r}_i^z
@@ -430,15 +388,20 @@ where the vector $B_{-n}(x_n)\in\Real^{n\times 1}$ is given by
     = \begin{pmatrix} - Q_{-n} K_{-n}(x_n) \\ 1 \end{pmatrix} m_n^{-1}
     \,.
 \end{equation}
-
 Since absolute values of the residuals are compared, it is possible to consistently
-manipulate the signs of each entry in $C$ and $B$ to ensure that $e_i'B\geq 0$ for
-all $i$. The regions $S_i = \{z\in\Real\,:\, |\hat{r}_i^z| \geq |\hat{r}_n^z|\}$, for
-$i=1,\ldots, n$, are either closed intervals, complements of open intervals,
-one-side closed half-rays in $\Real$, depending on the values of $C$ and $B$. In
-particular, with $p_i$ and $q_i$ denoting the values $-\frac{c_i+c_n}{b_i+b_n}$ and
-$\frac{c_i-c_n}{b_n-b_i}$, respectively (whenever each is defined), each region
-$S_i$ has one of the representations:
+change the signs of each element of $C$ and $B$ to ensure that $e_i'B\geq 0$ for
+all $i$.
+
+The conformal p-value for $(x_n, y)$, eq.~\label{eq:conf_p_value}, is can be re-defined in terms
+of regions $S_i = \{z\in\Real\,:\, |\hat{r}_i^z| \geq |\hat{r}_n^z|\}$, for $i=1,\ldots, n$:
+\begin{equation} \label{eq:rrcm_conf_p_value}
+  p_{X_{-n}, y_{-n}}(x_n, y) = n^{-1} \bigl\lvert\{ i \,:\, y \in S_i \}\bigr\rvert \,.
+\end{equation}
+These regions are either closed intervals, complements of open intervals, one-side
+closed half-rays in $\Real$, depending on the values of $C$ and $B$. In particular,
+with $p_i$ and $q_i$ denoting $-\frac{c_i+c_n}{b_i+b_n}$ and $\frac{c_i-c_n}{b_n-b_i}$,
+respectively (whenever each is defined), each region $S_i$ has one of the following
+representations:
 \begin{enumerate}
 %% a picture of shifted and scaled x->|x| helps in derivation of this.
   \item $b_i=b_n=0$: $S_i = \Real$ if $|c_i| \geq |c_n|$, or $S_i = \emptyset$
@@ -459,8 +422,9 @@ of $\Real$ constructed from sets $G^m_j = [g_j, g_{j+m}]\cap \Real$ for $m=0, 1$
     = \bigcup_{m\in\{0,1\}} \bigcup_{j\,:\, N^m_j \geq n \alpha} G^m_j
     \,,
 \end{equation}
-where $N^m_j = |\{i \,:\, G^m_j \subseteq S_i\}|$ is the coverage frequency of $G^m_j$.
-In general, the resulting confidence set might contain isolated singletons $G^0_j$.
+where $N^m_j = |\{i \,:\, G^m_j \subseteq S_i\}|$ is the coverage frequency of $G^m_j$,
+eq.~\ref{eq:rrcm_conf_p_value}. In general, the resulting confidence set might contain
+isolated singletons $G^0_j$.
 
 This set, can be constructed efficiently in $\BigO(n \log{} n)$ time with $\BigO(n)$
 memory footprint. Indeed, it is necessary to sort at most $J\leq 2n$ distinct endpoints
@@ -473,17 +437,34 @@ coverage numbers $N^m_j$ can be computed in at most $\BigO(n)$ time.
 
 \subsection{Kernel two-sided confidence predictor} % (fold)
 \label{sub:kernel_crr}
-Another possibility is to use the two-sided procedure proposed in \cite{burnaevV14}
-and mentioned in sec.~\ref{sub:conformalized_ridge_regression}. Recall that, in order
-to construct a CRR confidence region for significance level $\alpha$ (eq.~\ref{eq:crr_ncm}),
-it is necessary to intersect confidence sets yielded by conformal procedures with NCM
-scores given by $\hat{r}_i^z$ (upper) and $-\hat{r}_i^z$ (lower) at significance level
-$\frac{\alpha}{2}$. Confidence regions based on CRR, much like RRCM, can use any kind
-of residual: leave-one-out, or in-sample. In this section we give a description of an
-efficient algorithm for constructing this confidence region.
 
-For the upper CRR consider the regions $U_i = \{z\in\Real\,:\, \hat{r}_i^z \geq \hat{r}_n^z\}$,
-$i=1,\ldots, n$ are either empty, full $\Real$ or one-side closed half-rays. Since
+Another possibility is to use the two-sided conformal procedure, proposed in \cite{burnaevV14}.
+The main result of that paper is that under relaxed Bayesian Ridge Regression assumptions
+if a sequence $(x_n)_{n\geq1}\in\Xcal$ is i.i.d. with an non-singular second moment
+matrix $\ex x_1x_1' \succeq 0$, then for all sufficiently large $n$ the conformal
+confidence regions that lose little efficiency compared to Bayesian confidence interval
+when Gaussianity is valid (the upper endpoints of the Bayesian and conformal prediction
+intervals deviate as much as $\mathcal{O}_p\bigl(n^{-\frac{1}{2}}\bigr)$).
+
+The ``two-sided'' procedure of \cite{burnaevV14}, denoted by \textbf{CRR} for short,
+uses a conformity measure
+\begin{equation} \label{eq:crr_ncm}
+  A(Z_{-i}, Z_i)
+    = \bigl\lvert\{j\,:\, \hat{r}_j \geq \hat{r}_i \} \bigr\rvert \wedge
+       \bigl\lvert\{j\,:\, \hat{r}_j \leq \hat{r}_i \} \bigr\rvert \,,
+\end{equation}
+where $(\hat{r}_i)_{i=1}^n$ are the in-sample ridge regression residuals.
+In that paper it was also shown that for any $\alpha \in (0,1)$ the confidence
+region $\Gamma^\alpha$ produced by CRR procedure for the conformity measure in
+eq.~\ref{eq:crr_ncm} is equivalent to the intersection of confidence sets yielded
+by conformal procedures with non-conformity measures given by $\eta_i = \hat{r}_i$
+and $\eta_i = -\hat{r}_i$ at significance levels $\frac{\alpha}{2}$. Individually,
+these NCMs define a \textbf{upper} and \textbf{lower} CRR sets respectively, and
+together constitute a ``two-sided'' conformal procedure. Confidence regions based
+on this NCM, much like RRCM, can use any kind of residual: leave-one-out, or in-sample.
+
+For the upper CRR the regions $U_i = \{z\in\Real\,:\, \hat{r}_i^z \geq \hat{r}_n^z\}$,
+$i=1,\ldots, n$, are either empty, full $\Real$ or one-side closed half-rays. Since
 $\hat{r}_i^z = \lambda c_i + \lambda b_i z$, $U_i$ takes one of the following forms:
 \begin{enumerate}
   \item $b_i=b_n$: $U_i = \Real$ if $c_i\geq c_n$, and $\emptyset$ otherwise;
@@ -495,7 +476,7 @@ are computed similarly, but with the signs of $c_i$ and $b_i$ flipped for each $
 
 Both upper and lower confidence regions are built similarly to the kernel RRCM region
 eq.~\ref{eq:rrcm_conf_ci} in sec.~\ref{sub:ridge_regression_confidence_machine}. The
-final the Kernel CRR confidence set is:
+final Kernel CRR confidence set is given by
 \begin{equation} \label{eq:crr_conf_ci}
   \Gamma_{X_{-n}, y_{-n}}^\alpha(x_n)
     = \Gamma_{X_{-n}, y_{-n}}^{\alpha,\text{u}}(x_n)
@@ -2695,7 +2676,7 @@ used to move from local bandwidth estimates to global ones.
 % \bibliographystyle{amsplain}
 \clearpage
 \bibliographystyle{ugost2008ls}
-\bibliography{../references}
+\bibliography{../references,references}
 
 \end{document}
 
