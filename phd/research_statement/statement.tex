@@ -32,34 +32,26 @@
 
 Anomaly detection is concerned with identifying observations in new incoming test
 data, which diverge in a some sense from the previously seen data. Problems of this
-nature arise in many applied fields such as predictive maintenace of complex industrial
-systems, cancer detection based on screening data in diagnostic medicine, intrusion
-detection in data and general security, anti-fraud solutions in banking and monitoring
-of insider trading in market regulation.
+nature arise in many applied fields such as predictive maintenance of complex industrial
+systems \cite{tarassenko2009}, on-site structural integrity monitoring \cite{surace2010},
+cancer detection based on screening data in diagnostic medicine \cite{tarassenko1995,quinn2007,clifton2011},
+intrusion detection in data and general security \cite{jyothsna2011}, anti-fraud
+solutions in banking and monitoring of insider trading in market regulation \cite{patcha2007},
+et c.
 
 Each of these problems uses negative definition of abnormality: ``abrnormal'' is
 something which is not ``normal'' in a particular domain. In security and finance
 ``normal'' is understood as strict compliance with some regulation or protocol, in
-engineering and medicine ``normal'' is within the acceptabile band of a nominal regime
+engineering and medicine ``normal'' is within the acceptable band of a nominal regime
 of a machine or the usual phenomenology of a subject. In each of theses tasks it is
 assumed that the majority of the observed data are ``normal'', and only a minute
 fraction of it is ``anomalous'', which is why most methods of anomaly detection
 define an anomaly as a substantial deviation form what the internal representation
-of a normal pattern. Regression-based methods repay on the learnt feature-target
-relationship, whereas denisty-based anomaly detectors use modes of the estimated
-data generating distibution or the reconstructed manifold carrying the data.
+of a ``normal'' pattern. Regression-based methods rely on the learnt feature-target
+relationship, whereas density-based anomaly detectors use modes of the estimated
+data generating distribution or the reconstructed manifold carrying the data.
 
-One density-based anomaly detection method was suggested in \cite{breunig2000} and
-is based on a Local Outlier Factor (LOF) score of each observation with respect to
-its estimated local topology, which is defined by a metric neighbourhood containing
-at least the required number of data points. This method relates the tightness of a
-point's closest neighbourhood, the ``local reachability density'', to the average
-across its neighbours. Original LOF does not provide confidence measure of abnormality,
-which is why \cite{kriegel2009} suggested the ``LoOP'' (local outlier probability)
-method. LoOP is similar in spirit to LOF, but yields porbabilistic estimates of
-confidence based in the same idea of tightness of the observations's immediate locality.
-
-Regression-based approach encompas such models as multilayer neural networks for
+Regression-based approach encompass such models as multilayer neural networks for
 supervised (c.f. \cite{augusteijn2002}), and replicating neural networks, autoencoders
 for unsupervised learning tasks (c.f. \cite{hawkins2002,williams2002}). Spectral
 methods, \cite{chandola2009}, infer combinations of input features, that comprehensively
@@ -70,25 +62,70 @@ and \cite{jolliffe2014}, or more general non-linear kernel based representations
 internal representation of the data and use its' predictive or reconstructive properties
 to derive abnormality scores.
 
-% Далее, надо написать, что одним из важных подходов детектирования аномалий является
+In \cite{breunig2000} a density-based anomaly detection method based on a Local Outlier
+Factor (LOF) score was suggested, which is estimated with respect to local topology,
+defined by a metric neighbourhood containing at least the required number of data
+points. This method relates the tightness of a point's closest neighbourhood to the
+average across its neighbours. Original LOF does not provide confidence measure of
+abnormality, which is why \cite{kriegel2009} suggested the ``LoOP'' (local outlier
+probability) method. LoOP is similar in spirit to LOF, but yields probabilistic
+estimates of confidence based in the same idea of tightness of the observations's
+immediate locality.
+
+% section relevance (end)
+
+\section{Regression-based anomaly detection} % (fold)
+\label{sec:regression_based_anomaly_detection}
+
+% 2. Далее, надо написать, что одним из важных подходов детектирования аномалий является
 % подход на основе virtual sensor, то есть у нас есть некоторая характеристика (например,
 % мощность, производимая элетростнацией). Измеряются характеристики, которые характеризуют
 % работу отдельных частей станции. Мы могли бы построить регрессионную модель, которая
-% прогнозирует мощность в зависимости от этих характеристик, и, если сначала ошибка прогноза
-% была мала, а потом - велика, мы могли бы понять, что начали происходить потери мощности,
-% и понять - из-за каких параметров, что позволило бы нам выяснить причины поломки.
-% Однако, чтобы решать такую задачу, нужен не только регрессионный метод, но и метод,
-% который позволяет непараметрическим образом эффективно строить доверительные интервалы.
-% Цель решения данной задачи
-%     а) непараметрический метод построения дов. интервалов нелинейной регрессии на основе
-%     ядерных методов;
+% прогнозирует мощность в зависимости от этих характеристик, и, если сначала ошибка
+% прогноза была мала, а потом - велика, мы могли бы понять, что начали происходить
+% потери мощности, и понять - из-за каких параметров, что позволило бы нам выяснить
+% причины поломки. Однако, чтобы решать такую задачу, нужен не только регрессионный
+% метод, но и метод, который позволяет непараметрическим образом эффективно строить
+% доверительные интервалы. Цель решения данной задачи
+%     а) непараметрический метод построения дов. интервалов нелинейной регрессии на
+%     основе ядерных методов;
 %     б) сравнение его со стандартными методами;
 %     в) изучение теор. свойств, в частности, эффективности.
 % Пишите, что уже есть задел, подана статья на конф.
 
+Supervised regression-based methods allow modelling of complex interactions between
+features of the data, yet do not readily yield any sort of prediction confidence
+measure, unless distributional assumptions are introduced. One method to keep them
+distribution-free is to employ ``conformal prediction'' approach developed in \cite{vovk2005}.
+Under the standard independence assumption and for any ML algorithm it constructs
+a set in the space of targets, that contains yet unobserved data with a pre-specified
+confidence level. IOn essence conformal prediction amounts to the following: for
+every possible value $z$ of an object $Z_{n+1}$ the procedure tests $H_0: Z_{n+1}=z$,
+and then inverts the test to get a confidence region. The hypothesis tests are based
+on the observed sample $(Z_i)_{i=1}^n$ and hypothesized $z$, and are designed to
+have a pre-specified type-I error rate $\alpha$.
+
+In my PHD thesis I would like to focus on the following: \begin{enumerate}
+  \item to explore conformal prediction and other distribution-free methods for
+  the task of endowing kernel-based regression models with prediction confidence
+  intervals;
+  \item compare the suggested enhancements to the state-of-the art methods;
+  \item provide necessary theoretical foundations for correct coverage and
+  efficiency.
+\end{enumerate}
+In this vein I co-authored and submitted a paper to the ICMLA 2017 conference which
+outlines the results of an extensive numerical study concerning both coverage and
+efficiency issues.
+
+% section regression_based_anomaly_detection (end)
+
+\section{Conformalized kernel embeddings} % (fold)
+\label{sec:conformalized_kernel_embeddings}
+
 % Следующий пункт - есть много методов детектирования аномалий, например, LoOF, LOP и
 % т.п. Они так или иначе основаны на некотором "инженерном" способе определить, что
-% новое наблюдение попало в регион, где мало наблюдений выборки. Однако, надо самом
+% новое наблюдение попало в регион, где мало наблюдений выборки.
+% Однако, надо самом
 % деле надо по сути определять, что наблюдение порождено распределнием, отличным от
 % распределения, которое породило основную часть выборки. По этой причине имеет смысл
 % применять kernel mean embedding и т.п. (ну в общем, то, что вы делали в дипломе).
@@ -98,209 +135,53 @@ to derive abnormality scores.
 %     б) сравнить его со стандартными методами;
 %     в) изучить его теор. свойства, в частности, эффективность.
 
+Unsupervised anomaly detection in essence boils down to determining how likely it
+is that an observation was generated from the ``normal regime'' distribution. For
+instance, density-based methods define the normal regime distribution simply as
+the modes of the data distribution inferred from the training data. Bayesian outlier
+detection techniques models use prior distributions and data-generating model to
+compute the posterior of a new observation given the already observed data.
+
+One promising research direction is conformal procedures for kernel embedding of
+probability distributions, introduced \cite{smola2007}. Basically, in a suitable
+Reproducing Kernel Hilbert Space (RKHS) many non-pathological distributions on
+metric spaces can be identified with a unique element of said RKHS. Specifically,
+if $K$ is a kernel that induces a universal RKHS $\Hcal$ of functions $\Xcal\mapsto\Real$,
+then for any probability distribution $P$ on $\Xcal$ with $\ex_{x\sim P} \sqrt{K(x,x)} < +\infty$
+there is a unique representative $\mu_P\in \Hcal$ such that $\ex_P f = \langle \mu_P, f\rangle$
+for all $f\in \Hcal$ and
+\begin{equation*}
+  \mu_P(x) = \langle \mu_P, K(x, \cdot) \rangle = \ex_{y\sim P} K(x, y) \,.
+\end{equation*}
+
+Now, for a compact metric space $\Xcal$ the distributions $P$ and $Q$ coincide if
+and only if $\ex_P f = \ex_Q f$ for all continuous and bounded $f:\Xcal\mapsto \Real$.
+Based on this \cite{gretton2012} propose the \textit{maximum mean discrepancy} (MDD)
+-- an effective non-parametric criterion that compares the distributions, which is
+the RKHS norm of the deviation of the kernel embeddings $\mu_Q$ and $\mu_P$. Therefore
+in order to decide if a new example $z_n$ is anomalous or not with respect to a given
+sample $Z_{:n-1} = (z_i)_{i=1}^{n-1}$ it is could be sufficient to compute
+$\|\hat{\mu}_{:n} - \hat{\mu}_{:n-1}\|_\Hcal$, where
+\begin{equation*}
+  \hat{\mu}_{:n}(x) = \ex_{z\sim Z_{:n}} K(x, z) = n^{-1} \sum_{i=1}^n K(x, z_i) \,,
+\end{equation*}
+the kernel mean embedding of the empirical distribution of $Z_{:n}$.
+
+Empirical estimate of Hellinger distance for measuring deviation of probability
+distributions was used in \cite{jmlr} together with MDD for constructing domain-invariant
+representations to tackle the domain shift problem (domain adaptation).
+
+% section conformalized_kernel_embeddings (end)
+
+\section{General anomaly detection} % (fold)
+\label{sec:general_anomaly_detection}
+
 % Разработать некоторый general framework, в рамках которого можно было бы формулировать,
 % что такое аномальность, точность обнаружения аномалий, и оценивать, какой размер
 % выборки нужен для получения заданной точности, сравнивать эффективности различных
 % методов обнаружения аномалий.
 
-Methods of anomaly detection are widespread in applied fields, which deal with complex
-multi-component systems, that generate enormous volumes of telemetry and other data.
-For example, breast cancer detection based on mammography screening data \cite{tarassenko1995}
-and other fields of medical diagnostics \cite{quinn2007,clifton2011}, detection of
-failures and breakdown in complex industrial systems \cite{tarassenko2009}, on-site
-structure monitoring \cite{surace2010}, intrusion detection and anti-fraud solutions
-in bank and mobile network operators \cite{patcha2007,jyothsna2011}, et c. The complexity
-of modern multi-component systems stems from practical difficulty of recovering the
-complete picture of interactions between the constituent parts. As a result, there
-is a large number of ``anomalous'' regimes of operation, some of which may not be
-known in advance, and that render standard multi-class classification solutions inapplicable.
-One way of resolving this issue of incomplete information is to employ anomaly detection
-methods, that ``learns'' what the ``normal'' mode is by using the overwhelming volume
-of positive examples. Such methods check the patterns in the test observations against
-the ``learnt'' notion of ``normality'' by estimating their degree of abnormality.
-Such measure, which may have probabilistic interpretation, is compared to a decision
-threshold, and the test examples are classified as anomalous if the threshold is
-exceeded.
-
-In many applied situations, like anomaly detection in telemetry of some equipment,
-online filtering and monitoring of potentially interesting events, or power grid
-load balancing, it is necessary not only to make optimal predictions with respect
-to some loss, but also to be able to quantify the degree of confidence in the obtained
-forecasts. At the same time it is necessary to take into consideration exogenous
-variables, that in certain ways affect the object of study. Anomaly detection techniques
-based on predictive modelling are concerned with applying regression and classification
-methods to model the data, and based on the learnt conditional model, decide if the
-new data is normal or not.
-
-These methods, however, do not readily provide the user with any sort of prediction
-confidence measure, and in order to acquire such measure additional probabilistic
-assumptions regarding the observation model (eq.~\ref{eq:signal_model}) are required.
-With their help, it is usually quite straightforward to get a posterior probability
-measure for unobserved data given the training data using standard Bayesian derivation
-methods.
-
-% section relevance (end)
-
-\section{Approach} % (fold)
-\label{sec:approach}
-
-Probabilistic approaches to anomaly detection rely on approximating the generative
-distribution of the observed data.
-
-Density-based anomaly detection was suggested in \cite{breunig2000} and is based
-on a so called Local Outlier Factor (LOF) score which is computed for each observation.
-from on its local topology within the train dataset. The local topology is defined
-in terms of neighbourhood containing at least as many points as specified by the
-user: the $k$-NN neighbourhood $N_k(x)$ based on $d$ excluding the $x$ itself. In
-this setting a natural the notion of local density arises: the ``local reachability
-density'' (as defined in \cite{breunig2000}) is given by
-\begin{equation*}
-    \rho_x = \frac{|N_k(x)|}{\sum_{y\in N_k(x)} \max\{d_y, d(x,y)\}} \,,
-\end{equation*}
-with $d_x = \max_{y\in N_k(x)} d(x, y)$ the characteristic distance of a point's
-local topology. The LOF score, in essence, is the ratio of the local density $\rho_x$
-of a point $x$ to averaged local density of each of its local neighbours. It was
-shown in \cite{breunig2000}, that whenever a point lies deep within a cluster (well
-embedded) then its ``LOF'' is approximately equal to $1$, and conversely that if
-$l_x < 1$ then the average local density to the neighbours is greater than the
-local density within the neighbourhood, which means that $x$ is actually well embedded
-within a cluster. It is worth noting, however, that LOF ranks the observation by
-their abnormality score, but still can miss potential outliers, the local density
-of which is sufficiently large, yet close to the neighbourhood's average.
-
-In \cite{kriegel2009} the ``LoOP'' (local outlier probability) method was introduced,
-which is similar in spirit to ``LOF'', but addresses its lack of natural abnormality
-degree scale, with which to assign probabilities. This method posits that the key
-local characteristic of a point is its local context $S_x$, which, in practice, is
-taken to be the $k$-NN neighbourhood of the train sample with respect to dissimilarity,
-or metric $d$. The local context of $x$ gives rise to the so called $\phi$-distance,
-defined as such a value $\rho_x\geq 0$, that $P_{z\sim S_x}(d(x,z)\leq \rho_x)\geq \phi$
-for some fixed probability threshold $\phi\in(0,1)$. Authors make a simplifying assumption
-that $d(x,z)$ for $z$ within $S_x$ is distributed like $a\sim \Ncal(0, \sigma^2)$
-given $a\geq0$, that enables them to re-parametrize the $\phi$-distance in terms of
-the number of root mean squared distance in $S_x$, which yields a simpler formula
-for $\rho_x$:
-\begin{equation*}
-    \rho_x
-    = \bigl(|S_x|^{-1} \sum_{y \in S_x} d^2(x, y)\bigr)^\frac{1}{2}
-    \,.
-\end{equation*}
-The scores are given by 
-$$ l_x = \frac{|S_x|\rho_x}{\sum_{y\in S_x} \rho_y}-1\,, $$
-and the local anomaly probability is given by
-$$ p_x = \max\bigl\{0, \text{erf}\bigl(\frac{l_x}{N_T\sqrt{2}}\bigr)\Bigr\}\,, $$
-for $\text{erf}(c) = \frac{2}{\sqrt{\pi}} \int_0^c e^{-x^2} dx$ and $N_T$ is the
-normalization constant $\mu$ times the root means squared $l_x$ score on the train
-dataset.
-
-\subsection{Conformalized kernel embeddings} % (fold)
-\label{sub:conformalized_kernel_embeddings}
-
-It might be fruitful to research conformal procedures the field of kernel embedding
-of probability distributions, \cite{smola2007}. Basically in a suitable RKHS many non-
-pathological distributions on metric spaces can be identified with a unique element
-of said RKHS. In particular, if $K$ is a kernel that induces a universal RKHS $\Hcal$
-of functions $\Xcal\mapsto\Real$, then for any probability distribution $P$ on $\Xcal$
-there is a unique $\mu_P\in \Hcal$ whenever $\ex_{x\sim P} \sqrt{K(x,x)} < +\infty$.
-For instance, the Gaussian kernel satisfies this property and its induced canonical
-RKHS is universal. Now, the boundedness of $K$ in expectation implies that $f\mapsto \ex_P f$
-is a bounded linear functional in $\Hcal$, whence by Riesz representation theorem there
-exists a unique $\mu_P\in \Hcal$ with $\ex_P f = \langle \mu_P, f\rangle$ for all
-$f\in \Hcal$. In particular, for $f = k(x, \cdot)$ the reproducing property of $K$
-implies that
-\begin{equation*}
-  \ex_{y\sim P} K(x, y) = \langle \mu_P, K(x, \cdot) \rangle = \mu_P(x) \,,
-\end{equation*}
-which provides a closed formula for the embedding of $P$.
-
-In \cite{gretton2012}, a powerful two-sample distribution test was constructed, based
-on this elegant idea. Essentially, for a compact metric space $\Xcal$ the distributions
-$P$ and $Q$ coincide if and only if $\ex_P f = \ex_Q f$ for all continuous and bounded
-$f:\Xcal\mapsto \Real$. However, because the RKHS is universal it is enough to check
-the equality only in the class of functions from the Hilbert space $\Hcal$. This
-reduces the problem of testing to studying the norm between the embeddings $\mu_P$
-and $\mu_Q$ in $\Hcal$.
-
-The proposed test statistic, \cite{gretton2012}, the \textit{maximum mean discrepancy}
-(MDD), measures the RKHS norm of the deviation of the embeddings of the empirical
-distributions. This MDD measure can readily be used as a non-conformity measure
-for the following anomaly detection problem: given a sample $Z_{:n-1} = (z_i)_{i=1}^{n-1}$
-decide if a new example $z_n$ is anomalous or not by measuring how well it conforms
-to $Z$. If the full sample is denoted by $Z_{:n} = (z_i)_{i=1}^n$, then the proposed
-conformal procedure would be based on the following NCM:
-\begin{equation*}
-  A(Z_{-i:n}, z_i) = \| \mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}} \|_{\Hcal} \,,
-\end{equation*}
-where $\hat{P}_{-i:n}$ and $\hat{P}_{:n}$ are empirical distributions over $Z_{-i:n}$
-and $Z_{:n}$, respectively, with $Z_{-i:n}$ being the sample $Z_{:n}$ without the
-$i$-th observation. Note, that it would be necessary to consider only vector-matrix
-multiplications, since for any sub-sample $S$ of $Z_{:n}$ the empirical distribution
-embedding is given by
-\begin{equation*}
-  \mu_{\hat{P}_S}(\cdot) = (\one_m'\one_m)^{-1} \one_m' k_S(\cdot) \,,
-\end{equation*}
-where $m = |S|$, $k_S(\cdot) = (K(z_i, \cdot))_{i\in S} \in \Hcal^{m\times 1}$ is
-the sample evaluation vector of the kernel $K$, and $\one_m \in \Real^{m\times 1}$
-is the vector of ones. Since the empirical embeddings are elements of the data-driven
-pre-Hilbert space, their inner products can be computed from the sample Gram matrix
-of $K$. Indeed, using the ordinary formula for sequential update of the sample average
-we get
-\begin{align*}
-  % (n-1)\bigl(\mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}}\bigr)
-  %   % &= (n-1)^{-1}\sum_{j\neq i} K(z_j, \cdot) - n^{-1}\sum_j K(z_j, \cdot) \\
-  %   &= n^{-1} \sum_j K(z_j, \cdot) - K(z_i, \cdot) \,,
-  (n-1)^2 \bigl\|\mu_{\hat{P}_{-i:n}} - \mu_{\hat{P}_{:n}} \bigr\|^2_\Hcal
-    &= \bigl\| n^{-1} \sum_j K(z_j, \cdot) - K(z_i, \cdot) \bigr\|^2_\Hcal \\
-    % &= \bigl\| e_i' (I_n - \one(\one'\one)^{-1}\one') k_Z(\cdot) \bigr\|^2_\Hcal \\
-    &= e_i'K_{ZZ} e_i + \frac{1}{n^2} \one' K_{ZZ} \one - \frac{2}{n} \one' K_{ZZ} e_i \,,
-    % &= e_i'(I_n - \one(\one'\one)^{-1}\one')K_{ZZ}(I_n - \one(\one'\one)^{-1}\one') e_i \,,
-\end{align*}
-where $\one$ is the vector of $1$'s and $e_i$ is the unit vector both of appropriate
-dimensions. This is basically the distance of the $i$-th canonical feature map from
-the centre of dataset in $\Hcal$.
-
-Conformalization of this procedure would most likely proceed in the direction of
-using eq.~\ref{eq:conf_p_value} as a measure of the degree of abnormality of new
-examples. Furthermore, it seems that in low dimensional cases there might exist an
-efficient approximation procedure that could yield multivariate quantiles or even
-confidence sets based on inverting hypothesis test in the conformal prediction.
-
-A conformal predictor over the NCM $A$ is a procedure, that for every sample $Z_{:n}$,
-a test object $x_{n+1} \in \Xcal$, and a confidence level $\alpha\in(0,1)$, computes
-a confidence set $\Gamma_{Z+{:n}}^\alpha(x^*)$ for the target value $y_{n+1}$ corresponding
-to $x_{n+1}$:
-\begin{equation} \label{eq:conf_pred_set}
-  \Gamma_{Z_{:n}}^\alpha(x_{n+1})
-    = \bigl\{ y\in \Ycal \,:\, p_{Z_{:n}}(\tilde{z}^y_{n+1}) \geq \alpha \bigr\} \,,
-\end{equation}
-where $\tilde{z}^y_{n+1} = (x_{n+1}, y)$ a synthetic test observation with target
-label $y$. The function $p:\Zcal^*\times (\Xcal\times \Ycal)\mapsto [0,1]$ is given
-by
-\begin{equation} \label{eq:conf_p_value}
-  p_{Z_{:n}}(\tilde{z})
-    = (n+1)^{-1} \bigl\lvert\{ i \,:\,
-      \eta_i^{\tilde{z}} \geq \eta_{n+1}^{\tilde{z}} \}\bigr\rvert \,,
-\end{equation}
-where $i=1,\ldots, n+1$, and $\eta_i^{\tilde{z}} = A(S^{\tilde{z}}_{-i}, S^{\tilde{z}}_i)$
--- the degree of non-conformity of the $i$-th observation with respect to the augmented
-sample $S^{\tilde{z}} = (Z_{:n}, {\tilde{z}}^y_{n+1}) \in \Zcal^{n+1}$. For any $i$,
-$S^{\tilde{z}}_i$ is the $i$-th element of the sample, and $S^{\tilde{z}}_{-i}$ is
-the sample with the $i$-th observation omitted. Intuitively, the p-value (eq.~\ref{eq:conf_p_value})
-measures the likelihood of $\tilde{z}$ based on its non-conformity, or with $Z_{:n}$.
-
-% subsection conformalized_kernel_embeddings (end)
-
-% section approach (end)
-
-\section{Review} % (fold)
-\label{sec:review}
-
-% section review (end)
-
-\section{Research Goals} % (fold)
-\label{sec:research_goals}
-
-% section research_goals (end)
+% section general_anomaly_detection (end)
 
 % \bibliographystyle{amsplain}
 \clearpage
