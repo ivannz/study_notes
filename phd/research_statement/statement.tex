@@ -15,7 +15,7 @@
 
 \newcommand{\one}{\mathbf{1}}
 
-\title{Research statement}
+\title{Full research statement}
 \author{Nazarov I.N.}
 
 \begin{document}
@@ -39,23 +39,14 @@ intrusion detection in data and general security \cite{jyothsna2011}, anti-fraud
 solutions in banking and monitoring of insider trading in market regulation \cite{patcha2007},
 et c.
 
-Each of these problems uses negative definition of abnormality: ``abrnormal'' is
-something which is not ``normal'' in a particular domain. In security and finance
-``normal'' is understood as strict compliance with some regulation or protocol, in
-engineering and medicine ``normal'' is within the acceptable band of a nominal regime
-of a machine or the usual phenomenology of a subject. In each of theses tasks it is
-assumed that the majority of the observed data are ``normal'', and only a minute
-fraction of it is ``anomalous'', which is why most methods of anomaly detection
-define an anomaly as a substantial deviation form what the internal representation
-of a ``normal'' pattern. Regression-based methods rely on the learnt feature-target
-relationship, whereas density-based anomaly detectors use modes of the estimated
-data generating distribution or the reconstructed manifold carrying the data.
+Anomaly detection can be split in two categories: density-based and regression-based
+methods, -- however there is no clearcut distinction between categories.
 
 Regression-based approach encompass such models as multilayer neural networks for
-supervised (c.f. \cite{augusteijn2002}), and replicating neural networks, autoencoders
-for unsupervised learning tasks (c.f. \cite{hawkins2002,williams2002}). Spectral
-methods, \cite{chandola2009}, infer combinations of input features, that comprehensively
-describe the variability of the data separate anomalous from normal. Manifold-based
+supervised \cite{augusteijn2002}, and replicating neural networks, autoencoders
+for unsupervised learning tasks \cite{hawkins2002,williams2002}. Spectral methods
+infer combinations of input features, that comprehensively describe the variability
+of the data separate anomalous from normal \cite{chandola2009}. Manifold-based
 methods include approximation with principal components, \cite{dutta2007,shyu2003},
 and \cite{jolliffe2014}, or more general non-linear kernel based representations,
 \cite{hoffmann2007,scholkopf1998}. These methods produce a compact low-dimensional
@@ -97,25 +88,26 @@ Supervised regression-based methods allow modelling of complex interactions betw
 features of the data, yet do not readily yield any sort of prediction confidence
 measure, unless distributional assumptions are introduced. One method to keep them
 distribution-free is to employ ``conformal prediction'' approach developed in \cite{vovk2005}.
-Under the standard independence assumption and for any ML algorithm it constructs
-a set in the space of targets, that contains yet unobserved data with a pre-specified
-confidence level. IOn essence conformal prediction amounts to the following: for
-every possible value $z$ of an object $Z_{n+1}$ the procedure tests $H_0: Z_{n+1}=z$,
-and then inverts the test to get a confidence region. The hypothesis tests are based
-on the observed sample $(Z_i)_{i=1}^n$ and hypothesized $z$, and are designed to
-have a pre-specified type-I error rate $\alpha$.
+Under the standard independence assumption it constructs a set that contains yet
+unobserved data with a pre-specified confidence level. In essence, conformal prediction
+amounts to the following: for every possible value $z$ of an object $Z_{n+1}$ the
+procedure tests $H_0: Z_{n+1}=z$, and then inverts the test to get a confidence
+region. The hypothesis tests are based on the observed sample $(Z_i)_{i=1}^n$ and
+hypothesized $z$, and are designed to have a pre-specified type-I error rate.
 
-In my PHD thesis I would like to focus on the following: \begin{enumerate}
-  \item to explore conformal prediction and other distribution-free methods for
-  the task of endowing kernel-based regression models with prediction confidence
-  intervals;
-  \item compare the suggested enhancements to the state-of-the art methods;
-  \item provide necessary theoretical foundations for correct coverage and
-  efficiency.
+In my PHD thesis I would like to continue the work on the Conformalized Kernel Ridge
+regression, that, in contrast to the Gaussian Process regression, produces prediction
+confidence intervals without any distributional assumptions. More specifically I
+would like to focus on: \begin{enumerate}
+  \item designing efficient conformal procedures for endowing other kernel-based
+  ML algorithms with distribution-free prediction confidence measures;
+  \item providing necessary theoretical basis for coverage guarantees and efficiency
+  compared to related state-of-the-art Bayesian methods.
 \end{enumerate}
-In this vein I co-authored and submitted a paper to the ICMLA 2017 conference which
-outlines the results of an extensive numerical study concerning both coverage and
-efficiency issues.
+
+In this vein I co-authored a paper for the upcoming ICMLA 2017 conference, in which
+I outline the results of an extensive numerical study concerning both coverage and
+efficiency issues of the Conformalized Kernel Ridge regression.
 
 % section regression_based_anomaly_detection (end)
 
@@ -142,35 +134,44 @@ the modes of the data distribution inferred from the training data. Bayesian out
 detection techniques models use prior distributions and data-generating model to
 compute the posterior of a new observation given the already observed data.
 
-One promising research direction is conformal procedures for kernel embedding of
-probability distributions, introduced \cite{smola2007}. Basically, in a suitable
-Reproducing Kernel Hilbert Space (RKHS) many non-pathological distributions on
-metric spaces can be identified with a unique element of said RKHS. Specifically,
-if $K$ is a kernel that induces a universal RKHS $\Hcal$ of functions $\Xcal\mapsto\Real$,
-then for any probability distribution $P$ on $\Xcal$ with $\ex_{x\sim P} \sqrt{K(x,x)} < +\infty$
-there is a unique representative $\mu_P\in \Hcal$ such that $\ex_P f = \langle \mu_P, f\rangle$
+One promising research direction is conformal procedures for kernel embeddings of
+probability distributions introduced \cite{smola2007}. Basically, in a suitable
+Reproducing Kernel Hilbert Space (RKHS) many non-pathological distributions on metric
+spaces can be identified with a unique element of the said RKHS. Specifically, if
+$K$ is a kernel that induces a universal real RKHS $\Hcal$ then for any probability
+distribution $P$ on $\Xcal$ with $\ex_{x\sim P} \sqrt{K(x,x)} < +\infty$ there is
+a unique representative $\mu_P\in \Hcal$ such that $\ex_{x\sim P} f(x) = \langle \mu_P, f\rangle$
 for all $f\in \Hcal$ and
 \begin{equation*}
   \mu_P(x) = \langle \mu_P, K(x, \cdot) \rangle = \ex_{y\sim P} K(x, y) \,.
 \end{equation*}
 
-Now, for a compact metric space $\Xcal$ the distributions $P$ and $Q$ coincide if
-and only if $\ex_P f = \ex_Q f$ for all continuous and bounded $f:\Xcal\mapsto \Real$.
-Based on this \cite{gretton2012} propose the \textit{maximum mean discrepancy} (MDD)
--- an effective non-parametric criterion that compares the distributions, which is
-the RKHS norm of the deviation of the kernel embeddings $\mu_Q$ and $\mu_P$. Therefore
-in order to decide if a new example $z_n$ is anomalous or not with respect to a given
-sample $Z_{:n-1} = (z_i)_{i=1}^{n-1}$ it is could be sufficient to compute
-$\|\hat{\mu}_{:n} - \hat{\mu}_{:n-1}\|_\Hcal$, where
+A possible anomaly detection method stems from the fact that if $\Xcal$ is a compact
+metric then the distributions $P$ and $Q$ coincide if and only if $\ex_P f = \ex_Q f$
+for all continuous and bounded $f:\Xcal\mapsto \Real$. For example, based on this
+\cite{gretton2012} propose the \textit{maximum mean discrepancy} (MDD) -- an effective
+non-parametric criterion for comparing distributions by measuring the norm of the
+deviation of their kernel embeddings. Analogously, in order to decide the abnormality
+of $z_n$ with respect to a given sample $Z_{:n-1} = (z_i)_{i=1}^{n-1}$ it is could
+be sufficient to compute $\|\hat{\mu}_{:n} - \hat{\mu}_{:n-1}\|$, where
 \begin{equation*}
   \hat{\mu}_{:n}(x) = \ex_{z\sim Z_{:n}} K(x, z) = n^{-1} \sum_{i=1}^n K(x, z_i) \,,
 \end{equation*}
 the kernel mean embedding of the empirical distribution of $Z_{:n}$.
 
-Empirical estimate of Hellinger distance for measuring deviation of probability
-distributions was used in \cite{Baktashmotlaghetal2016} together with MDD for
-constructing domain-invariant representations to tackle the domain shift problem
-(domain adaptation).
+Another approach to this problem is to use recent results from \cite{Baktashmotlaghetal2016}
+which uses kernel embeddings to construct a low dimensional invariant representation
+of the observed data to tackle the domain shift problem (domain adaptation). For
+example, it could be possible to construct a map such that the distribution of observed
+data looks the closest to a multivariate Gaussian, and then define normal regions
+via elliptical confidence regions.
+
+To this end in my PHD thesis I propose to study the following: \begin{itemize}
+  \item further study the properties and theoretical guarantees of anomaly detection
+  based on conformalized kernel embeddings;
+  \item develop an approach based on the ideas from domain adaptation and establish
+  its theoretical soundness.
+\end{itemize}
 
 % section conformalized_kernel_embeddings (end)
 
@@ -181,6 +182,26 @@ constructing domain-invariant representations to tackle the domain shift problem
 % что такое аномальность, точность обнаружения аномалий, и оценивать, какой размер
 % выборки нужен для получения заданной точности, сравнивать эффективности различных
 % методов обнаружения аномалий.
+
+Each of the applications uses negative definition of abnormality: ``abrnormal'' is
+something which is not ``normal'' in a particular domain. In security and finance
+``normal'' is understood as strict compliance with some regulation or protocol, in
+engineering and medicine ``normal'' is within the acceptable band of a nominal regime
+of a machine or the usual phenomenology of a subject. In each of theses tasks it is
+assumed that the majority of the observed data are ``normal'', and only a minute
+fraction of it is ``anomalous'', which is why most methods of define an anomaly
+as a substantial deviation form the internal representation of a ``normal'' pattern.
+For instance, regression-based methods rely on the learnt feature-target relationship,
+whereas density-based anomaly detectors use modes of the estimated data generating
+distribution or the reconstructed manifold carrying the data.
+
+Finally, I hope to develop a general framework formalizing anomaly detection problems
+which would include\begin{itemize}
+  \item a rigorous definition of an anomaly and notion of detection precision;
+  \item a method for determining the least amount of observations needed for the
+  required detection precision;
+  \item tools necessary for comparing efficiency of various detection methods.
+\end{itemize}
 
 % section general_anomaly_detection (end)
 
