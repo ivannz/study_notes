@@ -20,6 +20,18 @@
 
 \begin{document}
 \maketitle
+\begin{abstract}
+Many data-intense applied fields such as maintenance of complex systems, structural
+integrity monitoring, diagnostic medicine, intrusion detection, and anti-fraud solutions
+in banking and many others, require that it be possible to decide if the new data
+diverges in some sense from the previously seen observations. Thus, I plan to focus
+my PhD research primarily on developing a general framework for anomaly detection
+which would provide a rigorous definition of an anomaly, a notion of detection precision
+and a method for determining the amount of observations needed for the required precision.
+My secondary goal is to design efficient procedures for distribution-free confidence
+measures for various ML algorithms, and provide necessary theoretical basis for
+their coverage guarantees and efficiency.
+\end{abstract}
 
 \section{Relevance} % (fold)
 \label{sec:relevance}
@@ -64,6 +76,36 @@ estimates of confidence based in the same idea of tightness of the observations'
 immediate locality.
 
 % section relevance (end)
+
+\section{General anomaly detection} % (fold)
+\label{sec:general_anomaly_detection}
+
+% Разработать некоторый general framework, в рамках которого можно было бы формулировать,
+% что такое аномальность, точность обнаружения аномалий, и оценивать, какой размер
+% выборки нужен для получения заданной точности, сравнивать эффективности различных
+% методов обнаружения аномалий.
+
+Each of the applications uses negative definition of abnormality: ``abrnormal'' is
+something which is not ``normal'' in a particular domain. In security and finance
+``normal'' is understood as strict compliance with some regulation or protocol, in
+engineering and medicine ``normal'' is within the acceptable band of a nominal regime
+of a machine or the usual phenomenology of a subject. In each of theses tasks it is
+assumed that the majority of the observed data are ``normal'', and only a minute
+fraction of it is ``anomalous'', which is why most methods of define an anomaly
+as a substantial deviation form the internal representation of a ``normal'' pattern.
+For instance, regression-based methods rely on the learnt feature-target relationship,
+whereas density-based anomaly detectors use modes of the estimated data generating
+distribution or the reconstructed manifold carrying the data.
+
+In my thesis I plan to develop a general framework formalizing anomaly detection
+problems which would include\begin{itemize}
+  \item a rigorous definition of an anomaly and notion of detection precision;
+  \item a method for determining the least amount of observations needed for the
+  required detection precision;
+  \item tools necessary for comparing efficiency of various detection methods.
+\end{itemize}
+
+% section general_anomaly_detection (end)
 
 \section{Regression-based anomaly detection} % (fold)
 \label{sec:regression_based_anomaly_detection}
@@ -174,36 +216,6 @@ To this end in my PHD thesis I propose to study the following: \begin{itemize}
 \end{itemize}
 
 % section conformalized_kernel_embeddings (end)
-
-\section{General anomaly detection} % (fold)
-\label{sec:general_anomaly_detection}
-
-% Разработать некоторый general framework, в рамках которого можно было бы формулировать,
-% что такое аномальность, точность обнаружения аномалий, и оценивать, какой размер
-% выборки нужен для получения заданной точности, сравнивать эффективности различных
-% методов обнаружения аномалий.
-
-Each of the applications uses negative definition of abnormality: ``abrnormal'' is
-something which is not ``normal'' in a particular domain. In security and finance
-``normal'' is understood as strict compliance with some regulation or protocol, in
-engineering and medicine ``normal'' is within the acceptable band of a nominal regime
-of a machine or the usual phenomenology of a subject. In each of theses tasks it is
-assumed that the majority of the observed data are ``normal'', and only a minute
-fraction of it is ``anomalous'', which is why most methods of define an anomaly
-as a substantial deviation form the internal representation of a ``normal'' pattern.
-For instance, regression-based methods rely on the learnt feature-target relationship,
-whereas density-based anomaly detectors use modes of the estimated data generating
-distribution or the reconstructed manifold carrying the data.
-
-Finally, I hope to develop a general framework formalizing anomaly detection problems
-which would include\begin{itemize}
-  \item a rigorous definition of an anomaly and notion of detection precision;
-  \item a method for determining the least amount of observations needed for the
-  required detection precision;
-  \item tools necessary for comparing efficiency of various detection methods.
-\end{itemize}
-
-% section general_anomaly_detection (end)
 
 % \bibliographystyle{amsplain}
 \clearpage
