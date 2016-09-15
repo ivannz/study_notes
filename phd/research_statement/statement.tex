@@ -15,7 +15,7 @@
 
 \newcommand{\one}{\mathbf{1}}
 
-\title{Full research statement}
+\title{Research statement}
 \author{Nazarov I.N.}
 
 \begin{document}
@@ -153,8 +153,8 @@ efficiency issues of the Conformalized Kernel Ridge regression.
 
 % section regression_based_anomaly_detection (end)
 
-\section{Conformalized kernel embeddings} % (fold)
-\label{sec:conformalized_kernel_embeddings}
+\section{Density-based anomaly detection} % (fold)
+\label{sec:density_based_anomaly_detection}
 
 % Следующий пункт - есть много методов детектирования аномалий, например, LoOF, LOP и
 % т.п. Они так или иначе основаны на некотором "инженерном" способе определить, что
@@ -206,16 +206,15 @@ which uses kernel embeddings to construct a low dimensional invariant representa
 of the observed data to tackle the domain shift problem (domain adaptation). For
 example, it could be possible to construct a map such that the distribution of observed
 data looks the closest to a multivariate Gaussian, and then define normal regions
-via elliptical confidence regions.
-
-To this end in my PHD thesis I propose to study the following: \begin{itemize}
+via elliptical confidence regions. To this end in my PHD thesis I propose to:
+\begin{itemize}
   \item further study the properties and theoretical guarantees of anomaly detection
   based on conformalized kernel embeddings;
   \item develop an approach based on the ideas from domain adaptation and establish
   its theoretical soundness.
 \end{itemize}
 
-% section conformalized_kernel_embeddings (end)
+% section density_based_anomaly_detection (end)
 
 % \bibliographystyle{amsplain}
 \clearpage
