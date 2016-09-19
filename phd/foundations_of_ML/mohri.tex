@@ -15,14 +15,10 @@
 \newcommand{\tr}{\text{tr}}
 \newcommand{\one}{\mathbf{1}}
 \newcommand{\nil}{\mathbf{0}}
-\newcommand{\RSS}{{\text{RSS}}}
+\newcommand{\Rcal}{{\mathcal{R}}}
 \newcommand{\Lcal}{\mathcal{L}}
 \newcommand{\Hcal}{\mathcal{H}}
 \newcommand{\Fcal}{\mathcal{F}}
-
-\usepackage[english, russian]{babel}
-\newcommand{\eng}[1]{\foreignlanguage{english}{#1}}
-\newcommand{\rus}[1]{\foreignlanguage{russian}{#1}}
 
 \title{Mehryar Mohri: Foundations Of Machine Learning}
 \author{Nazarov Ivan}
@@ -42,9 +38,9 @@ ML consists of computational methods to use ``experience'' to make predictions a
 is associated with statistics, probability and optimization.
 
 Complexities: \begin{itemize}
-	\item Sample complexity: how many sample are needed to learn effectively;
-	\item Space and computational complexity: how much resources the algorithm
-	requires and its relation to its efficiency.
+    \item Sample complexity: how many sample are needed to learn effectively;
+    \item Space and computational complexity: how much resources the algorithm
+    requires and its relation to its efficiency.
 \end{itemize}
 
 Typical application: spam filtering, NLP (sentiment analysis, morphological analysis),
@@ -55,22 +51,22 @@ systems, medical diagnostics, fraud and intrusion detection.
 medical history.
 
 Broader categorization: \begin{itemize}
-	\item Classification: $0-1$ error -- harder than in regression, the labels might
-	have hierarchy or ``lattice'' structure (need for a more sophisticated loss);
-	\item Regression: proximity-based error measures;
-	\item Ranking: preference mining, recover ordering;
-	\item Clustering: partition the data into homogeneous, yet distinct groups;
-	\item Dimensionality reduction: a lower-dimensional manifold representing the
-	data and preserves its properties, or recovering invariant representations (main
-	question is how well the reduced representation works in a subsequent task of
-	classification or regression);
+    \item Classification: $0-1$ error -- harder than in regression, the labels might
+    have hierarchy or ``lattice'' structure (need for a more sophisticated loss);
+    \item Regression: proximity-based error measures;
+    \item Ranking: preference mining, recover ordering;
+    \item Clustering: partition the data into homogeneous, yet distinct groups;
+    \item Dimensionality reduction: a lower-dimensional manifold representing the
+    data and preserves its properties, or recovering invariant representations (main
+    question is how well the reduced representation works in a subsequent task of
+    classification or regression);
 \end{itemize}
 
 General objective of ML research: \begin{itemize}
-	\item theoretical: what can be learned? What is ``efficiency''? What are the
-	guarantees?
-	\item algorithmic: how does the solution scale with the data? Does it handle
-	different tasks or generalize?
+    \item theoretical: what can be learned? What is ``efficiency''? What are the
+    guarantees?
+    \item algorithmic: how does the solution scale with the data? Does it handle
+    different tasks or generalize?
 \end{itemize}
 
 This course will present the most mathematically established algorithms.
@@ -85,41 +81,41 @@ ML algorithm perform poorly. Choice of the features is extremely critical, and
 gradually there must be more algorithms that learn features automatically.
 
 Data: \begin{itemize}
-	\item train sample (typically labelled);
-	\item test sample (unlabelled);
-	\item validation sample (typically labelled).
+    \item train sample (typically labelled);
+    \item test sample (unlabelled);
+    \item validation sample (typically labelled).
 \end{itemize}
 
 The general learning scenarios: \begin{itemize}
-	\item batch learning: train and test phases are separated;
-	\item online learning: crucial for iterative optimization, train-test steps
-	are intermixed;
+    \item batch learning: train and test phases are separated;
+    \item online learning: crucial for iterative optimization, train-test steps
+    are intermixed;
 \end{itemize}
 
 Queries: \begin{itemize}
-	\item passive: the learner receives its data all-at-once;
-	\item active: the learner can actively participate in data collection and has
-	a dedicated internal process to make decision about acquiring new data for more
-	efficient learning.
+    \item passive: the learner receives its data all-at-once;
+    \item active: the learner can actively participate in data collection and has
+    a dedicated internal process to make decision about acquiring new data for more
+    efficient learning.
 \end{itemize}
 
 Batch scenarios: \begin{itemize}
-	\item unsupervised: no labelled data;
-	\item supervised: use labelled data for predictions on new data;
-	\item semi-supervised: use labelled and unlabelled data to make predictions
-	about new data;
-	\item transduction: use the train and test sets to make prediction about the
-	available test set (the test cases are so difficult that it is still hard to
-	make accurate predictions, test data provides with additional distributional
-	information);
+    \item unsupervised: no labelled data;
+    \item supervised: use labelled data for predictions on new data;
+    \item semi-supervised: use labelled and unlabelled data to make predictions
+    about new data;
+    \item transduction: use the train and test sets to make prediction about the
+    available test set (the test cases are so difficult that it is still hard to
+    make accurate predictions, test data provides with additional distributional
+    information);
 \end{itemize}
 
 Stages of learning: \begin{enumerate}
-	\item divide the available data in to train, validation and test;
-	\item train algorithm and prior knowledge about features to learn an algorithm
-	$\hat{\mathcal{A}}(\Theta)$;
-	\item use validation to select the best hyper-parameter $\Theta$;
-	\item use test set to gauge the generalization error.
+    \item divide the available data in to train, validation and test;
+    \item train algorithm and prior knowledge about features to learn an algorithm
+    $\hat{\mathcal{A}}(\Theta)$;
+    \item use validation to select the best hyper-parameter $\Theta$;
+    \item use test set to gauge the generalization error.
 \end{enumerate}
 
 Let $X$ be the input e space and $Y$ -- the output space. There is a loss function
@@ -127,37 +123,34 @@ $L: Y\times Y \mapsto \Real$: $L(\hat{y}, y)$ -- the cost of predicting $\hat{y}
 when the actual target is $y$. A hypotheses set $H\subseteq Y^X$. Training data
 $(x_i,y_i)_{i=1}^m \in X\times Y$.
 Problem setup: \begin{itemize}
-	\item deterministic case: $\exits f:X\mapsto Y$ measurable, not necessarily from
-	$H$ such that $y_i = f(x_i)$;
-	\item stochastic case: there exits a conditional distribution given the
-	input $y_i \sim p(y|x=x_i)$.
+    \item deterministic case: $\exists f:X\mapsto Y$ measurable, not necessarily from
+    $H$, such that $y_i = f(x_i)$;
+    \item stochastic case: there exits a conditional distribution given the
+    input \\$y_i \sim p(y|x=x_i)$.
 \end{itemize}
 
 Errors: \begin{itemize}
-	\item the generalization error $R(h) = \ex_{(y, x)\sim D} L(h(x), y)$ for $\in H$
-	-- the thing we care about;
-	\item Empirical error: $\hat{R}(h) = m^{-1} \sum_{i=1}^m L(h(x_i), y_i)$;
-	\item the Bates error: $R^* = \inf_{h, \text{meas}} R(h)$ the smallest achievable
-	error (not necessarily feasible);
+    \item the generalization error $R(h) = \ex_{(y, x)\sim D} L(h(x), y)$ for $\in H$
+    -- the thing we care about;
+    \item Empirical error: $\hat{R}(h) = m^{-1} \sum_{i=1}^m L(h(x_i), y_i)$;
+    \item the Bayes error: $R^* = \inf_{h \text{ -- meas}} R(h)$ the smallest achievable
+    theoretical error (not necessarily feasible);
 \end{itemize}
-In deterministic case $R^*=0$ in stochastic -- $R^*>0$.
+In deterministic case $R^*=0$ in stochastic -- $R^*\geq 0$.
 
-Algorithm works imperfectly -- blame it n the noise (the measure off how poorly you
-are doing). Binary case for $x\in X$:
+Algorithm works imperfectly -- ususally it is blamed on the noise (as a measure of
+how poorly you are doing). Binary case for $x\in X$:
 \[ \text{noise}(x) = \min\bigl\{\pr(y=1|x), \pr(y=0|x)\bigr\} \,, \]
--- the error of the Bayes classifier and $\Ex \text{noise(x)} = R^*$ -- the Bayes
+-- the error of the Bayes classifier and $\ex \text{noise(x)} = R^*$ -- the Bayes
 error.
-
 \textbf{First homework}: define the noise for other loss functions and problems
 setups.
 
-One learning challenge: find an accurate predictor for all points while having access
-to a \textbf{finite} set of points. So the question is which technique to use.
-
-One possible approach is to use Empirical Risk Minimization procedure: chose the hypothesis
-with the lowest training sample error
+One learning challenge: find an accurate predictor for \textbf{all points} while
+having access to a \textbf{finite} set of points. So the question is which technique
+to use. One possible approach is to use Empirical Risk Minimization procedure:
+choose the hypothesis with the lowest training sample error
 \[ \hat{h} = \argmin_{h\in H} \hat{R}(h) \,. \]
-
 In most cases ERM is terrible without complexity accounting. \textbf{Learning is not
 fitting}, and does not constitute making all correct predictions on the train set.
 Thus we arrive at the notion of the complexity of the hypothesised space.
@@ -169,41 +162,44 @@ would want to balance these phenomena.
 
 Structural risk minimization: given a set on nested hypothesis spaces $(H_n)_{n\geq 0}$
 with $H_n \subset H_{n+1}$ for all $n$ and
-\[ h = \argmin_{h\in H_n, n\geq 0} \hat{R}(h) + \text{penalty}(H_n, m) \,. \]
+\[ h = \argmin_{h\in H_n, n\geq 0} \hat{R}_S(h) + \text{penalty}(H_n, m) \,. \]
 This is an NP-hard problem. The problem of learning: when it is good enough to stop.
 Now, $\text{penalty}$ depends on the complexity term, and a term depending on the
 index and sample size.
 
-\textbf{Second homework}: prove the SRM guarantees.
-
 Regularization-based algorithms: for $\lambda \geq 0$
 \[ h = \argmin_{h\in H}\hat{R}(h) + \lambda \Omega(h) \,, \]
 where $\Omega:H \mapsto \Real$ is the regularization (complexity) term.
+
+\textbf{Second homework}: prove the SRM guarantees.
 
 % subsection definitions_and_terminology (end)
 
 \subsection{The tools} % (fold)
 \label{sub:the_tools}
 
-the probability tools: \begin{itemize}
-	\item the Union bound;
-	\item inversion: if $\Pr(X\geq \epsilon) \leq f(\epsilon)$, then for any $\delta>0$ the 
-	with probability at least $1-\delta$, $X\leq f^{-1}(\delta)$;
-	\item Jensen inequality: if $f$ is convex then $f(\Ex x) \leq \Ex f(x)$;
-	\item Markov's inequality: $\Pr(X>\epsilon) \leq \frac{\Ex X}{\epsilon}$;
-	\item Chebychev's inequality: $\Pr(|X-\Ex X| > \epsilon) \leq $
-	\item Hoeffding's inequality: if $X_i\in[a,b]$ almost surely and are independent,
-	then 
-	\[ \Pr\bigl(\mu - m^{-1} \sum_{i=1}^m X_i > \epsilon \bigr)
-		\leq \text{exp}(-\frac{2m^2\epsilon^2}{\sum_{i=1}^m(b_i-a_i)^2}) \,, \]
-	\item Mcdiarmid's inequality: if $X_i$ are independent and take validation in U.
-	If $f:U^m \mapsto \Real$ is Lipshitz, then
-	\[ \sup_{x_1, \ldots, x_m, x_i'} |f(x_1, x_i, x_m) - f(x_1, x_i', x_m) | \leq c_i\,, \]
-	\[ \Pr\bigl( f(X_1, \ldots, X_m) - \Ex f(X_1, \ldots, X_m) | > \epsilon)
-		\leq 2 \text{exp}(-\frac{2 \epsilon^2}{\sum_{i=1}^m c_i^2}) \,, \]
-	\item Chernoff's bounds: for any $t> 0$ one has:
-	\[ \pr(X\leq \epsilon) = \pr(e^{tX} \leq e^{t\epsilon}) \leq e^{-t\epsilon}\Ex e^{tX} \,, \]
-	and then find the $\inf_{t>0}\ldots$ to best minimize the left-hand side probability.
+The probability tools: \begin{itemize}
+    \item the Union bound: $\pr(\cup_{n\geq1} A_n) \leq \sum_{n\geq1} \pr(A_n)$;
+    \item inversion: if $\pr(X\geq \epsilon) \leq f(\epsilon)$, then for any $\delta>0$
+    \[ X < f^{-1}(\delta) \text{ with probability at least } 1-\delta\,;\]
+    \item Jensen's inequality: if $f$ is convex then $f(\ex X) \leq \ex f(X)$;
+    \item Markov's inequality: if $X$ is non-negative then $\pr(X>\epsilon) \leq \frac{\ex X}{\epsilon}$;
+    \item Chebychev's inequality: $\pr(|X - \ex X| > \epsilon) \leq \frac{\ex(X - \ex X)^2}{\epsilon^2}$;
+    \item Hoeffding's inequality: if $(X_i)_{i=1}^m$ are independent and $X_i \in [a_i, b_i]$
+    almost surely then 
+    \[ \pr\bigl(m^{-1} \sum_{i=1}^m \ex X_i - m^{-1} \sum_{i=1}^m X_i > \epsilon \bigr)
+        \leq \text{exp}\Bigl(-\frac{2 m^2\epsilon^2}{\sum_{i=1}^m(b_i-a_i)^2}\Bigr) \,, \]
+    \item McDiarmid's inequality: if $X_i$ are independent and take values in $U$, and
+    $f:U^m \mapsto \Real$ is Lipschitz and
+    \[ \sup_{x_1, \ldots, x_m, x_i'}
+        \bigl| f(x_1, \ldots, x_i, \ldots, x_m) - f(x_1, \ldots, x_i', \ldots, x_m) \bigr|
+        \leq c_i\,, \]
+    then
+    \[ \pr\bigl( f(X_1, \ldots, X_m) - \ex f(X_1, \ldots, X_m) | > \epsilon)
+        \leq 2 \text{exp}\Bigl(-\frac{2 \epsilon^2}{\sum_{i=1}^m c_i^2}\Bigr) \,, \]
+    \item Chernoff's bounds: for any $t> 0$ one has:
+    \[ \pr(X\leq \epsilon) = \pr(e^{tX} \leq e^{t\epsilon}) \leq e^{-t\epsilon}\ex e^{tX} \,, \]
+    and then take the $\inf_{t>0}\ldots$ to best minimize the left-hand side probability.
 \end{itemize}
 
 % subsection the_tools (end)
@@ -213,40 +209,47 @@ the probability tools: \begin{itemize}
 Fundamentals of learning. How to understand complexity of a hypothesis?
 
 The sample $(x_i, y_i)_{i=1}^m \sim D$ iid. True, theoretical error is:
-\[ R(h) = \Pr_{(x, y)\sim D} (h(x)\neq c(x)) = \ex_{(x, y)\sim D} 1_{h(x)\neq c(x)} \,, \]
+\[ R(h) = \pr_{(x, y)\sim D} (h(x)\neq c(x)) = \ex_{(x, y)\sim D} 1_{h(x)\neq c(x)} \,, \]
 Empirical error:
 \[ \hat{R}_S(h)
-	= \ex_{(x, y)\sim \hat{D}} 1_{h(x)\neq c(x)}
-	= \ex_{(x, y)\sim S} 1_{h(x)\neq c(x)} \,,
+    = \ex_{(x, y)\sim \hat{D}} 1_{h(x)\neq c(x)}
+    = \ex_{(x, y)\sim S} 1_{h(x)\neq c(x)} \,,
 \]
 where the $\hat{D}$ is the empirical distribution of the sample data $S$. Now, note
-that $\Ex \hat{R}_S(h) = R(h)$ (we need only distributional identity here). In cases
+that $\ex \hat{R}_S(h) = R(h)$ (we need only distributional identity here). In cases
 where the training sample is not drawn from the same distributions (drift, and domain
 adaptation).
 
 Hoeffding's inequality readily gives:
-\[ \Pr(R(h) - \hat{R}(h) \leq \epsilon ) \leq e^{-2m\epsilon^2} \,,\]
-\[ \Pr(\hat{R}(h) - R(h)\leq \epsilon ) \leq e^{-2m\epsilon^2} \,.\]
+\[ \pr(R(h) - \hat{R}(h) \geq \epsilon ) \leq e^{-2m\epsilon^2}
+    \text{ and }
+    \pr(\hat{R}(h) - R(h) \geq \epsilon ) \leq e^{-2m\epsilon^2}
+\,.\]
 By the union bound:
-\[ \Pr(|\hat{R}(h) - R(h)|\leq \epsilon ) \leq 2 e^{-2m\epsilon^2} \,.\]
+\[ \pr(|\hat{R}(h) - R(h)|\geq \epsilon ) \leq 2 e^{-2m\epsilon^2} \,.\]
 But this is all pretty and good for a single hypothesis.
 
 A learning algorithm yields a hypothesis based on the sample: $\mathcal{A}(S) = h_S$
-the data dependent hypothesis. $h_S$ is a random variable, and we need a bound that holds
-for all hypothesis $h\in H$ -- a uniform bound.
+-- the data dependent hypothesis. $h_S$ is a random variable, and we need a bound
+that holds for all hypothesis $h\in H$ -- a uniform bound.
 
 For a \textbf{finite} hypothesis set $H$ Hoeffding's inequality readily gives a
 bound (using the union bound):
-\[ \Pr(\max_{h\in H} |\hat{R}(h) - R(h)|\leq \epsilon )
-	\Pr(\cup_{h\in H} \{|\hat{R}(h) - R(h)|\leq \epsilon\} )
-	\leq \sum_{h\in H}\Pr(|\hat{R}(h) - R(h)|\leq \epsilon )
-	\leq 2 |H| e^{-2m\epsilon^2} \,.\]
+\begin{align*}
+    \pr(\max_{h\in H} |\hat{R}(h) - R(h)|\geq \epsilon )
+    &= \pr(\cup_{h\in H} \{|\hat{R}(h) - R(h)|\geq \epsilon\} ) \\
+    &\leq \sum_{h\in H}\pr(|\hat{R}(h) - R(h)|\geq \epsilon )
+     \leq 2 |H| e^{-2m\epsilon^2} \,.
+\end{align*}
 Thus for any $\delta > 0$, with probability at least $1-\delta$ one has
-\[ \forall h\in H \, R(h) \leq \hat{R}(h) + \sqrt{\frac{\log|H| + \log \frac{2}{\delta}}{2m}} \,,\]
-using inversion principle.
+\[ \forall h\in H \,,\,
+    R(h) \leq \hat{R}(h) + \sqrt{\frac{\log|H|
+    + \log \frac{2}{\delta}}{2m}}
+\,,\]
+using the inversion principle.
 
-Occam's razor principle: \textbf{ceteris paribus} one should be choosing the simplest
-hypothesis set.
+Occam's razor: \textbf{ceteris paribus} one should be choosing the simplest hypothesis
+set.
 
 What about an infinite hypothesis set? Reduce the infinite case to a finite case, or
 in what cases it is impossible. Foe example, it is possible to discretize the hypothesis
@@ -267,66 +270,72 @@ not just convenient, but is also very fundamental.
 \subsection{Rademacher complexity} % (fold)
 \label{sub:rademacher_complexity}
 
-Empirical Rademacher complexity. Ket $G$ be a afimly of maps from $Z$ to $[a, b]$,
-and suppose $S = (z_i)_{i=1}^m \in Z$ is the sample. Let $(\sigma_i)_{i=1}^m\in\{\0, 1}$
-be independent uniform random variables -- the Rademacher variables. The function
-class is more complex whenever it can approximate any random label assignment:
-\[ \hat{\mathcal{R}}(G)_S
-	= \ex_{\sigma} \sup_{g\in G} m^{-1} \sum_{i=1}^m \sigma_i g(z_i) \,, \]
--- the correlation with ``random assignment''. How well $G$ can mimic randomness,
-or, in other words how rich the hypothesis class $G$ is.
+Empirical Rademacher complexity. Let $G$ be a family of maps from $Z$ to $[a, b]$,
+and suppose $S = (z_i)_{i=1}^m \in Z$ is the train sample. Let $(\sigma_i)_{i=1}^m\in\{-1, 1\}$
+be independent uniform random variables -- the Rademacher variables. The hypothesis
+class is more complex whenever it can approximate any random label assignment arbitrarily
+close:
+\[ \hat{\mathcal{R}}_S(G)
+    = \ex_{\sigma} \sup_{g\in G} m^{-1} \sum_{i=1}^m \sigma_i g(z_i)
+    \,, \]
+-- the correlation with ``purely random label assignment''. This measures how well
+$G$ can mimic randomness, or, in other words how rich the hypothesis class $G$ is.
+It is sample dependent, capturing the complexity precisely on the observed sample.
+Taking the expectation with respect to any sample $S$ of size $m$ gives the Rademacher
+complexity of $G$:
+\[ \mathcal{R}_m(G) = \ex_{S\sim D^m} \hat{\mathcal{R}}_S(G) \,. \]
 
-It is sample dependent, but it captures the complexity precisely on the observed
-sample. Taking the expectation with respect to any sample $S$ of size $m$ gives
-the Rademacher complexity of $G$:
-\[ \mathcal{R}_m(G) = \Ex_{S\sim D^m} \hat{\mathcal{R}}_S(G) \,. \]
-
-If we have $G$ of functions $Z\mapsto [0,1]$ then for any $\delta>0$ with probability
-at least $1-\delta$ for all $g\in G$ one has:
-\[ \ex (g(z)
-	\leq m^{-1} \sum_{=1}^m g(z_i) + 2\mathcal{R}_m(G)
-	+ \sqrt{\frac{\log\frac{1}{\delta}}{2m}}
-	\,,\]
+If we have a set $G$ of hypotheses $Z\mapsto [0,1]$ then for any $\delta>0$ with
+probability at least $1-\delta$ for all $g\in G$ one has:
+\[ \ex_{z\sim D} g(z)
+    \leq m^{-1} \sum_{i=1}^m g(z_i) + 2\mathcal{R}_m(G)
+    + \sqrt{\frac{\log\frac{1}{\delta}}{2m}}
+    \,,\]
 and
-\[ \ex (g(z)
-	\leq m^{-1} \sum_{=1}^m g(z_i) + 2\hat{\mathcal{R}}_S(G)
-	+ 3\sqrt{\frac{\log\frac{2}{\delta}}{2m}}
-	\,.\]
+\[ \ex_{z\sim D} g(z)
+    \leq m^{-1} \sum_{i=1}^m g(z_i) + 2\hat{\mathcal{R}}_S(G)
+    + 3\sqrt{\frac{\log\frac{2}{\delta}}{2m}}
+    \,.\]
 
-\textbf{Proof}: apply McDiarmid's inequality to
-\[\Phi(S) = \sup_{g\in G} \ex g - \hat{\ex}_S g \,,\]
+\noindent \textbf{Proof}: apply McDiarmid's inequality to
+\[\Phi(S)
+    = \sup_{g\in G} \ex_{z\sim D} g(z) - \ex_{z\sim S} g(z)
+    = \sup_{g\in G} \ex g - \hat{\ex}_S g
+    \,, \]
 -- the deviation of the empirical expectation form the true average. But we need
-to know the bounds of $\Phi(S)$.
-Change one example in $S$ to get $S'$:
+to know the bounds of $\Phi(S)$. Change one example in $S$ to get $S'$:
 \[ \Phi(S') - \Phi(S)
-	\leq \sup_{g\in G} \hat{\ex}_{S'} g  - \hat{\ex}_S g
-	= \sup_{g\in G} m^{-1}(g(z_i')  - g(z_i))
-	\leq m^{-1} \,- \]
+    \leq \sup_{g\in G} \hat{\ex}_{S'} g  - \hat{\ex}_S g
+    = \sup_{g\in G} m^{-1}(g(z_i') - g(z_i))
+    \leq m^{-1} \,, \]
 and then the McDiarmid's inequality is applied for $\frac{\delta}{2}$ to get:
-with probability at least $1-\frac{\delta}{2}$
 \[ \Phi(S) \leq \ex_S \Phi(S) + \sqrt{\frac{\log\frac{2}{\delta}}{2m}} \,, \]
-and we need to bound the remaining expectation.
+with probability at least $1-\frac{\delta}{2}$. What is left is bounding the remaining
+expectation.
 
 What about $\ex_S \Phi(S)$? Introduce the ghost sample $S'$ of similar size $m$:
-\begin{align}
-	\ex_S \Phi(S)
-		&= \ex_S \sup_{g\in G} \ex g - \hat{\ex}_S g \\
-		&= \ex_S \sup_{g\in G} \ex_{S'} \hat{\ex}_{S'} g - \hat{\ex}_S g \\
-		& \bigl[\text{sub-additivity of sup}\bigr]\\
-		&\leq \ex_S \ex_{S'} \sup_{g\in G} \hat{\ex}_{S'} g - \hat{\ex}_S g \\
-		& \bigl[\text{permuting } S \text{ and } S' \text{ and taking sup}\bigr] \\
-		&\leq \ex_{S',S,\sigma} \sup_{g\in G} m^{-1} \sum_{i=1}^m \sigma_i(g(z_i') - g(z_i)) \\
-		& \bigl[\text{the expectations are identical and } \sigma \text{ are uniform}\bigr] \\
-		&\leq 2 \ex_{S,\sigma} \sup_{g\in G} m^{-1} \sum_{i=1}^m \sigma_i g(z_i) \\
-		&= 2 \mathcal{R}_m(G) \,.
-\end{align}
-This analysis uses outer expectations.
+\begin{align*}
+    \ex_S \Phi(S)
+        &= \ex_S \sup_{g\in G} \ex g - \hat{\ex}_S g \\
+        &= \ex_S \sup_{g\in G} \ex_{S'} \hat{\ex}_{S'} g - \hat{\ex}_S g \\
+        & \bigl[\text{sub-additivity of sup}\bigr]\\
+        &\leq \ex_S \ex_{S'} \sup_{g\in G} \hat{\ex}_{S'} g - \hat{\ex}_S g \\
+        & \bigl[\text{permuting } S \text{ and } S' \text{ and taking sup}\bigr] \\
+        &\leq \ex_{S',S,\sigma} \sup_{g\in G} m^{-1} \sum_{i=1}^m \sigma_i(g(z_i') - g(z_i)) \\
+        & \bigl[\text{the expectations are identical and } \sigma \text{ are uniform}\bigr] \\
+        &\leq 2 \ex_S \ex_\sigma \sup_{g\in G} m^{-1} \sum_{i=1}^m \sigma_i g(z_i)
+        = 2 \mathcal{R}_m(G) \,.
+\end{align*}
+This analysis uses outer expectations, and we just assume that the suprema are measurable
+-- this is true for most hypotheses classes.
 
 Now use the probability concentration inequality: by McDiarmid's inequality one
-has with probability at least $1-\frac{\delta}{2}$
-\[\mathcal{R}_m(G) \leq \mathcal{R}_S(G) + \sqrt{\frac{\log\frac{2}{\delta}}{2m}} \,. \]
-Using the union bound we get: with at least $1-\delta$ probability for all $g\in G$
-\[ \ex g \leq \hat{\ex}_S g + 2 \mathcal{R}_S(G) + 3 \sqrt{\frac{\log\frac{2}{\delta}}{2m}} \,, \]
+has
+\[ \mathcal{R}_m(G) \leq \hat{\mathcal{R}}_S(G) + \sqrt{\frac{\log\frac{2}{\delta}}{2m}} \,, \]
+with probability at least $1-\frac{\delta}{2}$. Using the union bound we get: for
+all $g\in G$
+\[ \ex g \leq \hat{\ex}_S g + 2 \hat{\mathcal{R}}_S(G) + 3 \sqrt{\frac{\log\frac{2}{\delta}}{2m}} \,, \]
+with at least $1-\delta$ probability altogether.
 
 Notation shift: $Z \to X\times Y$, $G \to H$ and $g(z) = L(h(x), y)$. So how can we
 derive the complexity of the hypothesis set, and not the losses (compositions) of a
@@ -334,105 +343,112 @@ hypothesis.
 
 Binary classification: the Rademacher complexity of $G$ is half that of $H$. Define
 \[ G = \{(x,y)\mapsto 1_{h(x)\neq y}\,:\, h\in H\} \,. \]
-Then
+Note that the hypotheses take values in $\{-1,+1\}$. Then
 \begin{align}
-	\mathcal{R}_m(G)
-		&= \ex_{S, \sigma} \sup_{g\in G} m^{-1} \sum_{i=1}^m \sigma_i g(z_i) \\
-		&= \ex_{S, \sigma} \sup_{h\in H} m^{-1} \sum_{i=1}^m \sigma_i (1 - y_i h(x_i)) \\
-		&= 0 + \ex_{S, \sigma} \sup_{h\in H} m^{-1} \sum_{i=1}^m - \sigma_i y_i h(x_i) \\
-		&[\text{the expectation of } y_i \sigma_i \text{ is one-half}]\\
-		&= \frac{1}{2} \ex_{S, \sigma} \sup_{h\in H} m^{-1} \sum_{i=1}^m \sigma_i h(x_i) \,.
+    \mathcal{R}_m(G)
+        &= \ex_{S, \sigma} \sup_{g\in G} m^{-1} \sum_{i=1}^m \sigma_i g(z_i) \\
+        &= \frac{1}{2} \ex_{S, \sigma} \sup_{h\in H} m^{-1} \sum_{i=1}^m \sigma_i (1 - y_i h(x_i)) \\
+        &= 0 + \frac{1}{2} \ex_{S, \sigma} \sup_{h\in H} m^{-1} \sum_{i=1}^m - \sigma_i y_i h(x_i) \\
+        &[\text{the distribution of } y_i \sigma_i \text{ is uniform}]\\
+        &= \frac{1}{2} \ex_{S, \sigma} \sup_{h\in H} m^{-1} \sum_{i=1}^m \sigma_i h(x_i) \,.
 \end{align}
 Thus we have the following for the hypothesis set $H$: with probability at least $1-\delta$
 for all $g\in G$
-\[ R(h) \leq \hat{R}_S(h) + \mathcal{R}_S(H) + 3\sqrt{\frac{\log\frac{2}{\delta}}{2m}} \,.\]
+\[ R(h) \leq \hat{R}_S(h) + \hat{\mathcal{R}}_S(H) + 3\sqrt{\frac{\log\frac{2}{\delta}}{2m}} \,.\]
 
-Estimating the Rademacher complexity -- use the definition. But it is hard, since
-fitting is NP-hard.
+Estimating the Rademacher complexity -- use the definition, which reduces to ERM.
+However, it is computationally hard for most hypotheses sets. One can use Monte-Carlo
+to this end.
 
 % subsection rademacher_complexity (end)
 
 \subsection{The growth function} % (fold)
 \label{sub:the_growth_function}
 
+The growth function is the size of the ``worst'' sample: the maximum number of ways
+to assign labels to a sample of size $m$ using all hypothesis from the set $H$.
+For all $m\geq 0$
+\[ \Pi_H(m)
+    = \max_{(x_i)_{i=1}^m \subseteq X}
+        \bigl| \{ (h(x_i))_{i=1}^m\,:\,h\in H \} \bigr|
+    = \max_{S \in X^m} |G_{|S}|
+    \,. \]
+It is very strict, since it also takes into account samples which could be extremely
+rare with respect to the true distribution.
 
-The growth function is the size of the ``worst'' sample: the maximum number of ways to
-assign labels to a sample of size $m$ using all hypothesis from the set $H$
-\[\forall m \geq 0\, \prod_H(m)
-	= \max_{(x_i)_{i=1}^m \subseteq X}\bigl| \{ (h(x_i))_{i=1}^m\,:\,h\in H \} \bigr| \,. \]
-It is very strict, since it also take into account extremely rare samples.
-
-\textbf{Massart's lemma}. Let $Z\subseteq \Real^m$ is a finite set, with
+\textbf{Massart's lemma}. Let $A\subseteq \Real^m$ is a finite set, with
 $R = \max_{x\in A} \|x\|_2$. Then the following holds:
-\[ \ex_\sigma m^{-1} \sum_i=1}^m \sigma_i x_i
-	\leq \frac{R\sqrt{2\log|A|}}{m} \,. \]
+\[ \ex_\sigma \sup_{x\in A} m^{-1} \sum_{i=1}^m \sigma_i x_i
+    \leq \frac{R\sqrt{2\log|A|}}{m} \,. \]
 Use the Chernoff's technique, then the Jensen's inequality, the union bound and finally
 the Hoeffding's inequality. Ultimately this gives an upper bound on the Rademacher
 complexity of $G$:
-\[ \mathcal{R}_m(G) \leq \sqrt{\frac{2\log \prod_G(m)}{m}} \,,\]
+\begin{align*}
+    \mathcal{R}_m(G)
+    &= \ex_S \ex_\sigma \sup_{g\in G} m^{-1} \sum_{i=1}^m\sigma_i g(x_i) \\
+    &= \ex_S \ex_\sigma \sup_{u\in G_{|S}} m^{-1} \sum_{i=1}^m\sigma_i u_i \\
+    &\leq \ex_S \frac{\sqrt{m} \sqrt{2 \log|G_{|S}|}}{m}
+    \leq \ex_S \sqrt{\frac{2 \log \Pi_G(m)}{m}} \,,
+\end{align*}
 form Massart's lemma and the definition on the growth function.
 
 The growth function is related to the VC-dimension of a hypothesis set.
-
-% Just assume that the suprema are measurable -- this is true for most hypotheses
-% classes.
 
 % subsection the_growth_function (end)
 
 \subsection{VC-dimension} % (fold)
 \label{sub:vc_dimension}
 
-The dimension is the size of the largest sample $S$ that admits arbitrary labelling by
-a hypothesis from $H$ ($H$ shatters $S$):
-\[ \text{VCdim}(H) = \max\{m \,:\, \prod_H(m) = 2^m \} \,, \]
+The dimension is the size of the largest sample $S$ that admits arbitrary labeling
+by a hypothesis from $H$ ($H$ shatters $S$):
+\[ \text{VCdim}(H) = \max\{m \geq 0 \, : \, \Pi_H(m) = 2^m \} \,, \]
 Again, it is the worst case measure -- very conservative, -- in practice bad samples
-can even be negligible.
-
-It suffices to present a sample $S$ of size $m$ such that $H$ shatters $S$. To give an
-upper bound one must show that for no sample $d+1$ shattering is possible.
+can even be negligible. It suffices to present a sample $S$ of size $m$ such that
+$H$ shatters $S$. To give an upper bound one must show that for no sample $d+1$
+shattering is possible.
 
 Typical VC-dimensions: \begin{itemize}
-	\item intervals on the real line: $\text{VCdim}(H) = 2$;
-	\item hyperplanes in $\Real^d$: $\text{VCdim}(H) = d+1$ the number of free parameters
-	of a hyperplane $\beta_0 + \beta'x$ n $\Real^d$, but not true in general (in
-	a plane -- XOR configuration for example, proof uses Radon's theorem);
-	\item hyper-rectangles: $\text{VCdim}(H) = 2d$;
-	\item convex polygons on the plane: $\text{VCdim}(H) = 2d + 1$;
-	\item sine functions on a line: $\text{VCdim}(H) = \infty$;
+    \item intervals on the real line: $\text{VCdim}(H) = 2$;
+    \item hyperplanes in $\Real^d$: $\text{VCdim}(H) = d+1$ the number of free parameters
+    of a hyperplane $\beta_0 + \beta'x$ n $\Real^d$, but not true in general (in
+    a plane -- XOR configuration for example, proof uses Radon's theorem);
+    \item hyper-rectangles: $\text{VCdim}(H) = 2d$;
+    \item convex polygons on the plane: $\text{VCdim}(H) = 2d + 1$;
+    \item sine functions on a line: $\text{VCdim}(H) = \infty$;
 \end{itemize}
 
 Computing the VC dimension of composite classes, unions, or intersections.
 
-Sauer's lemma: if $H$ is a hypothesis set with $\text{VCdim}_H(m) = d$ then the growth
-function $\prod_H(m)$ is upper-bounded by 
-\[ \sum_{i=0}^d C^i_m \leq (\frac{em}{d})^d  = O(m^d) \,, \]
-for all $m\geq 0$. \textbf{Proof}:
-\begin{align}
-	\sum_{i=0}^d C^i_m
-		&\leq \sum_{i=0}^d C^i_m (\frac{d}{m})^{d-i} \\
-		&\leq \sum_{i=0}^m C^i_m (\frac{d}{m})^{d-i} \\
-		&\leq (\frac{d}{m})^d \sum_{i=0}^m C^i_m (\frac{m}{d})^i \\
-		&\leq (\frac{d}{m})^d (1+\frac{m}{d})^m \\
-		&\leq (\frac{d}{m})^d e^d
-	\,,
+\textbf{Sauer's lemma}: if $H$ is a hypothesis set with $\text{VCdim}_H(m) = d$
+then the growth function $\Pi_H(m)$ is upper-bounded by
+\[ \sum_{i=0}^d C^i_m \leq \biggl(\frac{em}{d}\biggr)^d  = O(m^d) \,, \]
+for all $m\geq 0$.
+\textbf{Proof}: for $d\leq m$ one has \begin{align}
+    \sum_{i=0}^d C^i_m
+        &\leq \sum_{i=0}^d C^i_m \biggl(\frac{m}{d}\biggr)^{d-i} 
+         \leq \sum_{i=0}^m C^i_m \biggl(\frac{m}{d}\biggr)^{d-i}
+         \leq \biggl(\frac{m}{d}\biggr)^d \sum_{i=0}^m C^i_m \biggl(\frac{d}{m}\biggr)^i \\
+        &\leq \biggl(\frac{m}{d}\biggr)^d \biggl(1+\frac{d}{m}\biggr)^m
+         \leq \biggl(\frac{em}{d}\biggr)^d \,,
 \end{align}
+since $1 - x \leq e^{-x}$.
 
-Proof of the VCdim asymptotic is by induction on $m+d$. It is clearly true for $m=0$,
-$m=1$ or $d=1$. For arbitrary $(m, d)$ suppose the inequality is true for lesser
-$m+d$. If $S'= \{x_1. \ldots, x_{m-1}\}$, and $G_1 = G_{|S'}$ and
-\[ G_2 = \{g'\subsetq S'\,:\, g'\in G\,\text{and}\,\} g'\cup\{x_m\} \in G\,, \]
-then $|G_1| + |G_2| = |G|$. And the rest is in the book by Mohri.
+Proof of the VCdim upper bound proceeds by induction on $m+d$. It is clearly true
+for $m=1$ and $d=0$ or $d=1$. For arbitrary $(m, d)$ suppose the inequality is true
+for lesser $m+d$. If $S'= \{x_1. \ldots, x_{m-1}\}$, and $G_1 = G_{|S'}$ and
+\[ G_2 = \{g'\subseteq S'\,:\, g'\in G\,\text{and}\, g'\cup\{x_m\} \in G \}\,, \]
+then $|G_1| + |G_2| = |G|$. And the rest is in the book by Mohri (cf. pp. 46-47).
 
 Now, it is time for the generalization bound with VC dimension. For any $\delta>0$
 with $1-\delta$ for any $h\in H$
 \[ R(h)
-	\leq \hat{R}(h) + \sqrt{\frac{2d\log \frac{em}{d}}{m}}
-				    + \sqrt{\frac{\log\frac{1}{\delta}}{2m}}
+    \leq \hat{R}(h) + \sqrt{\frac{2d\log \frac{em}{d}}{m}}
+                    + \sqrt{\frac{\log\frac{1}{\delta}}{2m}}
 \,,\]
-where $H$ is a set of hypotheses taking values $\{\\pm 1}$.
+where $H$ is a set of hypotheses taking values $\{\pm 1\}$.
 
-Error bound in the consistent case (when the training error can reach 0), then
-the square root disappears.
+In the consistent case, when the training error can reach $0$, the square root
+in the upper bound disappears.
 
 % subsection vc_dimension (end)
 
@@ -442,21 +458,25 @@ the square root disappears.
 Let $H$ be a hypothesis set with $\text{VCdim}(H)=d$, $d>1$. Then for any learning
 algorithm $L$ there exists a distribution $D$, and a input-target relation $f\in H$
 with
-\[ \pr_{S\sim D^m} R_D(h_S, f) > \frac{d-1}{32m} \geq \frac{1}{100} \,. \]
+\[ \pr_{S\sim D^m} \bigl(R_D(h_S, f) > \frac{d-1}{32m}\bigr) \geq \frac{1}{100} \,. \]
 
 Take a sample $S = (x_i)_{i=1}^d$ of size $d$ which is shattered by $H$. Define a
 tricky distribution: with high probability return the same point $x_0$, but with
 remaining probability mass return any other point uniformly:
 \[ \pr(X=x_1) = 1-8\epsilon
-	\text{ and } \pr(X=x_i) = \frac{8\epsilon}{d-1} \forall i=2,\ldots, d
-	\,, \]
+    \text{ and } \pr(X=x_i) = \frac{8\epsilon}{d-1} \forall i=2,\ldots, d
+    \,, \]
 
 No-free lunch theorem: VC-dimension non-realizable case. For any learning algorithm $L$
 there exists $D$ over $X\times \{0,1\}$ such that
-\[ \pr_{S\sim D^m} R_D(h_S) - \inf_{h\in H} R_D(h) > \sqrt{\frac{d}{m-1}}\,, \]
+\[ \pr_{S\sim D^m} \biggl(R_D(h_S) - \inf_{h\in H} R_D(h) > \sqrt{\frac{d}{320 m}} \biggr)
+    \geq \frac{1}{64}
+    \,. \]
 
 % subsection lower_bound_based_on_the_vc_dimension (end)
 
 % section 20160919_lecture_2 (end)
+
+
 
 \end{document}
