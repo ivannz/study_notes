@@ -477,6 +477,300 @@ there exists $D$ over $X\times \{0,1\}$ such that
 
 % section 20160919_lecture_2 (end)
 
+%
+
+\section{20160920 lecture \#1} % (fold)
+\label{sec:20160920_lecture_1}
+
+Today we will cover SVM and kernel methods.
+
+\subsection{Support vector machine} % (fold)
+\label{sub:support_vector_machine}
+
+Reminder: binary classifcation problem
+$X\subseteq \Real^N$, a sample $S = (x_i, y_i)_{i=1}^m \in X\times \{-1, +1\}$, and
+the hypotheses space is $h:X \mapsto\{-1, +1\}$, and we want to find the $h\in H$ with
+the samllest generalization error $R(h) = \ex_{(x, y)\sim D} 1_{h(x)\neq y}$.
+
+Linear classification: \begin{itemize}
+    \item hyperplanes;
+    \item et c.
+\end{itemize}
+
+SVM -- separable case, SVM -- unseparable case, and 
+
+Fins the hyperplane that best spaerates the classes.
+
+Suppose there exists a hyperplane separating classes from one another. THe set of hypothese is :
+\[ H = \{x\mapsto \text{sgn}(\beta'x + \beta_0) \, : \, \beta\in \Real^N, \beta_0\in \Real\} \,.\]
+Each separating hyperplane has a so called geometric margin:
+\[\text{margin} = \min_{i=1}^m \frac{|\beta'x_i + \beta_0|}{\|\beta\|} \,,\]
+where $\beta\in \Real^N$, and $\beta_0 \in \Real$.
+
+But there are many hyperplanes, so Vapnik an Chervonenkis came up with the idea to
+find a hyperplane maximizing the margin and separating the classes. Now observe
+that for all $t>0$:
+\begin{align*}
+    \min_{i=1}^m \frac{|t \beta'x_i + t \beta_0|}{\|t \beta\|}
+        &= \min_{i=1}^m \frac{|t \beta'x_i + t \beta_0|}{\|t \beta\|} \\
+        &= \min_{i=1}^m \frac{|\beta'x_i + \beta_0|}{\|\beta\|} \,,
+\end{align*}
+whence by separability we can fix $\min_{i=1}^m |\beta'x_i + \beta_0|$ to $1$
+\begin{align*}
+    \rho &= \max_{\beta,\beta_0} \min_{i=1}^m \frac{|\beta'x_i + \beta_0|}{\|\beta\|} \\
+    &= \max_{\beta, \beta_0, \min_{i=1}^m |\beta'x_i + \beta_0| = 1} \frac{1}{\|\beta\|} \\
+    &= \min_{\beta, \beta_0, \min_{i=1}^m y_i(\beta'x_i + \beta_0) \geq 1} \|\beta\| \\
+    & = \ldots \,.
+\end{align*}
+
+Thus the SVM problem in a separable case becomes:
+\[ \min_{\beta, \beta_0} \frac{1}{2} \|\beta\|^2 \,,\]
+subject to $y_i(\beta'x_i + \beta_0) \geq 1$ for all $i=1, \ldots, m$. This is a
+convex problem (and affine constraints) and thus has a unique solution. Using KKT
+conditions one can find the solution, and formulate the Dual problem. Form the
+Lagrangian:
+\[ L = \frac{1}{2}\beta\|^2 + \sum_{i=1}^m \alpha_i\bigl(1-y_i(\beta'x_i + \beta_0)\bigr) \,.\]
+KKT conditions are: \begin{description}
+    \item[Primal] $\forall i=1,\ldota, m$ we must have $y_i(\beta'x_i + \beta_0) \geq 1$;
+    \item[Dual] $\forall i=1,\ldota, m$ we must have $\alpha \geq 0$;
+    \item[Complementary slackness] $\alpha_i\bigl(1-y_i(\beta'x_i + \beta_0)\bigr) = 0$ for all $i=1,\ldota, m$;
+    \item[First-order] $\frac{\partial}{\partial \beta} L = 0$ and $\frac{\partial}{\partial \beta_0} L = 0$;
+\end{description}
+This yields the following Dual:
+\[\max_\alpha \sum_{i=1}^m \alpha_i - \frac{1}{2}\sum_{i=1}^m \sum_{j=1}^m \alpha_i \alpha_j y_i y_j x_i'x_j \,, \]
+subject to $\sum_{i=1}^m \alpha_i y_i = 0$ and $\alpha_i \geq 0$. The solution is
+given by:
+\[ h(x) = \text{sgn}(\sum_{i=1}^m \alpha_i y_i x_i'x + \beta_0_ \,,\]
+where $\beta_0 = y_i - \sum_{j=1}^m \alpha_j y_j x_j'x_i$ for all $i=1,\ldots, m$
+with $\alpha_i > 0$.
+
+Sparsity. Iff $h_S$ is the learned hypothesis, thel the LOO error is given by:
+\[ \hat{R}_{\text{loo}}(L) = m^{-1} \sum_{i=1}^m 1_{h_{S_{-i}}(x_i) \neq y_i} \,, \]
+where $S_{-i}$ is the sample with $i$-th example removed. LOO error is an almost
+unbiased estimate of the generalization error 
+\[ \ex_{S\sim D^m} \hat{R}_{\text{loo}}
+    = m^{-1}\sum_{i=1}^m \ex_{S'\sim D^{m-1}} \ex_{(x, y)\sim D} 1_{h_{S'}(x) \neq y}
+    = \ex_{S'\sim D^{m-1}} R_{S'}(h_{S'})
+    \,, \]
+
+If $h_S$ is the optimal separating hyperplane and $N_{\text{sv}}(S)$ is the number
+of support vectors, then
+\[\ex_{S\sim D^m} R(h_S) \leq \ex_{S\sim D^{m+1}} \frac{N_{\text{sv}}(S)}{m+1} \,. \]
+But this is a weak guarantee, since it is only on averages.
+
+The non-separable case uses the so called slack variables, which permits imperfect
+separation. The objective is the same: minimize $\frac{1}{2}\|\beta\|^2$ with respect
+to $\beta$ and $\beta_0$, subject to
+\[ y_i(\beta'x_i + \beta_0) \geq 1 - \xi_i \,,\]
+with $\xi_i \geq 0$ for all $i=1,\ldots, m$. But this time we must penalize the slacks:
+for $C \geq 0$ one wants
+\[ \frac{1}{2}\|\beta\|^2 + C \sum_{i=1}^m \xi_i \to \min_{\beta, \beta_0} \,, \]
+subject to the same conditions (one could use squares in the penalty term). 
+The optimization problem is still convex. The trade-off parameter $C$ can be chosen
+using cross-validation, like $K$-fold CV (or $m$-fol -- LOO). CV is connected to
+SRM (see the homework).
+
+Equivalent SVM problem:
+\[ \frac{1}{2}\|\beta\|^2 + C \sum_{i=1}^m \bigl(1-y_i(\beta'x_i + \beta_0)\bigr)_+ \,. \]
+One could use hinge loss $(1-yh(x))_+$ or the quadratic hinge loss $(1-yh(x))_+^2$.
+
+The non-separable dual problem is
+\[\max_\alpha \sum_{i=1}^m \alpha_i - \frac{1}{2}\sum_{i=1}^m \sum_{j=1}^m \alpha_i \alpha_j y_i y_j x_i'x_j \,, \]
+subject to $\sum_{i=1}^m \alpha_i y_i = 0$ and $0 \leq \alpha_i \leq C$. The solution
+is given by:
+\[ h(x) = \text{sgn}(\sum_{i=1}^m \alpha_i y_i x_i'x + \beta_0_ \,,\]
+where $\beta_0 = y_i - \sum_{j=1}^m \alpha_j y_j x_j'x_i$ for all $i=1,\ldots, m$
+with $0 < \alpha_i < C$.
+
+What about the margin guarantees of SVM? In bioinformatics the dimensionality of
+the feature space if very large, so what about the complexity.
+
+% subsection support_vector_machine (end)
+
+\subsection{Margin theory} % (fold)
+\label{sub:margin_theory}
+Confidence margin versus the geometric margin. For any confidence margin $\rho>0$,
+the $\rho$-margin function is defined by such an $\Phi_\rho$ that
+\[ \Phi_\rho(x) \leq 1_{x < \rho} \,,\]
+and $\Phi_\rho \in [0,1]$ non increasing and linear over $[0, \rho]$. For a sample
+$S = (x_i)_{i=1}^m$ and a real-values hypothesis $h$ the empirical margin loss is
+\[\hat{R}_\rho(h)
+    = m^{-1} \sum_{i=1}^m \Phi_\rho(y_i h(x_i))
+    \leq m^{-1} \sum_{i=1}^m 1_{y_i h(x_i) < \rho}
+    \,. \]
+The right-hand side is the share of examples in the training set that in which the
+classifier has confidence less than $\rho$.
+
+General margin bound: for any $H$ of real valued functions, for any $\rho>0$ and
+$\delta\in(0,1)$
+\[ R(h)
+    \leq \hat{R}_\rho(h) + \frac{2}{\rho} \mathcal{R}_m(H)
+    + \sqrt{\frac{\log\frac{1}{\delta}}{2m}}
+    \,, \]
+with probability at least $1-\delta$.
+
+\textbf{proof}: Put $\tilde{H} = \{z = (x,y) \mapsto yh(x) \,:\, h\in H\}$, and
+consider $\tilde{\mathcal{H}} = \{\Phi_\rho \circ f\,:\, f\in \tilde{H}\}$.
+Then use the theorems for bounded functions in $[0,1]$.
+By theorem 3 one has
+\[ \ex g(z) \leq m^{-1} \sum_{i=1}^m g(z_i)
+            + 2\mathcal{R}_m(\tilde{\mathcal{H}}} + \sqrt{\frac{\log\frac{1}{\delta}}{2m}}
+    \,,\]
+but since $\Phi_\rho$ is $\frac{1}{\rho}$-Lipschitz, then by Talagrand's lemma one
+has
+\begin{align*}
+    \mathcal{R}_m(\Phi_\rho\circ \tilde{H})
+    &\leq \frac{1}{\rho} \mathcal{R}_m(\tilde{H}) \\
+    &= \frac{1}{\rho m} \ex_{S,\sigma} \sup_{h\in \tilde{H}} \sum_{i=1}^m \sigma_i y_i h(x_i) \\
+    &=\bigl[\text{uniformity of } \sigma_i \bigr] \\
+    &= \frac{1}{\rho} \mathcal{R}_m(H) \,.
+\end{align*}
+But $\Phi_\rho$ majorizes the $0-1$ loss: $1_{yh(x) < 0} \leq \Phi_\rho(yh(x))$.
+
+The Rademacher Complexity of a linear hypothesis:
+Let $S = (x_i)_{i=1}^m \subseteq \{x\,:\,\|x\|\leq R\}$ and put
+\[ H = \{x\masto x'\beta\,:\,\|\beta\|\leq \Lambda\} \,. \]
+Then
+\[ \hat{\mathcal{R}}_S(H) \leq \frac{R \Lambda}{\sqrt{m}} \,. \]
+
+Thus the margin bound for the linear classifiers is: if $X\subseteq \{x\,:\, \|x\|\leq R\}$
+and $H = \{x\mapsto x'\beta \,:\, \|\beta\| \leq \Lambda\}$, then for any $\delta > 0$
+\[ R(h) \leq \hat{R}_\rho(h) + 2\frac{R\Lambda}{\rho \sqrt{m}}
+    + 3\sqrt{\frac{\log \frac{2}{\delta}}{2m}}
+    \,, \]
+with probability at least $1-\delta$. In the bad-distribution case the margin $\rho$
+would have to be chosen too small.
+
+This follows directly from the general margin bound and bound on $\hat{\mathcal{R}}_S(H)$
+for linear classifiers.
+
+\noindent The SVM precisely tries to minimize the right-hand side. To do better than
+SVM is to minimize the ramp loss, but it is non-convex, so solving it is troublesome.
+
+To prove this kind of result one needs to work with a different loss function.
+
+% subsection margin_theory (end)
+
+% section 20160920_lecture_1 (end)
+
+\section{20160920 Lecture \#2} % (fold)
+\label{sec:20160920_lecture_2}
+
+The upper bound on the Rademacher complexity of linear hypotheses:
+\[\hat{\mathcal{R}}_S(H) \leq \sqrt{\frac{R^2 \Lambda^2}{m}} \,, \]
+for $H = \{x\mapsto\beta'x \,:\, \|\beta\|\leq \Lambda \}$ and
+$S\subseteq \{x\,:\,\|x\|\leq R\}$. \textbf{Proof}:
+\begin{align*}
+    \hat{\mathcal{R}}_S(H)
+        &= \frac{1}{m} \ex_\sigma \sup_{\|\beta\|\leq \Lambda} \sum_{i=1}^m \sigma_i \beta'x_i \\
+        &= \frac{1}{m} \ex_\sigma \sup_{\|\beta\|\leq \Lambda} \beta' \sum_{i=1}^m \sigma_i x_i \\
+        &\leq \frac{1}{m} \ex_\sigma \sup_{\|\beta\|\leq \Lambda} \|\beta\| \bigl\|\sum_{i=1}^m \sigma_i x_i \bigr\| \\
+        &= \frac{\Lambda}{m} \ex_\sigma \bigl\|\sum_{i=1}^m \sigma_i x_i \bigr\| \\
+        &\bigl[\text{using Jensen's inequality}\bigr]\\
+        &\leq \frac{\Lambda}{m} \sqrt{\ex_\sigma \bigl\|\sum_{i=1}^m \sigma_i x_i \bigr\|^2} \\
+        &\bigl[\text{pairwise independence of } \sigma_i\bigr]\\
+        &\leq \frac{\Lambda}{m} \sqrt{\ex_\sigma \sum_{i=1}^m \sigma_i^2 x_i'x_i } \\
+        &\leq \frac{\Lambda}{m} \sqrt{m R^2 } \,.
+\end{align*}
+Thus argument shows that it is possible to learn in high-dimensional feature spaces.
+
+\subsection{Kernel methods} % (fold)
+\label{sub:kernel_methods}
+
+Kernel methods allow efficient manipulation of inner products in high dimension.
+Also kernel methods result in non-linear decision boundary. Another reason is that
+kernel methods expand the theory of classification to abstract input feature spaces.
+Non-linear mapping $\phi:X\mapsto F$ -- from the input to a very high-dimensional
+space.
+
+Kernel method: take a kernel function $K:X\times X\mapsto \Real$ such that there
+exists $\phi:X\mapsto F$ such that $K(x, y) = \langle \phi(x), \phi(y)\rangle_F$.
+Thus $K$ is often seean as a similarity measure (incidence in a unordered graph,
+closeness-proximity). Usually $K$ cam be efficiently computed, and the choice of
+$K$ is up to the researcher, which entails flexibility.
+
+$K$ is a kernel iff for all $m\geq1$, $(c_i)_{i=1}^m \in \Real$ and $(x_i)_{i=1}^m\in X$
+one has $c'Kc \geq 0$, for $K = (K(x_i, x_j))_{i,j=1}^m$ and symmetric.
+Kernels can be normalized, and there are many other arithmetic operations that
+preserve the kernel property.
+
+Gaussian kernels:
+\[ k(x, y) = \text{exp}\biggl\{-\frac{\|x-y\|^2}{2\sigma^2}\biggr\} \,, \]
+the sigmoid kernel:
+\[ k(x, y) = \text{tanh}\bigl(a x'y + b \bigr) \,, \]
+for $a, b\geq 0$, and it is useful for neural networks.
+
+To get a kernel SVM just plug in the kernel instead of the inner products.
+
+The generalization. Let $S\subsetq \{x\,:\, \|\phi(x)\|_\Hcal \leq R\}$ and
+\[ H = \{x\mapsto \langle\beta, \phi(x)\rangle
+    \,:\, \beta \in \Hcal\,, \|\beta\|_\Hcal \leq \Lambda\}
+    \,. \]
+Then
+\[\hat{\mathcal{R}}_S(H)
+    \leq \frac{\Lambda\sqrt{\tr K}}{m}
+    \leq \frac{\Lambda\sqrt{m R^2}}{m}
+    = \frac{\sqrt{R^2 \Lambda^2}{m}}
+    \,. \]
+\textbf{proof} is exactly the same as in the ordinary inner product case.
+
+The Representer theorem states that the minimizer of
+\[L\bigl((h(x_i))_{i=1}^m\bigr) + \Omega(\|h\|) \to \min_{h\in \Hcal}\,,\]
+is an element of the pre-hilbert space $\Hcal_0$ guven by
+\[ \Hcal_0 = \{\sum_{i=1}^m \alpha_i \phi(x_i)\,:\, (\alpha_i)_{i=1}^m \in \Real \} \,. \]
+
+Linear regression can be extended to the kernel ridge regression, ranking algorithm
+and et c.
+
+It is interesting to define a kernel over string data. The idea is that strings
+are similar if they share common sub-strings. This can be done using the so called
+weighted transducers: weighted directed graphs with input-output configurations.
+In such transducers one can define the function $T(x,y)$ as the sum of all possible
+accepting paths with input $x$ and output $y$.
+Now, $K$ is a rational kernel if there exists $T$ for some weighted transducer $T$.
+For instance the composition can be defined as $T_1:\Sigma^*\times \Delta^* \mapsto \Real$
+and $T_2:\Delta^*\times\Omega^* \mapsto \Real$ as
+\[ (T_1\circ T_2)(x, z) = \sum_{y\in \Delta^*} T_1(x, y) T_2(y, z) \,, \]
+much like multiplication of infinite matrices.
+
+The inverse of a transducer $T:\Sigma^*\times \Delta^* \mapsto \Real$ is $T^{-1}$
+obtained by swapping input with output in $T$: $T^{-1}:\Delta^* times \Sigma^*\mapsto \Real$
+is $T^{-1}(x, y) = T(y, x)$.
+For any transducer $T$ the function $K = T\circ T^{-1}$ is a positive definite symmetric
+rational kernel.
+\textbf{proof}: $K(x, y) = \sum_{z\in \Delta^*} T(x, z) T(z, y)$, then
+$K(x, y) = \lim_{n\to \infty} K_n(x, y)$ where
+$K_n(x, y) = \sum_{z\in\Delta^*, |z| \leq n} T(x, z) T(z, y)$.
+
+Transducer learning is an interesting problem.
+
+Kernels can be defined on many other discrete structures: automata, graphs, images,
+parse trees et c.
+
+Finally, negative kernels. What other kernels one can construct from a norm in a
+Hilbert space? Negative definite kernels: a function $K:X\times X\mapsto\Real$
+is saidto be negative defined symmetric iff it is symmetric and for all $m\geq 1$, 
+$S=(x_i)_{i=1}^m\in X$ and $c\in\Real^{m\times 1}$ with $\one'c = 0$ one has
+$c'Kc \leq 0$ for the gram matrix $K$ of $K$ on $S$.
+
+If $K$ is NDS and $K(x, y) = 0$ iff $x=y$, then there exists a Hilbert space with
+$K(x, y) = \|\phi(x) - \phi(y)\|_\Hcal$ for some $\phi:X\mapsto\Hcal$. Also $K$ is
+NDS iff $e^{-tK}$ is a PDS for all $t>0$. Furthermore, for any $x_0$ the kernel $K'$
+defined as 
+\[K'(x, y) = K(x, x_0) + K(y, x_0) - K(x, y) - K(x_0, x_0) \,,\]
+is NDS if and only if $K$ is PDS.
+
+Deeper kernels: given a set of PDS kernels $(K_j)_{j=1}^p$ one can use a composite
+kernel
+\[K_\mu = \sum_{j=1}^p \mu_j K_j \,,\]
+with $\sum_{j=1}^p \mu_j = 1$. One could create a window selection method by introducing
+sparsity onto $\mu$ (or greedily, like in LARS).
+
+% subsection kernel_methods (end)
+
+% section 20160920_lecture_2 (end)
+
+%
 
 
 \end{document}
