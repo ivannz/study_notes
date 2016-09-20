@@ -531,16 +531,16 @@ conditions one can find the solution, and formulate the Dual problem. Form the
 Lagrangian:
 \[ L = \frac{1}{2}\beta\|^2 + \sum_{i=1}^m \alpha_i\bigl(1-y_i(\beta'x_i + \beta_0)\bigr) \,.\]
 KKT conditions are: \begin{description}
-    \item[Primal] $\forall i=1,\ldota, m$ we must have $y_i(\beta'x_i + \beta_0) \geq 1$;
-    \item[Dual] $\forall i=1,\ldota, m$ we must have $\alpha \geq 0$;
-    \item[Complementary slackness] $\alpha_i\bigl(1-y_i(\beta'x_i + \beta_0)\bigr) = 0$ for all $i=1,\ldota, m$;
+    \item[Primal] $\forall i=1,\ldots, m$ we must have $y_i(\beta'x_i + \beta_0) \geq 1$;
+    \item[Dual] $\forall i=1,\ldots, m$ we must have $\alpha \geq 0$;
+    \item[Complementary slackness] $\alpha_i\bigl(1-y_i(\beta'x_i + \beta_0)\bigr) = 0$ for all $i=1,\ldots, m$;
     \item[First-order] $\frac{\partial}{\partial \beta} L = 0$ and $\frac{\partial}{\partial \beta_0} L = 0$;
 \end{description}
 This yields the following Dual:
 \[\max_\alpha \sum_{i=1}^m \alpha_i - \frac{1}{2}\sum_{i=1}^m \sum_{j=1}^m \alpha_i \alpha_j y_i y_j x_i'x_j \,, \]
 subject to $\sum_{i=1}^m \alpha_i y_i = 0$ and $\alpha_i \geq 0$. The solution is
 given by:
-\[ h(x) = \text{sgn}(\sum_{i=1}^m \alpha_i y_i x_i'x + \beta_0_ \,,\]
+\[ h(x) = \text{sgn}(\sum_{i=1}^m \alpha_i y_i x_i'x + \beta_0 \,,\]
 where $\beta_0 = y_i - \sum_{j=1}^m \alpha_j y_j x_j'x_i$ for all $i=1,\ldots, m$
 with $\alpha_i > 0$.
 
@@ -578,7 +578,7 @@ The non-separable dual problem is
 \[\max_\alpha \sum_{i=1}^m \alpha_i - \frac{1}{2}\sum_{i=1}^m \sum_{j=1}^m \alpha_i \alpha_j y_i y_j x_i'x_j \,, \]
 subject to $\sum_{i=1}^m \alpha_i y_i = 0$ and $0 \leq \alpha_i \leq C$. The solution
 is given by:
-\[ h(x) = \text{sgn}(\sum_{i=1}^m \alpha_i y_i x_i'x + \beta_0_ \,,\]
+\[ h(x) = \text{sgn}(\sum_{i=1}^m \alpha_i y_i x_i'x + \beta_0 \,,\]
 where $\beta_0 = y_i - \sum_{j=1}^m \alpha_j y_j x_j'x_i$ for all $i=1,\ldots, m$
 with $0 < \alpha_i < C$.
 
@@ -614,7 +614,7 @@ consider $\tilde{\mathcal{H}} = \{\Phi_\rho \circ f\,:\, f\in \tilde{H}\}$.
 Then use the theorems for bounded functions in $[0,1]$.
 By theorem 3 one has
 \[ \ex g(z) \leq m^{-1} \sum_{i=1}^m g(z_i)
-            + 2\mathcal{R}_m(\tilde{\mathcal{H}}} + \sqrt{\frac{\log\frac{1}{\delta}}{2m}}
+            + 2\mathcal{R}_m(\tilde{\mathcal{H}}) + \sqrt{\frac{\log\frac{1}{\delta}}{2m}}
     \,,\]
 but since $\Phi_\rho$ is $\frac{1}{\rho}$-Lipschitz, then by Talagrand's lemma one
 has
@@ -629,7 +629,7 @@ But $\Phi_\rho$ majorizes the $0-1$ loss: $1_{yh(x) < 0} \leq \Phi_\rho(yh(x))$.
 
 The Rademacher Complexity of a linear hypothesis:
 Let $S = (x_i)_{i=1}^m \subseteq \{x\,:\,\|x\|\leq R\}$ and put
-\[ H = \{x\masto x'\beta\,:\,\|\beta\|\leq \Lambda\} \,. \]
+\[ H = \{x\mapsto x'\beta\,:\,\|\beta\|\leq \Lambda\} \,. \]
 Then
 \[ \hat{\mathcal{R}}_S(H) \leq \frac{R \Lambda}{\sqrt{m}} \,. \]
 
@@ -702,7 +702,7 @@ for $a, b\geq 0$, and it is useful for neural networks.
 
 To get a kernel SVM just plug in the kernel instead of the inner products.
 
-The generalization. Let $S\subsetq \{x\,:\, \|\phi(x)\|_\Hcal \leq R\}$ and
+The generalization. Let $S\subseteq \{x\,:\, \|\phi(x)\|_\Hcal \leq R\}$ and
 \[ H = \{x\mapsto \langle\beta, \phi(x)\rangle
     \,:\, \beta \in \Hcal\,, \|\beta\|_\Hcal \leq \Lambda\}
     \,. \]
