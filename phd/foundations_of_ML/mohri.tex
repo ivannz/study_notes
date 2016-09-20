@@ -195,7 +195,7 @@ The probability tools: \begin{itemize}
         \bigl| f(x_1, \ldots, x_i, \ldots, x_m) - f(x_1, \ldots, x_i', \ldots, x_m) \bigr|
         \leq c_i\,, \]
     then
-    \[ \pr\bigl( f(X_1, \ldots, X_m) - \ex f(X_1, \ldots, X_m) | > \epsilon)
+    \[ \pr\bigl( |f(X_1, \ldots, X_m) - \ex f(X_1, \ldots, X_m) | > \epsilon)
         \leq 2 \text{exp}\Bigl(-\frac{2 \epsilon^2}{\sum_{i=1}^m c_i^2}\Bigr) \,, \]
     \item Chernoff's bounds: for any $t> 0$ one has:
     \[ \pr(X\leq \epsilon) = \pr(e^{tX} \leq e^{t\epsilon}) \leq e^{-t\epsilon}\ex e^{tX} \,, \]
