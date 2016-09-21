@@ -772,5 +772,311 @@ sparsity onto $\mu$ (or greedily, like in LARS).
 
 %
 
+\section{20160921 Lecture \#1} % (fold)
+\label{sec:20160921_lecture_1}
+
+\subsection{Boosting and ensemble methods} % (fold)
+\label{sub:boosting_and_ensemble_methods}
+
+Weak learning: such an algorithm that $\gamma>0$ produces hypotheses which on average
+does a little bit better than random guess: for all $\delta>0$ one has for all $D$ and
+$C$
+\[ \pr_{S\sim D} \bigl(R(h_S) \ leq \frac{1}{1} - \gamma\bigr) \geq 1-\delta \,. \]
+Main idea: use weak learning to create a strong learner, and combine base classifiers
+in such a way as to improve generalization error.
+
+Suppose one has a family of base classifiers $H\subseteq \{-1,+1\}^X$. At each round
+$t=1,\ldots, T$ on does:\begin{itemize}
+    \item maintain distribution $D_t$ over the training sample $S=(x_i, y_i)_{i=1}^m$;
+    \item adds a new hypothesis to the pool based on $D_t$;
+    \item form a convex combination of hypotheses $f_t = \sum_{k=1}^t \alpha_k h_k$
+    for $\alpha_k\geq 0$;
+    \item computes the training error of $h_t$: 
+        \[\epsilon_t = \pr_{(x, y)\sim D_t} 1_{h_t(x)\neq y} = \ex_{D_t} \epsilon_{ti}\,; \]
+    \item updates the distribution $D_t$;
+\end{itemize}
+AdaBoost algorithm updates the distribution with
+\[ D_{t+1}(dz)
+    \propto e^{-\alpha_t g_t(z) } D_t(dz)
+    \propto e^{-\sum_{k=1}^t \alpha_k g_k(z)} D_1(dz)
+    \,, \]
+with $g_t(z) = g_t(x,y) = y h_t(x)$. Now for $\epsilon_t = \ex_{(x, y)\sim D_t} 1_{h_t(x)\neq y}$
+\[ \alpha_t = \frac{1}{2} \log \frac{1-\epsilon_t}{\epsilon_t} \,. \]
+It is crucial that $\epsilon_t \leq \frac{1}{2}-\gamma$, since 
+\[ \hat{R}_S(h_T) \leq \text{exp}\Bigl\{-2\sum_{k=1}^T \bigr(\frac{1}{2}-\epsilon_t\bigr)^2 \Bigr\} \,, \]
+whence $\hat{R}(h_T) \leq e6{-2\gamma}$ and $h_T(x) = \text{sgn} f_T(x)$. Notice
+that $\gamma$ is not needed to be known in advance, hence the name ``adaptive boosting''.
+
+\textbf{proof} using the definition of $D_{T+1}$:
+\begin{align*}
+    \hat{R}(h_T)
+        &\leq m^{-1}\sum_{i=1}^m 1_{y_i f_T(x_i) < 0} \\
+        &= m^{-1}\sum_{i=1}^m e^{- y_i f_T(x_i) < 0} \\
+        &= \sum_{i=1}^m D_{T+1}(i) \prod_{k=1}^T Z_k
+        = \prod_{k=1}^T Z_k \,,
+\end{align*}
+Now
+\begin{align*}
+    Z_t &= \sum_{i=1}^m D_t(i) e^{-\alpha_t y_i h_t(x_i)} \\
+        &= \sum_{i\,:\,y_i h_t(x_i) \geq 0} D_t(i) e^{-\alpha_t} 
+            + \sum_{i\,:\,y_i h_t(x_i) < 0} D_t(i) e^{\alpha_t} \\
+        &= (1-\epsilon_t) e^{-\alpha_t} + \epsilon_t e^{\alpha_t} \\
+        & [\text{minimize with respect to }\alpha_t ]\\
+        &= 2\sqrt{\epsilon_t(1-\epsilon_t)}
+        \leq \text{exp}(-2(\frac{1}{2} - \epsilon_t)^2) \,.
+\end{align*}
+This is a multiplicatively separable upper bound in $(\epsilon_t)_{t=1}^T$ on the
+empirical error. AdaBoost assigns the same total probability mass to correctly classified
+and misclassified instances, since $(1-\epsilon_t)e^{-\alpha} = \epsilon_t e^\alpha$.
+
+Minimizing $0-1$ loss is difficult due to non-convexity, and also it is hard to
+minimize the whole combination at once. We thus use a greedy strategy and majorize
+the loss. Finally it is possible to extend the algorithm from binary classifiers
+to the ones taking values in $[-1,1]$: we will be minimizing the upper bound on
+$Z_t$ and still get the same expression for $\alpha_t$.
+
+AdaBoost is similar to coordinate descent over the convex and differentiable objective
+function
+\[ F(\alpha)
+    = \sum_{i=1}^m e^{-y_i f(x_i)}
+    = \sum_{i=1}^m e^{-y_i \sum_{t=1}^T \alpha_t h_t(x_i)} 
+    \,.\]
+The direction on the descent corresponds to the base classifier with the smallest
+error. Thus ut could be possible to use other loss functions.
+
+\textbf{Practical uses}. Base learners are usually the decision trees (or even stumps).
+\begin{itemize}
+    \item data is in $\Real^N$;
+    \item each stump is associated with each feature component;
+    \item each coordinate is pre-sorted $\mathcal{O}(N m \log m)$;
+    \item at each round find the best component (feature) and threshold.
+\end{itemize}
+We do not need to find the best classifier, it suffices to find one that does barely
+better than $0\%$. This results in total complexity $\mathcal{O}(mNT + Nm \log M)$,
+but stumps are not weak learners!
+
+Does AdaBoost overfir? Assume that $\text{VCdim}(H) = d$ and for a fixed $T$ define
+\[\mathcal{F}_T
+    = \{ \text{sgn}(\sum_{t=1}^T \alpha_t h_t  - b)
+        \,:\, \alpha_t, b\in \Real\}\,,\]
+then
+\[ \text{VCdim}(\mathcal{F}_T) \leq 2(d+1)(T+1)\log_2((T+1)e) \,. \]
+
+The mystery of AdaBoost is about why the test error gradually decreases with each
+next round. Alternative is to use the margin theory, since it justifies SVM in high-
+dimensional feature spaces.
+
+Theorem Let $H$ be a set of functions mapping $X\mapsto\Real$. The the convex hull
+of $H$ be defined as 
+\[\text{conv}(H) = \{\sum_{k=1}^p \mu_k h_k\,:\, \}\,.\]
+Then $\hat{\mathcal{R}}_S(\text{conv}(H)) = \hat{\mathcal{R}}_S(H)$.
+\textbf{proof}
+\begin{align*}
+    \hat{\mathcal{R}}_S(\text{conv}(H))
+    & = \ex_\sigma \sup_{(h_k)_{k=1}^p\in H\,,\mu\geq0\,,\|\mu\|_1\leq 1}
+        m^{-1} \sum_{i=1}^m \sigma_i \sum_{k=1}^p \mu_k h_k(x_i) \\
+    & = \ex_\sigma \sup_{(h_k)_{k=1}^p\in H} \sup_{\mu\geq0\,,\|\mu\|_1\leq 1}
+        m^{-1} \sum_{k=1}^p \mu_k \sum_{i=1}^m \sigma_i h_k(x_i) \\
+    & = \ex_\sigma \sup_{(h_k)_{k=1}^p\in H}
+            m^{-1} \max_k \sum_{i=1}^m \sigma_i h_k(x_i) \\
+    & = \ex_\sigma \sup_{h\in H} m^{-1} \sum_{i=1}^m \sigma_i h(x_i)
+    = \hat{\mathcal{R}}_S(H)\,,
+\end{align*}
+thus
+\[ R(h) \leq \hat{R}_\rho(h) + \frac{2}{\rho} \mathcal{R}_m(H)
+        + \sqrt{\frac{\log\frac{1}{\delta}}{2m}}
+    \,, \]
+which justifies convex ensemble methods which favour large margins.
+This is direct consequence of the margin upper bound and the convex result.
+Notice that the upper bound does not depend on the number of rounds.
+
+Empirical margin loss of AdaBoost:
+\[ \hat{\pr} \bigl( \frac{yf(x)}{\|\alpha\|_1} \leq \rho \bigr)
+    \leq \bigl[(1-2\gamma)^{1-\rho} (1+2\gamma)^{1+\rho} \bigr]^\frac{T}{2}
+    \,,\]
+and for $\rho < \gamma$ the term in the square brackets it less than $1$, which
+means that the bound decreases in $T$. For the bound to be convergent on should
+have $\rho >> \mathcal{O}(\frac{1}{\sqrt{T}})$
+
+Does AdaBoost maximize the margin? In general no.
+What about outliers? AdaBoost assigns much larger weights to examples hard to classify,
+which means that the additional base classifiers tend to focus on a single example.
+This means that AdaBoost can be used for outlier detection, based on high point
+weights of the data distribution $D_{T+1}$.
+
+AdaBoost has the weakest base learners possible. Is it plausible? Let the edge of
+a binary classifier be defined as 
+\[\gamma_t(D)
+    = \frac{1}{2} - \epsilon_t
+    = \frac{1}{2} \sum_{i=1}^m D(i) y_i h_t(x_i)
+    \,.\]
+AdaBoost learning assumption is that there exists $\gamma>0$ such that for all
+distributions on the training sample and any base classifier $h_t$ with 
+\[\gamma_t(D) \geq \gamma \,.\]
+Game theoretic view: use the von Neumann theorem for zero-sum games for mixed strategies
+that for any two-person zero-sum game defined by a payoff matrix $M$
+\[\min_p \max_q p'Mq = \max_q \min_p p'Mq \,, \]
+which means that there is an equilibrium in mixed strategies in the game.
+
+% subsection boosting_and_ensemble_methods (end)
+
+% section 20160921_lecture_1 (end)
+
+\section{20160921 Lecture \#2} % (fold)
+\label{sec:20160921_lecture_2}
+
+\textbf{AdaBoost} can be represented as this zero-sum game:
+\begin{itemize}
+    \item teacher: selects points $(x_i)_{i=1}^m$;
+    \item learner: learns a base classifier $(h_t)_{t=1}^T \in H$;
+    \item payoff matrix: $M_{it} = y_i h_t(x_i)$.
+\end{itemize}
+Then the minmax and maxmin in mixed strategies gives:
+\[ 2\gamma^*
+    = \min_D \max_{h\in H} \sum_{i=1}^m D(i) y_i h(x_i)
+    = \max_\alpha \min_{i=1}^m y_i \sum_{t=1}^T \frac{\alpha_t h_t(x_i) }{\|\alpha\|_1}
+    = \rho^*
+    \,.\]
+Hence weak learning conditions implies non-zero margin, which means that it is possible
+to search for a non-zero margin. And AdaBoost suboptimally searches for the corresponding
+$\alpha$. Further more weak learning implies linear separability with the margin
+$2\gamma^* > 0$.
+
+There is a relation ship between AdaBoost and linear classifiers: the base learners
+represent basis functions (features). And AdaBoost yileds a sparse solution. The
+margin in AdaBoost is with respect to $\|\cdot\|_\infty$ (the dual to $\|\cdot\|_1$
+c.f. p.96 of Boyd).
+
+The $\gamma$ is single for \textbf{all} $D$ in the weak learner condition. In fact
+the edge of each new hypothesis decreases with $t$: if $\gamma_t$ approaches zero
+then the guarantees are lost. The WL assumption is violated in cases when the error
+is precisely $\frac{1}{2}$.
+
+Convex optimization LP problem: $\rho\to \max_\alpha$ subject to
+\[ y_i (\alpha'x_i) \geq \rho\,\text{ and }\, \|\alpha\|_1 = 1\,. \]
+
+Theoretical guarantees: \begin{itemize}
+    \item AdaBoost is not designed to maximize the margin;
+    \item there is a need for regularization of $\alpha$ (to combat overfitting).
+\end{itemize}
+Weaker aspects: \begin{itemize}
+    \item need to fix $T$ beforehand;
+    \item need for fixing the family of base learners: overfitting or low margin;
+    \item noise severely damages AdaBoost's accuracy (Dietterich, 2000).
+\end{itemize}
+AdaBoost variations:\begin{itemize}
+    \item \textbf{arc-gv} to maximiza the margin (Reyzin and Shapire, 2006);
+    \item $L_1$-regularized AdaBoost (Raetsch et al., 2001; Cortes et al. 2014),
+    which optimizes the margin-based upper bound;
+    \item DeepBoost has favourable learning guarantees and outperforms AdaBoost
+    with $L_1$ (Cortes et al. 2014).
+\end{itemize}
+
+Now onto the max-entropy methods.
+
+\subsection{Logistic regression and max-ent models} % (fold)
+\label{sub:logistic_regression_and_max_ent_models}
+
+Probabilistic models: \begin{itemize}
+    \item density estimation -- provides probability showing confidence in the prediction;
+    \item classification;
+\end{itemize}
+We shall discuss basic notions of information theory: for a randon variable $X$ taking 
+at most $N$ values (discrete) \textbf{entropy} is the amount
+of randomness in $H(X) = -\ex \log p_X$, for pmf $p_X(x) = \pr(X=x)$. Properties:
+\begin{itemize}
+    \item measures the uncertainty of $X$;
+    \item $H(X)\geq 0$ since $p_X \leq 1$;
+    \item Jensen's inequality implies 
+    \[ H(X) = \ex\log\frac{1}{p_X} \leq \log \ex \frac{1}{p_X} = \log N\,;\]
+\end{itemize}
+Relative enetropy, the Kullback-lEiler divergence:
+\[\text{KL}(p\|q)
+    = \ex_p\log\frac{p}{q}
+    = \sum_{x\in X}p(x) \log\frac{p(x)}{q(x)}
+    \,, \]
+show the extra information needed (lost) when using $q$ instead of $p$. KL divergence
+is asymmetric, non-negative and definite, meaning that $\text{KL}(p\|q) = 0$ implies
+$p=q$.
+
+Rel. entropy can be generalized to the notion of Bregman Divergence:
+if $F$ is convex, then
+\[ B_F(x\|y) = F(x) - F(y) - \langle \nabla F(x), x-y\rangle \,, \]
+Unnormalized relative entropy is a particular notion of the Bregman divergence
+on a probability distribution simplex.
+The conditional relative entropy is given by
+\[ \ex_{X\sim r} \text{KL}(p(\cdot|X)\|q(\cdot|X)) \,. \]
+
+% subsection logistic_regression_and_max_ent_models (end)
+
+\subsection{Density estimation problem} % (fold)
+\label{sub:density_estimation_problem}
+
+Given a sample $S$ one wants to estimate the generating density of the DGP. One
+solution is to use the ML estimation:
+\begin{align&}
+    p_{ML} &= \argmax_{p\in \mathcal{P}} \pr(S|p)\\
+    &= \argmax_{p\in \mathcal{P}} \prod_{i=1}^m p(z_i) \,.
+\end{align&}
+The ML solution corresponds to minimization of the KL divergence of $p$ from the 
+empirical distribution $\hat{p}_S$ of $S = (z_i)_{i=1}^m$:
+\[ \text{KL}(\hat{p}_S\|p) \to \min_{p\in \mathcal{P}} \,. \]
+
+maximum a posteriori principle:
+\[ p_{MAP}
+    = \argmax_{p\in \mathcal{P}} \pr(p|S)
+    = \argmax_{p\in \mathcal{P}} \frac{\pr(S|p)}{\pr(S)} \pr(p)
+    = \argmax_{p\in \mathcal{P}} \pr(S|p) \pr(p) \,. \]
+
+Density estimation in the presence of features. A sample $S=(x_i)_{i=1}^m \in X$,
+and a feature map $\phi: X\to \Real^N$. Assume that $X$ is finite (wlog). Now suppose
+$\phi_j$ are in $H$ and $\|\Phi\|_\infty \leq \Lambda$.
+
+Idea: empirical feature average close to expectation.
+For any $\delta > 0$
+\[ \bigl\| \ex_{x\sim D} \phi(x) - \ex_{x\sim S} \phi(x) \bigr\|_\infty
+    \leq 2\mathcal{R}_m(H) + \Lambda \sqrt{\frac{\log \frac{2}{\delta}}{2m}}\,,\]
+with probability at least $1-\delta$. \textbf{Maxent principle}: find a distribution
+$p$ that is closest to a prior distribution $p_0$ (agnostic, typically uniform)
+while verifying 
+\[ \bigl\| \ex_{x\sim p} \phi(x) - \ex_{x\sim S} \phi(x) \bigr\|_\infty
+    \leq \beta \,.\]
+And measure closeness using the relative entropy. Thus the problem becomes:
+\[ \text{KL}(p\|p_0) \to \min_{p\in \Delta} \,,\] 
+subject to 
+\[ \bigl\| \ex_{x\sim p} \phi(x) - \ex_{x\sim S} \phi(x) \bigr\|_\infty
+    \leq \beta \,.\]
+This is a convex problem, and thus has a unique solution. If $\beta=0$ then this
+problem is the standard Maxent (unregularized Maxent), and for $\beta > 0$ yields
+regularized Maxent. If $p_0$ is uniform over $X$, then minimizing the divergence
+of $p_0$ from $p$ is equivalent to maximizing the entropy of $p$.
+
+Thus the problem becomes:
+\[ \sum_{x\in X} p(x) \log p(x) \to \min \,, \]
+subject to $\sum_{x\in X} p(x) = 1$, $p \geq 0$ and
+\[ \bigl|\sum_{x\in X} p(x) \phi_j(x) - m^{-1} \sum_{i=1}^m \phi_j(x_i) \bigr|
+    \leq \beta \,,\]
+for all $j=1,\ldots, N$.
+
+A simple family of distributions is the family of Gibbs distributions:
+\[ p_w \propto \text{exp}(w' \phi(x)) \,, \]
+for $w\in \Real^N$. It includes many distributions: Gaussian et c.
+
+The dual problem is given by:
+\[ \text{KL}(p\|p_0) \infty_{p\in \Delta} + \infty 1_C(\ex_{x\sim p} \phi(x)) \,,\]
+with $C = \{u\,:\, \|u - \ex_{x\sim S} \phi(x) \|_\infty \leq \beta \}$. (Cortes
+et al., 2015) show that this problem of regularized Maxent coincides with the ML
+within the Gibbs family.
+
+The next step is to choose the best Bregman divergence, since Maxent does not care
+about the particular divergence.
+
+\noindent Next is the conditional Maxent models.
+
+% subsection density_estimation_problem (end)
+
+% section 20160921_lecture_2 (end)
+
+% 
 
 \end{document}
