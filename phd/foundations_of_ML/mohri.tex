@@ -1014,10 +1014,10 @@ The conditional relative entropy is given by
 
 Given a sample $S$ one wants to estimate the generating density of the DGP. One
 solution is to use the ML estimation:
-\begin{align&}
+\begin{align*}
     p_{ML} &= \argmax_{p\in \mathcal{P}} \pr(S|p)\\
     &= \argmax_{p\in \mathcal{P}} \prod_{i=1}^m p(z_i) \,.
-\end{align&}
+\end{align*}
 The ML solution corresponds to minimization of the KL divergence of $p$ from the 
 empirical distribution $\hat{p}_S$ of $S = (z_i)_{i=1}^m$:
 \[ \text{KL}(\hat{p}_S\|p) \to \min_{p\in \mathcal{P}} \,. \]
