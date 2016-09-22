@@ -1079,4 +1079,357 @@ about the particular divergence.
 
 % 
 
+\section{20160922 Lecture \#1} % (fold)
+\label{sec:20160922_lecture_1}
+
+Today we will continue with the Maxent principle, and then start a new topic.
+
+\subsection{Conditional Maxent models} % (fold)
+\label{sub:conditional_maxent_models}
+
+The idea is to use conditional distribution for each class, and obviously it is
+suitable for the multiclass classification problem. This allows different features
+for each class. The model we are going to discuss multinomial regression, of which
+the special case if the logistic regression.
+
+The data $S=(x_i, y_i)_{i=1}^m\in X\times Y$ iid according to $D$. THe set of targets
+$Y$ is finite: $Y=\{1,\ldots,K\}$, or $Y=\{0, 1\}^K$. Features are given by a mapping
+$\phi:X\times Y \mapsto \Real^N$. THe problem is to find an accurate conditional
+probability model of a class given $x$: $\pr(\cdot|X=x)$ for $x\in X$ based on $\Phi$.
+
+The same path as in Maxent models:
+\[ \| \ex_{\stackrel{x\sim\hat{p}}{y\sim D_{|x}}} \Phi(x, y)
+     - \ex_{(x, y)\sim S} \Phi(x, y) \|_\infty
+     \leq 2\mathcal{R}_m(H) + \sqrt{\frac{\log\frac{2}{\delta}}{2m}} \,,
+     \]
+with probability at least $1-\delta$. Maxent principle instructs to find a distribution
+$p(\cdot|x)$ closest to $p_0(\cdot|x)$ while maintaining
+\[ \| \ex_{\stackrel{x\sim\hat{p}}{y\sim p_{|x}}} \Phi(x, y)
+     -\ex_{(x, y)\sim S} \Phi(x, y) \|_\infty \leq \beta \,. \]
+and closeness is measured in terms of conditional relative entropy. The optimization
+problem is
+\begin{align*}
+    \min_{p(\cdot|x)\in \Delta} &\sum_{x\in X}\hat{p}(x) \text{KL}(p(\cdot|x)\|p_0(\cdot|x)) \\
+    \text{s.t.} & \|\ex_{x\sim \hat{p}} \ex_{y\sim p(\cdot|x)} \Phi(x, y)
+        - \ex_{(x, y)\sim S} \Phi(x, y)\|_\infty \leq \beta \,.
+\end{align*}
+And in this case the solution coincides with the regularized conditional maximum
+likelihood of a Gibbs-family conditional distribution.
+\begin{align*}
+    \lambda \|w\|_1 + (\text{\textbf{or} } \lambda \|w\|^2_2)
+    m^{-1} w' \sum_{i=1}^m \Phi(x_i, y_i) + 
+    m^{-1} \sum_{i=1}^m \log\sum_{y\in Y} e^{w'\Phi(x_i, y)} \,.
+\end{align*}
+One can replace the soft-max to with the hard-max: and it looks like it maximizies
+a margin
+\[ \max_{y\in Y}\bigl\{ w'\Phi(x_i, y) - w'\Phi(x_i, y_i) \bigr\} \,. \]
+Typically $\Phi(x, y) = e_y \otimes \Gamma(x)$. Prediction is routine:
+\[ \hat{y}(x) 
+    \in \argmax_{y\in Y}\pr(y|x) 
+    = \argmax_{y\in Y} w'\Phi(x, y)
+    \,. \] 
+For binary classification the soft-max can be simplified to use a sigmoid and a base
+class:
+\begin{align*}
+    \lambda \|w\|_1 + (\text{\textbf{or} } \lambda \|w\|^2_2)
+    m^{-1} \sum_{i=1}^m \log (1 + e^{-y_i w'\Psi(x_i)}) \,,
+\end{align*}
+where $\Psi(x) = \Phi(x, +1) - \Phi(x, -1)$ is the margin between classes.
+
+Various solution techniques: SGD, coordinate descent et c. In coordinate descent
+this is similar to AdaBoost with logistic loss.
+
+A generalization bound for logistic regression. If $\pm \Phi_j(x, y) \in H$ for
+all $j=1,\ldots, N$, then for all $\delta>0$ for all $f:x\mapsto w'\Phi(x)$
+\[ R(f) \leq m^{-1} \sum_{i=1}^m \log_{u_0} \bigl(1+e^{-y_i f(x_i)}\bigr)
+    + 4 \|w\|_1 \mathcal{R}_m(H) + \sqrt{\frac{\log\log_2 2\|w\|_1}{m}}
+    + \sqrt{\frac{\log \frac{2}{\delta}}{m}}
+    \,, \]
+with probability at least $1-\delta$ over samples $S$ of size $m$, and $u_0 = \log(1+e^{-1})$.
+
+\noindent Deep boosting with logistic loss coincides with the conditional structural
+Maxent models.
+
+% subsection conditional_maxent_models (end)
+
+\subsection{Online learning} % (fold)
+\label{sub:online_learning}
+
+We contrast the batch setup with the situation where the data arrives in stream
+fashion. Importance: \begin{itemize}
+    \item active area of research;
+    \item allows efficient algorithms.
+\end{itemize}
+PAC learning make natural but strong assumptions: fixed distribution $D$, training
+and test distributions coincide, and the samples are iid.
+
+Online learning assumes adversarial situation, and uses the worst case distribution.
+Also the train and test phases are mixed. The performance measure is based on the
+mistakes made to measure the difficulty of the task, or regret.
+
+Two major parts of online learning: \begin{itemize}
+    \item prediction with expert advice;
+    \item linear classification.
+\end{itemize}
+
+The general setting: there are $T$ rounds and the protocol is as follows
+\begin{enumerate}
+    \item receive instance $x_t\in X$ and advice $\hat{y}_{ti}\in \Gamma$ from the pool;
+    \item predict $\hat{y}_t \in \Gamma$;
+    \item receive label $y_t \in Y$;
+    \item suffer loss $L(\hat{y}_t, y_t)$;
+\end{enumerate}
+the loss function is $L:\Gamma \times Y \mapsto \Real$. Assume $\Gamma=Y$.
+The goal is to minimize the hindsight loss:
+\[\text{regret}_T = \sum_{t=1}^T L(\hat{y}_t, y_t) - \min_{i=1}^N L(\hat{y}_{ti}, y_t) \,. \]
+
+Halving algorithm: suppose there is the best expert in the pool and the prediction
+is based on majority voting. And every time a mistake is made at least half of experts
+are dropped. A modification is the weighted majority algorithm, which adjusts weights
+of mispredicting experts instead of dropping them.
+
+However, no deterministic algorithm can achieve a regret $R_t = o(T)$ with the binary
+loss. It is better to use randomized weighted majority.
+
+The convex loss case: the exponential weighted average. We use this update:
+\[P_{t+1}(d\theta) \propto e^{-L_t(\xi_t(\theta), y_t)} P_t(d\theta) \,,\]
+and the prediction is just the average $\hat{y}_t(x) = \ex_{\theta\sim P_t} \xi_t(\theta, x)$.
+The theorem: if $L$ is convex over $\Gamma$ and takes values in $[0,1]$, then for
+any $\eta>0$ and any $(y_t)_{t=1}^T\in Y$ the regret at $T$ is satisfies
+\[ \text{regret}_T = \min_{\theta\in \Theta} \sum_{t=1}^T L(\hat{y}_t, y_t) - L(\hat{y}_t(\theta), y_t)
+    \leq \frac{\log N}{\eta} + \frac{\eta T}{8} \,. \]
+For $\eta = \sqrt{\frac{8\log N}{T}}$ one has
+\[ \text{regret}_T \leq \sqrt{\frac{T \log N}{2}} \,.\]
+
+The doubling trick: divide the future into periods $[2^k, 2^{k+1}-1]$ of length
+$2^k$ with $k\leq T$, and $T\geq 2^n-1$ then
+\[ \text{regret}_T
+    \leq \frac{\sqrt{2}}{\sqrt{2}-1} \sqrt{\frac{T \log N}{2}}
+    + \sqrt{\frac{\log N}{2}}
+    \,. \]
+
+\textbf{Linear classification}
+In batch case the points are drawn according to a distribution $D$, but if there
+is no distribution, online learning guarantees a bound on the regret.
+
+The most famous algorithm of online regression is the Perceptron algorithm, which
+consists of learning the weights of the linear classifier, and updating the weight
+vector in case of a misprediction. Its objective is
+\[ T^{-1} \sum_{t=1}^T \max\{0, -y_t (w'x_t) \} = \ex_{(x, y)\sim S} f(w, (x, y)) \,,\]
+for $f(w, (x, y)) = - y (w'x)$. This the Perceptron coincides with the SGD since
+the update is
+\[ w_{t+1} \leftarrow w_t - \eta \nabla_w f(w_t, (x_t, y_t)) 1_{y_t (w'x_t) < 0} \,. \]
+
+\textbf{Novikoff theorem} A bound on the perceptron algorithm: if $\|x_t\| \leq R$
+for all $t\leq T$, and for some $\rho>0$ and $v\in \Real^N$ one has for all $t\leq T$
+\[ \rho \leq \frac{y_t (v'x_t)}{\|v\|} \,, \]
+then the number of mistakes made by the perceptron algorithm is bound by $\frac{R^2}{\rho^2}$.
+
+If $I$ is the set of $t$ at which an update was made then summing the conditions
+over $t\in I$
+\begin{align*}
+    |I|\rho
+        &\leq \frac{v'\sum_{t\in I} x_t y_t }{\|v\|} \\
+        &= \frac{v'\sum_{t\in I} (w_{t+1} - w_t) }{\|v\|} \\
+        &= \frac{v'w_{T+1} }{\|v\|} \\
+        &\leq \| w_{T+1} \| \\
+        &\leq \| w_{t^*} + y_{t^*} w_{t^*}'x_{t^*} \| \\
+\end{align*}
+
+A modification is to use voted perceptron algorithm, and predict according to
+\[ \text{sgn} \bigl( (\sum_{t\in I} c_t w_t)' x_t \bigr) \,. \]
+The vectors $(x_t)_{t\in I}$ are the support vectors for the perceptron. In the
+non-separable case the algorithm does not converge.
+
+% subsection online_learning (end)
+
+% section 20160922_lecture_1 (end)
+
+\section{20160922 Lecture \#2} % (fold)
+\label{sec:20160922_lecture_2}
+
+The guarantees do not hold in the non-separable case: the algorithm might not converge.
+The analysis is based on the leave-one-out error: the expected value of which is
+the generalization error.
+Theorem:
+\[\ex_{s\sim D^m} R(h_S)
+    \leq \ex_{S'\sim D^{m+1}} \frac{\min\{M(S'), \frac{R^2_{m+1}}{\rho^2_{m+1}}\}}{m+1}
+    \,, \]
+\textbf{proof} let $S\sim D^{m+1}$ be linearly separable sample and pick $x\in S$.
+If $h_{S-\{x\}}$ misclassifies the example $x$, then $x$ must be a support vector,
+and thus
+\[ \,.\]
+
+The guarantee of Novikoff holds in a linearly separable case, but can we offer anything
+in the non-separable case? We can:
+\[ M_T \leq \inf_{\rho>0\,,\|u\|_2\leq 1}
+    \sum_{t\in I} \bigl( 1-\frac{y_t (u'x_t)}{\rho}\bigr)_+
+        + \sqrt{\frac{\sum_{t\in I} \|x_t\|^2}{\rho}}
+    \,. \]
+when $\|x_t\|\leq R$ for all $t\in I$ this implies:
+\[ M_T \leq \inf_{\rho>0\,,\|u\|_2\leq 1}
+    \frac{R}{\rho} + \sqrt{\|L_rho(u)\|_1}
+    \,, \]
+where $L_\rho(u) = \bigl((1-\frac{y_t (u'x_t)}{\rho})_+\bigr)_{t\in I}$.
+
+One can formulate a dual of the perceptron algorithm:\begin{itemize}
+    \item set $\alpha\leftarrow \alpha_0$;
+    \item for$t=1,\ldots, T$ do \begin{enumerate}
+        \item get $x_t$;
+        \item put $\hat{y}_t \leftarrow \text{sgn}\bigl(\sum_{s=1}^T \alpha_s y_s (x_s' x_t)\bigr)$;
+        \item get $y_t$;
+        \item if $\hat{y}_t\neq y_t$, then $\alpha_s \leftarrow \alpha_t + 1$;
+    \end{enumerate}
+    \item return $\alpha$;
+\end{itemize}
+Since it depends on the inner products only, this means that it can be extended
+to kernels to get a kernel perceptron algorithm.
+
+Online linear classification algorithm: Winnow algorithm.
+\begin{itemize}
+    \item set $w_1\leftarrow N^{-1}$;
+    \item for $t=1,\ldots, T$ do \begin{enumerate}
+        \item get $x_t$;
+        \item put $\hat{y}_t \leftarrow \text{sgn}\bigl(w_t' x_t\bigr)$;
+        \item get $y_t$;
+        \item if $\hat{y}_t\neq y_t$, then \begin{itemize}
+            \item $Z_t \leftarrow \sum_{i=1}^N w_{ti} \text{exp}(\eta y_t x_{ti})$;
+            \item set $w_{t+1,i} \leftarrow Z_t^{-1} w_{ti} \text{exp}(\eta y_t x_{ti})$;
+        \end{itemize}
+        \item otherwise $w_{t+1} \leftarrow w_t$;
+    \end{enumerate}
+    \item return $w_{T+1}$;
+\end{itemize}
+Winnow algorithm has favourable bounds when a sparse solution is known to exist.
+% Online convex optimization, bandit problems et c.
+
+\subsection{Ranking} % (fold)
+\label{sub:ranking}
+
+The goal is to learn a ranking function: $U:X\mapsto\Real$ -- the ``utility'' or
+priority function. It is more favourable: sometimes not just relevant examples are
+needed, but just the best ones.
+
+Rank aggregation: for $n$ candidates and $k$ voters each giving a ranking of the
+candidates, one has to find the ordering as close as possible to these, measured
+by pairwise misranking. This is NP-hard even for $k=4$.
+
+Fortunately, one can suggest a relatively efficient ML algorithms for this.
+There are two kinds of algos:\begin{itemize}
+    \item score-based;
+    \item ...
+\end{itemize}
+
+\textbf{Score-based}: the goal is to learn a scoring function $h:U\mapsto\Real$.
+A major drawback is that it imposes a linear total ordering on $U$, which is not
+usually the case in real situations. The preferences might be intransitive, or even
+incomparable.
+
+Training data: a sample of iid labelled pairs from $U\times U$ according to $D$:
+$S = ((x_i, x_i', y_i))_{i=1}^m\in U\times U\times \{-1, 0, +1\}$. for any $i=1,\ldots, m$
+$y_i = 0$ indicates `don care' ranking or incomparability, whereas $y_i>0$ iff
+$x_i \prec x_i'$. The problem is fond the hypothesis as close to the true preference
+as possible:
+\[ R(h) = \pr_{(x,x')\sim D} \bigl( f(x,x') \neq 0\,\&\,f(x,x')(h(x')-h(x)) \leq 0 \bigr)
+    \,,\]
+-- the pairwise misranking error. The empirical error is
+\[ \hat{R}_S(h) = \pr_{(x,x',y)\sim S} \bigl( y \neq 0\,\&\,y (h(x')-h(x)) \leq 0 \bigr)
+    \,.\]
+The relation $(x,x')\in \mathcal{R} \Leftrightarrow f(x',x) = 1$ might not be transitive
+or even antisymmetric.
+
+Distributional assumptions: $m$ points, labels for pairs gives squared number of
+examples $\mathcal{O}m^2$, and there is a dependency issue. This issue is that if
+$(x_1,x_2)$ and $(x_2,x_3)$ implies that $(x_1,x_3)$ must also be in the sample.
+
+We assume distribution over $m$ pairs and independence in the sample. Confidence
+margin and the empirical margin loss are defined as
+\[ \hat{R}_\rho(h) = m^{-1} \sum_{i=1}^m \Phi_\rho(y_i (h(x_i') - h(x_i))) \,. \]
+and $\Phi_\rho(x) \leq 1_{x\leq \rho}$.
+
+Margin Rademacher complexities: 
+\[\mathcal{R}_m^{D_1}(H) = \ex_{D_1} \hat{\mathcal{S}}_1(H) \,, \]
+where $D_1$ and $D_2$ are marginal distributions of the true distribution $D$ over
+the pairs.
+
+We can get a ranking margin bound:
+\[ R(h) \leq \hat{R}_\rho(h)
+    + \frac{2}{\rho}(\mathcal{R}_m^{D_1}(H)+\mathcal{R}_m^{D_2}(H))
+    + \sqrt{\frac{\log\frac{1}{\delta}}{2m}}
+    \,. \]
+
+\textbf{Ranking with SVM} The idea is to look for a linear function that maximizes
+the pairwise misranking margin: $\frac{1}{2}\|w\|^2 + C \sum_{i=1}^m \xi_i$ to
+$\min_{w, \xi_i}$ subject to
+\[ y_i w'( \Phi(x_i') - \Phi(x_i)) \leq 1 - \xi_i \,,\]
+for $\xi_i\geq 0$. The decision function is $h(x) = w'\Phi(x) + b$. If $\Psi(z_i)$
+is defined as $\Phi(x_i')-\Phi(x_i)$ then this coincides with SVM, which means that
+it can be used with kernels.
+
+Boosting for ranking, CD rankBoost.
+
+$H\subseteq \{0,1\}^X$, $\epsilon^0_t+\epsilon^+_t+\epsilon^-_t=1$, and
+\[ \epsilon^s_t
+    = \pr_{(x,x')\sim D_t} \Bigl(\text{sgn}\bigl( f(x,x')(h(x')-h(x)) \bigr) = s \Bigr)
+    \,.\]
+
+Coordinate descent RankBoost is given by the following pseudoalgorithm:
+\begin{enumerate}
+    \item $D_1\propto 1$;
+    \item for $t=1,\ldots, T$ do: \begin{enumerate}
+        \item $h_t\leftarrow $ base ranking with the smallest $\epsilon^-_t-\epsilon^+_t$;
+        \item set $\alpha_t \leftarrow \frac{1}{2}\log\frac{\epsilon^+_t}{\epsilon^-_t}$;
+        \item put $Z_t \leftarrow \epsilon^-_t + 2(\epsilon^-_t\epsilon^+_t)^\frac{1}{2}$;
+        \item $D_{t+1}(x,x',y) \propto D_t(x,x',y) \text{exp} \{ -y\alpha_t(h_t(x')-h_t(x)) \}$;
+    \end{enumerate}
+    return $\phi_T(x) = \sum_{t=1}^T \alpha_t h_t(x)$;
+\end{enumerate}
+
+Again this can be viewed as a coordinate descent problem for the ranking objective
+function:
+\[ F(\alpha) = \sum_{(x,x',y)\in S} \text{exp}\{-y(\phi_T(x')-\phi_T(x))\} \,. \]
+Coordinate Descent idea: find the best direction and then the best step.
+
+\[\frac{\partial F(\alpha + \eta e_t)}{d \eta}
+    = -(\epsilon^-_t - \epsilon^+_t) \,,\]
+which means that one needs to find the best classifier in that direction.
+
+\textbf{Bipartite ranking} We are given two samples $S_-$ and $S_+$, and
+we must find $h$ that minimizes
+\[R(h) = \pr_{x_+\sim D_+\,,x_-\sim D_-} \bigl( h(x_+) > h(x_-) \bigr) \,. \]
+
+Bipartite ranking results are described in terms of the ROC-AUC.
+
+In AdaBoost the constant base learner $h=1$ automatically equalizes the contribution
+of negative and positive examples, thus immediately resolving issues with class
+imbalance. Thus asymptotically AdaBoost achieves the same optimum of the CD RankBoost
+objective.
+Since
+\[F_{ada}(\alpha) = F_-(\alpha) + F_+(\alpha)\,,\]
+whereas
+\[F_{rank}(\alpha) = F_-(\alpha) F_+(\alpha)\,.\]
+
+If for $(x,x')\in S_-\times S_+$ one has $D(x,x') = D_-(x) D_+(x)$, then
+\[ D_{t+1} \propto D_{t-}(x) e^{\alpha_t h(x)} D_{t+}(x') e^{-\alpha_t h(x')}
+    \,. \]
+
+The area under the ROC is given by
+\[ \text{AUC}(h)
+    = \frca{1}{mm'}\sum_{i=1}^m \sum_{j=1}^{m'} 1_{h(x_j') > h(x_i)}
+    = \pr_{(x,x')\sim \hat{D}_-\hat{D}_+}(h(x') > h(x))
+    = 1 - \hat{R}(h)
+    \,. \]
+
+ROC-AUC is not for classification, but for ranking, so one should just compare the
+misclassification error. Furthermore one should consider the statistical significance
+of the AUC difference.
+
+\textbf{Preference-based ranking} 
+
+% subsection ranking (end)
+
+% section 20160922_lecture_2 (end)
+
+%
+
 \end{document}
