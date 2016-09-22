@@ -591,7 +591,7 @@ the feature space if very large, so what about the complexity.
 \label{sub:margin_theory}
 Confidence margin versus the geometric margin. For any confidence margin $\rho>0$,
 the $\rho$-margin function is defined by such an $\Phi_\rho$ that
-\[ \Phi_\rho(x) \leq 1_{x < \rho} \,,\]
+\[ 1_{x < 0} \leq \Phi_\rho(x) \leq 1_{x < \rho} \,,\]
 and $\Phi_\rho \in [0,1]$ non increasing and linear over $[0, \rho]$. For a sample
 $S = (x_i)_{i=1}^m$ and a real-values hypothesis $h$ the empirical margin loss is
 \[\hat{R}_\rho(h)
@@ -1415,7 +1415,7 @@ If for $(x,x')\in S_-\times S_+$ one has $D(x,x') = D_-(x) D_+(x)$, then
 
 The area under the ROC is given by
 \[ \text{AUC}(h)
-    = \frca{1}{mm'}\sum_{i=1}^m \sum_{j=1}^{m'} 1_{h(x_j') > h(x_i)}
+    = \frac{1}{mm'}\sum_{i=1}^m \sum_{j=1}^{m'} 1_{h(x_j') > h(x_i)}
     = \pr_{(x,x')\sim \hat{D}_-\hat{D}_+}(h(x') > h(x))
     = 1 - \hat{R}(h)
     \,. \]
