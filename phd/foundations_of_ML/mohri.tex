@@ -1432,4 +1432,277 @@ of the AUC difference.
 
 %
 
+\section{20160923 Lecture \#1} % (fold)
+\label{sec:20160923_lecture_1}
+
+Domain adaptation and sample bias correction. The assumptions made in earlier lectures
+are in a way strong: the data is iid and the discrete is fixed in time and the train,
+test samples ale drawn according to the same distribution. In the real world this
+is the usual situation: take spam detection -- the spammers adapt to filters, and
+thus augment the distribution.
+
+\subsection{Domain adaptation} % (fold)
+\label{sub:domain_adaptation}
+
+The outline:
+\begin{itemize}
+    \item divergence measure -- discrepancy;
+    \item theoretical guarantees;
+    \item DA algorithm and its enhancements;
+\end{itemize}
+DA appears in: \begin{itemize}
+    \item sentiment analysis;
+    \item language modelling, part-of-speech tagging;
+    \item statistical parsing;
+    \item speech recognition, computer vision;
+\end{itemize}
+
+Formalization: source domain $(Q, f_Q)$, and target $(P, f_P)$, where $f$ is the
+labelling function. On input one receives a labelled sample $S$ from the source
+distribution, and an unlabelled sample $T$ from the target. The problem is to
+find a hypothesis in $H$ with small expected loss with respect to the target
+domain:
+\[ \mathcal{L}_P(h, f_P) = \ex_{x\sim P} L(h(x), f_P(x)) \,. \]
+The deterministic scenario can be easily transformed into a stochastic labelling
+one.
+
+This problem is harder: not just the finiteness of the sample, but additionally
+the source and target distributions are different.
+
+\textbf{Sample bias correction}, is a special case of DA with $f_P = f_Q$, and
+$\text{supp}(Q)\subsetq \text{supp}(P)$.
+
+\subsubsection{Distribution mismatch} % (fold)
+\label{ssub:distribution_mismatch}
+
+The main question is what distance should be used to compare the distributions,
+especially in the case of different supports. Possible ways: Hellinger, Kullback-
+Leibler, total variations ($L_1$), quadratic variation ($L_2$) or $L_p$.
+\textbf{KL} is infinite if the supports are not nested.
+
+The choice of a loss function $L$ and a hypothesis set $H$ is important.
+Assume the loss is bounded by $M$, then for all $h\in H$
+\[ \bigl| \mathcal{L}_Q(h, f) - \mathcal{L}_P(h, f) \bigr|
+    \leq M L_1(Q, P)
+    \,.\]
+This follows from the properties of $\ex$.
+
+Discrepancy:
+\[ \text{disc}(Q,P) = \max_{h,h'} \bigl| \mathcal{L}_P(h,h') - \mathcal{L}_Q(h,h')\bigr| \,. \]
+It is symmetric, and satisfies the triangle inequality, but is not a distance in
+general: $\text{disc}(Q,P) = 0$ does not imply $P=Q$.
+
+For $L_q$ loss bounded by $M$, for any $\delta>0$
+\[ \text{disc}(Q,P)
+    \leq \text{disc}(\hat{Q},\hat{P})
+    + 4q(\hat{\mathcal{R}}_S(H) + \hat{\mathcal{R}}_T(H))
+    + 3 M \biggl( \sqrt{\frac{\log\frac{4}{\delta}}{2m}}
+                + \sqrt{\frac{\log\frac{4}{\delta}}{2n}} \biggr)
+    \,,\]
+with probability at least $1-\delta$.
+
+Let $K$ be a universal kernel and $H = \{ h\in \Hcal_K\,:\,\|h\|_\Hcal\leq \Lambda \}$.
+Then for the $L_2$ loss the discrepancy is a distance. Note that 
+\[ \Psi(x) = \ex_{x\sim P} h^2(x) - \ex_{x\sim Q} h^2(x) \,, \]
+is Lipschitz.
+
+Two questions: \begin{itemize}
+    \item difference between the average loss of a hypothesis $h$ on $P$ against $Q$;
+    \item ...
+\end{itemize}
+Generalization bound. If
+\[ \mathcal{L}_Q(h^*_Q, f) = \min_{h\in H} \mathcal{L}_Q(h, f) \,,\]
+then
+\[ \mathcal{L}_P(h, f_P)
+    \leq \mathcal{L}_Q(h, h^*_Q)
+    + \mathcal{L}_P(h^*, f_P)
+    + \text{disc}(P,Q)
+    \,, \]
+
+Consider a regularized ERM:
+\[F_{\hat{Q}} = \lambda \|h\|^2_\Hcal + \hat{R}_{\hat{Q}}(h) \,,\]
+where $\Hcal$ is the canonical RKHS induced by a kernel $K$. This has the following
+guarantee: if $K(x,x) \leq R^2$ and $L$ is $\mu$-Lipschitz loss in the first argument,
+and $f_P\in H$ then for all $(x, y)\in X\times Y$
+\[ | L(h'(x), y) - L(h(x), y) |
+    \leq \mu R \sqrt{\frac{\text{disc}(\hat{P}, \hat{Q}) + \mu \eta}{\lambda}}
+    \,, \]
+where $\eta = \max\{L(f_Q(x), f_P(x))\,:|, x\in \text{supp}(\hat{Q}) \}$.
+
+Regularized ERM:
+\[ | L(h'(x), y) - L(h(x), y) |
+    \leq \frac{R\sqrt{M}}{\lambda}\biggl(
+    \delta + \sqrt{\delta^2 + 4\lambda \text{disc}(\hat{P}, \hat{Q})}
+    \biggr) \,, \]
+where
+\[\delta = \min_{h\in \Hcal_K}\biggl\|
+    \ex_{x\sim \hat{Q}} (h(x) - f_Q(x))\Phi_K(x)
+    - \ex_{x\sim \hat{P}} (h(x) - f_P(x))\Phi_K(x)
+    \biggr\|_K
+\,.\]
+Thus the empirical discrepancy is very crucial in all generalization bounds. But
+how can it be reduced further?
+
+Change the weights of the distribution $Q$:
+\[ q^* = \argmin_{\text{supp}(q) \subseteq \text{supp}(\hat{Q})} 
+        \text{disc}(\hat{P}, q)
+    \,,\]
+which gives this optimization problem:
+\[ \min_h F_{q^*}(h)
+    = \sum_{i=1}^m q^*(x_i) L(h(x_i), y_i) + \lambda \|h\|^2_K
+    \,. \]
+
+Finding the $q^*$. View it as a game:
+\[ \hat{Q}' = \argmin_{\hat{Q}'\in Q} \max_{h,h'\in H}
+    \bigl| \mathcal{L}_{\hat{P}}(h',h) - \mathcal{L}_{\hat{Q}'}(h',h) \bigr|
+    \,. \]
+This optimal value can be bounded by a max-min bound.
+
+% subsubsection distribution_mismatch (end)
+
+% subsection domain_adaptation (end)
+
+\subsection{Multiple source domain adaptation} % (fold)
+\label{sub:multiple_source_domain_adaptation}
+
+Given distributions and corresponding hypotheses: $(h_i)_{i=1}^k$ -- hypotheses
+good for $(D_i)_{i=1}^k$ -- different domains for the same target labelling function
+$f$. All individual hypotheses perform well in their domain $\mathcal{L}(D_i, h_i, f) \leq \epsilon$
+with
+\[ \mathcal{L}(D_i, h_i, f) = \ex_{x\sim D_i}L(h_i(x), f(x)) \,.\]
+The loss $L$ is convex, non-negative, bounded and continuous.
+
+The unknown target distribution is a mixture of source distributions $(D_i)_{i=1}^k$,
+and the task is to find a hypothesis that performs well with respect to any target, 
+and choice of $(\lambda_i)_{i=1}^k$: convex combination rule for $z_i\geq 0$
+\[ h_z(x) = \sum_{i=1}^k z_i h_i(x) \,,\]
+and distribution weighted combination
+\[ h_z(x) = \sum_{i=1}^k \frac{z_i D_i(x)}{\sum_{j=1}^k z_j D_j(x)} h_i(x) \,.\]
+Note that for some distribution any convex combination performs poorly.
+
+For $z=\lambda$ one has due to convexity 
+\[ \mathcal{L}(D_T, h_\lambda, f)
+    = \ex_{x\sim D_T} L(h_\lambda(x), f(x))
+    \leq \ex_{x\sim D_T} \sum_{i=1}^k
+        \frac{z_i D_i(x)}{\sum_{j=1}^k z_j D_j(x)} L(h_i(x), f(x))
+    = \sum_{i=1}^k \sum_{j=1}^k \lambda_j \ex_{x\sim D_j}
+        \frac{\lambd _i D_i(x)}{\sum_{j=1}^k \lambd _j D_j(x)} L(h_i(x), f(x))
+    \,, \]
+
+Zero-sum game: \begin{itemize}
+    \item NATURE: select a target distribution $D_i$;
+    \item LEARNER: select a distribution weighted hypohtesis $h_z$;
+    \item PAYOFF: suffer $\mathcal{L}(D_i, h_z, f)$;
+    \item then by von Neumann theorem the value of the game is at most $\epsilon$.
+\end{itemize}
+The minimiax theorem posits that there exists a mixture $\sum_{j=1}^k \alpha_j h_{z_j}$
+of distribution weighted hypotheses that does well for any distribution mixture.
+
+\textbf{Brouwer's fixed point theorem} is useful here (used NE proof): for any compact
+convex non-empty $A$ and any continuous function $f:A\mapsto A$, there exists $x\in A$
+with $f(x) = x$.
+
+Put $\mathcal{L}_i^z = \mathcal{L}(D_i, h_z, f)$. Define a mapping $\phi$ by
+\[ \phi(z)_i = \frac{z_i \mathcal{L}_i^z}{\sum_{j=1}^k z_j \mathcal{L}_j^z} \,, \]
+from the simplex $\{z\,:\, z\geq 0\,,\sum_{j=1}^k z_j = 1\}$.
+Suppose $z>0$ and thus $\phi$ is continuous, which means that there exists $z$ such
+that $\phi(z) = z$, whence
+\[ \mathcal{L}_i^z = \sum_j=1}^k z_j \mathcal{L}_j^z = \gamma \,.\]
+Thus this $z$ balances the losses across different domains. But we need to make
+sure that $z>0$. 
+
+Bounding loss: for a fixed point $z$ one has
+\begin{align*}
+    \mathcal{L}(D_z, h_z, f)
+        &= \sum_{x\in X} L(h_z(x), f(x)) \sum_{j=1}^k z_j D_j(x) \\ 
+        &= \sum_{j=1}^k z_j \sum_{x\in X} L(h_z(x), f(x)) D_j(x) \\ 
+        &= \sum_{j=1}^k z_j \mathcal{L}_j^z  = \gamma \,. 
+\end{align*}
+Now, if the target distribution mixture parameters are known, we have $\gamma\leq \epsilon$.
+
+Details on the continuity of $L$ of the discontinuity of the mixing coefficients:
+smear $\eta > 0$ across all domains
+\[ h_z(x) = \sum_{i=1}^k \frac{z_i D_i(x) + \frac{\eta}{k}}{\eta + \sum_{j=1}^k z_j D_j(x)} h_i(x)
+    \,;\]
+This implies that for any target function $f$ and any $\delta>0$, there exist $\eta>0$
+and $z$ such that $\mathcal{L}(D_T, h_\lambda, f) \leq \epsilon + \delta$.
+
+R\'enyi divergence:
+\[ D_\alpha(P\|Q)
+    = \frac{1}{\alpha - 1} \ex_P \biggl(\frac{P(x)}{Q(x)}\biggr)^{\alpha - 1}
+    \,. \]
+
+% subsection multiple_source_domain_adaptation (end)
+
+% section 20160923_lecture_1 (end)
+
+\section{20160923 Lecture \#2} % (fold)
+\label{sec:20160923_lecture_2}
+
+\subsection{Transductive learning} % (fold)
+\label{sub:transductive_learning}
+
+Inductive: receive a training sample and using it make a prediction on a test sample;
+Transductive: receive both a labelled and unlabelled test sample and make a prediction
+for that same unlabelled examples. A closely-related concept is semi-supervised
+scenario. Examples: network predictions in computational biology for biosequences,
+web graph predictions, NLP applications.
+
+Knowing the test object during training seems to be more favourable than in the
+semi-supervised setting. Does it make sense to compute a ``expected'' loss in this
+case, since the test object is seen only once.
+
+Two possible transductive settings: in the first setting there is a full sample
+$X$ of size $m + u$ (labelled and unlabelled). The learner receives a sample $S=(x_i)_{i=1}^m$
+drawn uniformly without replacement from $X$ as well as the labels $(y_i)_{i=1}^m$.
+
+Errors:\begin{itemize}
+    \item training error $\hat{R}_S(h) = \ex_{x, y\sim S} L(h(x), y)$;
+    \item test error $R_T(h) = u^{-1} \sum_{i=1}^u L(h(x_{m+i}), y_{m+i})$;
+    \item full sample error $R_X(h) = \frac{1}{m+u}(u R_T(h) + m \hat{R}_S(h))$;
+\end{itemize}
+
+Another setting is when there is a distribution $D$ over $X$, and the learner receives
+a train sample $S$ and a test sample $T$. The setting are related:
+\[ \ex_{S\sim D^m, T\sim D^u}
+        1_{\sup_{h\in H} R_T(h) - \hat{R}_S(h) > \epsilon} 
+    = \ex_{X\sim D^{m+u}} \ex_{(S, T) = X}
+        1_{\sup_{h\in H} R_T(h) - \hat{R}_S(h) > \epsilon}
+    \,, \]
+and since it is simpler to study the first setting, we shall focus on this one.
+
+Bounds: VC, PAC, Stability, and Rademacher. Transductive Rademacher complexity:
+\[\mathcal{R}_{m+u}(G) = \ex_\sigma \sup_{g\in G} \sum_{i=1}^{m+u} \sigma_i g(x_i) \,, \]
+with augmented Rademacher variables $\sigma \in \{-\frac{m}{u}, \frac{u}{m}\}$ and
+``balancing'' probabilities.
+Since the full sample is available it is possible to minimize the Rademacher complexity
+term directly.
+
+
+Transductive SVM: fake the unknown labesl for the test set.
+\[ \frac{1}{2} \|w\|^2
+    + C\sum_{i=1}^m L(w'x_i + b, y_i)
+    + C'\sum_{i=1}^u L(w'x_{m+i} + b, y_{m+i})
+    \to \min_{w, b,(y_{m+i})_{i=1}^u }
+    \,.\]
+This algorithm is hard in the classification case, but it is trivial in the regression
+case. Also it does not yet have any theoretical guarantees, and it has exponential
+complexity due to labels. The algorithm tends to label the unlabelled examples uniformly.
+
+Local transductive regression:
+\[ \|h\|_K + C \sum_{i=1}^m L(h(x_i), y_i)
+     + C' \sum_{i=1}^u L(h(x_{m+i}), \tilde{y}_{m+i})
+     \,, \]
+with a pds kernel $K$ and pseudo labels $\tilde{y}$ obtained via a local weighted
+average or any other local regression algorithm form neighbourhood of radius $r$.
+For example, one can get surrogates from a $k$-NN regression.
+
+Graph regularization algorithm. A weighted graph $G=(X, E)$ and a hypothesis $h:X\mapsto \Real$.
+
+
+
+% subsection transductive_learning (end)
+
+% section 20160923_lecture_2 (end)
+
 \end{document}
