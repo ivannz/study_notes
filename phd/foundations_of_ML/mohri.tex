@@ -1470,7 +1470,7 @@ This problem is harder: not just the finiteness of the sample, but additionally
 the source and target distributions are different.
 
 \textbf{Sample bias correction}, is a special case of DA with $f_P = f_Q$, and
-$\text{supp}(Q)\subsetq \text{supp}(P)$.
+$\text{supp}(Q)\subseteq \text{supp}(P)$.
 
 \subsubsection{Distribution mismatch} % (fold)
 \label{ssub:distribution_mismatch}
@@ -1581,13 +1581,16 @@ and distribution weighted combination
 Note that for some distribution any convex combination performs poorly.
 
 For $z=\lambda$ one has due to convexity 
-\[ \mathcal{L}(D_T, h_\lambda, f)
-    = \ex_{x\sim D_T} L(h_\lambda(x), f(x))
-    \leq \ex_{x\sim D_T} \sum_{i=1}^k
-        \frac{z_i D_i(x)}{\sum_{j=1}^k z_j D_j(x)} L(h_i(x), f(x))
-    = \sum_{i=1}^k \sum_{j=1}^k \lambda_j \ex_{x\sim D_j}
-        \frac{\lambd _i D_i(x)}{\sum_{j=1}^k \lambd _j D_j(x)} L(h_i(x), f(x))
-    \,, \]
+\begin{align*}
+    \mathcal{L}(D_T, h_\lambda, f)
+    &= \ex_{x\sim D_T} L(h_\lambda(x), f(x)) \\
+    &\leq \ex_{x\sim D_T} \sum_{i=1}^k
+        \frac{z_i D_i(x)}{\sum_{j=1}^k z_j D_j(x)} L(h_i(x), f(x)) \\
+    &= \sum_{i=1}^k
+        \lambda_i  \ex_{x\sim D_T} \frac{D_i(x)}{D_T(x)} L(h_i(x), f(x)) \\
+    &= \sum_{i=1}^k \lambda_i \ex_{x\sim D_i} L(h_i(x), f(x))
+    = \sum_{i=1}^k \lambda_i \mathcal{L}(D_i, h_i, f) \,,
+\end{align*}
 
 Zero-sum game: \begin{itemize}
     \item NATURE: select a target distribution $D_i$;
@@ -1607,7 +1610,7 @@ Put $\mathcal{L}_i^z = \mathcal{L}(D_i, h_z, f)$. Define a mapping $\phi$ by
 from the simplex $\{z\,:\, z\geq 0\,,\sum_{j=1}^k z_j = 1\}$.
 Suppose $z>0$ and thus $\phi$ is continuous, which means that there exists $z$ such
 that $\phi(z) = z$, whence
-\[ \mathcal{L}_i^z = \sum_j=1}^k z_j \mathcal{L}_j^z = \gamma \,.\]
+\[ \mathcal{L}_i^z = \sum_{j=1}^k z_j \mathcal{L}_j^z = \gamma \,.\]
 Thus this $z$ balances the losses across different domains. But we need to make
 sure that $z>0$. 
 
