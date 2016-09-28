@@ -1,0 +1,260 @@
+\documentclass[a4paper]{article}
+\usepackage{fullpage}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx, url}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage{mathptmx}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Cplx}{\mathbb{C}}
+\newcommand{\ex}{\mathbb{E}}
+\newcommand{\pr}{\mathbb{P}}
+\newcommand{\argmin}{\mathop{\text{argmin}}}
+\newcommand{\argmax}{\mathop{\text{argmax}}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\nil}{\mathbf{0}}
+\newcommand{\Rcal}{{\mathcal{R}}}
+\newcommand{\Lcal}{\mathcal{L}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Fcal}{\mathcal{F}}
+
+\title{Foundations Of Machine Learning: assignment}
+\author{Nazarov Ivan}
+\begin{document}
+
+\section{Assignment \#1} % (fold)
+\label{sec:assignment_1}
+
+\subsection{Problem A} % (fold)
+\label{sub:problem_a}
+
+\subsubsection{Task 1} % (fold)
+\label{ssub:task_1}
+
+Let $f:(0, +\infty)\mapsto\Real$ be a function with an inverse $f^{-1}$, and let
+$X$ be an rv, and suppose $\pr(X > t)\leq f(t)$ for all $t>0$. Then for any $\delta>0$,
+one has
+\[ \pr\bigl(X>f^{-1}(\delta)\bigr) \leq \delta \,, \]
+since $f$ is invertible. Therefore for al $\delta>0$
+\[ 1-\delta \leq \pr\bigl(X \leq f^{-1}(\delta)\bigr) \,. \]
+
+% subsubsection task_1 (end)
+
+\subsubsection{Task 2} % (fold)
+\label{ssub:task_2}
+
+Let $X$ be a non-negative rv taking integer values. Consider it expectation:
+\[ \ex X = \sum_{n\geq 0} n \pr(X=n) \,. \]
+However $\{X=n\} = \{X\geq n\}\setminus \{X\geq n+1\}$, whence
+\[ \ex X = \sum_{n\geq 0} n \bigl(\pr(X\geq n) - \pr(X\geq n+1)\bigr) \,. \]
+Now since the terms in the summation are non-negative it is possible to reorder
+so that
+\begin{align*}
+	\ex X
+    &= \sum_{n\geq 0} n \bigl(\pr(X\geq n) - \pr(X\geq n+1)\bigr) \\
+    &= \sum_{n\geq 0} n \pr(X\geq n)
+      - \sum_{n\geq 0} n \pr(X\geq n+1) \\
+    &= \sum_{n\geq 0} n \pr(X\geq n)
+      - \sum_{n\geq 0} (n+1) \pr(X\geq n+1)
+      + \sum_{n\geq 0} \pr(X\geq n+1) \\
+    &= \pr(X\geq 0) + \sum_{n\geq 1} \pr(X\geq n) \,,
+\end{align*}
+whence the result follows.
+
+% subsubsection task_2 (end)
+
+% subsection problem_a (end)
+
+\subsection{Problem B} % (fold)
+\label{sub:problem_b}
+
+Let $D$ be a distribution over $X$, and $F:X\mapsto\{-1,+1\}$ be the true deterministic
+labelling function. WE a re interested in finding a good approximation of the label
+bias of $(D, f)$, i.e. $P_+$ defined by
+\[ p_+ = \pr_{x\sim D}\bigl(f(x) = +1)\bigr) \,. \]
+
+Let $S=(x_i)_{i=1}^m$ be an iid sample drawn from $D$. Since the random variable
+$f(X)$ for $X\sim D$ is binary, it can have only one kind on distribution -- Bernoulli.
+Thus one can use an ML estimator: since $(f(x_i))_{i=1}^m$ is an iid sample as well,
+the log-likelihood of labels of the sample $S$ is
+\[ \mathcal{L} = \sum_{i=1}^m 1_{\{f(x_i)=+1\}} \log p_+ + 1_{\{f(x_i)=-1\}} \log(1-p_+) \,, \]
+whence the MLE of $p_+$ is given by: $\hat{p}_+(S) = m^{-1} \sum_{i=1}^m 1_{\{f(x_i)=+1\}}$.
+This is an unbiased estimator of $p_+$:
+\[ \ex_{S\sim D^m} \hat{p}_+(S)
+  = m^{-1} \sum_{i=1}^m \ex_{x_i\sim D} 1_{\{f(x_i)=+1\}} 
+  = \ex_{x\sim D} 1_{f(x)=+1} = p_+ \,. \]
+Now $1_{\{f(x_i)=+1\}}$ are iid $0-1$ random variables with expectation $p_+$, which
+means that by the two-sided Hoeffding inequality for any $\epsilon>0$ one has:
+\[ \pr_{S\sim D^m}\bigl(
+    \bigl| \sum_{i=1}^m 1_{\{f(x_i)=+1\}} - m p_+ \bigr| > m\epsilon
+  \bigr) \leq 2 \text{exp}\biggl\{\frac{-2m^2\epsilon^2}{m}\biggr\}
+  \,, \]
+whence $\pr_{S\sim D^m}( |\hat{p}_+(S) - p_+| > \epsilon ) \leq 2 e^{-2m\epsilon^2}$.
+Therefore for any $\delta>0$ it is true that
+\[ |\hat{p}_+(S) - p_+| \leq \sqrt{\frac{\log\frac{2}{\delta}}{2m}} \,, \]
+with probability at least $1-\delta$ over $S\sim D^m$.
+Furthermore, since the upper bound on the probability is exponential in $m$,
+the first Borell-Cantelli lemma implies that for all $\epsilon>0$
+\[ \pr_{S\sim D_\infty} \bigl(
+  |\hat{p}_+(S_{:m}) - p_+| > \epsilon
+    \text{ i.o. over } m \bigr) = 0 \,, \]
+where $D_\infty$ is a distribution over infinite iid sequences in $X$. Therefore
+one has $\hat{p}_+(S_{:m}) \to p_+$ almost surely.
+
+% subsection problem_b (end)
+
+\subsection{Problem D} % (fold)
+\label{sub:problem_d}
+Recall that the empirical loss $\hat{R}_S(h)$ of $h$ is given by
+\[ \hat{R}_S(h) = \ex_{(x,y)\sim S} L(h(x), y) \,, \]
+where $(x,y)\sim S$ means empirical distribution over the sample data $S=(z_i)_{i=1}^m$.
+The true loss of $h$ is $R(h) = \ex_{(x,y)\sim D} L(h(x), y)$. Consider the $0-1$
+loss $L(h(x), y) = 1_{\{h(x)\neq y\}}$.
+
+Consider nested hypotheses sets $(H_k)_{k\geq1}$ with $H_k\subset H_{k+1}$ of hypotheses
+taking values in $\{-1,+1\}$, and put $H=\cup_{k\geq1} H_k$. Furthermore for any
+$h\in H$ let $k: H\mapsto\mathbb{N}$ be defined by $k(h) = \inf\{k\geq1\,:\, h\in H_k\}$
+-- the index of the first hypothesis set $H_k$ that houses $h$. For any $k\geq1$
+define the objective function $F_k$ by
+\[ F_k(h) = \hat{R}_S(h) + \mathcal{R}_m(H_k) + \sqrt{\frac{\log k}{m}} \,. \]
+
+\subsubsection*{step 1} % (fold)
+\label{ssub:step_1}
+
+First, by definition of the Rademacher complexity the inclusion $H_k\subset H_{k+1}$
+implies that
+\[ \mathcal{R}_m(H_k) \leq \mathcal{R}_m(H_{k+1}) \,, \]
+which in turn implies that for any $h\in H_k$ it is true that $k\geq k(h)$ one has
+\[ \mathcal{R}_m(H_k) + \sqrt{\frac{\log k}{m}}
+  \geq \mathcal{R}_m(H_{k(h)}) + \sqrt{\frac{\log {k(h)}}{m}} \,. \]
+Therefore $F_k(h) \geq F_{k(h)}(h)$, and for all $k\geq1$ and $h\in H_k$ it is true
+that
+\[ R(h) - F_k(h) \leq R(h) - F_{k(h)}(h) \leq \sup_{h\in H} R(h) - F_{k(h)}(h) \,. \]
+Conversely, for any $f\in H$
+\[ \sup_{k\geq1} \sup_{h\in H_k} R(h) - F_k(h)
+    \geq \sup_{h\in H_{k(f)}} R(h) - F_{k(f)}(h)
+    \geq R(f) - F_{k(f)}(f)
+  \,, \]
+which ultimately implies that
+\[ \sup_{k\geq1}\sup_{h\in H_k} R(h) - F_k(h)
+    = \sup_{h\in H} R(h) - F_{k(h)}(h)
+  \,. \]
+
+% subsubsection* step_1 (end)
+
+\subsubsection*{step 2} % (fold)
+\label{ssub:step_2}
+
+Now, the main theorem on the one-sided Rademacher complexity bound (slide~15) states,
+that for a hypothesis class $H_k$ one has for all $\epsilon>0$
+\[ \pr_{S\sim D^m}\Bigl( \{S\,:\,
+    \sup_{h\in H_k} R(h) - \hat{R}_S(h) > \mathcal{R}_m(H_k) + \epsilon\}
+  \Bigr) \leq \text{exp}\bigl\{-2m\epsilon^2\bigr\}
+  \,. \]
+If $\epsilon_k = \epsilon + \sqrt{\frac{\log k}{m}}$, then for all $k\geq 1$ the main
+theorem implies that
+\[ \pr_{S\sim D^m}\Bigl( \{S\,:\,
+    \sup_{h\in H_k} R(h) - \hat{R}_S(h) - \mathcal{R}_m(H_k) - \sqrt{\frac{\log k}{m}} > \epsilon\}
+  \Bigr) \leq \text{exp}\bigl\{-2m\epsilon_k^2\bigr\}
+  \,. \]
+However for any $k\geq 1$ it is true that $\epsilon_k^2 \geq \epsilon^2 + \frac{\log k}{m}$,
+whence
+\[ \text{exp}\bigl\{-2m\epsilon_k^2\bigr\}
+  \leq k^{-2} \text{exp}\bigl\{-2m\epsilon^2\bigr\}
+  \,,\]
+By the Union Bound one has
+\[ \pr_{S\sim D^m}\Bigl(
+  \bigcup_{k\geq 1} \{S\,:\, \sup_{h\in H_k} R(h) - F_k(h) > \epsilon\}
+  \Bigr) \leq e^{-2m\epsilon^2} \sum_{k\geq 1} k^{-2}
+  = \frac{\pi^2}{6} e^{-2m\epsilon^2}
+  \,. \]
+Now, step 1 and the definition of the least upper bound imply that
+\begin{align*}
+  \bigcup_{k\geq 1} \{S\,:\, \sup_{h\in H_k} R(h) - F_k(h) > \epsilon\}
+    &= \{S\,:\, \sup_{k\geq 1} \sup_{h\in H_k} R(h) - F_k(h) > \epsilon\}\\
+    &= \{S\,:\, \sup_{h\in H} R(h) - F_{k(h)}(h) > \epsilon\} \,,
+\end{align*}
+whence for any $\epsilon>0$
+\[ \pr_{S\sim D^m}\Bigl(
+  \sup_{h\in H} R(h) - F_{k(h)}(h) > \epsilon
+  \Bigr) \leq 2 e^{-2m\epsilon^2}
+  \,. \]
+
+% subsubsection* step_2 (end)
+
+\subsubsection*{step 3} % (fold)
+\label{ssub:step_3}
+
+The SRM-optimal hypothesis $f^*$ is given by the minimizer of the objective:
+\[ f^* = \argmin_{h\in H_k, k\geq1} F_k(h) \,, \]
+and the best (lowest risk) hypothesis $h^*$ is given by
+\[ h^* = \argmin_{h\in H} R(h) \,. \]
+The hypothesis $f^*$ is observable and feasible, whereas the $h^*$ is unknown.
+
+\noindent Fix some $\delta>0$. By the uniform concentration result from step 2 one
+has
+\[ \sup_{h\in H} R(h) - F_{k(h)}(h) \leq \sqrt{\frac{\log\frac{4}{\delta}}{2m}}
+  \,,\]
+with probability at least $1-\frac{\delta}{2}$ over $S\sim D^m$. However the SRM
+$f^*$ hypothesis is such that $F_{k(f^*)}(f^*) \leq F_{k(h)}(h)$ for all $h\in H$,
+since by step 1
+\[\argmin_{h\in H_k, k\geq1} F_k(h) = \argmin_{h\in H} F_{k(h)}(h) \,. \]
+Therefore with the same probability one has
+\[ R(f^*) \leq \hat{R}_S(h^*) + \mathcal{R}_m(H_{k(h^*)})
+        + \sqrt{\frac{\log k(h^*)}{m}} + \sqrt{\frac{\log\frac{4}{\delta}}{2m}}
+  \,. \]
+
+\noindent Now, the one-sided Rademacher complexity bound for $H_{k(h^*)}$ implies
+that
+\[ \hat{R}_S(h^*) \leq R(h^*) + \mathcal{R}_m(H_{k(h^*)})
+  + \sqrt{\frac{\log\frac{2}{\delta}}{2m}} \,, \]
+with probability at least $1-\frac{\delta}{2}$ over $S\sim D^m$.
+Applying the union bound yields this result: for all $\delta>0$
+\[ R(f^*) \leq R(h^*) + 2\mathcal{R}_m(H_{k(h^*)})
+  + \sqrt{\frac{\log k(h^*)}{m}}
+  + \sqrt{\frac{\log\frac{4}{\delta}}{2m}}
+  + \sqrt{\frac{\log\frac{2}{\delta}}{2m}} \,, \]
+with probability at least $1-\delta$ over $S\sim D^m$.
+
+% subsubsection* step_3 (end)
+
+\subsubsection*{step 4} % (fold)
+\label{ssub:step_4}
+
+Since $x\mapsto\sqrt{x}$ and $x\mapsto \log x$ are concave one has
+\begin{align*}
+  \sqrt{\frac{\log\frac{4}{\delta}}{2m}} + \sqrt{\frac{\log\frac{2}{\delta}}{2m}}
+  &= 2 \Biggl( \frac{1}{2}\sqrt{\frac{\log\frac{4}{\delta}}{2m}}
+      + \frac{1}{2} \sqrt{\frac{\log\frac{2}{\delta}}{2m}} \Biggr)
+  \leq 2 \sqrt{\frac{\frac{1}{2} \log\frac{4}{\delta}+\frac{1}{2} \log\frac{2}{\delta}}{2m}} \\
+  &\leq 2 \sqrt{\frac{\log\bigl(\frac{1}{2}\frac{4}{\delta} + \frac{1}{2} \frac{2}{\delta}\bigr)}{2m}}
+  = 2 \sqrt{\frac{\log\frac{3}{\delta}}{2m}}
+  = \sqrt{\frac{2\log\frac{3}{\delta}}{m}} \,.
+\end{align*}
+Therefore we end up with the following result: for any $\delta>0$
+\[ R(f^*) \leq R(h^*) + 2\mathcal{R}_m(H_{k(h^*)})
+  + \sqrt{\frac{\log k(h^*)}{m}}
+  + \sqrt{\frac{2\log\frac{3}{\delta}}{m}}
+  \,, \]
+with probability at least $1-\delta$ over $S\sim D^m$.
+
+% subsubsection* step_4 (end)
+
+\subsubsection{step 5} % (fold)
+\label{ssub:step_5}
+
+Suppose we are told which hypothesis set $H_n$ the best hypothesis $h^*$ belongs
+to. Then, obviously, the SRM would degenerate into ERM for the objective $F_n(h)$.
+
+% subsubsection step_5 (end)
+
+% subsection problem_d (end)
+
+% section assignment_1 (end)
+
+
+\end{document}
