@@ -124,6 +124,7 @@ define the objective function $F_k$ by
 
 \subsubsection*{step 1} % (fold)
 \label{ssub:step_1}
+% \url{http://bactra.org/weblog/926.html}
 
 First, by definition of the Rademacher complexity the inclusion $H_k\subset H_{k+1}$
 implies that
@@ -237,20 +238,51 @@ Since $x\mapsto\sqrt{x}$ and $x\mapsto \log x$ are concave one has
 \end{align*}
 Therefore we end up with the following result: for any $\delta>0$
 \[ R(f^*) \leq R(h^*) + 2\mathcal{R}_m(H_{k(h^*)})
-  + \sqrt{\frac{\log k(h^*)}{m}}
-  + \sqrt{\frac{2\log\frac{3}{\delta}}{m}}
+          + \sqrt{\frac{\log k(h^*)}{m}}
+          + \sqrt{\frac{2\log\frac{3}{\delta}}{m}}
   \,, \]
 with probability at least $1-\delta$ over $S\sim D^m$.
 
 % subsubsection* step_4 (end)
 
-\subsubsection{step 5} % (fold)
+\subsubsection*{step 5} % (fold)
 \label{ssub:step_5}
 
-Suppose we are told which hypothesis set $H_n$ the best hypothesis $h^*$ belongs
-to. Then, obviously, the SRM would degenerate into ERM for the objective $F_n(h)$.
+Suppose we are told the index $n$ of the hypothesis set the best hypothesis $h^*$
+belongs to. Then SRM would degenerate into ERM, because information can be leveraged
+to find a better $f^*$:
+\[ f^* = \argmin_{h\in H_n} F_n(h) = \argmin_{h\in H_n} \hat{R}_S(h) \,,\]
+since the remaining terms in $F_n(h)$ depend on $n$ only. As $f^*$ is known, one
+can compute $n^* = k(f^*)$ and by applying the one-sided Rademacher complexity
+bound for a hypothesis class $H_{n^*}$ get this: for any $\delta>0$
+\[ R(f^*) \leq \hat{R}_S(f^*) + \mathcal{R}_m(H_{n^*})
+          + \sqrt{\frac{\log\frac{2}{\delta}}{2m}}
+  \,, \]
+with probability at least $1-\frac{\delta}{2}$ over $S\sim D^m$. Another application
+of the theorem for the class $H_n$ yields a generalization bound for $h^*$:
+\[ \hat{R}_S(h^*) \leq R(h^*) + \mathcal{R}_m(H_n)
+                  + \sqrt{\frac{\log\frac{2}{\delta}}{2m}}
+  \,, \]
+with probability at least $1-\frac{\delta}{2}$ over $S\sim D^m$. Since $k(f^*) \leq n$
+and $\hat{R}_S(f^*) \leq \hat{R}_S(h^*)$, one can arrive at this conclusion:
+\begin{align*}
+  R(f^*)
+    &\leq R(h^*) + \mathcal{R}_m(H_{n^*}) + \mathcal{R}_m(H_n)
+     + 2 \sqrt{\frac{\log\frac{2}{\delta}}{2m}} \\
+    &\leq R(h^*) + 2\mathcal{R}_m(H_n)
+     + \sqrt{\frac{2\log\frac{2}{\delta}}{m}} \,,
+\end{align*}
+with probability at least $1-\delta$ over $S\sim D^m$. 
 
-% subsubsection step_5 (end)
+\noindent If $n \geq k(h^*)$, then $\mathcal{R}_m(H_{k(h^*)}) \leq \mathcal{R}_m(H_n)$
+and the bounds are asymptotically equivalent. In the case of a finite sample knowing
+$n$ and using ERM clearly offers a tighter guarantee than SRM:
+\[ \sqrt{\frac{2\log\frac{2}{\delta}}{m}}
+    \leq \sqrt{\frac{\log n}{m}}
+      + \sqrt{\frac{2\log\frac{3}{\delta}}{m}}
+  \,. \]
+
+% subsubsection* step_5 (end)
 
 % subsection problem_d (end)
 
