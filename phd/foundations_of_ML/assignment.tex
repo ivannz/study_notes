@@ -107,6 +107,11 @@ one has $\hat{p}_+(S_{:m}) \to p_+$ almost surely.
 
 % subsection problem_b (end)
 
+\subsection{Problem C} % (fold)
+\label{sub:problem_c}
+
+% subsection problem_c (end)
+
 \subsection{Problem D} % (fold)
 \label{sub:problem_d}
 Recall that the empirical loss $\hat{R}_S(h)$ of $h$ is given by
@@ -288,5 +293,82 @@ $n$ and using ERM clearly offers a tighter guarantee than SRM:
 
 % section assignment_1 (end)
 
+\section{Assignment \#2} % (fold)
+\label{sec:assignment_2}
 
+\subsection{Problem A} % (fold)
+\label{sub:problem_a}
+
+\subsubsection{Task 1} % (fold)
+\label{ssub:task_1}
+
+Consider a hypothesis class, which consists of a single hypothesis $h_0:X\mapsto\{-1,+1\}$.
+Its empirical Rademacher complexity over the sample $S \sim D$ iid is given by
+\[ \hat{\mathcal{R}}_S(\Hcal)
+    = m^{-1} \ex_\sigma \sup_{h\in \Hcal} \sum_{i=1}^m \sigma_i h(x_i)
+    = m^{-1} \sum_{i=1}^m h_0(x_i) \ex_{\sigma_i, \sigma_{-i}} \sigma_i
+    = 0
+  \,, \]
+where $(\sigma_i)_{i=1}^m$ are iid Rademacher variables. The Rademacher complexity
+upper bound for this hypothesis class implies that for any $\delta > 0$:
+\[ \bigl|\hat{R}_S(h_0) - R(h_0)\bigr|  
+    \leq 0 + 2 \sqrt{\frac{\log\frac{2}{\delta}}{2m}}
+    \,, \]
+with probability at least $1-\delta$.
+
+Consider an alternative definition of the empirical Rademacher complexity:
+\[ \hat{\mathcal{R}}_S'(\Hcal)
+    = m^{-1} \ex_\sigma \sup_{h\in \Hcal}
+        \Bigl| \sum_{i=1}^m \sigma_i h(x_i) \Bigr|
+    \,, \]
+and its theoretical counterpart 
+\[ \mathcal{R}_m'(\Hcal) = \ex_{S\sim D^m} \hat{\mathcal{R}}_S'(\Hcal)
+  \,. \]
+Fix some sample $S$, and let's find an upper bound for $\hat{\mathcal{R}}_S'(\Hcal)$:
+\[ \hat{\mathcal{R}}_S'(\Hcal)
+    = m^{-1} \ex_\sigma \Bigl| \sum_{i=1}^m \sigma_i h_0(x_i) \Bigr|
+    \leq m^{-1} \ex_\sigma \sum_{i=1}^m | \sigma_i h_0(x_i) |
+    \leq m^{-1} \sum_{i=1}^m |h_0(x_i)|
+    \,, \]
+by the triangle inequality and the fact that $\ex_\sigma |\sigma_i| = 1$.
+This implies that the theoretical Rademacher complexity of this class is can be
+upper-bounded by
+\[ \mathcal{R}_m'(\Hcal)
+  \leq \ex_{S\sim D^m} m^{-1} \sum_{i=1}^m |h_0(x_i)|
+  = \ex_{x\sim D} |h_0(x)|
+  \leq \sqrt{\ex_{x\sim D} h_0^2(x)}
+  \,, \]
+by the linearity of expectation and the Cauchy-Schwartz inequality.
+
+Note that this derivation did not rely on the iid assumption of the Rademacher variables,
+which suggests that using the independence might improve the bound. Inded, let's
+use the Cauchy-Schwartz inequality from the start on the theoretical Rademacher
+complexity:
+\begin{align*}
+  \mathcal{R}_m'(\Hcal)
+    &= m^{-1} \ex_{S, \sigma} \Bigl| \sum_{i=1}^m \sigma_i h_0(x_i) \Bigr|
+    \leq m^{-1} \sqrt{\ex_S \ex_\sigma \biggl( \sum_{i=1}^m \sigma_i h_0(x_i)\biggr)^2 } \\
+    &= m^{-1} \sqrt{\ex_S \biggl(
+         \ex_\sigma \sum_{i=1}^m \sigma_i^2 h_0^2(x_i)
+        +  \ex_\sigma \sum_{i\neq j} \sigma_i\sigma_j h_0(x_i) h_0(x_j)
+      \biggr) } \\
+    &= m^{-1} \sqrt{\ex_S \sum_{i=1}^m h_0^2(x_i)}
+    = \sqrt{\frac{\ex_{x\sim D} h_0^2(x)}{m}} \,,
+\end{align*}
+where we used $\ex_\sigma \sigma_i^2 = 1$, joint independence $(\sigma_i)_{i=1}^m$
+and the fact that $S\sim D^m$.
+
+% subsubsection task_1 (end)
+
+\subsubsection{task 2} % (fold)
+\label{ssub:task_2}
+
+In this task we need to provide upper bounds for the Rademacher complexity of various
+transformations and typical combinations of hypothesis classes.
+
+% subsubsection task_2 (end)
+
+% subsection problem_a (end)
+
+% section assignment_2 (end)
 \end{document}
