@@ -369,6 +369,9 @@ In this task we need to provide upper bounds for the Rademacher complexity of va
 transformations and typical combinations of hypothesis classes. Let $H$ and $H'$
 be some classes of binary hypotheses $X\mapsto\{-1, 1\}$, and $\alpha\in \Real$.
 
+\paragraph{$\mathcal{R}_m(\alpha H)$:} % (fold)
+\label{par:r_m_alpha_h}
+
 To get the result for $\mathcal{R}_m(\alpha H)$, first, note that
 \begin{equation}
   \sup_{h\in H} \sum_{i=1}^m \alpha \sigma_i h(x_i)
@@ -394,11 +397,15 @@ whence we have
 \end{align*}
 since $(\sigma_i)_{i=1}^m \overset{\mathcal{D}}{\sim} (-\sigma_i)_{i=1}^m$.
 
-Now consider $\mathcal{R}_m(H+H')$:
+% paragraph r_m_alpha_h (end)
+
+\paragraph{$\mathcal{R}_m(H+H')$:} % (fold)
+\label{par:r_m_h_hh}
+
+By definition of $\mathcal{R}_m(H+H')$:
 \begin{align*}
-  \mathcal{R}_m(H+H')
-    &= \ex_{S, \sigma} \sup_{h\in H+H'} m^{-1} \sum_{i=1}^m \sigma_i h(x_i)
-    = \ex_{S, \sigma}
+  \ex_{S, \sigma} \sup_{h\in H+H'} m^{-1} \sum_{i=1}^m \sigma_i h(x_i)
+    &= \ex_{S, \sigma}
       \sup_{h\in H, h'\in H'} m^{-1} \sum_{i=1}^m \sigma_i h(x_i)
                             + m^{-1} \sum_{i=1}^m \sigma_i h'(x_i) \\
     &\leq \ex_{S, \sigma} \Bigl(
@@ -410,9 +417,106 @@ Now consider $\mathcal{R}_m(H+H')$:
 \end{align*}
 hence $\mathcal{R}_m(H+H') \leq \mathcal{R}_m(H) + \mathcal{R}_m(H')$.
 
+% paragraph r_m_h_hh (end)
+
+\paragraph{$\mathcal{R}_m(\max\{H, H'\})$:} % (fold)
+\label{par:r_m_max_h_hh}
+
+This case is a little bit more invloved than the previous ones, and in order to
+prove it we shall borrow tricks from the proof of Talagrand's inequality, i.e. the
+contraction lemma, which is concerned with compositions of hypotheses with Lipschitz
+functions. The identity $\max\{a, b\} = \frac{1}{2}(a+b+|a-b|)$ and subadditivity
+of the supremum imply:
+\begin{align*}
+  \mathcal{R}_m(\max\{H,H'\})
+    &= \ex_{S, \sigma} m^{-1} \frac{1}{2} \sup_{h, h'\in H\times H'}
+            \sum_{i=1}^m \sigma_i \Bigl((h(x_i) + h'(x_i)) + |h(x_i) - h'(x_i)|\Bigr)\\
+    &\leq \frac{1}{2} \ex_{S, \sigma}
+            m^{-1} \sup_{h, h'\in H\times H'} \sum_{i=1}^m \sigma_i (h(x_i) + h'(x_i))
+          + \frac{1}{2} \ex_{S, \sigma}
+            m^{-1} \sup_{h, h'\in H\times H'} \sum_{i=1}^m \sigma_i |h(x_i) - h'(x_i)| \\
+    &\leq \frac{1}{2} \mathcal{R}_m(H+H')
+          + \frac{1}{2} \ex_S \ex_\sigma
+            m^{-1} \sup_{h, h'\in H\times H'} \sum_{i=1}^m \sigma_i |h(x_i) - h'(x_i)| \,,
+\end{align*}
+where $S \sim \mathcal{D}^m$ and $\sigma\in \text{Ber}(\{-1, 1\})^m$. Since the
+Rademacher variables $\sigma$ are iid Bernoulli the inner expectation of the last
+term can be decomposed into
+\begin{align*}
+  \ex_\sigma m^{-1} \sup_{h, h'\in H\times H'}
+      \sum_{i=1}^m \sigma_i |h(x_i) - h'(x_i)|
+    = \ex_{\sigma_{-i}} m^{-1} \frac{1}{2} &\Bigl(
+      \sup_{h_1, h_1'\in H\times H'}
+        (U_{-i}(h_1,h_1') + |h_1(x_i) - h_1'(x_i)|) \\
+      &+ \sup_{h_2, h_2'\in H\times H'}
+        (U_{-i}(h_2,h_2') - |h_2(x_i) - h_2'(x_i)|) \Bigr) \,,
+\end{align*}
+where $U_{-i}(h,h') = \sum_{j\neq i} \sigma_j |h(x_j) - h'(x_j)|$. Since the sum
+of the suprema is always equal to the supremum of the sum over the product we have
+that the right hand side equals
+\begin{equation*}
+  \frac{1}{2} \ex_{\sigma_{-i}} m^{-1}
+      \sup_{h_1, h_2\in H, h_1', h_2'\in H'}
+        U_{-i}(h_1,h_1') + U_{-i}(h_2,h_2')
+        + |h_1(x_i) - h_1'(x_i)| - |h_2(x_i) - h_2'(x_i)| \,.
+\end{equation*}
+Therefore, from $|a|-|b|\leq |a-b|$ and the triangle inequality we can upper bound
+the RHS by
+\begin{equation*}
+  \frac{1}{2} \ex_{\sigma_{-i}} m^{-1}
+      \sup_{h_1, h_2\in H, h_1', h_2'\in H'}
+        U_{-i}(h_1,h_1') + U_{-i}(h_2,h_2')
+        + |h_1(x_i) - h_2(x_i)| + |h_1'(x_i) - h_2'(x_i)| \,,
+\end{equation*}
+which, due to symmetry of the expression under the supremum with respect to pairs
+$h_1 \leftrightarrow h_2$ and $h_1' \leftrightarrow h_2'$, becomes
+\begin{multline*}
+  \frac{1}{2} \ex_{\sigma_{-i}} m^{-1}
+      \sup_{h_1, h_2\in H, h_1', h_2'\in H'}
+        U_{-i}(h_1,h_1') + U_{-i}(h_2,h_2')
+        + (h_1(x_i) - h_2(x_i)) + (h_1'(x_i) - h_2'(x_i)) \\
+  = \frac{1}{2} \ex_{\sigma_{-i}} m^{-1}
+      \sup_{h_1, h_2\in H, h_1', h_2'\in H'}
+        U_{-i}(h_1,h_1') + U_{-i}(h_2,h_2')
+        + (h_1(x_i) + h_1'(x_i)) - (h_2(x_i) + h_2(x_i)) \,.
+\end{multline*}
+Now, this supremum can be decomposed in two suprema with relabelled variables:
+\begin{multline*}
+  \ex_{\sigma_{-i}} \frac{1}{2} m^{-1} \Bigl(
+      \sup_{h, h'\in H\times H'} \bigl(U_{-i}(h,h') + (h(x_i) + h'(x_i))\bigr)
+      + \sup_{h, h'\in H\times H'} \bigl(U_{-i}(h,h') - (h(x_i) + h'(x_i))\bigr)
+    \Bigr) \\
+    = \ex_{\sigma_{-i}} \ex_{\sigma_i} m^{-1}
+      \sup_{h, h'\in H\times H'} U_{-i}(h,h') + \sigma_i (h(x_i) + h'(x_i)) \,,
+\end{multline*}
+where the last transformation uses the definition of the expectation with respect
+to $\sigma_i$. Applying similar reasoning repeatedly to the remaining terms in $U_{-i}$
+we finally arrive at the followng inequality:
+\begin{equation*}
+  \ex_\sigma m^{-1} \sup_{h, h'\in H\times H'} \sum_{i=1}^m \sigma_i |h(x_i) - h'(x_i)|
+    \leq \ex_\sigma m^{-1} \sup_{h, h'\in H\times H'} \sum_{i=1}^m \sigma_i (h(x_i) + h'(x_i))
+    = \hat{\mathcal{R}}_S(H+H')
+    \,,
+\end{equation*}
+and therefore $\mathcal{R}_m(\max\{H,H'\}) \leq \mathcal{R}_m(H+H')$. The upper bound
+for the sum of hypothesis classes yields the required result.
+
+% paragraph r_m_max_h_hh (end)
+
 % subsubsection task_2 (end)
 
 % subsection problem_a (end)
+
+\subsection{Problem C} % (fold)
+\label{sub:problem_c}
+
+\subsubsection{task 5} % (fold)
+\label{ssub:task_5}
+
+
+% subsubsection task_5 (end)
+
+% subsection problem_c (end)
 
 % section assignment_2 (end)
 \end{document}
