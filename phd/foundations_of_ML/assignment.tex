@@ -110,6 +110,8 @@ one has $\hat{p}_+(S_{:m}) \to p_+$ almost surely.
 \subsection{Problem C} % (fold)
 \label{sub:problem_c}
 
+\textbf{TODO}
+
 % subsection problem_c (end)
 
 \subsection{Problem D} % (fold)
@@ -364,7 +366,49 @@ and the fact that $S\sim D^m$.
 \label{ssub:task_2}
 
 In this task we need to provide upper bounds for the Rademacher complexity of various
-transformations and typical combinations of hypothesis classes.
+transformations and typical combinations of hypothesis classes. Let $H$ and $H'$
+be some classes of binary hypotheses $X\mapsto\{-1, 1\}$, and $\alpha\in \Real$.
+
+To get the result for $\mathcal{R}_m(\alpha H)$, first, note that
+\begin{equation}
+  \sup_{h\in H} \sum_{i=1}^m \alpha \sigma_i h(x_i)
+    =\begin{cases}
+      |\alpha| \sup_{h\in H} \sum_{i=1}^m \sigma_i h(x_i), &\text{ if }\alpha \geq 0 \,,\\
+      |\alpha| \sup_{h\in H} \sum_{i=1}^m (-\sigma_i) h(x_i), &\text{ otherwise}\,.
+    \end{cases}
+\end{equation}
+whence we have
+\begin{align*}
+  \mathcal{R}_m(\alpha H)
+    &= \ex_{S\sim D^m} \hat{\mathcal{R}}_S(\alpha H)
+    = \ex_{S, \sigma} \sup_{h\in H} m^{-1} \sum_{i=1}^m \alpha \sigma_i h(x_i) \\
+    &= |\alpha| \ex_S \bigl(
+         1_{\alpha\geq 0} \ex_\sigma \sup_{h\in H} m^{-1} \sum_{i=1}^m \sigma_i h(x_i) 
+       + 1_{\alpha < 0} \ex_\sigma \sup_{h\in H} m^{-1} \sum_{i=1}^m (-\sigma_i) h(x_i)
+       \bigr)\\
+    &= |\alpha| \ex_S \bigl(
+         1_{\alpha\geq 0} \hat{\mathcal{R}}_S(H)
+       + 1_{\alpha < 0} \hat{\mathcal{R}}_S(H)
+       \bigr)
+    = |\alpha| \mathcal{R}_m(H) \,,
+\end{align*}
+since $(\sigma_i)_{i=1}^m \overset{\mathcal{D}}{\sim} (-\sigma_i)_{i=1}^m$.
+
+Now consider $\mathcal{R}_m(H+H')$:
+\begin{align*}
+  \mathcal{R}_m(H+H')
+    &= \ex_{S, \sigma} \sup_{h\in H+H'} m^{-1} \sum_{i=1}^m \sigma_i h(x_i)
+    = \ex_{S, \sigma}
+      \sup_{h\in H, h'\in H'} m^{-1} \sum_{i=1}^m \sigma_i h(x_i)
+                            + m^{-1} \sum_{i=1}^m \sigma_i h'(x_i) \\
+    &\leq \ex_{S, \sigma} \Bigl(
+            \sup_{h\in H, h'\in H'} m^{-1} \sum_{i=1}^m \sigma_i h(x_i)
+          + \sup_{h\in H, h'\in H'} m^{-1} \sum_{i=1}^m \sigma_i h'(x_i)
+        \Bigr)\\
+    &= \ex_{S, \sigma} \sup_{h\in H} m^{-1} \sum_{i=1}^m \sigma_i h(x_i)
+       + \ex_{S, \sigma} \sup_{h'\in H'} m^{-1} \sum_{i=1}^m \sigma_i h'(x_i) \,,
+\end{align*}
+hence $\mathcal{R}_m(H+H') \leq \mathcal{R}_m(H) + \mathcal{R}_m(H')$.
 
 % subsubsection task_2 (end)
 
