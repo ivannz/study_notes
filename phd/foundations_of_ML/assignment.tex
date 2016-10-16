@@ -422,10 +422,10 @@ hence $\mathcal{R}_m(H+H') \leq \mathcal{R}_m(H) + \mathcal{R}_m(H')$.
 \paragraph{$\mathcal{R}_m(\max\{H, H'\})$:} % (fold)
 \label{par:r_m_max_h_hh}
 
-This case is a little bit more invloved than the previous ones, and in order to
+This case is a little bit more involved than the previous ones, and in order to
 prove it we shall borrow tricks from the proof of Talagrand's inequality, i.e. the
 contraction lemma, which is concerned with compositions of hypotheses with Lipschitz
-functions. The identity $\max\{a, b\} = \frac{1}{2}(a+b+|a-b|)$ and subadditivity
+functions. The identity $\max\{a, b\} = \frac{1}{2}(a+b+|a-b|)$ and sub-additivity
 of the supremum imply:
 \begin{align*}
   \mathcal{R}_m(\max\{H,H'\})
@@ -491,7 +491,7 @@ Now, this supremum can be decomposed in two suprema with relabelled variables:
 \end{multline*}
 where the last transformation uses the definition of the expectation with respect
 to $\sigma_i$. Applying similar reasoning repeatedly to the remaining terms in $U_{-i}$
-we finally arrive at the followng inequality:
+we finally arrive at the following inequality:
 \begin{equation*}
   \ex_\sigma m^{-1} \sup_{h, h'\in H\times H'} \sum_{i=1}^m \sigma_i |h(x_i) - h'(x_i)|
     \leq \ex_\sigma m^{-1} \sup_{h, h'\in H\times H'} \sum_{i=1}^m \sigma_i (h(x_i) + h'(x_i))
@@ -513,6 +513,117 @@ for the sum of hypothesis classes yields the required result.
 \subsubsection{task 5} % (fold)
 \label{ssub:task_5}
 
+Consider the following modified SVM problem:
+\begin{equation}
+  \frac{1}{2}\|\beta\|^2 + C\max_{i=1}^m \xi_i \to \min_{\beta_0, \beta, \xi_i}
+\end{equation}
+subject to
+\begin{equation*}
+  y_i(\beta_0 + \beta_0'x_i) \geq 1 - \xi_i\, \forall i=1,\ldots, m\,,
+\end{equation*}
+and $\xi_i \geq 0$.
+
+The $\max$-norm $\|\xi\|_\infty$ is a convex function of $(\xi_i)_{i=1}^m$, which
+means that the objective function is convex. Furthermore the constraints are linear
+in $\beta_0$, $\beta$, and $\xi_i$. Suppose $(\beta^*_0, \beta^*, \xi^*)$ is a solution
+to this problem with $\xi^*_i < \xi^*_j$ for some $i, j\in\{1,\ldots, m\}$. Then
+$0\leq \xi^*_i < \xi^*_j \leq \|\xi^*\|_\infty$ for any $k\neq i$. Therefore, the
+value of the objective does not change if $\xi^*_i$ is adjusted by $\delta_i = \xi^*_j - \xi^*_i > 0$,
+since
+\begin{equation*}
+  \max_{k=1}^m \xi^*_k
+    = \max\{\xi^*_i, \xi^*_j, \|\xi^*_{-i,j}\|_\infty\}
+    = \max\{\xi^*_i + \delta_i, \xi^*_j + 0, \|\xi^*_{-i,j} + 0\|_\infty\}
+    = \|\xi^* + \delta\|_\infty \,,
+\end{equation*}
+where $\delta = e_i \delta_i$ and $e_i$ is the $i$-th coordinate unit vector in
+$\Real^{m\times 1}$. Furthermore, $\hat{\xi} = \xi^* + \delta$ is feasible:
+$\hat{\xi}_k = \xi^*_k + \delta_k \geq \xi^*_k$, and
+\begin{equation*}
+  y_k(\beta^*_0 + {\beta^*}'x_i)
+    \geq 1 - \xi^*_i > 1 - \xi^*_j = 1 - \hat{\xi}_i \,.
+\end{equation*}
+Therefore any solution with a discrepancy in the slack variable values has a can
+brings about a feasible point with the same parameters $\beta_0$, and $\beta$, yet
+$\xi^*$ having the same components, that yields the same value of the objective.
+Thus, since margin minimization is the goal, it suffices to consider solutions with
+$(\xi_i)_{i=1}^m = \one \xi$, for $\xi \geq 0$.
+
+Therefore, the following minimization produces a subset of solutions to the original
+problem, which nonetheless result in the same value of the functional:
+\begin{align*}
+  \frac{1}{2}\|\beta\|^2 + C\xi
+      &\to \min_{\beta_0, \beta, \xi} \\
+  \text{subject to :}\,
+      &\,y_i(\beta_0 + \beta_0'x_i) \geq 1 - \xi\,, \forall i=1,\ldots, m \\
+      &\,\xi \geq 0 \,.
+\end{align*}
+The Lagrangian of the simplified problem is
+\begin{equation*}
+  \mathcal{L}
+    = \frac{1}{2} \|\beta\|^2 + C \xi
+    + \sum_{i=1}^m \alpha_i (1 - \xi - y_i (\beta_0 + \beta'x_i))
+    + \mu ( -\xi) \,.
+\end{equation*}
+The simplified problem is convex, because the objective is convex and the constraints
+are linear in $\beta_0$, $\beta$, and $\xi$. By Slater's constraints qualifications
+the strong duality holds, whence the KKT conditions are necessary:
+\begin{align*}
+  \text{\textbf{Primal}}\,:\quad
+        & (\beta_0 + \beta_0'x_i) \geq 1 - \xi\,, \xi\geq 0\,; \\
+        %
+  \text{\textbf{Dual}}\,:\quad
+        & \alpha_i\geq 0\,, \mu\geq 0\,; \\
+        %
+  \text{\textbf{Complementary Slackness}}\,:\quad
+        & \alpha_i(1 - \xi - y_i(\beta_0 + \beta'x_i)) = 0\,, \mu \xi = 0\,; \\
+        %
+  \text{\textbf{First order}}\,:\quad
+        &\frac{\partial \mathcal{L}}{\partial \beta_0}\,
+          :\, \sum_{i=1}^m \alpha_i y_i = 0\,; \\
+        &\frac{\partial \mathcal{L}}{\partial \beta}\,
+          :\, \beta - \sum_{i=1}^m x_i y_i \alpha_i = 0\,; \\
+        &\frac{\partial \mathcal{L}}{\partial \xi}\,
+          :\, C  - \sum_{i=1}^m \alpha_i - \mu = 0\,.
+\end{align*}
+With these conditions the Lagrangian can be simplified to
+\begin{align*}
+  \mathcal{L}
+    &= \frac{1}{2} \|\beta\|^2 + C \xi
+    + \sum_{i=1}^m \alpha_i
+    - \xi \sum_{i=1}^m \alpha_i
+    - \beta_0 \sum_{i=1}^m \alpha_i y_i
+    - \beta'\sum_{i=1}^m x_i \alpha_i y_i
+    - \xi \mu \\
+    &= \frac{1}{2} \|\beta\|^2
+    + \bigl(C - \sum_{i=1}^m \alpha_i - \mu\bigr) \xi
+    + \sum_{i=1}^m \alpha_i
+    - \beta_0 \sum_{i=1}^m \alpha_i y_i
+    - \beta' \sum_{i=1}^m x_i \alpha_i y_i \\
+    &= \sum_{i=1}^m \alpha_i - \frac{1}{2}
+        \sum_{i,j=1}^m \alpha_j y_j (x_j'x_i) y_i \alpha_i \,.
+\end{align*}
+Since $\mu \geq 0$ and it does not affect the simplified objective, the dual problem
+becomes
+\begin{align*}
+  \sum_{i=1}^m \alpha_i - \frac{1}{2}
+        \sum_{i,j=1}^m \alpha_j y_j (x_j'x_i) y_i \alpha_i
+    &\to \max_{\alpha_i} \\
+  \text{subject to :}\,
+      &\,\sum_{i=1}^m \alpha_i y_i = 0
+      \,,\alpha_i \geq 0
+      \,,\sum_{i=1}^m \alpha_i \leq C \,.
+\end{align*}
+It worth noting that this problem differs from the dual of the $L_1$-SVM problem
+in the constraints only:
+\begin{align*}
+  \sum_{i=1}^m \alpha_i - \frac{1}{2}
+        \sum_{i,j=1}^m \alpha_j y_j (x_j'x_i) y_i \alpha_i
+    &\to \max_{\alpha_i} \\
+  \text{subject to :}\,
+      &\,\sum_{i=1}^m \alpha_i y_i = 0
+       \,,0 \leq \alpha_i \leq C \,.
+\end{align*}
 
 % subsubsection task_5 (end)
 
