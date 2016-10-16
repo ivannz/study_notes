@@ -630,4 +630,131 @@ in the constraints only:
 % subsection problem_c (end)
 
 % section assignment_2 (end)
+
+\section{Assignment 3} % (fold)
+\label{sec:assignment_3}
+
+\subsection{Problem B} % (fold)
+\label{sub:problem_b}
+
+The objective of this problem is to demonstrate and study another online learning
+algorithm. Let $L:\Real\times \Real\mapsto [0, M]$ be a loss function, with $L(\hat{y}, y)$
+representing the loss of a making a prediction $\hat{y}$ when $y$ is the actual
+outcome. In addition, assume that $L$ is convex in its first argument, i.e. predictions.
+Let $N$ be the number of experts, each of which predicts $(\hat{y}_{ti})_{i=1}^N$
+at time $t$. Let $r_{ti}$ be the instantaneous regret of the $i$-th expert at time
+$t$:
+\begin{equation*}
+  r_{ti} = L(\hat{y}_t, y_t) - L(\hat{y}_{ti}, y_t)\,,
+\end{equation*}
+and $R_{ti} = \sum_{s=1}^t r_{si}$. Let $\alpha > 2$, $w_{ti} = (R_{t-1,i})_+^{\alpha-1}$
+and consider this aggregation rule
+\begin{equation}
+  \hat{y}_t
+    = \ex_{i\sim \tilde{w}_t} \hat{y}_{ti}
+    = \sum_{i=1}^N \tilde{w}_{ti} \hat{y}_{ti} \,,
+\end{equation}
+where $\tilde{w}_{ti} = \frac{w_{ti}}{\sum_{j=1}^N w_{tj}}$.
+
+Let $\Phi(x) = \|(x)_+\|_\alpha^2 = \Bigl(\sum_{k=1}^N (x_k)_+^\alpha\Bigr)^\frac{2}{\alpha}$.
+Consider the region $B^c=\bigcup_{i=1}^N \{u\in \Real^N\,:\, u_i > 0\}$ and the
+potential $\Phi$ over it. This function is a composition of a twice differentiable
+function $z\mapsto z^\frac{2}{\alpha}$ defined over $(0, +\infty)$ and a multivariate
+function $g(x) = \sum_{i=1}^N (x_i)_+^\alpha$. The latter function is twice differentiable
+over $\Real^N$, since it is a composition of a sum $a\mapsto \sum_{i=1}^N a_i$, which
+is linear, and functions $g_i(x) = (x_i)_+^\alpha$, which are twice differentiable
+over $\Real^N$. The gradient and the Hessian are given by
+\begin{align*}
+  \nabla \Phi(x)_i
+    &= \frac{2}{\alpha}
+      \Bigl(\sum_{k=1}^N (x_k)_+^\alpha\Bigr)^{\frac{2}{\alpha} - 1}
+        \alpha (x_i)_+^{\alpha-1} \,, \\
+  \biggl. \nabla^2 \Phi(x)_{ij} \biggr\rvert_{i\neq j}
+    &= \frac{2}{\alpha}\frac{2 - \alpha}{\alpha}
+      \Bigl(\sum_{k=1}^N (x_k)_+^\alpha\Bigr)^{\frac{2}{\alpha} - 2}
+        \alpha (x_j)_+^{\alpha-1} \alpha (x_i)_+^{\alpha-1} \,, \\
+  \nabla^2 \Phi(x)_{ii}
+    &= \frac{2}{\alpha}\frac{2 - \alpha}{\alpha}
+      \Bigl(\sum_{k=1}^N (x_k)_+^\alpha\Bigr)^{\frac{2}{\alpha} - 2}
+        \Bigl(\alpha (x_i)_+^{\alpha-1}\Bigr)^2
+    + \frac{2}{\alpha}
+      \Bigl(\sum_{k=1}^N (x_k)_+^\alpha\Bigr)^{\frac{2}{\alpha} - 1}
+        \alpha (\alpha - 1) (x_i)_+^{\alpha-2} \,.
+\end{align*}
+
+Let $r_t=(r_{it})_{i=1}^N$ be the $N\times 1$ vector of instantaneous regrets, and
+$R_t = (R_{ti})_{i=1}^N$. Note that due to convexity of the loss $L$ with respect
+to the first argument for a non-negative vector $(w_{ti})_{i=1}^N$ with $\sum_{i=1}^N w_{ti}>0$
+\begin{align*}
+  \sum_{i=1}^N \tilde{w}_{ti} r_{it}
+    &= \sum_{i=1}^N \tilde{w}_{ti} L(\hat{y}_t, y_t)
+     - \sum_{i=1}^N \tilde{w}_{ti} L(\hat{y}_{ti}, y_t)
+     = L\bigl(\sum_{i=1}^N \tilde{w}_{ti} \hat{y}_{ti}, y_t\bigr)
+     - \sum_{i=1}^N \tilde{w}_{ti} L(\hat{y}_{ti}, y_t)
+     \leq 0 \,,
+\end{align*}
+whence $\sum_{i=1}^N w_{ti} r_{it} \leq 0$. Since for $R_{t-1}\in B^c$ by definition
+of $w_{ti} = \bigl(R_{t-1,i}\bigr)_+^{\alpha-1}$ we have $\sum_{i=1}^N w_{ti}>0$, which
+means that $\sum_{i=1}^N \bigl(R_{t-1,i}\bigr)_+^{\alpha-1} r_{ti} \leq 0$. However,
+the gradient of $\Phi$ at $R_{t-1}$ is 
+\begin{equation}
+  \nabla \Phi\bigl(R_{t-1}\bigr)
+    = 2 \Phi\bigl(R_{t-1}\bigr)
+      \Bigl(\sum_{k=1}^N \bigl(R_{t-1,k}\bigr)_+^\alpha\Bigr)^{-1}
+      \biggl(\bigl(R_{t-1,i}\bigr)_+^{\alpha-1}\biggr)_{i=1}^N \,,
+\end{equation}
+which means that $r_t' \nabla \Phi\bigl(R_{t-1}\bigr)\leq 0$.
+
+The Hessian $\nabla^2 \Phi(x)$ has the following form: for $g(x) = \sum_{k=1}^N (x_k)_+^\alpha$
+\begin{equation*}
+  \nabla^2 \Phi(x)
+    = \frac{2}{\alpha} (g(x))^{\frac{2}{\alpha} - 2}
+      \biggl( \frac{2 - \alpha}{\alpha} \bigl(\nabla g(x) \nabla g(x)'\bigr)
+              + g(x) \bigl(\nabla^2 g(x)\bigr)
+      \biggr) \,.
+\end{equation*}
+Now the gradient of $g$ is $\nabla g(x) = \bigl(\alpha (x_k)_+^{\alpha-1} \bigr)_{i=1}^N$
+and its Hessian is a diagonal $N\times N$ matrix
+\begin{equation*}
+  \nabla^2 g(x) = \text{diag}\bigl(\alpha (\alpha-1) (x_k)_+^{\alpha-2} \bigr)_{i=1}^N \,.
+\end{equation*}
+For $x\in B^c$ the matrices $\nabla g(x) \nabla g(x)'$ and $\nabla^2 g(x)$ are positive
+semidefinite. Let $r\in \Real^{N\times 1}$. By H\"older's inequality for $p=\alpha$, and
+$q = \frac{\alpha}{\alpha-1}$
+\begin{equation*}
+  r' \nabla g(x)
+    = \alpha \sum_{i=1}^N r_i (x_i)_+^{\alpha-1}
+    \leq \alpha
+      \biggl(\sum_{i=1}^N r_i^p\biggr)^\frac{1}{p}
+      \biggl(\sum_{i=1}^N (x_i)_+^{(\alpha-1)q} \biggr)^\frac{1}{q}
+    = \alpha \|r\|_\alpha g(x)^{1-\frac{1}{\alpha}} \,,
+\end{equation*}
+and for $p=\frac{\alpha}{2}$ with $q = \frac{\alpha}{\alpha-2}$
+\begin{align*}
+  r' \nabla^2 g(x) r
+    &= \alpha (\alpha-1) \sum_{i=1}^N r_i^2 (x_i)_+^{\alpha-2} \\
+    &\leq \alpha (\alpha-1) 
+      \biggl(\sum_{i=1}^N r_i^{2p}\biggr)^\frac{1}{p}
+      \biggl(\sum_{i=1}^N (x_i)_+^{(\alpha-2)q} \biggr)^\frac{1}{q}
+    = \alpha (\alpha-1) \|r\|_\alpha^2 g(x)^{1-\frac{2}{\alpha}} \,.
+\end{align*}
+Therefore 
+\begin{align*}
+  r'\nabla^2 \Phi(x)r
+    & = \frac{2}{\alpha} (g(x))^{\frac{2}{\alpha} - 2}
+      \biggl( \frac{2 - \alpha}{\alpha} (r'\nabla g(x))^2
+              + g(x) r'\nabla^2 g(x) r \biggr) \\
+    &\leq \frac{2}{\alpha} (g(x))^{\frac{2}{\alpha} - 2}
+      \biggl( \frac{2 - \alpha}{\alpha} \alpha^2 \|r\|_\alpha^2 g(x)^{2-\frac{2}{\alpha}}
+              + \alpha (\alpha-1) \|r\|_\alpha^2 g(x)^{2-\frac{2}{\alpha}}
+      \biggr) \\
+    &=\frac{2}{\alpha} \bigl( (2 - \alpha) \alpha + \alpha (\alpha - 1) \bigr) \|r\|_\alpha^2\,.
+\end{align*}
+
+
+
+% subsection problem_b (end)
+
+% section assignment_3 (end)
+
 \end{document}
