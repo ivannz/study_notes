@@ -30,10 +30,10 @@
 \label{sec:assignment_1}
 
 \subsection{Problem A} % (fold)
-\label{sub:problem_a}
+\label{sub:problem_1a}
 
 \subsubsection{Task 1} % (fold)
-\label{ssub:task_1}
+\label{ssub:task_1a1}
 
 Let $f:(0, +\infty)\mapsto\Real$ be a function with an inverse $f^{-1}$, and let
 $X$ be an rv, and suppose $\pr(X > t)\leq f(t)$ for all $t>0$. Then for any $\delta>0$,
@@ -42,10 +42,10 @@ one has
 since $f$ is invertible. Therefore for al $\delta>0$
 \[ 1-\delta \leq \pr\bigl(X \leq f^{-1}(\delta)\bigr) \,. \]
 
-% subsubsection task_1 (end)
+% subsubsection task_1a1 (end)
 
 \subsubsection{Task 2} % (fold)
-\label{ssub:task_2}
+\label{ssub:task_1a2}
 
 Let $X$ be a non-negative rv taking integer values. Consider it expectation:
 \[ \ex X = \sum_{n\geq 0} n \pr(X=n) \,. \]
@@ -65,12 +65,12 @@ so that
 \end{align*}
 whence the result follows.
 
-% subsubsection task_2 (end)
+% subsubsection task_1a2 (end)
 
-% subsection problem_a (end)
+% subsection problem_1a (end)
 
 \subsection{Problem B} % (fold)
-\label{sub:problem_b}
+\label{sub:problem_1b}
 
 Let $D$ be a distribution over $X$, and $F:X\mapsto\{-1,+1\}$ be the true deterministic
 labelling function. WE a re interested in finding a good approximation of the label
@@ -105,17 +105,17 @@ the first Borell-Cantelli lemma implies that for all $\epsilon>0$
 where $D_\infty$ is a distribution over infinite iid sequences in $X$. Therefore
 one has $\hat{p}_+(S_{:m}) \to p_+$ almost surely.
 
-% subsection problem_b (end)
+% subsection problem_1b (end)
 
 \subsection{Problem C} % (fold)
-\label{sub:problem_c}
+\label{sub:problem_1c}
 
 \textbf{TODO}
 
-% subsection problem_c (end)
+% subsection problem_1c (end)
 
 \subsection{Problem D} % (fold)
-\label{sub:problem_d}
+\label{sub:problem_1d}
 Recall that the empirical loss $\hat{R}_S(h)$ of $h$ is given by
 \[ \hat{R}_S(h) = \ex_{(x,y)\sim S} L(h(x), y) \,, \]
 where $(x,y)\sim S$ means empirical distribution over the sample data $S=(z_i)_{i=1}^m$.
@@ -130,7 +130,7 @@ define the objective function $F_k$ by
 \[ F_k(h) = \hat{R}_S(h) + \mathcal{R}_m(H_k) + \sqrt{\frac{\log k}{m}} \,. \]
 
 \subsubsection*{step 1} % (fold)
-\label{ssub:step_1}
+\label{ssub:step_1d1}
 % \url{http://bactra.org/weblog/926.html}
 
 First, by definition of the Rademacher complexity the inclusion $H_k\subset H_{k+1}$
@@ -152,10 +152,10 @@ which ultimately implies that
     = \sup_{h\in H} R(h) - F_{k(h)}(h)
   \,. \]
 
-% subsubsection* step_1 (end)
+% subsubsection* step_1d1 (end)
 
 \subsubsection*{step 2} % (fold)
-\label{ssub:step_2}
+\label{ssub:step_1d2}
 
 Now, the main theorem on the one-sided Rademacher complexity bound (slide~15) states,
 that for a hypothesis class $H_k$ one has for all $\epsilon>0$
@@ -192,10 +192,10 @@ whence for any $\epsilon>0$
   \Bigr) \leq 2 e^{-2m\epsilon^2}
   \,. \]
 
-% subsubsection* step_2 (end)
+% subsubsection* step_1d2 (end)
 
 \subsubsection*{step 3} % (fold)
-\label{ssub:step_3}
+\label{ssub:step_1d3}
 
 The SRM-optimal hypothesis $f^*$ is given by the minimizer of the objective:
 \[ f^* = \argmin_{h\in H_k, k\geq1} F_k(h) \,, \]
@@ -228,10 +228,10 @@ Applying the union bound yields this result: for all $\delta>0$
   + \sqrt{\frac{\log\frac{2}{\delta}}{2m}} \,, \]
 with probability at least $1-\delta$ over $S\sim D^m$.
 
-% subsubsection* step_3 (end)
+% subsubsection* step_1d3 (end)
 
 \subsubsection*{step 4} % (fold)
-\label{ssub:step_4}
+\label{ssub:step_1d4}
 
 Since $x\mapsto\sqrt{x}$ and $x\mapsto \log x$ are concave one has
 \begin{align*}
@@ -250,10 +250,10 @@ Therefore we end up with the following result: for any $\delta>0$
   \,, \]
 with probability at least $1-\delta$ over $S\sim D^m$.
 
-% subsubsection* step_4 (end)
+% subsubsection* step_1d4 (end)
 
 \subsubsection*{step 5} % (fold)
-\label{ssub:step_5}
+\label{ssub:step_1d5}
 
 Suppose we are told the index $n$ of the hypothesis set the best hypothesis $h^*$
 belongs to. Then SRM would degenerate into ERM, because information can be leveraged
@@ -289,9 +289,9 @@ $n$ and using ERM clearly offers a tighter guarantee than SRM:
       + \sqrt{\frac{2\log\frac{3}{\delta}}{m}}
   \,. \]
 
-% subsubsection* step_5 (end)
+% subsubsection* step_1d5 (end)
 
-% subsection problem_d (end)
+% subsection problem_1d (end)
 
 % section assignment_1 (end)
 
@@ -299,10 +299,10 @@ $n$ and using ERM clearly offers a tighter guarantee than SRM:
 \label{sec:assignment_2}
 
 \subsection{Problem A} % (fold)
-\label{sub:problem_a}
+\label{sub:problem_2a}
 
 \subsubsection{Task 1} % (fold)
-\label{ssub:task_1}
+\label{ssub:task_2a1}
 
 Consider a hypothesis class, which consists of a single hypothesis $h_0:X\mapsto\{-1,+1\}$.
 Its empirical Rademacher complexity over the sample $S \sim D$ iid is given by
@@ -360,10 +360,10 @@ complexity:
 where we used $\ex_\sigma \sigma_i^2 = 1$, joint independence $(\sigma_i)_{i=1}^m$
 and the fact that $S\sim D^m$.
 
-% subsubsection task_1 (end)
+% subsubsection task_2a1 (end)
 
 \subsubsection{task 2} % (fold)
-\label{ssub:task_2}
+\label{ssub:task_2a2}
 
 In this task we need to provide upper bounds for the Rademacher complexity of various
 transformations and typical combinations of hypothesis classes. Let $H$ and $H'$
@@ -373,13 +373,13 @@ be some classes of binary hypotheses $X\mapsto\{-1, 1\}$, and $\alpha\in \Real$.
 \label{par:r_m_alpha_h}
 
 To get the result for $\mathcal{R}_m(\alpha H)$, first, note that
-\begin{equation}
+\begin{equation*}
   \sup_{h\in H} \sum_{i=1}^m \alpha \sigma_i h(x_i)
     =\begin{cases}
       |\alpha| \sup_{h\in H} \sum_{i=1}^m \sigma_i h(x_i), &\text{ if }\alpha \geq 0 \,,\\
       |\alpha| \sup_{h\in H} \sum_{i=1}^m (-\sigma_i) h(x_i), &\text{ otherwise}\,.
     \end{cases}
-\end{equation}
+\end{equation*}
 whence we have
 \begin{align*}
   \mathcal{R}_m(\alpha H)
@@ -503,20 +503,20 @@ for the sum of hypothesis classes yields the required result.
 
 % paragraph r_m_max_h_hh (end)
 
-% subsubsection task_2 (end)
+% subsubsection task_2a2 (end)
 
-% subsection problem_a (end)
+% subsection problem_2a (end)
 
 \subsection{Problem C} % (fold)
-\label{sub:problem_c}
+\label{sub:problem_2c}
 
 \subsubsection{task 5} % (fold)
-\label{ssub:task_5}
+\label{ssub:task_2c5}
 
 Consider the following modified SVM problem:
-\begin{equation}
+\begin{equation*}
   \frac{1}{2}\|\beta\|^2 + C\max_{i=1}^m \xi_i \to \min_{\beta_0, \beta, \xi_i}
-\end{equation}
+\end{equation*}
 subject to
 \begin{equation*}
   y_i(\beta_0 + \beta_0'x_i) \geq 1 - \xi_i\, \forall i=1,\ldots, m\,,
@@ -612,22 +612,24 @@ becomes
   \text{subject to :}\,
       &\,\sum_{i=1}^m \alpha_i y_i = 0
       \,,\alpha_i \geq 0
-      \,,\sum_{i=1}^m \alpha_i \leq C \,.
+      \,,\|\alpha\|_1 \leq C \,.
 \end{align*}
-It worth noting that this problem differs from the dual of the $L_1$-SVM problem
-in the constraints only:
+It worth noting that this problem, $L_\infty$-SVM, differs from the dual of the usual
+$L_1$-SVM problem in the constraints only (notice that $\|\cdot\|_\infty$ is the dual
+norm of $\|\cdot\|_1$):
 \begin{align*}
   \sum_{i=1}^m \alpha_i - \frac{1}{2}
         \sum_{i,j=1}^m \alpha_j y_j (x_j'x_i) y_i \alpha_i
     &\to \max_{\alpha_i} \\
   \text{subject to :}\,
       &\,\sum_{i=1}^m \alpha_i y_i = 0
-       \,,0 \leq \alpha_i \leq C \,.
+       \,,\alpha_i \geq 0
+       \,,\|\alpha\|_\infty \leq C \,.
 \end{align*}
 
-% subsubsection task_5 (end)
+% subsubsection task_2c5 (end)
 
-% subsection problem_c (end)
+% subsection problem_2c (end)
 
 % section assignment_2 (end)
 
@@ -635,7 +637,7 @@ in the constraints only:
 \label{sec:assignment_3}
 
 \subsection{Problem B} % (fold)
-\label{sub:problem_b}
+\label{sub:problem_3b}
 
 The objective of this problem is to demonstrate and study another online learning
 algorithm. Let $L:\Real\times \Real\mapsto [0, M]$ be a loss function, with $L(\hat{y}, y)$
@@ -649,11 +651,11 @@ $t$:
 \end{equation*}
 and $R_{ti} = \sum_{s=1}^t r_{si}$. Let $\alpha > 2$, $w_{ti} = (R_{t-1,i})_+^{\alpha-1}$
 and consider this aggregation rule
-\begin{equation}
+\begin{equation*}
   \hat{y}_t
     = \ex_{i\sim \tilde{w}_t} \hat{y}_{ti}
     = \sum_{i=1}^N \tilde{w}_{ti} \hat{y}_{ti} \,,
-\end{equation}
+\end{equation*}
 where $\tilde{w}_{ti} = \frac{w_{ti}}{\sum_{j=1}^N w_{tj}}$.
 
 Let $\Phi(x) = \|(x)_+\|_\alpha^2 = \Bigl(\sum_{k=1}^N (x_k)_+^\alpha\Bigr)^\frac{2}{\alpha}$.
@@ -697,12 +699,11 @@ whence $\sum_{i=1}^N w_{ti} r_{it} \leq 0$. Since for $R_{t-1}\in B^c$ by defini
 of $w_{ti} = \bigl(R_{t-1,i}\bigr)_+^{\alpha-1}$ we have $\sum_{i=1}^N w_{ti}>0$, which
 means that $\sum_{i=1}^N \bigl(R_{t-1,i}\bigr)_+^{\alpha-1} r_{ti} \leq 0$. However,
 the gradient of $\Phi$ at $R_{t-1}$ is 
-\begin{equation}
+\begin{equation*}
   \nabla \Phi\bigl(R_{t-1}\bigr)
-    = 2 \Phi\bigl(R_{t-1}\bigr)
-      \Bigl(\sum_{k=1}^N \bigl(R_{t-1,k}\bigr)_+^\alpha\Bigr)^{-1}
-      \biggl(\bigl(R_{t-1,i}\bigr)_+^{\alpha-1}\biggr)_{i=1}^N \,,
-\end{equation}
+    = \frac{2}{\alpha} \Bigl(\sum_{k=1}^N \bigl(R_{t-1,k}\bigr)_+^\alpha\Bigr)^{\frac{2}{\alpha}-1}
+      \biggl(\alpha \bigl(R_{t-1,i}\bigr)_+^{\alpha-1}\biggr)_{i=1}^N \,,
+\end{equation*}
 which means that $r_t' \nabla \Phi\bigl(R_{t-1}\bigr)\leq 0$.
 
 The Hessian $\nabla^2 \Phi(x)$ has the following form: for $g(x) = \sum_{k=1}^N (x_k)_+^\alpha$
@@ -722,10 +723,10 @@ For $x\in B^c$ the matrices $\nabla g(x) \nabla g(x)'$ and $\nabla^2 g(x)$ are p
 semidefinite. Let $r\in \Real^{N\times 1}$. By H\"older's inequality for $p=\alpha$, and
 $q = \frac{\alpha}{\alpha-1}$
 \begin{equation*}
-  r' \nabla g(x)
-    = \alpha \sum_{i=1}^N r_i (x_i)_+^{\alpha-1}
+  |r' \nabla g(x)|
+    = \alpha \biggl| \sum_{i=1}^N r_i (x_i)_+^{\alpha-1} \biggr|
     \leq \alpha
-      \biggl(\sum_{i=1}^N r_i^p\biggr)^\frac{1}{p}
+      \biggl(\sum_{i=1}^N |r_i|^p\biggr)^\frac{1}{p}
       \biggl(\sum_{i=1}^N (x_i)_+^{(\alpha-1)q} \biggr)^\frac{1}{q}
     = \alpha \|r\|_\alpha g(x)^{1-\frac{1}{\alpha}} \,,
 \end{equation*}
@@ -734,11 +735,12 @@ and for $p=\frac{\alpha}{2}$ with $q = \frac{\alpha}{\alpha-2}$
   r' \nabla^2 g(x) r
     &= \alpha (\alpha-1) \sum_{i=1}^N r_i^2 (x_i)_+^{\alpha-2} \\
     &\leq \alpha (\alpha-1) 
-      \biggl(\sum_{i=1}^N r_i^{2p}\biggr)^\frac{1}{p}
+      \biggl(\sum_{i=1}^N |r_i^2|^p\biggr)^\frac{1}{p}
       \biggl(\sum_{i=1}^N (x_i)_+^{(\alpha-2)q} \biggr)^\frac{1}{q}
-    = \alpha (\alpha-1) \|r\|_\alpha^2 g(x)^{1-\frac{2}{\alpha}} \,.
+    = \alpha (\alpha-1) \|r\|_\alpha^2 g(x)^{1-\frac{2}{\alpha}} \,,
 \end{align*}
-Therefore 
+becasue $\|r\|_p = \bigl(\sum_{i=1}^N |r_i|^p\bigr)^\frac{1}{p}$. Therefore, since
+$r' (\nabla g(x) \nabla g(x)') r = |r' \nabla g(x)|^2$, we get
 \begin{align*}
   r'\nabla^2 \Phi(x)r
     & = \frac{2}{\alpha} (g(x))^{\frac{2}{\alpha} - 2}
@@ -748,12 +750,140 @@ Therefore
       \biggl( \frac{2 - \alpha}{\alpha} \alpha^2 \|r\|_\alpha^2 g(x)^{2-\frac{2}{\alpha}}
               + \alpha (\alpha-1) \|r\|_\alpha^2 g(x)^{2-\frac{2}{\alpha}}
       \biggr) \\
-    &=\frac{2}{\alpha} \bigl( (2 - \alpha) \alpha + \alpha (\alpha - 1) \bigr) \|r\|_\alpha^2\,.
+    &=\frac{2}{\alpha} \bigl( (2 - \alpha) \alpha + \alpha (\alpha - 1) \bigr) \|r\|_\alpha^2
+    = 2 \|r\|_\alpha^2 \,.
+\end{align*}
+Finally, $\alpha > 2$ implies that $r'\nabla^2 \Phi(x) r \leq 2(\alpha-1)\|r\|_\alpha^2$
+for all $r\in \Real^{N\times 1}$ and at every $x\in B^c$.
+
+Now, as $\Phi$ is twice differentiable, by Taylor's expansion up to the second order
+for any $x, y \in B^c$ with $\theta x + (1-\theta)y \in B^c$ for all $\theta \in[0,1]$,
+there is $\theta \in (0,1)$ with $\xi = x + (1-\theta)(y-x)$ such that
+\begin{equation*}
+  \Phi(y) - \Phi(x) = \nabla \Phi(x)'(y-x) + \frac{1}{2}(y-x)' \nabla^2 \Phi(\xi) (y-x) \,.
+\end{equation*}
+For regret vectors $R_t$ and $R_{t-1}$ with $\theta R_t + (1-\theta)R_{t-1} \in B^c$
+for all $\theta \in[0,1]$, we have are such $R_t - R_{t-1} = r_t$. Therefore, there is
+$\theta\in (0, 1)$ such that for $\xi_\theta = \theta R_t + (1-\theta)R_{t-1}$
+\begin{align*}
+  \Phi(R_t) - \Phi(R_{t-1})
+    &= \nabla \Phi(R_{t-1})'r_t + \frac{1}{2}r_t' \nabla^2 \Phi(\xi_\theta) r_t \\
+    &\leq \frac{1}{2}r_t' \nabla^2 \Phi(\xi_\theta) r_t
+    \leq (\alpha-1) \|r_t\|_\alpha^2 \,,
+\end{align*}
+since $\nabla \Phi(R_{t-1})'r_t \leq 0$.
+
+Let $\xi_\gamma = \gamma R_t + (1-\gamma)R_{t-1}$, and suppose $R_t$ and $R_{t-1}$
+are such that $\xi_\gamma \in B$ for some $\gamma\in [0,1]$.
+\begin{description}
+  \item[If $R_t\in B$] In ths case $R_{ti}\leq 0$ for all $i=1,\ldots,N$, which implies
+  that $\Phi(R_t) = 0$. Therefore $\Phi(R_t) \leq (\alpha-1) \|r_t\|_\alpha^2$.
+  \item [If $R_t \notin B$] The map $\gamma \mapsto\xi_\gamma$ over $\gamma\in [0,1]$
+  is continuous, which means that the set $\{\gamma\,:\, \xi_\gamma \in B^c\}$ is
+  open in $[0,1]$. Its complement is therefore nonempty and closed in $[0,1]$, which
+  implies that it is compact, and furthermore convex by linearity of $\xi_\gamma$.
+  Thus there is the largest $\gamma^* \in \{\gamma\,:\, \xi_\gamma \in B\}$ such
+  that $\xi_\gamma \in B^c$ for all $\gamma\in (\gamma^*, 1]$. Applying the previous
+  result to $R_t$ and $\xi_\gamma$ (since $R_t \theta + \xi_\gamma (1-\theta) \in B^c$
+  for every $\theta\in[0,1]$), we get
+  \begin{align*}
+    \Phi(R_t) - \Phi(\xi_\gamma)
+      &\leq (\alpha-1) \|R_t - \xi_\gamma\|_\alpha^2
+      = (\alpha-1) \|(1-\gamma)(R_t - R_{t-1})\|_\alpha^2 \\
+      &= (\alpha-1) |1-\gamma|^2 \|r_t\|_\alpha^2
+      \leq (\alpha-1) \|r_t\|_\alpha^2 \,.
+  \end{align*}
+  Since $\Phi(x)$ is continuous, being a composition of continuous maps, we have
+  $\Phi(\xi_\gamma) \to \Phi(\xi_{\gamma^*})$ as $\gamma\to\gamma^*$. Thus
+  \begin{equation*}
+    \Phi(R_t)
+      = \Phi(R_t) - \Phi(\xi_{\gamma^*})
+      = \lim_{\gamma\to\gamma^*} \Phi(R_t) - \Phi(\xi_\gamma)
+      \leq (\alpha-1) \|r_t\|_\alpha^2 \,,
+  \end{equation*}
+  since $\Phi(\xi_{\gamma^*})=0$.
+\end{description}
+
+Since $L$ is non-negative and upper bounded by $M$, for any instantaneous regret
+vector we have
+\begin{align*}
+  \|r_t\|_\alpha^2
+    = \biggl(\sum_{i=1}^N
+          \bigl|L(\hat{y}_t, y_t) - L(\hat{y}_{ti}, y_t)\bigr|^\alpha
+        \biggr)^\frac{2}{\alpha}
+    \leq \biggl(\sum_{i=1}^N \bigl(2M)^\alpha \biggr)^\frac{2}{\alpha}
+    = 4 M^2 N^\frac{2}{\alpha} \,.
+\end{align*}
+Therfore, for any sequence of regret vectors $(R_t)_{t=1}^T$, we have
+\begin{align*}
+  \Phi(R_T) = \sum_{t=1}^T \Phi(R_t) - \Phi(R_{t-1})
+  &= \sum_{t\in T^*} \Phi(R_t) - \Phi(R_{t-1})
+  + \sum_{t\notin T^*} \Phi(R_t) - \Phi(R_{t-1}) \\
+  &\leq \sum_{t\in T^*} (\alpha-1) \|r_t\|_\alpha^2
+  + \sum_{t\notin T^*} (\alpha-1) \|r_t\|_\alpha^2 - \Phi(R_{t-1}) \\
+  &\leq \sum_{t=1}^T (\alpha-1) \|r_t\|_\alpha^2
+  \leq 4 (\alpha-1) T M^2 N^\frac{2}{\alpha} \,.
 \end{align*}
 
+The regret of the algorithm is defined as
+\begin{equation*}
+  \text{regret}_T
+    = \sum_{s=1}^T L(\hat{y}_s, y_s)
+    - \min_{i=1}^N \sum_{s=1}^T L(\hat{y}_{si}, y_s)
+    = \max_{i=1}^N \sum_{s=1}^T
+        L(\hat{y}_s, y_s) - L(\hat{y}_{si}, y_s)
+    = \max_{i=1}^N R_{Ti} \,.
+\end{equation*}
+The following chain of reasoning yields the lower bound for the potential:
+\begin{align*}
+  \text{regret}_T
+    &= \max_{i=1}^N R_{Ti}
+    \leq \max_{i=1}^N (R_{Ti})_+
+    \leq \sum_{i=1}^N (R_{Ti})_+ \\
+    &\leq \bigl(\sum_{i=1}^N 1 \bigr)^{1-\frac{1}{\alpha}}
+         \biggl( \sum_{i=1}^N (R_{Ti})_+^\alpha \biggr)^\frac{1}{\alpha}
+    = N^{1-\frac{1}{\alpha}} \Phi(R_T)^\frac{1}{2} \\
+    &\leq N \Phi(R_T)^\frac{1}{2} \,,
+\end{align*}
+by H\"older's inequality for $p=\alpha$ and $q=\frac{\alpha}{\alpha-1}$;
+Therefore the squared regret of the algorithm is upper bounded by
+\begin{equation*}
+  \text{regret}_T^2
+    \leq 4 T N^2 M^2 (\alpha-1) N^\frac{2}{\alpha} \,.
+\end{equation*}
+Since this is true for any $\alpha > 2$, it might be possible to select the best
+parameter, so that the upper bound is the most favourable. Differentiating the term
+in the bound, which depends on $\alpha$ yields
+\begin{equation*}
+  N^\frac{2}{\alpha} - (\alpha - 1) N^\frac{2}{\alpha} \frac{2\log N}{\alpha^2} \,,
+\end{equation*}
+with roots given by $\alpha_{1,2} = \Bigl(1 \pm  \sqrt{1 + \frac{2}{\log N}} \Bigr) \log N$.
+In fact the restrictions $\alpha > 2$ and $\log N > 2$ imply that the only feasible
+root is
+\begin{equation*}
+  \alpha
+    = \biggl(1 + \sqrt{1 + \frac{2}{\log N}} \biggr) \log N
+    \approx 2\log N\,.
+\end{equation*}
+Note that the first derivative of the upper bound is negative for all $\alpha$ to
+the left of the root, and positive to the right, which means that the function attians
+a minimum at that point. Therefore for $\alpha \approx 2\log N$ we can bound the
+regret by
+\begin{equation*}
+  \text{regret}_T^2
+    \leq 4 T N^2 M^2 (2\log N - 1) N^\frac{1}{\log N} \,.
+\end{equation*}
+The upper bound of the regret does not depend on $\alpha$, because the multiplier
+$\alpha-1$ is, in fact, redundant: the potential can be bounded by $4TM^2 N^\frac{2}{\alpha}$
+and the regret by the time $T$ by $N^{1-\frac{1}{\alpha}} \Phi(R_T)^\frac{1}{2}$.
+Therefore
+\begin{equation*}
+  \text{regret}_T^2
+    \leq N^{2-\frac{2}{\alpha}} 4TM^2 N^\frac{2}{\alpha}
+    = 4TM^2 N^2 \,.
+\end{equation*}
 
-
-% subsection problem_b (end)
+% subsection problem_3b (end)
 
 % section assignment_3 (end)
 
