@@ -1,6 +1,5 @@
-\documentclass[conference]{IEEEtran}
-
-\usepackage[T2A]{fontenc}
+\documentclass[10pt, conference, compsocconf]{IEEEtran}
+% \documentclass[conference,compsoc]{IEEEtran}
 
 \usepackage[utf8]{inputenc}
 
@@ -9,12 +8,18 @@
 
 \usepackage{graphicx, url}
 
-\usepackage{amsmath, amsfonts, amssymb, amsthm}
+\usepackage[cmex10]{amsmath}
+\usepackage{amsfonts, amssymb, amsthm}
 \usepackage{mathptmx}
-\usepackage{algorithm2e}
-\usepackage{subcaption}
 \usepackage{caption}
+\captionsetup{
+  font = {footnotesize,up,singlespacing},
+  skip = 1ex
+}
+\usepackage{subcaption}
 \usepackage{float}
+
+\usepackage[nocompress]{cite}
 
 \newcommand{\ex}{\mathop{\mathbb{E}}\nolimits}
 \newcommand{\pr}{\mathop{\mathbb{P}}\nolimits}
@@ -30,12 +35,11 @@
 
 \title{Conformalized Kernel Ridge Regression}
 \author{
-\IEEEauthorblockN{
-Burnaev\IEEEauthorrefmark{1}, E. V.,
-Nazarov\IEEEauthorrefmark{2}, I. N.}
-\IEEEauthorblockA{
-\IEEEauthorrefmark{1}IITP RAS, Skoltech, e.burnaev@skoltech.ru}
-\IEEEauthorblockA{\IEEEauthorrefmark{2} IITP RAS, ivan.nazarov@iitp.ru}
+\IEEEauthorblockN{Evgeny Burnaev}
+\IEEEauthorblockA{IITP RAS, Skoltech\\ Moscow, Russia\\ Email: e.burnaev@skoltech.ru}
+\and
+\IEEEauthorblockN{Ivan Nazarov}
+\IEEEauthorblockA{IITP RAS\\ Moscow, Russia\\ Email: ivan.nazarov@iitp.ru}
 }
 
 \begin{document}
@@ -51,9 +55,12 @@ and conduct a comparative numerical study to see how well conformal regions perf
 against the Bayesian confidence sets. The results suggest that conformalized KRR
 can yield predictive confidence regions with specified coverage rate, which is
 essential in constructing anomaly detection systems based on predictive models.\\
-\textbf{Keywords:} kernel ridge regression, gaussian process regression,
-conformal prediction, confidence region.
 \end{abstract}
+
+\begin{IEEEkeywords}
+kernel ridge regression, gaussian process regression, conformal prediction,
+confidence region.
+\end{IEEEkeywords}
 
 % Disable repeated author folding
 \bstctlcite{IEEEexample:BSTcontrol}
@@ -70,12 +77,12 @@ variables, that in certain ways affect the object of study.
 
 Practical importance and difficulty of anomaly detection in general spurred a great
 deal of research, which resulted in a large volume of heterogeneous approaches and
-methods to its solution (\cite{Alestra2014, Burnaev2015, Artemov2015}). There are
+methods to its solution \cite{Alestra2014, Burnaev2015, Artemov2015}. There are
 many approaches: probabilistic, which rely on approximating the generative distribution
-of the observed data (\cite{aggarwal2008, scott2008}), metric-based anomaly detection,
-that measure similarity between normal and abnormal observations (\cite{hautamaki2004,
-breunig2000, kriegel2009}), predictive modelling approaches, which use the forecast
-error to measure abnormality (\cite{augusteijn2002, hawkins2002, hoffmann2007, scholkopf1998}).
+of the observed data \cite{aggarwal2008, scott2015}, metric-based anomaly detection,
+that measure similarity between normal and abnormal observations \cite{hautamaki2004,
+breunig2000, kriegel2009}, predictive modelling approaches, which use the forecast
+error to measure abnormality \cite{augusteijn2002, hawkins2002, hoffmann2007, scholkopf1998}.
 
 Predictive modelling is concerned with recovering an unobserved relation $x\mapsto f(x)$
 from a sample $(x_i, y_i)_{i=1}^n$ of noisy observations
@@ -85,9 +92,9 @@ from a sample $(x_i, y_i)_{i=1}^n$ of noisy observations
 where $\epsilon_i$ is iid with mean zero. One way of assigning a confidence measure
 to a prediction $\hat{f}$ is by using assumptions on the geometric structure of the
 manifold approximating the sample data which provide estimates of the likelihood of
-the prediction error for the test data, \cite{Bernstein2015,Kuleshov2016}. Another
+the prediction error for the test data \cite{Bernstein2015,Kuleshov2016}. Another
 approach is to quantify estimate's, model's and observational uncertainty, by imposing
-Bayesian assumptions (eq.~\ref{eq:signal_model}).
+Bayesian assumptions in (\ref{eq:signal_model}).
 
 Consider Kernel Ridge Regression -- a model that combines ridge regression with the
 kernel trick. It learns a function $\hat{f}$ which, given training sample $X = (x_i)_{i=1}^n$,
@@ -99,9 +106,10 @@ with $f(X) = (f(x_i))_{i=1}^n \in \Real^{n\times 1}$, and $y=(y_i)_{i=1}^n \in \
 Here $\Hcal$ is the canonical Reproducing Kernel Hilbert Space associated with
 a Mercer-type kernel $\Kcal:\Xcal\times \Xcal\mapsto \Real$. The Representer theorem,
 \cite{scholkopf2002}, states that the solution $\hat{f}:\Xcal\mapsto\Real$ is of the
-form $f(x) = k_x' \beta$, for $k_x : x\mapsto \Phi(x)$ and $\Phi = (\phi(x_i))_{i=1}^n \in \Hcal^{n\times 1}$.
-If $e_j$ is the $j$-th unit vector in $\Real^{n\times 1}$, and $K_{XX}$ is the Gram
-matrix of $\Kcal$ over $(x_i)_{i=1}^n$, then $f(x_j) = k_{x_j}' \beta = e_j' K_{XX} \beta$
+form $\hat{f}(x) = k_X'(x) \beta$ with $k_X: \Xcal\mapsto \Real^{n\times 1}$ given by the 
+vector of canonical feature maps $k_X = (\Kcal(x_i, \cdot))_{i=1}^n \in \Hcal^{n\times 1}$.
+If $e_j$ is the $j$-th unit vector in $\Real^{n\times 1}$, and $K_{XX}$ is the $n\times n$
+Gram matrix of $\Kcal$ over $(x_i)_{i=1}^n$, then $f(x_j) = k_{x_j}' \beta = e_j' K_{XX} \beta$
 and  $\| f \|^2 = \beta' K_{XX} \beta$. Thus the kernel ridge regression problem is
 equivalent to this finite-dimensional convex minimization problem:
 \begin{equation*}
@@ -112,7 +120,7 @@ which yields the optimal weight vector $\hat{\beta}$ and prediction at $x^*\in \
 given by $\hat{\beta} = (\lambda I_n + K_{XX})^{-1} y$ and $\hat{y}(x^*) = k_{x^*}'\hat{\beta}$,
 respectively.
 
-Bayesian Kernel Ridge Regression views the model eq.~\ref{eq:signal_model} as a sample
+Bayesian Kernel Ridge Regression views the model (\ref{eq:signal_model}) as a sample
 path of the underlying Gaussian Process, \cite{rasmussen2006}, which makes predictive
 confidence intervals readily available. A Gaussian Process $(y_x)_{x\in \Xcal}$, with
 mean $m : \Xcal \mapsto \Real$ and covariance kernel  $\Kcal : \Xcal \times \Xcal \mapsto \Real$
@@ -135,22 +143,22 @@ or Kriging, generalizes both linear and kernel regression and assumes linearity 
 mean function with respect to $x$ and external factors $h$.
 
 Bayesian KRR assumes a prior on functions $f\sim GP(0, \sigma^2 \Kcal)$ and independent
-Gaussian white noise $\epsilon_x\sim \Ncal(0, \sigma^2 \lambda)$ in model~\ref{eq:signal_model},
-for $\sigma^2 > 0$. In this setting, eq.~\ref{eq:cond_distr} implies that the distribution
+Gaussian white noise $\epsilon_x\sim \Ncal(0, \sigma^2 \lambda)$ in model~(\ref{eq:signal_model}),
+for $\sigma^2 > 0$. In this setting (\ref{eq:cond_distr}) implies that the distribution
 of a yet unobserved target $y_{x^*}$ at $x^*\in \Xcal$, conditional on the train data $(X, y_X)$,
 is
 \begin{equation} \label{eq:gp_cond_dist}
 {y_{x^*}}_{|y_X}
   \sim \Ncal\bigl(\hat{y}_{y_X}(x^*), \sigma^2 \sigma_K^2(x^*)\bigr) \,,
 \end{equation}
-with $\hat{y}_{y_X}(x^*) = K_X(x^*)' Q_X y_X$, and
+with $\hat{y}_{y_X}(x^*) = k_X(x^*)' Q_X y_X$, and
 \begin{equation*}
   \sigma_K^2(x^*)
-    = \lambda + K(x^*, x^*) - K_X(x^*)' Q_X K_X(x^*) \,,
+    = \lambda + K(x^*, x^*) - k_X(x^*)' Q_X k_X(x^*) \,,
 \end{equation*}
-where $Q_X = \bigl(\lambda I_n + K_{XX}\bigr)^{-1}$, $K_{XX} = (K(x_i,x_j))_{ij}$,
-and $K_X = (K(x_i, \cdot))_{i=1}^n: \Xcal \mapsto \Real^{n\times1}$. Thus, the $1 - \alpha$
-confidence interval is thus given by
+where $K_{XX} = (K(x_i,x_j))_{ij}$, $Q_X = \bigl(\lambda I_n + K_{XX}\bigr)^{-1}$,
+and $k_X = (K(x_i, \cdot))_{i=1}^n$. Thus, the $1 - \alpha$ confidence interval is
+given by
 \begin{equation} \label{eq:gp_conf_int}
 \Gamma^\alpha_{y_X}(x^*)
   = \hat{y}_{y_X}(x^*)
@@ -203,10 +211,10 @@ properties of the predictor in a batch learning setting for a KRR with specific 
 \section{Conformal prediction} % (fold)
 \label{sec:conformal_prediction}
 
-Conformal prediction is a distribution-free technique designed to yield a statistically
+Conformal prediction is a distribution-free technique designed to yield statistically
 valid confidence sets for predictions made by machine learning algorithms. The key
 advantage of the method is that it offers coverage probability guarantees under
-standard IID assumptions, even in cases when assumptions of the underlying prediction
+standard iid assumptions, even in cases when assumptions of the underlying prediction
 algorithm fail to be satisfied. The method was introduced in \cite{vovk2005} for online
 supervised and unsupervised learning.
 
@@ -214,8 +222,8 @@ Let $\Zcal$ denote the object-target space $\Xcal \times \Ycal$. At the core of 
 conformal predictor is a measurable map $A: \Zcal^*\times \Zcal \mapsto \Real$, a
 Non-Conformity Measure (NCM), which quantifies how much different $z_{n+1} \in \Zcal$
 is relative to a sample $Z_{:n} = (z_i)_{i=1}^n\in\Zcal$. A conformal predictor over
-$A$ is a procedure, which for every sample $Z_{:n}$, a test object $x_{n+1} \in \Xcal$,
-and a level $\alpha \in (0,1)$, gives a confidence set $\Gamma_{Z_{:n}}^\alpha(x^*)$
+$A$ is a procedure, which for every sample $Z_{:n}$, test object $x_{n+1} \in \Xcal$,
+and level $\alpha \in (0,1)$, produces a confidence set $\Gamma_{Z_{:n}}^\alpha(x^*)$
 for the target value $y_{n+1}$:
 \begin{equation} \label{eq:conf_pred_set}
   \Gamma_{Z_{:n}}^\alpha(x_{n+1})
@@ -223,21 +231,18 @@ for the target value $y_{n+1}$:
 \end{equation}
 where $\tilde{z}^y_{n+1} = (x_{n+1}, y)$ a synthetic test observation with target
 label $y$. The function $p:\Zcal^*\times (\Xcal\times \Ycal)\mapsto [0,1]$ measures
-the likelihood of $\tilde{z}$ based on its non-conformity with $Z_{:n}$, and is
+the likelihood of $\tilde{z}$ based on its non-conformity with $Z_{:n}$, and is given
+by
 \begin{equation} \label{eq:conf_p_value}
   p_{Z_{:n}}(\tilde{z})
     = (n+1)^{-1} \bigl\lvert\{ i \,:\,
       \eta_i^{\tilde{z}} \geq \eta_{n+1}^{\tilde{z}} \}\bigr\rvert \,,
 \end{equation}
 where $i=1,\ldots, n+1$, and $\eta_i^{\tilde{z}} = A(S^{\tilde{z}}_{-i}, S^{\tilde{z}}_i)$
--- the non-conformity of the $i$-th observation with respect to the augmented sample
+is the non-conformity of the $i$-th observation with respect to the augmented sample
 $S^{\tilde{z}} = (Z_{:n}, {\tilde{z}}^y_{n+1}) \in \Zcal^{n+1}$. For any $i$, $S^{\tilde{z}}_i$
 is the $i$-th element of the sample, and $S^{\tilde{z}}_{-i}$ is the sample with the $i$-th
 observation omitted.
-
-% Conformal prediction can also be constructed atop ``conformity measures'', as opposed
-% to ``non-conformity measures'', which in this case requires that the ``$\geq$'' sign
-% be switched to ``$\leq$'' in eq.~\ref{eq:conf_p_value} if a conformity measure is used.
 
 For every possible value $z$ of an object $Z_{n+1}$ the conformal procedure tests
 $H_0: Z_{n+1} = z$, and then inverts the test to get a confidence region. The hypothesis
@@ -247,11 +252,10 @@ the observed sample $Z_{:n}$ and hypothesized $z$.
 % hypotheses for new $x_{n+1}$ are tested, whereas in regression the test are conducted
 % for target levels $y_{n+1}$.
 
-In \cite{vovk2005}, chapter 2, is has been shown, that for sequences of iid examples
-$(z_n)_{n \geq1} \sim P$, the coverage probability of the prediction set $\Gamma^\alpha$,
-\ref{eq:conf_pred_set}, is at least $1-\alpha$ and successive errors are independent
-in online learning and prediction setting. The procedure guarantees unconditional validity: 
-for any $\alpha \in (0,1)$
+In \cite{vovk2005} chapter 2 it has been shown, that for sequences of iid examples
+$(z_n)_{n \geq1} \sim P$, the coverage probability of the prediction set (\ref{eq:conf_pred_set}),
+is at least $1-\alpha$ and successive errors are independent in online learning and
+prediction setting. The procedure guarantees unconditional validity: for any $\alpha > 0$
 \begin{equation} \label{eq:conservative_coverage}
   \pr_{Z_{:n}\sim P} \bigl(
     y_n \notin \Gamma^\alpha_{Z_{:(n-1)}}(x_n)
@@ -260,15 +264,16 @@ for any $\alpha \in (0,1)$
 where $(x_n, y_n) = z_n$.
 Intuitively, the event $y_n \notin \Gamma^\alpha_{Z_{:(n-1)}}(x_n)$ is equivalent
 to $\eta_n = A(Z_{-n}, Z_n)$ being among the largest $\lfloor n\alpha\rfloor$ values
-of $\eta_i = A(Z_{-i}, Z_i)$, which is equal to $\frac{\lfloor n\alpha\rfloor}{n}$,
-due to independence of $Z_{:n}$ (for a rigorous proof see \cite{vovk2005}, ch.~8).
+of $\eta_i = A(Z_{-i}, Z_i)$, which is equal to $n^{-1}\lfloor n\alpha\rfloor$, due
+to independence of $Z_{:n}$ (for a rigorous proof see \cite{vovk2005}, ch.~8).
 
-The choice of \textbf{NCM} affects the size of the confidence sets and the computational
-burden of the conformal procedure. In the general case computing eq.~\ref{eq:conf_pred_set}
+The choice of NCM affects the size of the confidence sets and the computational burden
+of the conformal procedure. In the general case computing (\ref{eq:conf_pred_set})
 requires exhaustive search through the target space $\Ycal$, which is infeasible in general
 regression setting. However, for specific non-conformity measures it is possible to
 come up with efficient procedures for computing the confidence region as demonstrated
-in \cite{vovk2005} and sec.~\ref{sec:conformalized_krr} of this work.
+in \cite{vovk2005} and sec.~\ref{sec:conformalized_krr} of this paper.
+
 
 % section conformal_prediction (end)
 
@@ -276,18 +281,18 @@ in \cite{vovk2005} and sec.~\ref{sec:conformalized_krr} of this work.
 \label{sec:conformalized_krr}
 
 In this section we describe the construction of confidence regions of the conformal
-procedure eq.~\ref{eq:conf_pred_set} for the case of the non-conformity measures
+procedure (\ref{eq:conf_pred_set}) for the case of the non-conformity measures
 based on kernel ridge regression. We consider two NCMs defined in terms of regression
 residuals: the one used in constructing a ``Ridge Regression Confidence Machine'',
-proposed in \cite{vovk2005}, chapter 2, and ``two-sided'' NCM, proposed in \cite{burnaevV14}.
+proposed in chapter 2 of \cite{vovk2005}, and a ``two-sided'' NCM, proposed in \cite{burnaevV14}.
 
 \subsection{Residuals} % (fold)
 \label{sub:residuals}
 
-In each NCM it is possible to use any kind of prediction error, but we focus on two:
-the in-sample and \textbf{l}eave-\textbf{o}ne-\textbf{o}ut (or deleted) residuals.
-Consider a sample $(X, y) = (x_i, y_{x_i})_{i=1}^n$, and for any $i=1\ldots, n$ put
-$X = (X_{-i}, x_i)$, and $y = (y_{-i}, y_i)$. In-sample residuals, $\hat{r}_{\text{in}}(X, y)$,
+In each NCM it is possible to use any kind of prediction error, but we focus on
+the in-sample and Leave-One-Out or deleted (LOO) residuals. Consider a sample
+$(X, y) = (x_i, y_{x_i})_{i=1}^n$, and for any $i=1\ldots, n$ put $X = (X_{-i}, x_i)$,
+and $y = (y_{-i}, y_i)$. The in-sample residuals, $\hat{r}_{\text{in}}(X, y)$,
 are defined for each $i$ as
 \begin{equation} \label{eq:ins_resid}
   e_i' \hat{r}_{\text{in}}(X, y) = y_i - \hat{y}_{|(X, y)}(x_i) \,,
@@ -310,7 +315,7 @@ the $i$-th observation, and
 \begin{equation} \label{eq:krr_leverage}
   m_i = \lambda + \Kcal(x_i, x_i) - k_{-i}(x_i)' Q_{-i} k_{-i}(x_i) \,,
 \end{equation}
-with $k_{-i}(x_i)$ -- the $n-1\times 1$ vector of $(\Kcal(x_j, x_i))_{i\neq j}$,
+with $k_{-i}(\cdot)$ -- the $(n-1)\times 1$ vector of $(\Kcal(x_j, \cdot))_{i\neq j}$,
 $Q_{-i} = (K_{-i} + \lambda I_{n-1})^{-1}$, and $K_{-i}$ is the Gram matrix of
 the kernel $\Kcal$ over subsample $X_{-i}$.
 
@@ -319,18 +324,18 @@ the kernel $\Kcal$ over subsample $X_{-i}$.
 \subsection{Ridge Regression Confidence Machine} % (fold)
 \label{sub:ridge_regression_confidence_machine}
 
-In this section we describe a conformal procedure for the NMC proposed in \cite{vovk2005},
-chapter 2, and focus on its ``in-sample'' version, bearing in mind that residuals
+In this section we describe a conformal procedure for the NMC proposed in \cite{vovk2005}
+chapter 2, and focus on its in-sample version, bearing in mind that residuals
 (\ref{eq:loo_resid}) and (\ref{eq:ins_resid}) are interchangeable.
 
-The Ridge Regression Confidence Machine (RRCM) constructs an non-conformity measure
-from the absolute value of the regression residual: the ``in-sample'' NCM, $A_{\text{in}}$,
+The Ridge Regression Confidence Machine (RRCM) constructs a non-conformity measure
+from the absolute value of the regression residual. The in-sample NCM, $A_{\text{in}}$,
 is given by
 \begin{equation} \label{eq:ins_ncm}
   A_{\text{in}}\bigl((X_{-i}, y_{-i}), (x_i, y_i)\bigr) = |e_i' \hat{r}_{\text{in}}(X, y)| \,,
 \end{equation}
-and the ``LOO'' NCM, $A_{\text{loo}}$ is defined similarly using eq.~\ref{eq:loo_resid}.
-For the NCM $A$ the $1 - \alpha$ conformal confidence interval for the $n$-th observation
+and the LOO NCM, $A_{\text{loo}}$, is defined similarly using (\ref{eq:loo_resid}).
+For an NCM $A$ the $1 - \alpha$ conformal confidence interval for the $n$-th observation
 is given by
 \begin{equation} \label{eq:conf_ci}
   \Gamma_{X_{-n}, y_{-n}}^\alpha(x_n)
@@ -359,14 +364,14 @@ $n$-th observation:
     = \lambda c_i + \lambda b_i z
     \,,
 \end{equation}
-with $c_i = e_i' C_{-n}\bigl((X, y), x_n\bigr)$ and $C_{-n}\bigl((X, y), x_n\bigr)$
+with $c_i = e_i' C$ and $C=C_{-n}\bigl((X, y), x_n\bigr)\in\Real^{n\times 1}$
 given by
 \begin{equation*}
   \begin{pmatrix} Q_{-n} y_{-n} \\ 0 \end{pmatrix}
     - B_{-n}(x_n) K_{-n}(x_n)' Q_{-n} y_{-n}
     \,,
 \end{equation*}
-where $0$ is scalar and the vector $B_{-n}(x_n)\in\Real^{n\times 1}$ is
+where $0$ is scalar and the vector $B=B_{-n}(x_n)\in\Real^{n\times 1}$ is
 \begin{equation} \label{eq:krr_in_resid_B}
   B_{-n}(x_n)
     = \begin{pmatrix} - Q_{-n} K_{-n}(x_n) \\ 1 \end{pmatrix} m_n^{-1}
@@ -376,8 +381,9 @@ Since absolute values of the residuals are compared, it is possible to consisten
 change the signs of each element of $C$ and $B$ to ensure that $e_i'B\geq 0$ for
 all $i$.
 
-The conformal p-value for $(x_n, y)$, eq.~\label{eq:conf_p_value}, is can be re-defined in terms
-of regions $S_i = \{z\in\Real\,:\, |\hat{r}_i^z| \geq |\hat{r}_n^z|\}$, for $i=1,\ldots, n$:
+The conformal p-value for $(x_n, y)$, (\ref{eq:conf_p_value}), is can be re-defined
+in terms of regions $S_i = \{z\in\Real\,:\, |\hat{r}_i^z| \geq |\hat{r}_n^z|\}$,
+for $i=1,\ldots, n$:
 \begin{equation} \label{eq:rrcm_conf_p_value}
   p_{X_{-n}, y_{-n}}(x_n, y) = n^{-1} \bigl\lvert\{ i \,:\, y \in S_i \}\bigr\rvert \,.
 \end{equation}
@@ -397,7 +403,7 @@ representations:
   \item $b_i > b_n \geq 0$: $S_i$ is $\Real\setminus (q_i, p_i)$ when $c_i b_n \geq c_n b_i$,
   or $\Real\setminus (p_i, q_i)$ otherwise.
 \end{enumerate}
-Let $P$ and $Q$ be the sets of all well-defined $p_i$ and $q_i$ respectively, and
+Let $P$ and $Q$ be the sets of all well-defined $p_i$ and $q_i$, respectively, and
 let $(g_j)_{j=0}^{J+1}$ enumerate distinct values of $\{\pm\infty\} \cup P \cup Q$,
 so that $g_j < g_{j+1}$ for all $j$. Then the confidence region is a closed subset
 of $\Real$ constructed from sets $G^m_j = [g_j, g_{j+m}]\cap \Real$ for $m=0, 1$:
@@ -407,10 +413,10 @@ of $\Real$ constructed from sets $G^m_j = [g_j, g_{j+m}]\cap \Real$ for $m=0, 1$
     \,,
 \end{equation}
 where $N^m_j = |\{i \,:\, G^m_j \subseteq S_i\}|$ is the coverage frequency of $G^m_j$,
-eq.~\ref{eq:rrcm_conf_p_value}. In general, the resulting confidence set might contain
+(\ref{eq:rrcm_conf_p_value}). In general, the resulting confidence set might contain
 isolated singletons $G^0_j$.
 
-This set, can be constructed efficiently in $\BigO(n \log{} n)$ time with $\BigO(n)$
+This set can be constructed efficiently in $\BigO(n \log{} n)$ time with $\BigO(n)$
 memory footprint. Indeed, it is necessary to sort at most $J\leq 2n$ distinct endpoints
 of $G_j$, then locate the values $p_i$ and $q_i$ associated with each region $S_i$
 ($\BigO(n \log{} n)$). Then, since the building blocks $G^m_j$ of $\Gamma^\alpha$
@@ -426,11 +432,11 @@ Another possibility is to use the two-sided conformal procedure, proposed in \ci
 The main result of that paper is that under relaxed Bayesian Ridge Regression assumptions
 if a sequence $(x_n)_{n\geq1}\in\Xcal$ is i.i.d. with an non-singular second moment
 matrix $\ex x_1x_1' \succeq 0$, then for all sufficiently large $n$ the conformal
-confidence regions that lose little efficiency (the upper endpoints of the Bayesian
-and conformal prediction intervals deviate as much as $\mathcal{O}_p\bigl(n^{-\frac{1}{2}}\bigr)$).
+confidence regions lose little efficiency (the upper endpoints of the Bayesian and
+conformal prediction intervals deviate as much as $\mathcal{O}_p\bigl(n^{-\frac{1}{2}}\bigr)$).
 
-The ``two-sided'' procedure of \cite{burnaevV14}, denoted by \textbf{CRR} for short,
-uses a conformity measure
+The two-sided procedure of \cite{burnaevV14}, denoted by CRR, flips the sign
+in (\ref{eq:conf_p_value}) and uses a \emph{conformity} measure
 \begin{equation} \label{eq:crr_ncm}
   A(Z_{-i}, Z_i)
     = \bigl\lvert\{j\,:\, \hat{r}_j \geq \hat{r}_i \} \bigr\rvert \wedge
@@ -439,12 +445,12 @@ uses a conformity measure
 where $(\hat{r}_i)_{i=1}^n$ are the in-sample ridge regression residuals.
 In that paper it was also shown that for any $\alpha \in (0,1)$ the confidence
 region $\Gamma^\alpha$ produced by CRR procedure for the conformity measure in
-eq.~\ref{eq:crr_ncm} is equivalent to the intersection of confidence sets yielded
+(\ref{eq:crr_ncm}) is equivalent to the intersection of confidence sets yielded
 by conformal procedures with non-conformity measures given by $\eta_i = \hat{r}_i$
 and $\eta_i = -\hat{r}_i$ at significance levels $\frac{\alpha}{2}$. Individually,
-these NCMs define a \textbf{upper} and \textbf{lower} CRR sets respectively, and
-together constitute a ``two-sided'' conformal procedure. Confidence regions based
-on this NCM, much like RRCM, can use any kind of residual: leave-one-out, or in-sample.
+these NCMs define \textbf{upper} and \textbf{lower} CRR sets, and together make up
+a two-sided conformal procedure. Confidence regions based on this NCM, much like
+RRCM, can use any kind of residual: leave-one-out or in-sample.
 
 For the upper CRR the regions $U_i = \{z\in\Real\,:\, \hat{r}_i^z \geq \hat{r}_n^z\}$,
 $i=1,\ldots, n$, are either empty, full $\Real$ or one-side closed half-rays. Since
@@ -458,7 +464,7 @@ with $q_i = \frac{c_i-c_n}{b_n-b_i}$. The forms of regions $L_i$ for the lower C
 are computed similarly, but with the signs of $c_i$ and $b_i$ flipped for each $i=1, \ldots, n$.
 
 Both upper and lower confidence regions are built similarly to the kernel RRCM region
-eq.~\ref{eq:rrcm_conf_ci} in sec.~\ref{sub:ridge_regression_confidence_machine}. The
+(\ref{eq:rrcm_conf_ci}) in sec.~\ref{sub:ridge_regression_confidence_machine}. The
 final Kernel CRR confidence set is given by
 \begin{equation} \label{eq:crr_conf_ci}
   \Gamma_{X_{-n}, y_{-n}}^\alpha(x_n)
@@ -479,7 +485,7 @@ complexity.
 \label{sec:numerical_study}
 
 Validity of conformal predictors in the online learning setting has been shown in
-\cite{vovk2005}, chapter 2, however, no result of this kind is known in the batch
+\cite{vovk2005} chapter 2, however, no result of this kind is known in the batch
 learning setting. Our experiments aim to evaluate the empirical performance of the
 conformal prediction in this setting: with dedicated train and test datasets. In
 this section we conduct a set of experiments to examine the validity of the regions,
@@ -494,19 +500,19 @@ domain. The dimensionality of the input data, however, may impact the width of
 the constructed confidence region.
 
 The off-line validity and efficiency of Bayesian and Conformal confidence regions
-is studied in two settings: the fully Gaussian case, and the non-Gaussian cases.
-In the first case the Bayesian assumptions hold and experiments are run on a sample
-path of $GP(0, \Kcal + \delta_{x,x'} \gamma)$. In the second the assumptions of
-Gaussian Process Regression are partially valid: a deliberately non-Gaussian $f$
-in eq.~\ref{eq:signal_model} is contaminated by moderate Gaussian white noise with
+is studied in two settings: the fully Gaussian, and the non-Gaussian cases. In the
+first case the Bayesian assumptions hold and experiments are run on a sample path
+of $GP(0, \Kcal + \delta_{x,x'} \gamma)$. In the second the assumptions of Gaussian
+Process Regression are partially valid: a deliberately non-Gaussian $f$ in
+(\ref{eq:signal_model}) is contaminated by moderate Gaussian white noise with
 variance $\gamma$.
 
 The following hyper-parameters are controlled: the true noise-to-signal ratio $\gamma
 \in \{10^{-6}, 10^{-1}\}$, the covariance kernel precision $\theta \in \{10, 10^2, 10^3\}$,
-the train sample size $n$ (from $25$ up to $1600$), the NCM (eq.~\ref{eq:ins_ncm}
-RRCM, or eq.~\ref{eq:crr_ncm} CRR), the residual eq.~\ref{eq:ins_resid}, or eq.~\ref{eq:loo_resid},
+the train sample size $n$ (from $25$ up to $1600$), the NCM -- (\ref{eq:ins_ncm}) or
+(\ref{eq:crr_ncm}), the kind of residual (\ref{eq:ins_resid}), or (\ref{eq:loo_resid}),
 the regularization parameter $\lambda \in \{10^{-1}, 10^{-6}\}$, and either fixed
-$\theta$ or $\theta$ that minimizes eq.~\ref{eq:bkrr_likelihood}.
+$\theta$ or $\theta$ that minimizes (\ref{eq:bkrr_likelihood}).
 %% What is the estimate of \sigma^2
 
 For a given test function $f:\Xcal \mapsto \Real$ and a set of hyper-parameters
@@ -517,22 +523,22 @@ each experiment consists of the following steps:
   \item Train inputs, $X$, are sampled from a uniform distribution over $\Xcal$;
   \item For all $x\in X_{\text{pool}} = X \cup X^*$, target values $y_x = f(x)$
   are generated;
-  \item For $l=1,\ldots, L$ independently
+  \item For $l=1,\ldots, L$ independently:
   \begin{enumerate}
     \item draw a random subsample of size $n$ from train dataset;
     \item fit a Gaussian Process Regression with zero mean and Gaussian kernel
     $\Kcal$ with the specified precision $\theta$ and $\lambda$;
-    \item for each $x^* \in X^*$ construct the Bayesian (eq.~\ref{eq:gp_conf_int})
-    and conformal (eq.~\ref{eq:conf_pred_set}) confidence regions using the NCM $A$
+    \item for each $x^* \in X^*$ construct the Bayesian (\ref{eq:gp_conf_int})
+    and conformal (\ref{eq:conf_pred_set}) confidence regions using the NCM $A$
     and residuals $\hat{r}$ with MLE estimated $\sigma^2$;
     \item estimate the coverage rate and the width of the convex hull of the region
     over the test sample $X^*$: $p_l(R) = |X^*|^{-1}\sum_{x\in X^*} 1_{y_x\in R_x}$,
     and $w_l(R) = \inf\{b-a\,:\,R \subseteq [a, b]\}$, where $R$ is a confidence
-    region;
+    region.
   \end{enumerate}
 \end{enumerate}
-With the experimental procedure properly outlined, we proceed to summarizing the
-results.
+% With the experimental procedure properly outlined, we proceed to summarizing the
+% results.
 
 \subsection{Results: $1$-d} % (fold)
 \label{sub:results_1_d}
@@ -543,34 +549,34 @@ the $1$-d Gaussian process with isotropic Gaussian kernel on a regular grid of
 $501$ knots, and use a subset of $51$ knots in $[0.05, 0.95]$ for constructing
 the Bayesian (GPR) and conformal (RRCM) confidence regions. The confidence regions
 are depicted in fig.~\ref{fig:gauss_1d_prof_gpr_conf}: conformal regions closely
-track the Bayesian confidence bands (``GPR-f'', eq.~\ref{eq:gp_conf_int}), but the
+track the Bayesian confidence bands (``GPR-f'', (\ref{eq:gp_conf_int})), but the
 latter are too wide in the low noise case. Near the endpoints the confidence regions
 dramatically increase in width, reflecting increased uncertainty. In general, the
 conformal regions necessarily cover the KRR prediction $\hat{y}^*_{|(X, y)}(x^*)$
-but are not necessarily symmetric around it, where as GPR regions are (eq.~\ref{eq:gp_conf_int}).
+but are not necessarily symmetric around it, where as GPR regions are (\ref{eq:gp_conf_int}).
 
 In can be argued, that confidence regions for any observation $x_n$ sufficiently
 far away from the bulk of the training dataset have constant size, determined only
 by the train sample (fig.~\ref{fig:limit_1d_ci_size}). Indeed, as $\|x_n\|^2\to \infty$
-($n$-fixed) the vector $B_{-n}$ in (eq.~\ref{eq:krr_in_resid_B}) approaches the
+($n$-fixed) the vector $B_{-n}$ in (\ref{eq:krr_in_resid_B}) approaches the
 $n$-th unit vector $e_n$, since for the Gaussian kernel the vector $\|K_{-n}(x_n)\|^2\to 0$.
-Since the kernel is bounded, the value $m_n$ (eq.~\ref{eq:krr_leverage}) is a bounded
+Since the kernel is bounded, the value $m_n$ (\ref{eq:krr_leverage}) is a bounded
 function of $x_n$, which, in turn, implies that eventually all RRCM (similarly, CRR)
 regions $S_i$ assume the form of closed intervals $[-|q_i|, |q_i|]$, where
 $q_i = m_n (e_i'Q_{-n}y_{-n}) + o(\|x_n\|^2)$, $i \neq n$. Therefore, the conformal
 procedure essentially reverts to a constant-size confidence region, determined by
 the $n^{-1}\lfloor n(1-\alpha)\rfloor$-th order statistic of $(|q_i|)_{i=1}^n$.
 Analogous effects can be observed for the Gaussian Process confidence interval
-(eq.~\ref{eq:gp_conf_int}).
+(\ref{eq:gp_conf_int}).
 % Is this true for any stationary kernel on $\Real^{d\times 1})$? Bochner's theorem, maybe?
 
-By construction, conformal confidence region (eq.~\ref{eq:conf_pred_set}) allows
-for some uncertainty. Indeed, the residuals (eq.~\ref{eq:krr_in_resid}) and hence
+By construction, conformal confidence region (\ref{eq:conf_pred_set}) allows
+for some uncertainty. Indeed, the residuals (\ref{eq:krr_in_resid}) and hence
 the vector of non-conformity scores $(\eta^z_i)_{i=1}^n$ are continuous functions
 of targets $y=(y_i)_{i=1}^n$. Thus for small perturbations of $y$ the relative
 ordering of $\eta^z_i$ is kept, and the interval remains unchanged. Therefore,
-eq.~\ref{eq:conf_pred_set} tends to capture more points $y$ for the same fixed
-significance level.
+the set (\ref{eq:conf_pred_set}) tends to capture more points $y$ for the same
+fixed significance level.
 
 \begin{figure}%[t, width=0.5\textwidth]
   \centering
@@ -613,10 +619,10 @@ significance level.
   \label{fig:limit_1d_ci_size}
 \end{figure}
 
-Experimental results in the perfectly noiseless case show that both confidence regions
-are conservative (see fig.~\ref{fig:gaussian_1d_low_noise}). In this picture we consider
-the ML estimate of $\theta$, but the results for other fixed choices are qualitatively
-similar. By construction, the procedure (eq.~\ref{eq:conf_pred_set}) adapts to the noise
+Experimental results in the perfectly noiseless case show that both kinds of confidence
+region are conservative (see fig.~\ref{fig:gaussian_1d_low_noise}). In this picture we
+consider the ML estimate of $\theta$, but the results for other fixed choices are qualitatively
+similar. By construction the procedure (\ref{eq:conf_pred_set}) adapts to the noise
 level in observations through the distribution of the non-conformity scores, rather
 than the regularization parameter $\lambda$, which makes Bayesian confidence intervals
 usually wider than conformal regions (fig.~\ref{fig:gaussian_1d_low_noise_c4}). Nevertheless
@@ -702,11 +708,11 @@ confidence level.
   \label{fig:gaussian_1d_low_noise}
 \end{figure}
 
-In the non-Gaussian noiseless experiments the coverage rate of conformal confidence
-intervals maintains approaches the specified confidence levels and all conformal
-procedures demonstrate very similar asymptotic validity. For the ``Heaviside''
-step function typical confidence bands are shown in fig.~\ref{fig:nongauss_1d_heaviside},
-and the asymptotic coverage rate of various confidence bands are presented in
+In the non-Gaussian noiseless experiment the coverage rate of conformal confidence
+intervals maintains the specified confidence levels and all conformal procedures
+demonstrate very similar asymptotic validity. For the ``Heaviside'' step function
+typical confidence bands are shown in fig.~\ref{fig:nongauss_1d_heaviside}, and the
+asymptotic coverage rate of various confidence bands is presented in
 fig.~\ref{fig:heaviside_1d_low_noise}.
 
 \begin{figure}%[t, width=0.5\textwidth]
@@ -726,12 +732,12 @@ fig.~\ref{fig:heaviside_1d_low_noise}.
 \end{figure}
 
 In the non-Gaussian setting the GPR confidence intervals are not consistently valid,
-as is evident from coverage rate dynamics for $\lambda=10^{-1}$. At the same time
+as is evident from the coverage rate dynamics for $\lambda=10^{-1}$. At the same time
 conformal procedures show no significant departures from claimed validity (results
 for other measures and residuals were qualitatively similar). The main conclusion
 is that in the negligible noise case the conformal confidence intervals for the KRR
 with the Gaussian kernel perform reasonably well both in terms of validity in a
-non-Gaussian setting and efficiency in fully Gaussian setting.
+non-Gaussian setting, and efficiency in fully Gaussian setting.
 
 \begin{figure}%[b, width=0.5\textwidth]
   \centering
@@ -763,8 +769,8 @@ non-Gaussian setting and efficiency in fully Gaussian setting.
   \label{fig:heaviside_1d_low_noise}
 \end{figure}
 
-The performance of conformal confidence regions in noisy setting ($\gamma=10^{-1}$)
-is qualitatively similar to the negligible nose case, except that the bands are wider
+The performance of conformal confidence regions in the noisy setting ($\gamma=10^{-1}$)
+is qualitatively similar to the negligible noise case, except that the bands are wider
 due to higher observation noise. We report the findings for the MLE of $\theta$ only,
 but the results for conformal regions with fixed $\theta$ are qualitatively similar.
 In fig.~\ref{fig:gaussian_1d_high_noise} the conformal confidence regions provide the
@@ -845,9 +851,9 @@ guarantees.
   \label{fig:gaussian_1d_high_noise}
 \end{figure}
 
-In the non-Gaussian setting with noise-to-signal ratio $\gamma=10^{-1}$, all experiments
-yielded results similar to the negligible noise case: the conformal confidence sets are
-asymptotically valid, whereas the Bayesian intervals are not, fig.~\ref{fig:heaviside_1d_high_noise}.
+In the non-Gaussian setting with noise-to-signal ratio $\gamma=10^{-1}$, fig.~\ref{fig:heaviside_1d_high_noise},
+all experiments yielded results similar to the negligible noise case: the conformal
+confidence sets are asymptotically valid, whereas the Bayesian intervals are not.
 
 \begin{figure}%[b, width=0.5\textwidth]
   \centering
@@ -909,8 +915,8 @@ of the GPR confidence intervals is sensitive to misspecification of kernel preci
 $\theta$.
 \begin{table}
 \centering
-  \caption{The empirical error rate ($\%$) of the GPR confidence interval for simulated
-  $2$-d Gaussian process with train size $n=1500$.}
+  \caption{The empirical error rate ($\%$) of the GPR confidence interval for a
+  simulated $2$-d Gaussian process with train size $n=1500$.}
   \label{tab:gaussian_2d_cov_gpr}
   \begin{tabular}{ll||rr|rr}
   \toprule
@@ -921,7 +927,8 @@ $\theta$.
   $10^2$ & $1$ &     0.9 &     0.1 &     4.1 &     0.7 \\
        & $5$ &     4.5 &     0.5 &    12.0 &     4.4 \\
        & $10$ &     9.2 &     1.0 &    19.2 &     9.3 \\
-       & $25$ &    23.8 &     3.3 &    36.1 &    24.5 \\\cline{2-6}
+       & $25$ &    23.8 &     3.3 &    36.1 &    24.5 \\
+  \midrule
   $\hat{\theta}_\text{ML}$ & $1$ &     0.8 &     0.1 &     2.3 &     0.8 \\
        & $5$ &     4.4 &     0.5 &     4.9 &     4.5 \\
        & $10$ &     9.0 &     0.9 &     8.0 &     9.4 \\
@@ -930,7 +937,8 @@ $\theta$.
   $10^1$ & $1$ &      1.6 &      0.6 &      1.0 &      0.6 \\
        & $5$ &      5.3 &      4.2 &      5.2 &      3.7 \\
        & $10$ &      9.6 &      8.6 &     10.4 &      8.2 \\
-       & $25$ &     22.5 &     23.4 &     26.3 &     22.6 \\\cline{2-6}
+       & $25$ &     22.5 &     23.4 &     26.3 &     22.6 \\
+  \midrule
   $10^3$ & $1$ &      0.4 &      0.4 &      9.1 &      1.1 \\
        & $5$ &      1.2 &      1.2 &     13.1 &      4.9 \\
        & $10$ &      2.0 &      2.0 &     16.1 &      9.6 \\
@@ -940,9 +948,9 @@ $\theta$.
 \end{table}
 
 In contrast to the GPR confidence intervals, the conformal regions are insensitive
-to misspecification as demonstrated in table.~\ref{tab:gaussian_2d_cov_conf}, where
-we show the maximal absolute deviation of the interval error rate from the specified
-rate $\alpha$ across all studied significance levels (eq.~\ref{eq:mad_alpha}).
+to misspecification as shown in table~\ref{tab:gaussian_2d_cov_conf}, where we report
+the maximal absolute deviation of the interval error rate from the specified
+rate $\alpha$ across all studied significance levels (\ref{eq:mad_alpha}).
 \begin{equation} \label{eq:mad_alpha}
   \mathtt{MAD}(\Gamma, A; \Theta)
   = \max_{\alpha\in A}\Bigl\lvert
@@ -951,8 +959,8 @@ rate $\alpha$ across all studied significance levels (eq.~\ref{eq:mad_alpha}).
     \,,
 \end{equation}
 where $\Theta$ is the vector of hyper-parameters of the experiment revealed to the
-conformal procedure, $A = \{1\%, 5\%, 10\%, 25\%\}$, $(X^*_j, y^*_j)_{j=1}^{|X^*|}$
-is the test sample.
+conformal procedure, $A = \{1\%, 5\%, 10\%, 25\%\}$, $(X^*_j, y^*_j)_{j=1}^m$ is
+the test sample.
 \begin{table}
   \centering
   \caption{The maximal absolute deviation $\mathtt{MAD}(\Gamma, A; \Theta)$ ($\%$)
@@ -989,14 +997,48 @@ is the test sample.
 \end{table}
 
 Typical profile of the test function used in non-Gaussian experiment is plotted
-in fig.~\ref{fig:2d_profile} (p.~\pageref{fig:2d_profile}). The performance of the
-conformal regions in the non-Gaussian experiments are summarized in tab.~\ref{tab:nongaussian_f2_2d_cov_conf}.
-Overall, the error rates do not stray too far from the stated levels, and conformal
-regions are weakly sensitive to the KRR hyper-parameters. In contrast, tab.~\ref{tab:nongaussian_f2_2d_cov_gpr}
-shows that the empirical error rate of Bayesian confidence intervals depends on the
-values of the precision parameter. The MLE $\theta$ produces conservatively valid
-confidence intervals, and for $\gamma=10^{-1}$ the error rate becomes closer to
-the specified significance level.
+in fig.~\ref{fig:2d_profile}. Performance of conformal regions in the non-Gaussian
+experiments is summarized in table~\ref{tab:nongaussian_f2_2d_cov_conf}. Overall,
+the error rates do not stray too far from the stated levels, and conformal regions
+are weakly sensitive to the KRR hyper-parameters. In contrast, table~\ref{tab:nongaussian_f2_2d_cov_gpr}
+shows that the empirical error rate of Bayesian confidence intervals depends more
+prominently on the values of the precision parameter. The MLE $\theta$ produces
+conservatively valid confidence intervals, and for $\gamma=10^{-1}$ the error rate
+becomes closer to the specified significance level.
+
+\begin{table}
+  \centering
+  \caption{The empirical error rate ($\%$) of the GPR confidence interval for the
+  ``f2'' test function ($n=1500$).}
+  \label{tab:nongaussian_f2_2d_cov_gpr}
+  \begin{tabular}{ll||rrrr}
+  \toprule
+       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
+       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
+  $\theta$ & $\alpha(\%)$ &          &          &          &          \\
+  \midrule
+   $10^1$ & $1$ &      2.3 &      1.9 &      2.2 &      1.1 \\
+        & $5$ &      3.2 &      3.0 &      7.9 &      4.9 \\
+        & $10$ &      4.0 &      3.7 &     13.8 &      9.7 \\
+        & $25$ &      5.8 &      5.6 &     29.9 &     24.3 \\
+  \midrule
+   $10^2$ & $1$ &      0.3 &      0.0 &     19.1 &      1.3 \\
+        & $5$ &      0.6 &      0.1 &     28.6 &      5.9 \\
+        & $10$ &      0.9 &      0.2 &     35.0 &     11.1 \\
+        & $25$ &      2.6 &      1.2 &     48.3 &     26.5 \\
+  \midrule
+   $10^3$ & $1$ &      0.1 &      0.1 &      2.4 &      0.1 \\
+        & $5$ &      1.9 &      2.1 &      4.0 &      1.9 \\
+        & $10$ &      4.1 &      4.5 &      6.0 &      5.0 \\
+        & $25$ &     12.9 &     13.4 &     13.9 &     16.4 \\
+  \midrule
+   $\hat{\theta}_\text{ML}$ & $1$ &      3.4 &      0.6 &      2.0 &      1.1 \\
+        & $5$ &      4.4 &      1.1 &      3.9 &      5.1 \\
+        & $10$ &      5.2 &      1.4 &      6.9 &     10.0 \\
+        & $25$ &      7.1 &      2.4 &     18.1 &     24.9 \\
+  \bottomrule
+  \end{tabular}
+\end{table}
 
 \begin{table}
   \centering
@@ -1033,40 +1075,6 @@ the specified significance level.
   \end{tabular}
 \end{table}
 
-\begin{table}
-  \centering
-  \caption{The empirical error rate ($\%$) of the GPR confidence interval for the
-  ``f2'' test function ($n=1500$).}
-  \label{tab:nongaussian_f2_2d_cov_gpr}
-  \begin{tabular}{ll||rrrr}
-  \toprule
-       & $\gamma$ & $10^{-6}$ &          & $10^{-1}$ &          \\\cline{2-2}
-       & $\lambda$ & $10^{-6}$ & $10^{-1}$ & $10^{-6}$ & $10^{-1}$ \\\cline{2-2}
-  $\theta$ & $\alpha(\%)$ &          &          &          &          \\
-  \midrule
-   $10^1$ & $1\%$ &      2.3 &      1.9 &      2.2 &      1.1 \\
-        & $5\%$ &      3.2 &      3.0 &      7.9 &      4.9 \\
-        & $10\%$ &      4.0 &      3.7 &     13.8 &      9.7 \\
-        & $25\%$ &      5.8 &      5.6 &     29.9 &     24.3 \\
-  \midrule
-   $10^2$ & $1\%$ &      0.3 &      0.0 &     19.1 &      1.3 \\
-        & $5\%$ &      0.6 &      0.1 &     28.6 &      5.9 \\
-        & $10\%$ &      0.9 &      0.2 &     35.0 &     11.1 \\
-        & $25\%$ &      2.6 &      1.2 &     48.3 &     26.5 \\
-  \midrule
-   $10^3$ & $1\%$ &      0.1 &      0.1 &      2.4 &      0.1 \\
-        & $5\%$ &      1.9 &      2.1 &      4.0 &      1.9 \\
-        & $10\%$ &      4.1 &      4.5 &      6.0 &      5.0 \\
-        & $25\%$ &     12.9 &     13.4 &     13.9 &     16.4 \\
-  \midrule
-   $\hat{\theta}_\text{ML}$ & $1\%$ &      3.4 &      0.6 &      2.0 &      1.1 \\
-        & $5\%$ &      4.4 &      1.1 &      3.9 &      5.1 \\
-        & $10\%$ &      5.2 &      1.4 &      6.9 &     10.0 \\
-        & $25\%$ &      7.1 &      2.4 &     18.1 &     24.9 \\
-  \bottomrule
-  \end{tabular}
-\end{table}
-
 % subsection results_2_d (end)
 
 % section numerical_study (end)
@@ -1078,27 +1086,29 @@ Experiments in sec.~\ref{sec:numerical_study} provide evidence suggesting that
 conformal procedures are insensitive to the choice of the core NCM and are asymptotically
 equivalent in terms of coverage and efficiency, despite being applied in the off-line
 batch learning setting. Furthermore, the results indicate that both Bayesian and
-conformal confidence intervals possess the asymptotic validity guarantees, when
-the Gaussian assumptions hold, and the conformal procedure yields asymptotically
+conformal confidence intervals possess asymptotic validity guarantees when the
+Gaussian assumptions hold, and that the conformal procedure yields asymptotically
 efficient regions.
 
 Further research shall focus on establishing theoretical foundations for the obtained
-experimental results for the KRR with Gaussian kernel, or isolating special cases
-when it holds, and studying the cases when it fails, and generalizing the efficiency
-result in \cite{burnaevV14}.
+experimental evidence for the conformalized KRR with Gaussian kernel, isolating and
+studying cases when the guarantees are upheld, and generalizing the efficiency result
+in \cite{burnaevV14}.
 
 % section conclusion (end)
 
-\section*{Acknowledgements} % (fold)
-\label{sec:acknowledgements}
+\section*{Acknowledgments} % (fold)
+\label{sec:acknowledgments}
 \noindent The research, presented in Section \ref{sec:numerical_study} of this paper,
 was supported by the RFBR grants \textbf{16-01-00576 A} and \textbf{16-29-09649 ofi\_m};
 the research, presented in other sections, was conducted in IITP RAS and supported
 solely by the Russian Science Foundation grant (project \textbf{14-50-00150}).
 
-% section* acknowledgements (end)
+% section* acknowledgments (end)
 
 \bibliographystyle{IEEEtran}
-\bibliography{../references,references}
+\def\IEEEbibitemsep{6pt}
+\IEEEtriggeratref{9}
+\bibliography{IEEEabrv,../references,references_icmla}
 
 \end{document}
