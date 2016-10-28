@@ -22,6 +22,8 @@
 \newcommand{\Hcal}{\mathcal{H}}
 \newcommand{\Fcal}{\mathcal{F}}
 
+\newcommand{\wat}{\textbf{(?)}}
+
 \title{Mechanism Design for Learning Agents}
 \author{Nazarov Ivan}
 \begin{document}
@@ -41,7 +43,7 @@ quality of input. Or make the algorithms robust to input manipulation.
 
 Suppose we want to compute the maximum of some numbers.
 The input $(x_i)_{i=1}^n$ and the goal is to compute $\max_{i=1}^n x_i$, with payoffs
-to each agent being $p_i = x_i 1_{x_i = \max_{j=1}^n x_j}}$. In this algorithm, the
+to each agent being $p_i = x_i 1_{x_i = \max_{j=1}^n x_j}$. In this algorithm, the
 agents are inclined to misreport their $x_i$ and instead provide $x_i=+\infty$. Thus
 in this simple algorithm we learn nothing about the reality.
 
@@ -55,13 +57,13 @@ Another way to compute the maximum is to use an algorithm based on Solon's law.
 Suppose a big public expenditure is due, and only a subset of agents was eligible
 to pay. If someone didn't want to pay for the assigned public expense, could report
 another agent to be richer (or more able) than him. If the second in disagrees,
-then the first can propose the exchange of property (riches) before paying (antidosis).
+then the first can propose the exchange of property (riches) before paying (``antidosis'').
 The outcome is the maximum (the richest person).
 
 \textbf{Nisan-Ronen'99}: How much more difficult the optimization is on the ``stretgic''
 input, compared to the ``honest'' input?
 
-Information completeness and asymmteriy:\begin{itemize}
+Information completeness and asymmetry:\begin{itemize}
 	\item what information does the algorithm have on its inputs?
 	\item what information about the algorithm do the inputs providers have?
 	\item is there access to the private information?
@@ -75,7 +77,7 @@ Computational complexity: \begin{itemize}
 \section{Combinatorial Auctions} % (fold)
 \label{sec:combinatorial_auctions}
 
-Suppse there are $[m]$ indivisible items, and $[n]$ bidders each with its private
+Suppose there are $[m]$ indivisible items, and $[n]$ bidders each with its private
 valuation function $v_i:\mathcal{P}([m]) \mapsto \Real_+$. The goal is to partition
 the items $\uplus_{i=1}^n S_i = [m]$ in such a manner as to maximize the welfare of
 from allocating set $S_i$ to the $i$-th bidder and charging him $p_i$, namely to maximize
@@ -94,6 +96,12 @@ Thus comes in the Vickery-Clarke-Groves mechanism: similar to Vickery but with a
 				\sum_{i\neq j} \hat{v}_j(P_j) - \sum_{i\neq j} \hat{v}_j(S_j) \,;
 	\end{equation}
 \end{enumerate}
+Basically the $i$-th bidder is charged the total welfare lost by others as if $i$-th
+bidder did not exist. This looks very similar to the Shapley value in a cooperative
+game: the value of the player to the game is given by the expected value of a coalition
+with the player minus the value if she is not in the coalition averaged across all
+possible coalitions excluding the palyer.
+
 The Clarke prices ensure that the truthful reporting strategy dominates the misreporting,
 hence it chooses the real optimal allocation.
 
@@ -118,7 +126,7 @@ $\Real$. A set function $f$ is sub-modular iff for all $S\subseteq T$ and every 
 	f(S\cup\{j\}) - f(S) \geq f(T\cup\{j\}) - f(T)\,.
 \end{equation}
 \textbf{Vondrak'08} A combination auction wit sub-modular bidders. With \emph{valuation
-query access} to \textbf{true} bidder valuation can achieve 1-e^{-1} fraction of the
+query access} to the \textbf{true} bidder valuation can achieve $1-e^{-1}$ fraction of the
 optimal welfare.
 
 \textbf{Vondrak'11} If a mechanism has a query access to bidders reported valuations and
@@ -190,7 +198,7 @@ Fix a mechanism $M$: \begin{itemize}
 	\item suppose $n$ bidders engage in a repeated execution of $M$;
 	\item $b_i^t$ is the $i$-th bidder's action during round $t$: \begin{itemize}
 		\item in SiSPAs this is a vector of bids on each item;
-		\item in more complexi mechanisms, it might be more complex;
+		\item in more complex mechanisms, it might be more complex;
 	\end{itemize}
 	\item An algorithm that chooses a bid $b_i^t$ for all $t$ is ``no-envy'' iff
 	for any (adaptively chosen) $(b_{-i}^t)_{t=1}^T$
