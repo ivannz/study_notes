@@ -1344,23 +1344,24 @@ whence $f_n$ converges pointwise to $\nil$ in $\Real$.
 
 \noindent\textbf{Proof: $\Leftarrow$} \hfill\\
 Conversely, let $(f_n)_{n\geq1}\in \Hcal_0$ be Cauchy. Then \begin{itemize}
-	\item there is $M>0$ such that $\|f_n\|_0\leq M$ for all $n\geq 1$;
+	\item there is $M\geq 0$ such that $\|f_n\|_0\leq M$ for all $n\geq 1$;
 	\item for any $\epsilon>0$ there exists $N_0\geq1$ with
-		\[ \|f_n - f_{N_0} \|_0 < \frac{\epsilon}{2M}\,, \]
+		\[ \|f_n - f_{N_0} \|_0 < \frac{\epsilon}{2(M+1)}\,, \]
 		for all $n\geq N_0$.
 \end{itemize}
-Now $f_{N_0} = \sum_{j=1}^p \beta_j K(\cdot,y_j)$ and by construction
-\[ \langle f_{N_0}, f_n \rangle_0 = \sum_{j=1}^p \beta_j f_n(y_j)\,. \]
+Now $f_{N_0} = \sum_{j=1}^p \beta_j K(\cdot,y_j)$ and by linearity and reproducing
+property of $\langle \cdot, \cdot\rangle_0$ it holds that
+\[ \langle f_{N_0}, f_n \rangle_0 = \sum_{j=1}^p \beta_j f_n(y_j) \,. \]
 Since $f_n \to \nil$ pointwise for all $j=1,\ldots,p$ there exists $N_j\geq 1$
-such that and $n\geq N_j$
+such that for every $n\geq N_j$
 \[ |f_n(y_j)| \leq \frac{\epsilon}{2 p ( |\beta_j| + 1 ) }\,. \]
 Therefore for all $n \geq N = \max_{j=0,1,\ldots,p}N_j$
 \begin{align*}
 	\|f_n\|_0^2
 	& \leq |\langle f_n-f_{N_0},f_n \rangle_0| + |\langle f_{N_0}, f_n \rangle_0| \\
 	& \leq \|f_n-f_{N_0}\|_0 \|f_n\|_0 + \sum_{j=1}^p |\beta_j| |f_n(y_j)| \\
-	& < \frac{\epsilon}{2M} M + \sum_{j=1}^p |\beta_j| \frac{\epsilon}{2 p ( |\beta_j| + 1 ) }\\
-	& < \frac{\epsilon}{2} + p\frac{\epsilon}{2p}\,.
+	& < \frac{\epsilon}{2(M+1)} M + \sum_{j=1}^p |\beta_j| \frac{\epsilon}{2 p ( |\beta_j| + 1 ) } \\
+	& < \frac{\epsilon}{2} + p\frac{\epsilon}{2p} \,.
 \end{align*}
 
 \noindent \textbf{ $\Leftarrow$ : Completing $\Hcal_0$}\hfill\\
@@ -1458,14 +1459,23 @@ in $\Hcal_0$. Then for any $x\in X$, $K(\cdot, x)\in \Hcal_0 \subseteq \Hcal$ an
 pointwise for some $f:X\to \Real$, then $f_n\to f$ in $\Hcal$, i.e. $\|f_n-f\|\to 0$.
 
 \noindent\textbf{Proof} \hfill \\
-Indeed, let $\epsilon>0$. Since $\|f_n-f_m\|_0 \to \|f_n-f\|$ by construction as
-$m\to \infty$, there is $N_1\geq1$ such that
-\[ \|f_n-f\| < \|f_n-f_m\|_0 + \frac{\epsilon}{2}\,, \]
-for all $n\geq N_1$. Furthermore, since $(f_n)_{n\geq1}$ is Cauchy in $\Hcal_0$,
-there is $N_2\geq1$ with $\|f_n-f_m\|_0 < \frac{\epsilon}{2}$ for all $n,m\geq N_2$.
-Therefore for any $n,m\geq N_1\wedge N_2$
-\[ \|f_n-f\| < \|f_n-f_m\|_0 + \frac{\epsilon}{2} < \epsilon \,, \]
-whence $\|f_n-f\| \to 0$.
+Indeed, $(g_n)_{n\geq1}\in \Hcal_0$ be a Cauchy sequence such that $g_n \to f$ pointwise
+in $\Real$. Then by definition of the norm in $\Hcal$ for any $\epsilon>0$ and every
+$n\geq 1$ there is $M_n\geq 1$ such that 
+\[ \bigl| \|f_n - f\| - \|f_n - g_m\|0 \bigr| < \frac{\epsilon}{2} \,, \]
+for all $m\geq M_n$. In particular, there exists $(m_n)_{n\geq1}$ with $m_n < m_{n+1}$
+such that for all $n\geq1$
+\[ \|f_n - f\| < \|f_n - g_{m_n}\|0 + \frac{\epsilon}{2} \,. \]
+Furthermore $(g_{m_n})_{n\geq1}$ has the same pointwise limiting function as
+$(g_n)_{n\geq1}$, whence $f_n-g_{m_n}\to 0$ pointwise.
+
+Now, the sequence $(f_n-g_{m_n})_{n\geq1}$ is Cauchy, since any subsequence of a
+Cauchy sequence is Cauchy itself. Hence by lemma \# 2 $\|f_n-g_{m_n}\|_0 \to 0$,
+whence there exists $N\geq1$ such that $\|f_n - g_{m_n}\|_0 < \frac{\epsilon}{2}$ for
+all $n\geq N$. Therefore for all $n\geq N$
+\[ \|f_n - f\| < \|f_n - g_{m_n}\|0 + \frac{\epsilon}{2}
+			   < \epsilon \,, \]
+which implies that $\|f_n - f\|\to 0$.
 
 \noindent\textbf{Lemma \# 7} : The set $\Hcal_0$ is dense in $(\Hcal,\langle\cdot,\cdot\rangle)$.
 
@@ -1481,16 +1491,17 @@ is dense in $\Hcal$ with respect to the norm $\|\cdot\|$.
 If $(f_n)_{n\geq1}\in\Hcal$ is Cauchy, then by lemma \#7 there exists $(g_n)_{n\geq1}\in \Hcal_0$
 such that for all $n\geq1$
 \[ \|f_n - g_n\| < \frac{1}{2^n} \,, \]
-which means that $\| f_n-g_n\|\to 0$.
+which means that $\| f_n - g_n \| \to 0$.
+
 Now for any $\epsilon>0$ there exists $N\geq1$ such that for all $n,m\geq N$
-\[
-\| g_m - g_n \|
-\leq \| g_m - f_m \| + \| f_m - f_n \| + \| f_n - g_n \|
-< \frac{\epsilon}{3} + \frac{\epsilon}{3} + \frac{\epsilon}{3} \,,
+\[ \| g_m - g_n \|
+		\leq \| g_m - f_m \| + \| f_m - f_n \| + \| f_n - g_n \|
+		< \frac{\epsilon}{3} + \frac{\epsilon}{3} + \frac{\epsilon}{3} \,,
 \]
 whence $(g_n)_{n\geq1}\in \Hcal_0$ is Cauchy. Therefore by lemma \# 1 there exists
 a function $g : X\to \Real$ such that $g_n\to g$ pointwise. Thus $g\in \Hcal$ and
-\[ \|f_n - g\| \leq \|f_n - g_n\| + \|g_n - g\|\,, \]
+by lemma \#6 $\|g_n - g\| \to 0$. For any $n\geq 1$
+\[ \|f_n - g\| \leq \|f_n - g_n\| + \|g_n - g\| \,, \]
 implying that $\|f_n - g\| \to 0$. Finally, by the reproducing property of $K$
 in $\Hcal$ (lemma \# 5) for any $x\in X$
 \[ |f_n(x) - g(x) | \leq \sqrt{K(x,x)} \|f_n - g\|\,, \]
